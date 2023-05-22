@@ -13,9 +13,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 // Pages
 import Splash from './Pages/Splash';
 import Project from './Pages/Project';
-import Help from './Pages/Help';
 import NotFound from './Pages/NotFound';
-import About from './Pages/About';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -28,12 +26,10 @@ const router = createBrowserRouter(
         <Route path="poll" element={<h1>Im a poll</h1>}/>
         <Route path="packing" element={<h1>Im a packing list</h1>}/>
         <Route path="message" element={<h1>Im a message</h1>}/>
+        <Route path="contactinfo" element={<h1>Im a message</h1>}/>
+        <Route path="transportation" element={<h1>Im a merge intervals problem</h1>}/>
         <Route />
       </Route>
-
-      <Route path="about" element={<About />} />
-
-      <Route path="help" element={<Help />} />
 
       <Route path='*' element={<NotFound />} />
     </>
