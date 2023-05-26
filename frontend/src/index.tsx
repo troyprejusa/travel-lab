@@ -13,13 +13,15 @@ import { ChakraProvider } from '@chakra-ui/react';
 // Pages
 import Splash from './Pages/Splash';
 import Project from './Pages/Project';
+import Home from './Pages/Home';
 import Itinerary from './Pages/Itinerary';
 import Calendar from './Pages/Calendar';
-import Poll from './Pages/Poll';
 import Transportation from './Pages/Transportation';
 import MessageBoard from './Pages/MessageBoard';
+import Poll from './Pages/Poll';
 import Packing from './Pages/Packing';
 import ContactInfo from './Pages/ContactInfo';
+import Settings from './Pages/Settings';
 import NotFound from './Pages/NotFound';
 
 const router = createBrowserRouter(
@@ -28,13 +30,15 @@ const router = createBrowserRouter(
       <Route path="/" element={<Splash />} />
 
       <Route path="project/:projectId" element={<Project />}>
+        <Route path="home" element={<Home />} />
         <Route path="itinerary" element={<Itinerary />} />
         <Route path="calendar" element={<Calendar />} />
-        <Route path="poll" element={<Poll />}/>
         <Route path="transportation" element={<Transportation />} />
         <Route path="message" element={<MessageBoard />}/>
+        <Route path="poll" element={<Poll />}/>
         <Route path="packing" element={<Packing />} />
         <Route path="contactinfo" element={<ContactInfo />} />
+        <Route path="settings" element={<Settings />} />
         <Route />
       </Route>
 
@@ -44,7 +48,7 @@ const router = createBrowserRouter(
   )
 );
 
-const root = ReactDOM.createRoot(
+const root: ReactDOM.Root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(

@@ -1,4 +1,7 @@
 import React, { ReactNode } from 'react';
+import { IconType } from 'react-icons';
+import { ReactText } from 'react';
+
 import {
   IconButton,
   Avatar,
@@ -22,29 +25,38 @@ import {
   MenuItem,
   MenuList,
 } from '@chakra-ui/react';
+
 import {
   FiHome,
-  FiTrendingUp,
-  FiCompass,
-  FiStar,
   FiSettings,
+  FiCalendar,
+  FiBriefcase,
+  FiMessageSquare,
+  FiCompass,
   FiMenu,
   FiBell,
   FiChevronDown,
+  FiNavigation,
+  FiUsers,
+  FiThumbsUp
 } from 'react-icons/fi';
-import { IconType } from 'react-icons';
-import { ReactText } from 'react';
+
 
 interface LinkItemProps {
   name: string;
   icon: IconType;
+  path: string;
 }
 const LinkItems: Array<LinkItemProps> = [
-  { name: 'Home', icon: FiHome },
-  { name: 'Troy', icon: FiTrendingUp },
-  { name: 'Ruth', icon: FiCompass },
-  { name: 'Favourites', icon: FiStar },
-  { name: 'Settings', icon: FiSettings },
+  { name: 'Home', icon: FiHome , path: 'home'},
+  { name: 'Itinerary', icon: FiCompass, path: 'itinerary' },
+  { name: 'Calendar', icon: FiCalendar, path: 'calendar' },
+  { name: 'Transportation', icon: FiNavigation, path: 'transportation' },
+  { name: 'Message Board', icon: FiMessageSquare, path: 'message' },
+  { name: 'Poll', icon: FiThumbsUp, path: 'poll' },
+  { name: 'Packing', icon: FiBriefcase, path: 'packing' },
+  { name: 'Contact Info', icon: FiUsers, path: 'contactinfo' },
+  { name: 'Settings', icon: FiSettings, path: 'settings' }
 ];
 
 export default function SidebarWithHeader({
@@ -97,12 +109,12 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       {...rest}>
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          Logo
+          Travel | Lab
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
+        <NavItem key={link.name} icon={link.icon} path={link.path}>
           {link.name}
         </NavItem>
       ))}
@@ -112,11 +124,12 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 
 interface NavItemProps extends FlexProps {
   icon: IconType;
+  path: string;
   children: ReactText;
 }
-const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
+const NavItem = ({ icon, path, children, ...rest }: NavItemProps) => {
   return (
-    <Link href="#" style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
+    <Link href={path} style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
       <Flex
         align="center"
         p="4"
