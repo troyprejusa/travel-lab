@@ -56,10 +56,10 @@ const LinkItems: Array<LinkItemProps> = [
   { name: 'Poll', icon: FiThumbsUp, path: 'poll' },
   { name: 'Packing', icon: FiBriefcase, path: 'packing' },
   { name: 'Contact Info', icon: FiUsers, path: 'contactinfo' },
-  { name: 'Settings', icon: FiSettings, path: 'settings' }
+  { name: 'Settings', icon: FiSettings, path: 'projectsettings' }
 ];
 
-export default function SidebarWithHeader({
+export default function ChakraNavbar({
   children,
 }: {
   children: ReactNode;

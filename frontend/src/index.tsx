@@ -38,7 +38,7 @@ const router = createBrowserRouter(
         <Route path="poll" element={<Poll />}/>
         <Route path="packing" element={<Packing />} />
         <Route path="contactinfo" element={<ContactInfo />} />
-        <Route path="settings" element={<Settings />} />
+        <Route path="projectsettings" element={<Settings />} />
         <Route />
       </Route>
 
