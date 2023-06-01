@@ -12,6 +12,8 @@ import { ChakraProvider } from '@chakra-ui/react';
 
 // Pages
 import Splash from './Pages/Splash';
+import Trips from './Pages/Trips';
+import Settings from './Pages/Settings';
 import Project from './Pages/Project';
 import Home from './Pages/Home';
 import Itinerary from './Pages/Itinerary';
@@ -21,7 +23,7 @@ import MessageBoard from './Pages/MessageBoard';
 import Poll from './Pages/Poll';
 import Packing from './Pages/Packing';
 import ContactInfo from './Pages/ContactInfo';
-import Settings from './Pages/Settings';
+import ProjectSettings from './Pages/ProjectSettings';
 import NotFound from './Pages/NotFound';
 
 const router = createBrowserRouter(
@@ -29,22 +31,25 @@ const router = createBrowserRouter(
     <>
       <Route path="/" element={<Splash />} />
 
-      <Route path="project/:projectId" element={<Project />}>
-        <Route path="home" element={<Home />} />
-        <Route path="itinerary" element={<Itinerary />} />
-        <Route path="calendar" element={<Calendar />} />
-        <Route path="transportation" element={<Transportation />} />
-        <Route path="message" element={<MessageBoard />}/>
-        <Route path="poll" element={<Poll />}/>
-        <Route path="packing" element={<Packing />} />
-        <Route path="contactinfo" element={<ContactInfo />} />
-        <Route path="projectsettings" element={<Settings />} />
-        <Route />
+      <Route path="/user/:userId">
+        <Route path="trips" element={<Trips />}/>
+        <Route path="settings" element={<Settings />}/>
+      </Route>
+
+      <Route path="/trip/:tripId" element={<Project />}>
+          <Route path="home" element={<Home />} />
+          <Route path="itinerary" element={<Itinerary />} />
+          <Route path="calendar" element={<Calendar />} />
+          <Route path="transportation" element={<Transportation />} />
+          <Route path="message" element={<MessageBoard />}/>
+          <Route path="poll" element={<Poll />}/>
+          <Route path="packing" element={<Packing />} />
+          <Route path="contactinfo" element={<ContactInfo />} />
+          <Route path="settings" element={<ProjectSettings />} />
       </Route>
 
       <Route path='*' element={<NotFound />} />
     </>
-
   )
 );
 

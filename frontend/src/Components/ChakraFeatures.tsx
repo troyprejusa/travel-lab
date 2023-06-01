@@ -15,13 +15,38 @@ Button
 import { CheckIcon } from '@chakra-ui/icons';
 
 // Replace test data with your own
-const features = Array.apply(null, Array(6)).map(function (x, i) {
-    return {
-        id: i,
-        title: 'Lorem ipsum dolor sit amet',
-        text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam.',
-    };
-});
+const features = [
+    {
+        id: 0,
+        title: 'Organize your itinerary',
+        text: 'Plan all the stops along your trip, and share them with the group.',
+    },
+    {
+        id: 1,
+        title: 'Share your transportation',
+        text: 'Find out when and where everyone will arrive, so you can plan who to carpool with.',
+    },
+    {
+        id: 2,
+        title: 'Message travel group',
+        text: 'Use a message board to share messages with your group without leaving the app.',
+    },
+    {
+        id: 3,
+        title: 'Poll the group',
+        text: 'No more arguing about what to visit, vote on polls to let the group decide.',
+    },
+    {
+        id: 4,
+        title: 'Pack collaboratively',
+        text: 'Create a packing list for the group and allow your group members to contribute.',
+    },
+    {
+        id: 5,
+        title: 'Manage contact information',
+        text: 'Keep track of everyone\'s contact information all in one place.',
+    }
+];
 
 function ChakraFeatures() {
     return (

@@ -56,7 +56,7 @@ const LinkItems: Array<LinkItemProps> = [
   { name: 'Poll', icon: FiThumbsUp, path: 'poll' },
   { name: 'Packing', icon: FiBriefcase, path: 'packing' },
   { name: 'Contact Info', icon: FiUsers, path: 'contactinfo' },
-  { name: 'Settings', icon: FiSettings, path: 'projectsettings' }
+  { name: 'Settings', icon: FiSettings, path: 'settings' }
 ];
 
 export default function ChakraNavbar({
