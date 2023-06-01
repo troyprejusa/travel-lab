@@ -13,7 +13,6 @@ import {
     Heading,
     Text,
     useColorModeValue,
-    Center,
   } from '@chakra-ui/react';
 
 interface ChakraLoginProps {
@@ -26,7 +25,9 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
     <Flex
       align={'center'}
       justify={'center'}
-      bg={useColorModeValue('gray.50', 'gray.800')}>
+      // bg={useColorModeValue('gray.50', 'gray.800')}
+      // bgColor={'rgba(255, 255, 255, .25)'}
+      >
       <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
         <Stack align={'center'}>
           <Heading fontSize={'4xl'}>Log in to your account</Heading>

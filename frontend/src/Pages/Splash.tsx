@@ -1,9 +1,10 @@
 import React from 'react';
-import splashphoto from '../Photos/splashphoto.jpg';
+import splashphotoHero from '../Photos/splashphoto_hero.jpg';
 
 import { 
-    HStack,
-    Image,
+    Flex,
+    Box,
+    Text,
     useBoolean 
 } from '@chakra-ui/react'
 
@@ -15,13 +16,12 @@ function Splash(): JSX.Element {
     const [ wantsLogin, setWantsLogin ] = useBoolean(true);
     return (
         <>
-            <HStack>
-                <Image 
-                src={splashphoto} 
-                boxSize='50%'
-                alt='Travel Photo' />
+            <Flex minWidth={'40%'} backgroundImage={splashphotoHero} backgroundSize={'cover'} backgroundRepeat={'no-repeat'} justifyContent={'space-between'}>
+                <Flex alignItems={'center'}>
+                    <Text color='#9BA17B' fontSize="6xl" fontFamily="monospace" fontWeight="bold">Travel | Lab</Text>
+                </Flex>
                 {wantsLogin ? <ChakraLogin setWantsLogin={setWantsLogin} /> : <ChakraSignup setWantsLogin={setWantsLogin}/>}
-            </HStack>
+            </Flex>
             <ChakraFeatures />
         </>
     )
