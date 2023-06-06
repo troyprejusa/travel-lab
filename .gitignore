@@ -1,4 +1,11 @@
+# System
 .DS_Store
+.env
+
+# JavaScript
 node_modules
+
+# Python
 backend/lib
 backend/bin
+__pycache__
