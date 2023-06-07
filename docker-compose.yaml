@@ -6,10 +6,11 @@ services:
     environment:
       - POSTGRES_USER=docker
       - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=docker
+      - POSTGRES_DB=travel_lab
     ports:
       - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - /Users/troyprejusa/Dev/apps/travel-lab/database:/docker-entrypoint-initdb.d
 volumes:
   pgdata:
