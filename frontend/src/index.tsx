@@ -9,6 +9,8 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import { ChakraProvider } from '@chakra-ui/react';
+import { Provider as ReduxProvider} from 'react-redux';
+import reduxStore from './redux/Store';
 
 // Pages
 import Splash from './Pages/Splash';
@@ -31,12 +33,10 @@ const router = createBrowserRouter(
     <>
       <Route path="/" element={<Splash />} />
 
-      <Route path="/user/:userId">
-        <Route path="trips" element={<Trips />}/>
-        <Route path="settings" element={<Settings />}/>
-      </Route>
+      <Route path="/user/:userId/trips" element={<Trips />}/>
+      <Route path="/user/:userId/settings" element={<Settings />}/>
 
-      <Route path="/trip/:tripId" element={<Project />}>
+      <Route path="/trip/:name" element={<Project />}>
           <Route path="home" element={<Home />} />
           <Route path="itinerary" element={<Itinerary />} />
           <Route path="calendar" element={<Calendar />} />
@@ -59,7 +59,9 @@ const root: ReactDOM.Root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
       <ChakraProvider>
-        <RouterProvider router={router} />
+        <ReduxProvider store={reduxStore}>
+          <RouterProvider router={router} />
+        </ReduxProvider>
       </ChakraProvider>
   </React.StrictMode>
 );

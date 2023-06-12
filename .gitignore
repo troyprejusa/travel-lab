@@ -2,6 +2,9 @@
 .DS_Store
 .env
 
+# Environment
+.vscode
+
 # JavaScript
 node_modules
 

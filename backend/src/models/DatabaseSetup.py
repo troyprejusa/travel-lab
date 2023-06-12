@@ -1,60 +1,15 @@
-import psycopg2
-from models.mock_data import insert_data
-
-settings = {
-    'host': "localhost",
-    'port': "5433",
-    'user': "docker",
-    'password': "docker",
-    'database': "travel_lab"
-}
-
-class DatabaseHandler:
-    def __init__(self, host: str, port: str, user: str, password: str, database: str) -> None:
-
-        self.host= host
-        self.port = port
-        self.user = user
-        self.password = password
-        self.database = database
-
-        try:
-            self.connection = psycopg2.connect(host = host, port = port, user = user, password = password, database = database)
-            print('Connected to database')
-        except Exception as e:
-            print(str(e))
-            raise Exception(f"Unable to connect to database{settings['database']}")
-
-    '''
-    Wrap the cursor.execute method as to open and close a cursor,
-    print the executed query, and report its success/failure
-    Still throw an error, as the caller needs to know if the
-    query failed
-    '''
-    def query(self, query: str) -> None:
-        with self.connection as conn:
-            with conn.cursor() as cursor:
-                try:
-                    cursor.execute(query)
-                    # print(f'QUERY SUCCESS:\n\t{cursor.query}')
-                except psycopg2.Error as pg_error:
-                    print(f'QUERY FAILURE:\n\t{cursor.query}')
-                    raise pg_error
-
-# CREATE DATABASE HANDLER
-db_handler = DatabaseHandler(**settings)
-
+from models.DatabaseHandler import DatabaseHandler
 
 class DatabaseSetup:
     def __init__(self, database: DatabaseHandler) -> None:
         self.database = database;
     
-    def initialize_extensions(self):
+    def initialize_extensions(self) -> None:
         self.database.query("""
             CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
         """)
     
-    def create_types(self):
+    def create_types(self) -> None:
         self.database.query("""
             DROP TYPE transp_mode;
             CREATE TYPE transp_mode AS ENUM (
@@ -67,7 +22,7 @@ class DatabaseSetup:
             );
         """)
 
-    def initalize_test_table(self):
+    def initalize_test_table(self) -> None:
         self.database.query("""
             DROP TABLE IF EXISTS test;
         """)
@@ -78,7 +33,7 @@ class DatabaseSetup:
             INSERT INTO test (name) VALUES ('troy');
         """)
     
-    def intialize_traveller_table(self):
+    def intialize_traveller_table(self) -> None:
         self.database.query("""
             CREATE TABLE IF NOT EXISTS traveller (
                 id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
@@ -89,18 +44,18 @@ class DatabaseSetup:
             );
         """)
     
-    def drop_traveller_table(self):
+    def drop_traveller_table(self) -> None:
         self.database.query("""
             DROP TABLE IF EXISTS traveller CASCADE;
         """)
 
-    def initialize_auth_table(self):
+    def initialize_auth_table(self) -> None:
         pass
 
-    def drop_auth_table(self):
+    def drop_auth_table(self) -> None:
         pass
 
-    def initialize_trip_table(self):
+    def initialize_trip_table(self) -> None:
         self.database.query("""
             CREATE TABLE IF NOT EXISTS trip (
                 id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
@@ -111,12 +66,12 @@ class DatabaseSetup:
             );
         """)
 
-    def drop_trip_table(self):
+    def drop_trip_table(self) -> None:
         self.database.query("""
             DROP TABLE IF EXISTS trip CASCADE;
         """)
 
-    def initialize_traveller_trip_table(self):
+    def initialize_traveller_trip_table(self) -> None:
         self.database.query("""
                 CREATE TABLE IF NOT EXISTS traveller_trip (
                     traveller_id uuid references traveller,
@@ -125,12 +80,12 @@ class DatabaseSetup:
             );
         """)
 
-    def drop_traveller_trip_table(self):
+    def drop_traveller_trip_table(self) -> None:
         self.database.query("""
             DROP TABLE IF EXISTS traveller_trip;
         """)
 
-    def initialize_itinerary_table(self):
+    def initialize_itinerary_table(self) -> None:
         self.database.query("""
             CREATE TABLE IF NOT EXISTS itinerary (
                 id BIGSERIAL PRIMARY KEY,
@@ -143,12 +98,12 @@ class DatabaseSetup:
             );
         """)
 
-    def drop_itinerary_table(self):
+    def drop_itinerary_table(self) -> None:
         self.database.query("""
             DROP TABLE IF EXISTS itinerary;
         """)
 
-    def intialize_transportation_table(self):
+    def intialize_transportation_table(self) -> None:
         self.database.query("""
             CREATE TABLE IF NOT EXISTS itinerary (
                 id BIGSERIAL PRIMARY KEY,
@@ -162,24 +117,24 @@ class DatabaseSetup:
             );
         """)
     
-    def drop_transportation_table(self):
+    def drop_transportation_table(self) -> None:
         self.database.query("""
             DROP TABLE IF EXISTS transportation;
         """)
 
-    def initialize_messages_table(self):
+    def initialize_messages_table(self) -> None:
         # self.database.query("""
             
         # """)
         pass
 
-    def initialize_packing_table(self):
+    def initialize_packing_table(self) -> None:
         # self.database.query("""
             
         # """)
         pass
 
-    def setup_db(self):
+    def setup_db(self) -> None:
         self.initialize_extensions()
         self.create_types()
         self.initalize_test_table()
@@ -188,15 +143,106 @@ class DatabaseSetup:
         self.initialize_traveller_trip_table()
         self.initialize_itinerary_table()
     
-    def drop_tables(self):
+    def drop_tables(self) -> None:
         self.drop_traveller_table()
         self.drop_trip_table()
         self.drop_traveller_trip_table()
         self.drop_itinerary_table()
 
+    @staticmethod
+    def insert_data(database):
+        # Insert a user
+        database.query("""
+            INSERT INTO traveller 
+            (
+                first_name,
+                last_name,
+                email,
+                phone
+            )
+            VALUES (
+                'troy',
+                'prejusa',
+                'troy@test.com',
+                '1234567890'
+            );
+        """)
 
-# DB SETUP DEV ONLY
-db_setup = DatabaseSetup(db_handler)
-db_setup.drop_tables()
-db_setup.setup_db()
-insert_data(db_handler)
+        # Insert a user
+        database.query("""
+            INSERT INTO traveller 
+            (
+                first_name,
+                last_name,
+                email,
+                phone
+            )
+            VALUES (
+                'joe',
+                'schmo',
+                'joe@test.com',
+                '1234567890'
+            );
+        """)
+
+        # Insert a trip
+        database.query("""
+            INSERT INTO trip 
+            (
+                destination,
+                description,
+                start_date,
+                end_date
+            )
+            VALUES (
+                'Puerto Vallarta',
+                'Getaway trip',
+                '2020-06-10',
+                '2020-06-11'
+            );
+        """)
+
+        # Insert a trip
+        database.query("""
+            INSERT INTO trip 
+            (
+                destination,
+                description,
+                start_date,
+                end_date
+            )
+            VALUES (
+                'Cabo',
+                'Getaway trip 2',
+                '2020-07-10',
+                '2020-07-11'
+            );
+        """)
+
+        # Add both users to both trips
+        database.query("""
+            INSERT INTO traveller_trip 
+            VALUES (
+                (SELECT id FROM traveller WHERE first_name='troy'),
+                (SELECT id FROM trip WHERE destination='Puerto Vallarta')
+            );
+
+            INSERT INTO traveller_trip 
+                VALUES (
+                (SELECT id FROM traveller WHERE first_name='joe'),
+                (SELECT id FROM trip WHERE destination='Puerto Vallarta')
+            );
+
+            INSERT INTO traveller_trip 
+                VALUES (
+                (SELECT id FROM traveller WHERE first_name='troy'),
+                (SELECT id FROM trip WHERE destination='Cabo')
+            );
+
+            INSERT INTO traveller_trip 
+                VALUES (
+                (SELECT id FROM traveller WHERE first_name='joe'),
+                (SELECT id FROM trip WHERE destination='Cabo')
+            );
+        """)
+
