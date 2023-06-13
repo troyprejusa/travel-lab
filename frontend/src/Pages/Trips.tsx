@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../redux/Store';
 import { login } from '../redux/UserSlice';
+import { replaceTrips, addTrip, removeTrip } from '../redux/TripSlice';
 import { UserModel, TripModel } from '../Models/Interfaces';
-import { log } from 'console';
 
 interface TripsProps {
 
@@ -11,19 +11,27 @@ interface TripsProps {
 
 function Trips(): JSX.Element {
 
-    const user: UserModel = useSelector((state: RootState) => state.user);
     const dispatch = useDispatch();
+    const user: UserModel = useSelector((state: RootState) => state.user);
+    const trips: Array<TripModel> = useSelector((state: RootState) => state.trips);
 
     // DEV ONLY    
-    useEffect(fakeLogin, []);
-    useEffect(getTrips, [user]);
+    useEffect(fakeLogin, []);   // Login on first render
 
-
+    // Get the trips when the user changes
+    useEffect(getTrips, [ user ]);  
 
     return (
         <>
             <h1>Trips</h1>
             <h2>{user.first_name}</h2>
+            <ul>
+                {
+                    trips.map((trip: TripModel, i: number) => {
+                        return <li key={i}>{trip.destination}</li>
+                    })
+                }
+            </ul>
         </>
     )
 
@@ -47,7 +55,7 @@ function Trips(): JSX.Element {
             try {
                 const res: Response = await fetch(`/user/trips?id=${user.id}`);
                 const json: TripModel = await res.json();
-                console.log(json);
+                dispatch(replaceTrips(json));
             } catch (e) {
                 console.error('Unable to retrieve trips')
             }

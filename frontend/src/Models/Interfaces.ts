@@ -10,9 +10,9 @@ export interface UserModel {
 }
 
 export interface TripModel {
-    id: number,
-    destination: string,
-    description: string,
-    start_date: Date,
-    end_date: Date
+    id: string | null,
+    destination: string | null,
+    description: string | null,
+    start_date: Date | null,
+    end_date: Date | null
 }
