@@ -43,7 +43,7 @@ app.include_router(trip_router)
 
 # Global exception handler
 @app.exception_handler(Exception)
-async def general_exception_handler(request: Request, e: Exception):
+async def general_exception_handler(request: Request, e: Exception) -> str:
     # Same behavior as default exception handling, but returns
     # JSON instead of string
     return JSONResponse(

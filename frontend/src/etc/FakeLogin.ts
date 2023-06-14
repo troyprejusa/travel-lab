@@ -7,12 +7,16 @@ function fakeLogin(dispactchRef: any) {
         /* Query database directly to get the data for troy prejusa */
         try {
             const res: Response = await fetch('/dev?email=troy@test.com');
-            const json: UserModel = await res.json();
             if (res.ok) {
-                dispactchRef(login(json));
+                const obj: UserModel = await res.json();
+                dispactchRef(login(obj));
+            } else {
+                const obj = await res.json();
+                throw new Error(JSON.stringify(obj));
             }
-        } catch (e) {
-            console.error('No developing today :(')
+
+        } catch (e: any) {
+            console.error(`No developing today :(\n${e.message}`)
         }
     })();
 }

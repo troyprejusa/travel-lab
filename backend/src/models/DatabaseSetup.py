@@ -74,8 +74,8 @@ class DatabaseSetup:
     def initialize_traveller_trip_table(self) -> None:
         self.database.query("""
                 CREATE TABLE IF NOT EXISTS traveller_trip (
-                    traveller_id uuid references traveller,
-                    trip_id uuid references trip,
+                    traveller_id uuid references traveller ON DELETE CASCADE,
+                    trip_id uuid references trip ON DELETE CASCADE,
                     PRIMARY KEY (traveller_id, trip_id)
             );
         """)

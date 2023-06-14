@@ -1,7 +1,7 @@
 import React, { useEffect, SyntheticEvent } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../redux/Store';
-import { replaceTrips, addTrip, removeTrip } from '../redux/TripSlice';
+import { replaceTrips } from '../redux/TripSlice';
 import { UserModel, TripModel } from '../Models/Interfaces';
 import fakeLogin from '../etc/FakeLogin';
 
@@ -30,9 +30,9 @@ function Trips(): JSX.Element {
                 {
                     trips.map((trip: TripModel, i: number) => {
                         return (
-                            <div key={i} id={`card${i}`} onClick={handleDeleteTripClickBubble}>
+                            <div key={i}>
                                 <p>{trip.destination}</p>
-                                <button>Delete trip</button>
+                                <button id={`card${i}`} onClick={handleDeleteTripClick}>Delete trip</button>
                             </div>
                         )
                     })
@@ -46,15 +46,16 @@ function Trips(): JSX.Element {
     function getTrips() {
         (async function() {
             try {
-                const res: Response = await fetch(`/user/trips?id=${user.id}`);
+                const res: Response = await fetch(`/user/trips?userid=${user.id}`);
                 if (res.ok) {
-                    const json: TripModel = await res.json();
-                    dispatch(replaceTrips(json));
+                    const obj: TripModel = await res.json();
+                    dispatch(replaceTrips(obj));
                 } else {
-                    throw new Error();
+                    const obj = await res.json();
+                    throw new Error(JSON.stringify(obj));
                 }
-            } catch (e) {
-                console.error(`Unable to retrieve trips for ${user.first_name} ${user.last_name}!`);
+            } catch (e: any) {
+                console.error(e.message);
             }
         })();
     }
@@ -73,23 +74,30 @@ function Trips(): JSX.Element {
     //     })();
     // }
 
-    function handleDeleteTripClickBubble(e: SyntheticEvent) {
-        // When clicking on the delete button on the card, we are going to let it 
-        // bubble up to the top level of the card element and execute it there,
-        // which is why we're suing e.currentTarget and not e.target
-        const cardId: string = e.currentTarget.id;
+    function handleDeleteTripClick(e: SyntheticEvent) {
+        const target = e.target as HTMLElement;
+        const cardId: string = target.id; 
         const delIndex: number = parseInt(cardId.split('card')[1]);
+        const json: string = JSON.stringify(trips[delIndex]);
         (async function() {
             try {
-                const res: Response = await fetch(); // TODO: Populate this fetch
+                const res: Response = await fetch(`/user/trips?userid=${user.id}`, {
+                    method: 'DELETE',
+                    body: json, 
+                    headers: new Headers({'content-type': 'application/json'}),
+                });
                 if (res.ok) {
-                    // Remove this from local state
-                    dispatch(removeTrip(trips[delIndex]));
+                    // Instead of deleting the trip individually from local state,
+                    // we will reload all trips to avoid any synchronization issues
+                    // between the frontend and backend
+                    getTrips();
+
                 } else {
-                    throw new Error();
+                    const obj = await res.json();
+                    throw new Error(obj);
                 }
-            } catch (e) {
-                console.error('Unable to delete trip');
+            } catch (e: any) {
+                console.error(e.message);
             }
         })();
     }

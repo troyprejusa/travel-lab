@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
 from models.Schemas import Traveller
 
@@ -12,6 +13,13 @@ async def test_user(email: str) -> Traveller:
         data = db_handler.query("""
             SELECT * FROM traveller WHERE email = %s;
         """, (email,))
+
         return data[0]
+    
     except:
-        raise Exception("Unable to retreive test user")
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": f"DEV | ERROR: Unable to login test user"
+            }
+        )
