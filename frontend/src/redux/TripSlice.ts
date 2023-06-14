@@ -9,10 +9,19 @@ const tripSlice: Slice = createSlice({
     reducers: {
 
         replaceTrips: (state, action: PayloadAction<Array<TripModel>>) => {
-            // You must modify the state in place, reassign values!
-            // state = action.payload -> DOESN'T WORK!
+            /* NOTE: 
+            Due to RTK's use of the 'Immer' library, modifying the state of an object
+            or array means you either modifying the object or array in place, or
+            RETURN a whole new object or array as your state. Doing state = some_other_array
+            does nothing */
+
+            // state = action.payload // -> doesn't work
+            
+            /* This works!
             state.length = 0;   // clear the existing array
-            state.push(...action.payload);  
+            state.push(...action.payload); */
+
+            return action.payload;  // Rhis works!
         },
 
         addTrip: (state, action: PayloadAction<TripModel>) => {
