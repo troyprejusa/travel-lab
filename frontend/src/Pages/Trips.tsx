@@ -4,6 +4,9 @@ import { RootState } from '../redux/Store';
 import { replaceTrips } from '../redux/TripSlice';
 import { UserModel, TripModel } from '../Models/Interfaces';
 import fakeLogin from '../etc/FakeLogin';
+import { Flex } from '@chakra-ui/react';
+import ChakraTripCard from '../Components/ChakraTripCard';
+import ChakraAddTripCard from '../Components/ChakraTripCard';
 
 interface TripsProps {
 
@@ -26,19 +29,14 @@ function Trips(): JSX.Element {
         <>
             <h1>Trips</h1>
             <h2>Hello {user.first_name}</h2>
-            <div>
+            <Flex>
                 {
                     trips.map((trip: TripModel, i: number) => {
-                        return (
-                            <div key={i}>
-                                <p>{trip.destination}</p>
-                                <button id={`card${i}`} onClick={handleDeleteTripClick}>Delete trip</button>
-                            </div>
-                        )
+                        return <ChakraTripCard key = {i} tripData={trip} />
                     })
                 }
-                <button>Add new trip</button>
-            </div>
+                <ChakraAddTripCard clickHandler={handleNewTripClick}/>
+            </Flex>
         </>
     )
 
@@ -60,22 +58,29 @@ function Trips(): JSX.Element {
         })();
     }
 
-    // function handleSubmitTripClick() {
-    //     (async function() {
-    //         try {
-    //             const res: Response = await fetch();
-    //             if (res.ok) {
-    //                 // Add this to the local state
-    //                 dispatch(addTrip(trip));
-    //             }
-    //         } catch (e) {
-    //             console.error('Unable to add trip');
-    //         }
-    //     })();
-    // }
+    function handleNewTripClick(event: SyntheticEvent) {
+        const json: string = JSON.stringify(trips[0]);
+        (async function() {
+            try {
+                const res: Response = await fetch(`/user/trips?userid=${user.id}`, {
+                    method: 'POST',
+                    body: json, 
+                    headers: new Headers({'content-type': 'application/json'}),
+                });
+                if (res.ok) {
+                    // Instead of adding the trip individually from local state,
+                    // we will reload all trips to avoid any synchronization issues
+                    // between the frontend and backend
+                    getTrips();
+                }
+            } catch (e) {
+                console.error('Unable to add trip');
+            }
+        })();
+    }
 
-    function handleDeleteTripClick(e: SyntheticEvent) {
-        const target = e.target as HTMLElement;
+    function handleDeleteTripClick(event: SyntheticEvent) {
+        const target = event.target as HTMLElement;
         const cardId: string = target.id; 
         const delIndex: number = parseInt(cardId.split('card')[1]);
         const json: string = JSON.stringify(trips[delIndex]);

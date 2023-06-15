@@ -26,6 +26,29 @@ async def get_trips(userid: str) -> list[Trip] | str:
                 "message": f"ERROR: Unable to find user {userid}"
             }
         )
+    
+# Add a trip
+@user_router.post('/trips')
+async def get_trips(userid: str, trip: Trip) -> str:    
+    try:
+        db_handler.query("""
+            INSERT INTO trip WHERE id = %s;
+        """, (str(trip.id),))
+        
+        return JSONResponse(
+            status_code=200,
+            content = {
+                "message": f"SUCCESS: Deleted trip {trip.destination}"
+            }
+        )
+    
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": f"ERROR: Unable to to delete trip {trip.destination}"
+            }
+        )
 
 # Delete a trip
 @user_router.delete('/trips')
@@ -36,7 +59,7 @@ async def get_trips(userid: str, trip: Trip) -> str:
         db_handler.query("""
             DELETE FROM trip WHERE id = %s;
         """, (str(trip.id),))
-        
+
         return JSONResponse(
             status_code=200,
             content = {
