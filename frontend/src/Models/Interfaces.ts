@@ -2,17 +2,17 @@
 // match case-insensitivity with SQL
 
 export interface UserModel {
-    id: string | null,
-    first_name: string | null,
-    last_name: string | null,
-    email: string | null,
-    phone: string | null
+    id: string,
+    first_name: string,
+    last_name: string,
+    email: string,
+    phone: string
 }
 
 export interface TripModel {
-    id: string | null,
-    destination: string | null,
-    description: string | null,
-    start_date: Date | null,
-    end_date: Date | null
+    id: string,
+    destination: string,
+    description: string,
+    start_date: Date,
+    end_date: Date
 }

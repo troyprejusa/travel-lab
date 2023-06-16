@@ -2,11 +2,11 @@ import { Slice, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UserModel } from "../Models/Interfaces";
 
 const userState: UserModel = {
-    id: null,
-    first_name: null,
-    last_name: null,
-    email: null,
-    phone: null
+    id: '',
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone: ''
 }
 
 const userSlice: Slice = createSlice({
@@ -22,11 +22,11 @@ const userSlice: Slice = createSlice({
         },
 
         logout: (state) => {
-            state.id = null;
-            state.first_name = null;
-            state.last_name = null;
-            state.email = null;
-            state.phone = null;
+            state.id = '';
+            state.first_name = '';
+            state.last_name = '';
+            state.email = '';
+            state.phone = '';
         }
     }
 

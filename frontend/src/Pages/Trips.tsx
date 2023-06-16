@@ -4,7 +4,7 @@ import { RootState } from '../redux/Store';
 import { replaceTrips } from '../redux/TripSlice';
 import { UserModel, TripModel } from '../Models/Interfaces';
 import fakeLogin from '../etc/FakeLogin';
-import { Flex } from '@chakra-ui/react';
+import { Wrap } from '@chakra-ui/react';
 import ChakraTripCard from '../Components/ChakraTripCard';
 import ChakraAddTripCard from '../Components/ChakraTripCard';
 
@@ -29,14 +29,14 @@ function Trips(): JSX.Element {
         <>
             <h1>Trips</h1>
             <h2>Hello {user.first_name}</h2>
-            <Flex>
+            <Wrap>
                 {
                     trips.map((trip: TripModel, i: number) => {
-                        return <ChakraTripCard key = {i} tripData={trip} />
+                        return <ChakraTripCard key = {i} tripIndex={i} tripData={trip} handleDelete={handleDeleteTripClick} />
                     })
                 }
-                <ChakraAddTripCard clickHandler={handleNewTripClick}/>
-            </Flex>
+                {/* <ChakraAddTripCard handleClick={handleNewTripClick}/> */}
+            </Wrap>
         </>
     )
 
@@ -82,7 +82,7 @@ function Trips(): JSX.Element {
     function handleDeleteTripClick(event: SyntheticEvent) {
         const target = event.target as HTMLElement;
         const cardId: string = target.id; 
-        const delIndex: number = parseInt(cardId.split('card')[1]);
+        const delIndex: number = parseInt(cardId.split('delete')[1]);
         const json: string = JSON.stringify(trips[delIndex]);
         (async function() {
             try {
