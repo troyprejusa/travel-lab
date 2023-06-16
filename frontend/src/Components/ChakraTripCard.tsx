@@ -49,20 +49,22 @@ export default function ChakraTripCard(props: ChakraTripCardProps) {
 
           <Stack direction={'row'} justify={'center'} spacing={6}>
             <Stack spacing={0} align={'center'}>
-              <Text fontWeight={600}>23k</Text>
+              <Text fontWeight={600}>{props.tripData.start_date.toString()}</Text>
               <Text fontSize={'sm'} color={'gray.500'}>
-                Followers
+                Depart
               </Text>
             </Stack>
             <Stack spacing={0} align={'center'}>
-              <Text fontWeight={600}>23k</Text>
+              <Text fontWeight={600}>{props.tripData.end_date.toString()}</Text>
               <Text fontSize={'sm'} color={'gray.500'}>
-                Followers
+                Return
               </Text>
             </Stack>
           </Stack>
 
           <Button
+            id={`delete${props.tripIndex}`}
+            onClick={props.handleDelete}
             w={'full'}
             mt={8}
             bg={useColorModeValue('#151f21', 'gray.900')}
@@ -72,7 +74,7 @@ export default function ChakraTripCard(props: ChakraTripCardProps) {
               transform: 'translateY(-2px)',
               boxShadow: 'lg',
             }}>
-            Follow
+            Delete
           </Button>
         </Box>
       </Box>
