@@ -1,9 +1,9 @@
 import React, { useEffect, SyntheticEvent } from 'react';
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/Store';
 import { replaceTrips } from '../redux/TripSlice';
+import { TripStateInterface } from '../redux/TripSlice';
 import { UserModel, TripModel } from '../Models/Interfaces';
-import fakeLogin from '../etc/FakeLogin';
 import { Wrap } from '@chakra-ui/react';
 import ChakraTripCard from '../Components/ChakraTripCard';
 import ChakraAddTripCard from '../Components/ChakraTripCard';
@@ -13,34 +13,6 @@ interface TripsProps {
 };
 
 function Trips(): JSX.Element {
-
-    const dispatch = useDispatch();
-    const user: UserModel = useSelector((state: RootState) => state.user);
-    const trips: Array<TripModel> = useSelector((state: RootState) => state.trips);
-
-    // DEV ONLY    
-    useEffect(()=> fakeLogin(dispatch), []);   // Login on first render
-
-    // Get the trips when the user changes
-    // TODO: Remove the user dependency when the fake login is removed
-    useEffect(getTrips, [ user ]);  
-
-    return (
-        <>
-            <h1>Trips</h1>
-            <h2>Hello {user.first_name}</h2>
-            <Wrap>
-                {
-                    trips.map((trip: TripModel, i: number) => {
-                        return <ChakraTripCard key = {i} tripIndex={i} tripData={trip} handleDelete={handleDeleteTripClick} />
-                    })
-                }
-                {/* <ChakraAddTripCard handleClick={handleNewTripClick}/> */}
-            </Wrap>
-        </>
-    )
-
-
     function getTrips() {
         (async function() {
             try {
@@ -59,7 +31,7 @@ function Trips(): JSX.Element {
     }
 
     function handleNewTripClick(event: SyntheticEvent) {
-        const json: string = JSON.stringify(trips[0]);
+        const json: string = JSON.stringify(trips.allTrips[0]);
         (async function() {
             try {
                 const res: Response = await fetch(`/user/trips?userid=${user.id}`, {
@@ -83,7 +55,7 @@ function Trips(): JSX.Element {
         const target = event.target as HTMLElement;
         const cardId: string = target.id; 
         const delIndex: number = parseInt(cardId.split('delete')[1]);
-        const json: string = JSON.stringify(trips[delIndex]);
+        const json: string = JSON.stringify(trips.allTrips[delIndex]);
         (async function() {
             try {
                 const res: Response = await fetch(`/user/trips?userid=${user.id}`, {
@@ -106,6 +78,31 @@ function Trips(): JSX.Element {
             }
         })();
     }
+
+    const dispatch = useDispatch();
+    const user: UserModel = useSelector((state: RootState) => state.user);
+    const trips: TripStateInterface = useSelector((state: RootState) => state.trips);
+
+    // Get the trips when the user changes
+    useEffect(getTrips, []);  
+
+    return (
+        <>
+            <h1>Trips</h1>
+            <h2>Hello {user.first_name}</h2>
+            <Wrap>
+                {
+                    trips.allTrips.map((trip: TripModel, i: number) => {
+                        return <ChakraTripCard key = {i} tripIndex={i} tripData={trip} handleDelete={handleDeleteTripClick} />
+                    })
+                }
+                {/* <ChakraAddTripCard handleClick={handleNewTripClick}/> */}
+            </Wrap>
+        </>
+    )
+
+
+
 }
 
 export default Trips;

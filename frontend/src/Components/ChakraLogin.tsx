@@ -1,25 +1,41 @@
-import React from 'react'; 
+import React, { SyntheticEvent, useEffect } from 'react'; 
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux'
+import { RootState } from '../redux/Store';
+import { UserModel } from '../Models/Interfaces';
+
+// TODO: DEV ONLY
+import fakeLogin from '../etc/FakeLogin';
 
 import {
-    Flex,
-    Box,
-    FormControl,
-    FormLabel,
-    Input,
-    Checkbox,
-    Stack,
-    Link,
-    Button,
-    Heading,
-    Text,
-    useColorModeValue,
-  } from '@chakra-ui/react';
+  Flex,
+  Box,
+  FormControl,
+  FormLabel,
+  Input,
+  Checkbox,
+  Stack,
+  Link,
+  Button,
+  Heading,
+  Text,
+  useColorModeValue,
+} from '@chakra-ui/react';
 
 interface ChakraLoginProps {
   setWantsLogin: any;
 }
   
 function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const user: UserModel = useSelector((state: RootState) => state.user);
+
+
+  // DEV ONLY    
+  useEffect(()=> fakeLogin(dispatch), []);   // Login on first render
 
   return (
     <Flex
@@ -55,6 +71,7 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
                 <Link color={'blue.400'}>Forgot password?</Link>
               </Stack>
               <Button
+                onClick={(e: SyntheticEvent) => navigate(`/user/${user.first_name}${user.last_name}/trips`)}
                 bg={'blue.400'}
                 color={'white'}
                 _hover={{

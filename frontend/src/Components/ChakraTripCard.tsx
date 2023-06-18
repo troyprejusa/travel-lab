@@ -1,17 +1,21 @@
 import { SyntheticEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { makeCurrentTrip } from '../redux/TripSlice';
 import {
   Heading,
   Avatar,
   Box,
   Center,
   Image,
-  Flex,
   Text,
   Stack,
   Button,
   useColorModeValue,
+  Wrap,
 } from '@chakra-ui/react';
 import { TripModel } from '../Models/Interfaces';
+import { RootState } from '../redux/Store';
 
 
 interface ChakraTripCardProps {
@@ -22,6 +26,18 @@ interface ChakraTripCardProps {
   
 
 export default function ChakraTripCard(props: ChakraTripCardProps) {
+  const handleViewClick = (event: SyntheticEvent) => {
+    const target = event.target as HTMLElement;
+    const cardId: string = target.id; 
+    const currIndex: number = parseInt(cardId.split('view')[1]);
+    dispatch(makeCurrentTrip(trips.allTrips[currIndex]));
+    navigate(`/trip/${props.tripData.destination}/home`);
+  }
+
+  const navigate = useNavigate(); 
+  const trips = useSelector((state: RootState) => state.trips);
+  const dispatch = useDispatch();
+
   return (
     <Center py={6}>
       <Box
@@ -62,20 +78,36 @@ export default function ChakraTripCard(props: ChakraTripCardProps) {
             </Stack>
           </Stack>
 
-          <Button
-            id={`delete${props.tripIndex}`}
-            onClick={props.handleDelete}
-            w={'full'}
-            mt={8}
-            bg={useColorModeValue('#151f21', 'gray.900')}
-            color={'white'}
-            rounded={'md'}
-            _hover={{
-              transform: 'translateY(-2px)',
-              boxShadow: 'lg',
-            }}>
-            Delete
-          </Button>
+          <Wrap>
+            <Button
+              id={`view${props.tripIndex}`}
+              onClick={handleViewClick}
+              w={'full'}
+              mt={8}
+              bg={useColorModeValue('#151f21', 'gray.900')}
+              color={'white'}
+              rounded={'md'}
+              _hover={{
+                transform: 'translateY(-2px)',
+                boxShadow: 'lg',
+              }}>
+              View
+            </Button>
+            {/* <Button
+              id={`delete${props.tripIndex}`}
+              onClick={props.handleDelete}
+              w={'full'}
+              mt={8}
+              bg={useColorModeValue('#151f21', 'gray.900')}
+              color={'white'}
+              rounded={'md'}
+              _hover={{
+                transform: 'translateY(-2px)',
+                boxShadow: 'lg',
+              }}>
+              Delete
+            </Button> */}
+          </Wrap>
         </Box>
       </Box>
     </Center>

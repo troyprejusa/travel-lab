@@ -47,6 +47,7 @@ interface LinkItemProps {
   icon: IconType;
   path: string;
 }
+
 const LinkItems: Array<LinkItemProps> = [
   { name: 'Home', icon: FiHome , path: 'home'},
   { name: 'Itinerary', icon: FiCompass, path: 'itinerary' },

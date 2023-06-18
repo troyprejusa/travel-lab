@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from uuid import UUID
-from datetime import date
+from datetime import date, datetime
 
 class Traveller(BaseModel):
     id: UUID
@@ -15,3 +15,12 @@ class Trip(BaseModel):
     description: str
     start_date: date
     end_date: date
+
+class Itinerary(BaseModel):
+    id: int
+    traveller_id: UUID
+    trip_id: UUID
+    title: str
+    description: str
+    start_date: datetime
+    end_date: datetime

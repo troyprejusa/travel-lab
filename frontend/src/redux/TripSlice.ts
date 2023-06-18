@@ -1,7 +1,15 @@
 import { Slice, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TripModel } from "../Models/Interfaces";
 
-const tripState: Array<TripModel> = [];
+export interface TripStateInterface {
+    currentTrip: TripModel | null,
+    allTrips: Array<TripModel>
+}
+
+const tripState: TripStateInterface = {
+    currentTrip: null,
+    allTrips: []
+};
 
 const tripSlice: Slice = createSlice({
     name: 'trips',  // state.trips
@@ -17,25 +25,22 @@ const tripSlice: Slice = createSlice({
 
             // state = action.payload // -> doesn't work
             
-            /* This works!
-            state.length = 0;   // clear the existing array
-            state.push(...action.payload); */
+            // This works!
+            state.allTrips.length = 0;   // clear the existing array
+            state.allTrips.push(...action.payload);
+        },
 
-            return action.payload;  // Rhis works!
+        makeCurrentTrip: (state, action: PayloadAction<TripModel>) => {
+            state.currentTrip = action.payload;
         },
 
         addTrip: (state, action: PayloadAction<TripModel>) => {
-            state.push(action.payload);
-        },
-
-        removeTrip: (state, action: PayloadAction<TripModel>) => {
-            const remIndex: number = state.tripState.findIndex((a: TripModel) => a.id === action.payload.id);
-            state.splice(remIndex, 1);
+            state.allTrips.push(action.payload);
         }
     }
 
 })
 
-export const { replaceTrips, addTrip, removeTrip } = tripSlice.actions;
+export const { replaceTrips, makeCurrentTrip, addTrip, removeTrip } = tripSlice.actions;
 
 export default tripSlice.reducer

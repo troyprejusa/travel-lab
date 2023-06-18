@@ -16,3 +16,13 @@ export interface TripModel {
     start_date: Date,
     end_date: Date
 }
+
+export interface ItineraryModel {
+    id: number
+    traveller_id: string
+    trip_id: string
+    title: string
+    description: string
+    start_date: Date
+    end_date: Date
+}

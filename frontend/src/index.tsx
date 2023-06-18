@@ -15,7 +15,7 @@ import reduxStore from './redux/Store';
 // Pages
 import Splash from './Pages/Splash';
 import Trips from './Pages/Trips';
-import Settings from './Pages/Settings';
+import UserSettings from './Pages/UserSettings';
 import Project from './Pages/Project';
 import Home from './Pages/Home';
 import Itinerary from './Pages/Itinerary';
@@ -25,7 +25,7 @@ import MessageBoard from './Pages/MessageBoard';
 import Poll from './Pages/Poll';
 import Packing from './Pages/Packing';
 import ContactInfo from './Pages/ContactInfo';
-import ProjectSettings from './Pages/ProjectSettings';
+import TripSettings from './Pages/TripSettings';
 import NotFound from './Pages/NotFound';
 
 const router = createBrowserRouter(
@@ -33,10 +33,10 @@ const router = createBrowserRouter(
     <>
       <Route path="/" element={<Splash />} />
 
-      <Route path="/user/:userId/trips" element={<Trips />}/>
-      <Route path="/user/:userId/settings" element={<Settings />}/>
+      <Route path="/user/:username/trips" element={<Trips />}/>
+      <Route path="/user/:username/settings" element={<UserSettings />}/>
 
-      <Route path="/trip/:name" element={<Project />}>
+      <Route path="/trip/:tripname" element={<Project />}>
           <Route path="home" element={<Home />} />
           <Route path="itinerary" element={<Itinerary />} />
           <Route path="calendar" element={<Calendar />} />
@@ -45,7 +45,7 @@ const router = createBrowserRouter(
           <Route path="poll" element={<Poll />}/>
           <Route path="packing" element={<Packing />} />
           <Route path="contactinfo" element={<ContactInfo />} />
-          <Route path="settings" element={<ProjectSettings />} />
+          <Route path="settings" element={<TripSettings />} />
       </Route>
 
       <Route path='*' element={<NotFound />} />
