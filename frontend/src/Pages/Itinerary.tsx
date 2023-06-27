@@ -3,7 +3,7 @@ import { TripModel, ItineraryModel } from '../Models/Interfaces';
 import { RootState } from '../redux/Store';
 import { useSelector, useDispatch } from 'react-redux';
 import { TripStateInterface } from '../redux/TripSlice';
-import { ItineraryStateInterface } from '../redux/ItinerarySlice';
+import { ItineraryStateInterface, replaceItinerary } from '../redux/ItinerarySlice';
 
 
 interface ItineraryProps {
@@ -13,7 +13,9 @@ interface ItineraryProps {
 function Itinerary(): JSX.Element {
     function getItinerary() {
         (async function() {
-            
+            // TODO: After you get the itinerary stops from the backend,
+            // update the state
+            // dispatch(replaceItinerary(stuff))
         })();
     }
 
@@ -21,13 +23,9 @@ function Itinerary(): JSX.Element {
     const trip: TripModel = useSelector(((state: RootState) => state.trips.currentTrip))
     
     const dispatch = useDispatch();
-    console.log(trip);
+    const stops: ItineraryStateInterface = useSelector((state: RootState) => state.itinerary);
 
-    // TODO:
-    console.error('THE REASON YOURE LOSING REACT STATE IS BECAUSE OF THE NAVBAR USING LINK, NOT USENAVIGATE')
-    // const stops: ItineraryStateInterface = useSelector((state: RootState) => state.itinerary);
-
-    useEffect(getItinerary, []);
+    // useEffect(getItinerary, []);
 
 
     return (

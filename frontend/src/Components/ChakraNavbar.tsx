@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { IconType } from 'react-icons';
 import { ReactText } from 'react';
-
+import { Link as RRDLink } from 'react-router-dom';
 import {
   IconButton,
   Avatar,
@@ -130,7 +130,7 @@ interface NavItemProps extends FlexProps {
 }
 const NavItem = ({ icon, path, children, ...rest }: NavItemProps) => {
   return (
-    <Link href={path} style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
+    <Link as={RRDLink} to={path} style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
       <Flex
         align="center"
         p="4"

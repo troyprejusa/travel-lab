@@ -83,7 +83,6 @@ function Trips(): JSX.Element {
     const user: UserModel = useSelector((state: RootState) => state.user);
     const trips: TripStateInterface = useSelector((state: RootState) => state.trips);
 
-    // Get the trips when the user changes
     useEffect(getTrips, []);  
 
     return (

@@ -6,7 +6,7 @@ export type ItineraryStateInterface = Array<ItineraryModel>
 const itineraryState: ItineraryStateInterface = [];
 
 const itinerarySlice: Slice = createSlice({
-    name: 'itinerary',  // state.trips
+    name: 'itinerary',  // state.itinerary
     initialState: itineraryState,
     reducers: {
 
@@ -22,6 +22,6 @@ const itinerarySlice: Slice = createSlice({
 
 });
 
-export const { replaceItinerary, addStop, removeStop } = itinerarySlice.actions;
+export const { replaceItinerary, addStop } = itinerarySlice.actions;
 
 export default itinerarySlice.reducer
