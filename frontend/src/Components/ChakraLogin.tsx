@@ -71,13 +71,21 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
                 <Link color={'blue.400'}>Forgot password?</Link>
               </Stack>
               <Button
-                onClick={(e: SyntheticEvent) => navigate(`/user/${user.first_name}${user.last_name}/trips`)}
                 bg={'blue.400'}
                 color={'white'}
                 _hover={{
                   bg: 'blue.500',
                 }}>
                 Sign in
+              </Button>
+              <Button
+                onClick={(e: SyntheticEvent) => navigate(`/user/${user.first_name}${user.last_name}/trips`)}
+                bg={'blue.400'}
+                color={'white'}
+                _hover={{
+                  bg: 'blue.500',
+                }}>
+                DEV BYPASS
               </Button>
             </Stack>
             <Text align={'center'}>
