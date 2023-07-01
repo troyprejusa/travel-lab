@@ -35,10 +35,21 @@ async def root() -> dict[str, str]:
 app.include_router(dev_router)
 '''     DEV ONLY        '''
 
-# /user
+''' 
+/user
+Create user
+Delete user
+Get trips
+Join trip
+Leave trip 
+'''
 app.include_router(user_router)
 
-# /trip
+'''
+/trip
+Create trip
+Delete trip
+'''
 app.include_router(trip_router)
 
 # Global exception handler
