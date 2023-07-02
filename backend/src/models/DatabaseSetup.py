@@ -50,10 +50,17 @@ class DatabaseSetup:
         """)
 
     def initialize_auth_table(self) -> None:
-        pass
+        self.database.query("""
+            CREATE TABLE IF NOT EXISTS auth (
+                email VARCHAR(320) PRIMARY KEY references traveller(email) ON DELETE CASCADE,
+                password VARCHAR(16)
+            );
+        """)
 
     def drop_auth_table(self) -> None:
-        pass
+        self.database.query("""
+            DROP TABLE IF EXISTS auth;
+        """)
 
     def initialize_trip_table(self) -> None:
         self.database.query("""
@@ -139,12 +146,14 @@ class DatabaseSetup:
         self.create_types()
         self.initalize_test_table()
         self.intialize_traveller_table()
+        self.initialize_auth_table()
         self.initialize_trip_table()
         self.initialize_traveller_trip_table()
         self.initialize_itinerary_table()
     
     def drop_tables(self) -> None:
         self.drop_traveller_table()
+        self.drop_auth_table()
         self.drop_trip_table()
         self.drop_traveller_trip_table()
         self.drop_itinerary_table()
@@ -165,6 +174,15 @@ class DatabaseSetup:
                 'prejusa',
                 'troy@test.com',
                 '1234567890'
+            );
+        """)
+
+        # Add a password for user
+        database.query("""
+            INSERT INTO auth 
+            VALUES (
+                'troy@test.com',
+                'abcd'
             );
         """)
 
