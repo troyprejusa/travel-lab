@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from routers.UserRouter import user_router
 from routers.TripRouter import trip_router
+from routers.AuthRouter import auth_router
 from routers.DevRouter import dev_router
 from models.DatabaseHandler import db_handler
 from models.DatabaseSetup import DatabaseSetup
@@ -34,6 +35,12 @@ async def root() -> dict[str, str]:
     return {"message": "Hello World"}
 app.include_router(dev_router)
 '''     DEV ONLY        '''
+
+'''
+/auth
+Authenticate user
+'''
+app.include_router(auth_router)
 
 ''' 
 /user
