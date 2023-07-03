@@ -1,15 +1,13 @@
 import psycopg2
 import psycopg2.extras
-import os
-from dotenv import load_dotenv
-load_dotenv()
+from utilities import Constants
 
 settings = {
-    'host': os.getenv('DB_HOST'),
-    'port': os.getenv('DB_PORT'),
-    'user': os.getenv('DB_USER'),
-    'password': os.getenv('DB_PWD'),
-    'database': os.getenv('DB_DBNAME')
+    'host': Constants.DB_HOST,
+    'port': Constants.DB_PORT,
+    'user': Constants.DB_USER,
+    'password': Constants.DB_PWD,
+    'database': Constants.DB_DBNAME
 }
 
 class DatabaseHandler:

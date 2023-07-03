@@ -3,6 +3,16 @@ from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
 from models.Schemas import Trip
 
+''' 
+/user
+
+Operations:
+    Create user
+    Delete user
+    Get trips
+    Join trip
+    Leave trip 
+'''
 user_router = APIRouter(
     prefix='/user'
 )

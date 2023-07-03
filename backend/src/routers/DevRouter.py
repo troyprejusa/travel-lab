@@ -7,6 +7,13 @@ dev_router = APIRouter(
     prefix='/dev'
 )
 
+@dev_router.get("/helloworld")
+async def root() -> dict[str, str]:
+    return JSONResponse(
+        status_code=200,
+        content= {"message": "Hello World"}
+    )
+
 @dev_router.get('/')
 async def test_user(email: str) -> Traveller:
     try:

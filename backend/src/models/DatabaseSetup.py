@@ -53,7 +53,7 @@ class DatabaseSetup:
         self.database.query("""
             CREATE TABLE IF NOT EXISTS auth (
                 email VARCHAR(320) PRIMARY KEY references traveller(email) ON DELETE CASCADE,
-                password VARCHAR(16)
+                password VARCHAR(255)
             );
         """)
 
@@ -163,13 +163,8 @@ class DatabaseSetup:
         # Insert a user
         database.query("""
             INSERT INTO traveller 
-            (
-                first_name,
-                last_name,
-                email,
-                phone
-            )
             VALUES (
+                'ce475240-1b9f-4c52-900b-a83af218896a',
                 'troy',
                 'prejusa',
                 'troy@test.com',
@@ -178,24 +173,20 @@ class DatabaseSetup:
         """)
 
         # Add a password for user
+        # Encoded password 'abcd'
         database.query("""
             INSERT INTO auth 
             VALUES (
                 'troy@test.com',
-                'abcd'
+                '$2b$12$k.Sh6JulrK/e/R3bFKQ36OaKf/UjaWjDXQLYEVbhHTcZ43GzU7g6e'
             );
         """)
 
         # Insert a user
         database.query("""
             INSERT INTO traveller 
-            (
-                first_name,
-                last_name,
-                email,
-                phone
-            )
             VALUES (
+                '4d17d823-e31c-47c9-81ad-a53dff295e6b',
                 'joe',
                 'schmo',
                 'joe@test.com',
