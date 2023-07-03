@@ -3,27 +3,42 @@ from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
 from models.Schemas import Traveller
 from typing import Annotated
+import jwt
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+SECRET = os.getenv('SECRET')
+ALGORITHM = os.getenv('ALGORITHM')
 
 auth_router = APIRouter(
     prefix='/auth'
 )
 
 @auth_router.post('/')
-async def authenticate_user(username: Annotated[str, Form()], password: Annotated[str, Form()]) -> Traveller | str:
+async def authenticate_user(username: Annotated[str, Form()], password: Annotated[str, Form()]) -> str:
     try:
         count = db_handler.query("""
-            SELECT email FROM auth WHERE email=%s AND password=%s;
-            """, (username, password))
+            SELECT COUNT(email) FROM auth WHERE email=%s AND password=%s;
+            """, (username, password))[0]['count']
+        
         if count != 1:
             raise Exception('Incorrect username or password')
         
         user = db_handler.query("""
-            AJDF;LJAS;DLFJ
-        """)
+            SELECT * FROM traveller WHERE email=%s
+            """, (username,))[0]
         
-        # TODO: RETURN A JWT TO AUTHORIZE RETRIEVING A USER'S DATA!
-        # A frontend must not be able to ask for a user directly via any request
+        encoded_jwt = jwt.encode(user, SECRET, algorithm = ALGORITHM)
 
+        return JSONResponse(
+            status_code = 200,
+            content = {
+                "message": "Successful login",
+                "token": encoded_jwt
+            }
+        )
+    
     except Exception as e:
         return JSONResponse(
             status_code=500,
