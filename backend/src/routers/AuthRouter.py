@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Form
 from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
-from models.Schemas import Traveller
 from typing import Annotated
 import jwt
 from utilities import Constants
@@ -48,7 +47,7 @@ async def sign_in(username: Annotated[str, Form()], password: Annotated[str, For
         return JSONResponse(
             status_code=500,
             content = {
-                "message": "Incorrect username or password"
+                "message": "ERROR: Incorrect username or password"
             }
         )
 
@@ -63,6 +62,8 @@ async def create_user(
     try:
         # Hash the password
         hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        # You have to decode from binary string to ascii manually, otherwise
+        # the database write will convert it into the wrong content
         ascii_hashed = hashed.decode('ascii')
 
         db_handler.query("""
@@ -84,6 +85,6 @@ async def create_user(
         return JSONResponse(
             status_code=500,
             content = {
-                "message": "Unable to create user"
+                "message": "ERROR: Unable to create user"
             }
         )

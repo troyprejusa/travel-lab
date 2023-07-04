@@ -160,7 +160,7 @@ class DatabaseSetup:
 
     @staticmethod
     def insert_data(database):
-        # Insert a user
+        # Insert a fake user troy
         database.query("""
             INSERT INTO traveller 
             VALUES (
@@ -170,11 +170,7 @@ class DatabaseSetup:
                 'troy@test.com',
                 '1234567890'
             );
-        """)
 
-        # Add a password for fake user troy
-        # Encoded password 'abcd'
-        database.query("""
             INSERT INTO auth 
             VALUES (
                 'troy@test.com',
@@ -182,7 +178,7 @@ class DatabaseSetup:
             );
         """)
 
-        # Insert a user
+        # Insert a fake user "joe"
         database.query("""
             INSERT INTO traveller 
             VALUES (
@@ -192,18 +188,15 @@ class DatabaseSetup:
                 'joe@test.com',
                 '1234567890'
             );
-        """)
 
-        # Add a password for fake user joe
-        # Encoded password 'abcd'
-        database.query("""
             INSERT INTO auth 
             VALUES (
                 'joe@test.com',
                 '$2b$12$k.Sh6JulrK/e/R3bFKQ36OaKf/UjaWjDXQLYEVbhHTcZ43GzU7g6e'
             );
         """)
-        # Insert a trip
+
+        # Insert two trips
         database.query("""
             INSERT INTO trip 
             (
@@ -218,10 +211,7 @@ class DatabaseSetup:
                 '2020-06-10',
                 '2020-06-11'
             );
-        """)
 
-        # Insert a trip
-        database.query("""
             INSERT INTO trip 
             (
                 destination,
