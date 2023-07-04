@@ -9,6 +9,7 @@ from models.DatabaseHandler import db_handler
 from models.DatabaseSetup import DatabaseSetup
 from utilities import Constants
 import jwt
+import json
 import uvicorn
 
 # DB SETUP DEV ONLY
@@ -49,8 +50,9 @@ async def verify_auth(request: Request, call_next):
         try:
             encoded_jwt = request.headers['authorization'].split(' ')[1]
 
-            # No exception on decode means we're good to proceed
+            # Decode the JWT and add it to the request state - no exception on decode means we're good to proceed
             decoded_jwt = jwt.decode(encoded_jwt, Constants.SECRET, algorithms=Constants.ALGORITHM)
+            request.state.user = decoded_jwt
 
             response = await call_next(request)
             
@@ -58,12 +60,14 @@ async def verify_auth(request: Request, call_next):
         
         except KeyError as ke:
             # No authorization token
+            print('INTERNAL: No authorization header')
             return JSONResponse(
                 status_code=500,
                 content= {"message": "Access forbidden"}
             )
         except jwt.InvalidSignatureError as se:
             # Invalid JWT
+            print('INTERNAL: Invalid JWT Signature')
             return JSONResponse(
                 status_code=500,
                 content= {"message": "Access forbidden"}
@@ -94,4 +98,4 @@ async def general_exception_handler(request: Request, e: Exception) -> str:
     )
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=Constants.API_PORT)

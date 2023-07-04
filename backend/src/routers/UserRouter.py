@@ -7,7 +7,6 @@ from models.Schemas import Trip
 /user
 
 Operations:
-    Create user
     Delete user
     Get trips
     Join trip

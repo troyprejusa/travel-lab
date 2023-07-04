@@ -7,12 +7,19 @@ import jwt
 from utilities import Constants
 import bcrypt
 
+'''
+/auth
+
+Operations:
+    Sign in
+    Create User
+'''
 auth_router = APIRouter(
     prefix='/auth'
 )
 
-@auth_router.post('/')
-async def signin(username: Annotated[str, Form()], password: Annotated[str, Form()]) -> str:
+@auth_router.post('/signin')
+async def sign_in(username: Annotated[str, Form()], password: Annotated[str, Form()]) -> str:
     try:
         auth_q = db_handler.query("""
             SELECT password FROM auth WHERE email=%s;
@@ -48,5 +55,41 @@ async def signin(username: Annotated[str, Form()], password: Annotated[str, Form
             status_code=500,
             content = {
                 "message": "Incorrect username or password"
+            }
+        )
+
+@auth_router.post('/createuser')
+async def create_user(
+    first_name: Annotated[str, Form()], 
+    last_name: Annotated[str, Form()], 
+    email: Annotated[str, Form()], 
+    phone: Annotated[str, Form()],
+    password: Annotated[str, Form()]
+    ) -> str:
+    try:
+        # Hash the password
+        hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        ascii_hashed = hashed.decode('ascii')
+
+        db_handler.query("""
+            INSERT INTO traveller 
+            (first_name, last_name, email, phone)
+            VALUES (%s, %s, %s, %s);
+
+            INSERT INTO auth VALUES (%s, %s);
+        """, (first_name, last_name, email, phone, email, ascii_hashed))
+
+        return JSONResponse(
+            status_code=200,
+            content = {
+                "message": "Success"
+            }
+        )
+    
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": "Unable to create user"
             }
         )
