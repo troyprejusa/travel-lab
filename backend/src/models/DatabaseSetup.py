@@ -172,7 +172,7 @@ class DatabaseSetup:
             );
         """)
 
-        # Add a password for user
+        # Add a password for fake user troy
         # Encoded password 'abcd'
         database.query("""
             INSERT INTO auth 
@@ -194,6 +194,15 @@ class DatabaseSetup:
             );
         """)
 
+        # Add a password for fake user joe
+        # Encoded password 'abcd'
+        database.query("""
+            INSERT INTO auth 
+            VALUES (
+                'joe@test.com',
+                '$2b$12$k.Sh6JulrK/e/R3bFKQ36OaKf/UjaWjDXQLYEVbhHTcZ43GzU7g6e'
+            );
+        """)
         # Insert a trip
         database.query("""
             INSERT INTO trip 
