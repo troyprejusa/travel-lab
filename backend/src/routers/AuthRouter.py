@@ -7,13 +7,7 @@ import jwt
 from utilities import Constants
 import bcrypt
 
-'''
-/auth
 
-Operations:
-    Sign in
-    Create User
-'''
 auth_router = APIRouter(
     prefix='/auth'
 )

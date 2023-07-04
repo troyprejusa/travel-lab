@@ -76,13 +76,27 @@ async def verify_auth(request: Request, call_next):
 # /dev
 app.include_router(dev_router)
 
-# /auth
+''' 
+/auth
+    Sign in
+    Create User
+'''
 app.include_router(auth_router)
  
-# /user
+'''
+/user
+    Delete user
+    Get trips
+    Join trip
+    Leave trip 
+'''
 app.include_router(user_router)
 
-# /trip
+'''
+/trip
+    Create trip
+    Delete trip
+ '''
 app.include_router(trip_router)
 
 # Global exception handler
