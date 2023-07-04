@@ -37,7 +37,7 @@ async def get_trips(request: Request) -> list[Trip] | str:
         data = db_handler.query("""
             SELECT * FROM trip
                 WHERE id IN 
-                (SELECT trip_id FROM traveller_trip WHERE traveller_id = %s) 
+                (SELECT trip_id FROM traveller_trip WHERE traveller_id = %s);
         """, (request.state.user['id'],))
         
         return data
@@ -46,17 +46,53 @@ async def get_trips(request: Request) -> list[Trip] | str:
         return JSONResponse(
             status_code=500,
             content = {
-                "message": f"ERROR: Unable to find user {request.state.user['id']}"
+                "message": f"ERROR: Unable to get trips for {request.state.user['email']}"
             }
         )
     
 # Join a trip
 @user_router.post('/trips')
 async def join_trip(request: Request, trip: Trip) -> str:    
-    pass
+    try:
+        db_handler.query("""
+            INSERT INTO traveller_trip VALUES (%s, %s);
+        """, (request.state.user['id'], trip.id))
+        
+        return JSONResponse(
+            status_code=200,
+            content={
+                "message": f"SUCCESS: Added user {request.state.user['email']} to trip to {trip.destination}"
+            }
+        )
+    
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": f"ERROR: Unable to add user {request.state.user['email']} to trip to {trip.destination}"
+            }
+        )
 
 # Leave a trip
 @user_router.delete('/trips')
 async def leave_trip(request: Request, trip: Trip) -> str:
-    pass
+    try:
+        db_handler.query("""
+            DELETE FROM traveller_trip WHERE traveller_id=%s AND trip_id=%s;
+        """, (request.state.user['id'], trip.id))
+        
+        return JSONResponse(
+            status_code=200,
+            content={
+                "message": f"SUCCESS: Removed user {request.state.user['email']} from trip to {trip.destination}"
+            }
+        )
+    
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": f"ERROR: Unable to remove user {request.state.user['email']} from trip to {trip.destination}"
+            }
+        )
 
