@@ -16,7 +16,7 @@ function Trips(): JSX.Element {
     function getTrips() {
         (async function() {
             try {
-                const res: Response = await fetch(`/user/trips?userid=${user.id}`);
+                const res: Response = await fetch(`/user/trips`);
                 if (res.ok) {
                     const obj: TripModel = await res.json();
                     dispatch(replaceTrips(obj));

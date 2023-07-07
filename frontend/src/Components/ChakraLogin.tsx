@@ -1,11 +1,9 @@
-import React, { SyntheticEvent, useEffect } from 'react'; 
+import React, { SyntheticEvent } from 'react'; 
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../redux/Store';
 import { UserModel } from '../Models/Interfaces';
-
-// TODO: DEV ONLY
-import fakeLogin from '../etc/FakeLogin';
+import { login } from '../redux/UserSlice';
 
 import {
   Flex,
@@ -32,10 +30,6 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
   const dispatch = useDispatch();
 
   const user: UserModel = useSelector((state: RootState) => state.user);
-
-
-  // DEV ONLY    
-  useEffect(()=> fakeLogin(dispatch), []);   // Login on first render
 
   return (
     <Flex
@@ -79,7 +73,7 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
                 Sign in
               </Button>
               <Button
-                onClick={(e: SyntheticEvent) => navigate(`/user/${user.first_name}${user.last_name}/trips`)}
+                onClick={handleFakeLogin}
                 bg={'blue.400'}
                 color={'white'}
                 _hover={{
@@ -96,6 +90,39 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
       </Stack>
     </Flex>
   );
+
+  function handleFakeLogin(event: SyntheticEvent) {
+    (async function loginTroy() {
+      /* Query database directly to get the data for troy prejusa */
+      try {
+        const formData: URLSearchParams = new URLSearchParams();
+        formData.append('username', 'troy@test.com');
+        formData.append('password', 'abcd');
+
+        const res: Response = await fetch('/auth/signin', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'content-type': 'application/x-www-form-urlencoded'
+            }
+        });
+        if (res.ok) {
+            const json = await res.json();
+            const user: UserModel = json.user;
+            console.log(user)
+            dispatch(login(user));
+            navigate(`/user/${user.first_name}${user.last_name}/trips`)
+
+        } else {
+            const json = await res.json();
+            throw new Error(JSON.stringify(json));
+        }
+
+      } catch (e: any) {
+          console.error(`No developing today :(\n${e.message}`)
+      }
+    })()
+  }
 }
 
 export default ChakraLogin

@@ -36,7 +36,8 @@ async def sign_in(username: Annotated[str, Form()], password: Annotated[str, For
                 status_code = 200,
                 content = {
                     "message": "Successful login",
-                    "token": encoded_jwt
+                    "token": encoded_jwt,
+                    "user": user
                 }
             )
         

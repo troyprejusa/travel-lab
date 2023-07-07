@@ -15,19 +15,3 @@ async def root() -> dict[str, str]:
         content= {"message": "Hello World"}
     )
 
-@dev_router.get('/')
-async def test_user(email: str) -> Traveller:
-    try:
-        data = db_handler.query("""
-            SELECT * FROM traveller WHERE email = %s;
-        """, (email,))
-
-        return data[0]
-    
-    except:
-        return JSONResponse(
-            status_code=500,
-            content = {
-                "message": f"DEV | ERROR: Unable to login test user"
-            }
-        )

@@ -9,7 +9,6 @@ from models.DatabaseHandler import db_handler
 from models.DatabaseSetup import DatabaseSetup
 from utilities import Constants
 import jwt
-import json
 import uvicorn
 
 # DB SETUP DEV ONLY
