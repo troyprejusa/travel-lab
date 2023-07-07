@@ -48,38 +48,43 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
           boxShadow={'lg'}
           p={8}>
           <Stack spacing={4}>
-            <FormControl id="email">
-              <FormLabel>Email address</FormLabel>
-              <Input type="email" />
-            </FormControl>
-            <FormControl id="password">
-              <FormLabel>Password</FormLabel>
-              <Input type="password" />
-            </FormControl>
-            <Stack spacing={10}>
-              <Stack
-                direction={{ base: 'column', sm: 'row' }}
-                align={'start'}
-                justify={'space-between'}>
-                <Checkbox>Remember me</Checkbox>
-                <Link color={'blue.400'}>Forgot password?</Link>
+            <form onSubmit={handleLogin}>
+              <FormControl id="email">
+                <FormLabel>Email address</FormLabel>
+                <Input type="email" />
+              </FormControl>
+              <FormControl id="password">
+                <FormLabel>Password</FormLabel>
+                <Input type="password" />
+              </FormControl>
+              <Stack spacing={10}>
+                <Stack
+                  direction={{ base: 'column', sm: 'row' }}
+                  align={'start'}
+                  justify={'space-between'}>
+                  <Checkbox>Remember me</Checkbox>
+                  <Link color={'blue.400'}>Forgot password?</Link>
+                </Stack>
+                <Button
+                  type='submit'
+                  bg={'blue.400'}
+                  color={'white'}
+                  _hover={{
+                    bg: 'blue.500',
+                  }}>
+                  Sign in
+                </Button>
               </Stack>
+            </form>
+            <Stack>
               <Button
-                bg={'blue.400'}
-                color={'white'}
-                _hover={{
-                  bg: 'blue.500',
-                }}>
-                Sign in
-              </Button>
-              <Button
-                onClick={handleFakeLogin}
-                bg={'blue.400'}
-                color={'white'}
-                _hover={{
-                  bg: 'blue.500',
-                }}>
-                DEV BYPASS
+                  onClick={handleFakeLogin}
+                  bg={'blue.400'}
+                  color={'white'}
+                  _hover={{
+                    bg: 'blue.500',
+                  }}>
+                  DEV BYPASS
               </Button>
             </Stack>
             <Text align={'center'}>
@@ -90,6 +95,10 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
       </Stack>
     </Flex>
   );
+
+  function handleLogin(event: SyntheticEvent) {
+    console.log("Handling login!")
+  }
 
   function handleFakeLogin(event: SyntheticEvent) {
     (async function loginTroy() {
@@ -108,10 +117,10 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
         });
         if (res.ok) {
             const json = await res.json();
+            console.log(json);
             const user: UserModel = json.user;
-            console.log(user)
             dispatch(login(user));
-            navigate(`/user/${user.first_name}${user.last_name}/trips`)
+            navigate(`/user/${user.email}/trips`)
 
         } else {
             const json = await res.json();
