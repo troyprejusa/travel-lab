@@ -98,6 +98,7 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
 
   function handleLogin(event: SyntheticEvent) {
     console.log("Handling login!")
+    // loginUser(formData);
   }
 
   function handleFakeLogin(event: SyntheticEvent) {
