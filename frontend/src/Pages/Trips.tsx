@@ -41,7 +41,7 @@ function Trips(): JSX.Element {
                 const res: Response = await fetch(`/user/trips?userid=${user.id}`, {
                     method: 'POST',
                     body: json, 
-                    headers: new Headers({'content-type': 'application/json'}),
+                    headers: fetchHelpers.getTokenJSONHeader(),
                 });
                 if (res.ok) {
                     // Instead of adding the trip individually from local state,
@@ -65,7 +65,7 @@ function Trips(): JSX.Element {
                 const res: Response = await fetch(`/user/trips?userid=${user.id}`, {
                     method: 'DELETE',
                     body: json, 
-                    headers: new Headers({'content-type': 'application/json'}),
+                    headers: fetchHelpers.getTokenJSONHeader(),
                 });
                 if (res.ok) {
                     // Instead of deleting the trip individually from local state,

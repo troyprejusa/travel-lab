@@ -1,4 +1,4 @@
-import React, { SyntheticEvent } from 'react'; 
+import React, { SyntheticEvent, useRef } from 'react'; 
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../redux/Store';
@@ -29,7 +29,8 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const user: UserModel = useSelector((state: RootState) => state.user);
+  const usernameRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
 
   return (
     <Flex
@@ -51,11 +52,11 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
             <form onSubmit={handleLogin}>
               <FormControl id="email">
                 <FormLabel>Email address</FormLabel>
-                <Input type="email" />
+                <Input type="email" ref={usernameRef}/>
               </FormControl>
               <FormControl id="password">
                 <FormLabel>Password</FormLabel>
-                <Input type="password" />
+                <Input type="password" ref={passwordRef}/>
               </FormControl>
               <Stack spacing={10}>
                 <Stack
@@ -97,7 +98,11 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
   );
 
   function handleLogin(event: SyntheticEvent) {
-    console.log("Handling login!")
+    event.preventDefault();   // Prevent URL redirection
+    console.log(usernameRef.current.value);
+    console.log(passwordRef.current.value);
+    const x = {'troy': 28, 'ruth': 27};
+    console.log(x);
     // loginUser(formData);
   }
 
