@@ -101,13 +101,15 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
   }
 
   function handleFakeLogin(event: SyntheticEvent) {
-    (async function loginTroy() {
-      /* Query database directly to get the data for troy prejusa */
-      try {
-        const formData: URLSearchParams = new URLSearchParams();
-        formData.append('username', 'troy@test.com');
-        formData.append('password', 'abcd');
+      const formData: URLSearchParams = new URLSearchParams();
+      formData.append('username', 'troy@test.com');
+      formData.append('password', 'abcd');
+      loginUser(formData);
+  }
 
+  function loginUser(formData: any) {
+    (async function() {
+      try {
         const res: Response = await fetch('/auth/signin', {
             method: 'POST',
             body: formData,
@@ -117,9 +119,15 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
         });
         if (res.ok) {
             const json = await res.json();
-            console.log(json);
             const user: UserModel = json.user;
+            
+            // Save token to localStorage
+            localStorage.setItem("token", json.token);
+
+            // Put user information into state
             dispatch(login(user));
+
+            // Navigate to the next page
             navigate(`/user/${user.email}/trips`)
 
         } else {

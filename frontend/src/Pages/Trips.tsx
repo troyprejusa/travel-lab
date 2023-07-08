@@ -7,6 +7,7 @@ import { UserModel, TripModel } from '../Models/Interfaces';
 import { Wrap } from '@chakra-ui/react';
 import ChakraTripCard from '../Components/ChakraTripCard';
 import ChakraAddTripCard from '../Components/ChakraTripCard';
+import { getTokenHeader } from '../utilities/header';
 
 interface TripsProps {
 
@@ -16,7 +17,10 @@ function Trips(): JSX.Element {
     function getTrips() {
         (async function() {
             try {
-                const res: Response = await fetch(`/user/trips`);
+                const res: Response = await fetch(`/user/trips`, {
+                    method: 'GET',
+                    headers: getTokenHeader()
+                });
                 if (res.ok) {
                     const obj: TripModel = await res.json();
                     dispatch(replaceTrips(obj));
