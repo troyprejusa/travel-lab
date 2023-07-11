@@ -136,7 +136,7 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
       loginUser(formData);
   }
 
-  function loginUser(formData: any) {
+  function loginUser(formData: URLSearchParams) {
     (async function() {
       try {
         const res: Response = await fetch('/auth/signin', {

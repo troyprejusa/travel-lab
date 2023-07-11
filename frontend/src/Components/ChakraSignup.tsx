@@ -1,5 +1,8 @@
-import React, { SyntheticEvent, useRef } from 'react';
-
+import React, { useState, SyntheticEvent, useRef } from 'react';
+import { UserModel } from '../Models/Interfaces';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { login } from '../redux/UserSlice';
 import {
     Flex,
     Box,
@@ -15,9 +18,7 @@ import {
     Text,
     useColorModeValue,
     Link,
-    Center
-  } from '@chakra-ui/react';
-import { useState } from 'react';
+} from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
 interface ChakraSignupProps {
@@ -27,6 +28,9 @@ interface ChakraSignupProps {
 function ChakraSignup({ setWantsLogin }: ChakraSignupProps) {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfPassword, setShowConfPassword] = useState(false);
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const firstNameRef = useRef<HTMLInputElement>(null);
     const lastNameRef = useRef<HTMLInputElement>(null);
@@ -145,11 +149,47 @@ function ChakraSignup({ setWantsLogin }: ChakraSignupProps) {
             formData.append('email', emailRef.current.value);
             formData.append('phone', phoneRef.current.value);
             formData.append('password', password1Ref.current.value);
+            signupUser(formData);
             
         } else {
             alert('Unable to sign up');
             throw new Error('Unable to access entered credentials');
         }
+      }
+
+      function signupUser(formData: URLSearchParams) {
+        (async function() {
+            try {
+            const res: Response = await fetch('/auth/createuser', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded'
+                }
+            });
+            if (res.ok) {
+                // NOW SIGN IN THE PERSON AFTER
+                const json = await res.json();
+                const user: UserModel = json.user;
+                
+                // Save token to localStorage
+                localStorage.setItem("token", json.token);
+    
+                // Put user information into state
+                dispatch(login(user));
+    
+                // Navigate to the next page
+                navigate(`/user/${user.email}/trips`)
+    
+            } else {
+                const json = await res.json();
+                throw new Error(JSON.stringify(json));
+            }
+    
+            } catch (e: any) {
+                console.error(`No developing today :(\n${e.message}`)
+            }
+        })()
       }
   }
 

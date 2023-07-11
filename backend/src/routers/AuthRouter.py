@@ -75,10 +75,18 @@ async def create_user(
             INSERT INTO auth VALUES (%s, %s);
         """, (first_name, last_name, email, phone, email, ascii_hashed))
 
+        user = db_handler.query("""
+            SELECT * FROM traveller WHERE email=%s
+            """, (email,))[0]
+
+        encoded_jwt = jwt.encode(user, Constants.SECRET, algorithm = Constants.ALGORITHM)
+
         return JSONResponse(
-            status_code=200,
+            status_code = 200,
             content = {
-                "message": "Success"
+                "message": "Successful login",
+                "token": encoded_jwt,
+                "user": user
             }
         )
     
