@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useRef } from 'react'; 
+import React, { useState, SyntheticEvent, useRef } from 'react'; 
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../redux/Store';
@@ -18,7 +18,11 @@ import {
   Heading,
   Text,
   useColorModeValue,
+  InputGroup,
+  InputRightElement
 } from '@chakra-ui/react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+
 
 interface ChakraLoginProps {
   setWantsLogin: any;
@@ -29,6 +33,7 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [showPassword, setShowPassword] = useState(false);
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
@@ -56,7 +61,18 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
               </FormControl>
               <FormControl id="password">
                 <FormLabel>Password</FormLabel>
-                <Input type="password" ref={passwordRef}/>
+                <InputGroup>
+                  <Input type={showPassword ? 'text' : 'password'} ref={passwordRef}/>
+                  <InputRightElement h={'full'}>
+                    <Button
+                    variant={'ghost'}
+                    onClick={() =>
+                      setShowPassword((showPassword) => !showPassword)
+                    }>
+                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
               </FormControl>
               <Stack spacing={10}>
                 <Stack
@@ -108,6 +124,7 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
       loginUser(formData);
 
     } else {
+      alert('Unable to sign in')
       throw new Error('Unable to access entered credentials');
     }
   }
