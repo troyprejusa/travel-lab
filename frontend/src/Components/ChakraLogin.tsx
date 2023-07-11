@@ -99,11 +99,17 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
 
   function handleLogin(event: SyntheticEvent) {
     event.preventDefault();   // Prevent URL redirection
-    console.log(usernameRef.current.value);
-    console.log(passwordRef.current.value);
-    const x = {'troy': 28, 'ruth': 27};
-    console.log(x);
-    // loginUser(formData);
+  
+    // Check if null to avoid TypeScript error
+    if (usernameRef.current !== null && passwordRef.current !== null) {
+      const formData: URLSearchParams = new URLSearchParams();
+      formData.append('username', usernameRef.current.value);
+      formData.append('password', passwordRef.current.value);
+      loginUser(formData);
+
+    } else {
+      throw new Error('Unable to access entered credentials');
+    }
   }
 
   function handleFakeLogin(event: SyntheticEvent) {

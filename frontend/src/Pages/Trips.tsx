@@ -14,6 +14,28 @@ interface TripsProps {
 };
 
 function Trips(): JSX.Element {
+
+    const dispatch = useDispatch();
+    const user: UserModel = useSelector((state: RootState) => state.user);
+    const trips: TripStateInterface = useSelector((state: RootState) => state.trips);
+
+    useEffect(getTrips, []);  
+
+    return (
+        <>
+            <h1>Trips</h1>
+            <h2>Hello {user.first_name}</h2>
+            <Wrap>
+                {
+                    trips.allTrips.map((trip: TripModel, i: number) => {
+                        return <ChakraTripCard key = {i} tripIndex={i} tripData={trip} handleDelete={handleDeleteTripClick} />
+                    })
+                }
+                {/* <ChakraAddTripCard handleClick={handleNewTripClick}/> */}
+            </Wrap>
+        </>
+    )
+
     function getTrips() {
         (async function() {
             try {
@@ -82,27 +104,6 @@ function Trips(): JSX.Element {
             }
         })();
     }
-
-    const dispatch = useDispatch();
-    const user: UserModel = useSelector((state: RootState) => state.user);
-    const trips: TripStateInterface = useSelector((state: RootState) => state.trips);
-
-    useEffect(getTrips, []);  
-
-    return (
-        <>
-            <h1>Trips</h1>
-            <h2>Hello {user.first_name}</h2>
-            <Wrap>
-                {
-                    trips.allTrips.map((trip: TripModel, i: number) => {
-                        return <ChakraTripCard key = {i} tripIndex={i} tripData={trip} handleDelete={handleDeleteTripClick} />
-                    })
-                }
-                {/* <ChakraAddTripCard handleClick={handleNewTripClick}/> */}
-            </Wrap>
-        </>
-    )
 
 
 
