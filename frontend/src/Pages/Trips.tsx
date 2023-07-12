@@ -19,7 +19,7 @@ function Trips(): JSX.Element {
     const user: UserModel = useSelector((state: RootState) => state.user);
     const trips: TripStateInterface = useSelector((state: RootState) => state.trips);
 
-    useEffect(getTrips, []);  
+    useEffect(getTrips, []);
 
     return (
         <>
@@ -28,7 +28,7 @@ function Trips(): JSX.Element {
             <Wrap>
                 {
                     trips.allTrips.map((trip: TripModel, i: number) => {
-                        return <ChakraTripCard key = {i} tripIndex={i} tripData={trip} handleDelete={handleDeleteTripClick} />
+                        return <ChakraTripCard key = {i} tripData={trip} handleDelete={handleDeleteTripClick} />
                     })
                 }
                 {/* <ChakraAddTripCard handleClick={handleNewTripClick}/> */}

@@ -20,22 +20,17 @@ import { RootState } from '../redux/Store';
 
 interface ChakraTripCardProps {
   tripData: TripModel,
-  tripIndex: number,
   handleDelete: (event: SyntheticEvent) => void
 }
   
 
 export default function ChakraTripCard(props: ChakraTripCardProps) {
   const handleViewClick = (event: SyntheticEvent) => {
-    const target = event.target as HTMLElement;
-    const cardId: string = target.id; 
-    const currIndex: number = parseInt(cardId.split('view')[1]);
-    dispatch(makeCurrentTrip(trips.allTrips[currIndex]));
+    dispatch(makeCurrentTrip(props.tripData));
     navigate(`/trip/${props.tripData.destination}/home`);
   }
 
   const navigate = useNavigate(); 
-  const trips = useSelector((state: RootState) => state.trips);
   const dispatch = useDispatch();
 
   return (
@@ -80,7 +75,6 @@ export default function ChakraTripCard(props: ChakraTripCardProps) {
 
           <Wrap>
             <Button
-              id={`view${props.tripIndex}`}
               onClick={handleViewClick}
               w={'full'}
               mt={8}

@@ -98,6 +98,8 @@ app.include_router(user_router)
  '''
 app.include_router(trip_router)
 
+# TODO: Add a default route for handling browser URL requests
+
 # Global exception handler
 @app.exception_handler(Exception)
 async def general_exception_handler(request: Request, e: Exception) -> str:
