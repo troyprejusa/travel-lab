@@ -99,9 +99,9 @@ app.include_router(user_router)
 app.include_router(trip_router)
 
 # Default redirection to handle client-side fwd/back/refresh
-@app.route('{full_path:path}')
+@app.get('{full_path:path}')
 async def redirect_nav(request: Request, full_path:str):
-    return RedirectResponse(full_path)
+    return RedirectResponse('/')
 
 # Global exception handler
 @app.exception_handler(Exception)
