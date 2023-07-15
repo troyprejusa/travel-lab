@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from routers.UserRouter import user_router
 from routers.TripRouter import trip_router
 from routers.AuthRouter import auth_router
@@ -98,7 +98,10 @@ app.include_router(user_router)
  '''
 app.include_router(trip_router)
 
-# TODO: Add a default route for handling browser URL requests
+# Default redirection to handle client-side fwd/back/refresh
+@app.route('{full_path:path}')
+async def redirect_nav(request: Request, full_path:str):
+    return RedirectResponse(full_path)
 
 # Global exception handler
 @app.exception_handler(Exception)
