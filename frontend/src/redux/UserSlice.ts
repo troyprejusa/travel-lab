@@ -21,7 +21,7 @@ const userSlice: Slice = createSlice({
             state.phone = action.payload.phone;
         },
 
-        logout: (state) => {
+        resetUserState: (state, action: PayloadAction<null>) => {
             state.id = '';
             state.first_name = '';
             state.last_name = '';
@@ -32,6 +32,6 @@ const userSlice: Slice = createSlice({
 
 })
 
-export const { login, logout } = userSlice.actions;
+export const { login, resetUserState } = userSlice.actions;
 
 export default userSlice.reducer
