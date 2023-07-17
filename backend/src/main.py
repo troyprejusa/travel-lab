@@ -101,6 +101,7 @@ app.include_router(trip_router)
 # Default redirection to handle client-side fwd/back/refresh
 @app.get('{full_path:path}')
 async def redirect_nav(request: Request, full_path:str):
+    print(f'Requested unkown route:\n{full_path}\nRedirecting to root...')
     return RedirectResponse('/')
 
 # Global exception handler

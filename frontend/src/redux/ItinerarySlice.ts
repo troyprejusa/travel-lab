@@ -16,6 +16,10 @@ const itinerarySlice: Slice = createSlice({
 
         addStop: (state, action: PayloadAction<ItineraryModel>) => {
             state.push(action.payload);
+        },
+
+        resetItinerary: (state, action: PayloadAction<null>) => {
+            state.length = 0;
         }
 
     }

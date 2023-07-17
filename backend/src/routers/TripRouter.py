@@ -69,7 +69,30 @@ async def delete_trip(request: Request, trip: Trip) -> str:
         return JSONResponse(
             status_code=500,
             content = {
-                "message": f"ERROR: Unable to to delete trip {trip.destination}"
+                "message": f"ERROR: Unable to delete trip {trip.destination}"
+            }
+        )
+
+# Get contact info for travel partners
+@trip_router.get('/contacts/{trip_id}')
+async def get_contact_info(trip_id: str) ->  str:
+    try:
+        travellers = db_handler.query("""
+            SELECT * from traveller WHERE id in (SELECT traveller_id FROM traveller_trip WHERE trip_id=%s);
+            """, (trip_id,))
+        
+        return JSONResponse(
+            status_code=200,
+            content = {
+                "message": f"SUCCESS: Found users for trip id {trip_id}",
+                "travellers": travellers
+            }
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": f"ERROR: Unable to find travellers for trip id {trip_id}"
             }
         )
 

@@ -23,9 +23,7 @@ function Trips(): JSX.Element {
 
     return (
         <>
-            <h1>Trips</h1>
-            <h2>Hello {user.first_name}</h2>
-            <Wrap>
+            <Wrap margin={'10%'} spacing={'10%'}>
                 {
                     trips.allTrips.map((trip: TripModel, i: number) => {
                         return <ChakraTripCard key = {i} tripData={trip} handleDelete={handleDeleteTripClick} />
@@ -104,9 +102,6 @@ function Trips(): JSX.Element {
             }
         })();
     }
-
-
-
 }
 
 export default Trips;
