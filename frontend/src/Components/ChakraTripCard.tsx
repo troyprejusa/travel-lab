@@ -1,109 +1,82 @@
 import { SyntheticEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { makeCurrentTrip } from '../redux/TripSlice';
+import { TripModel } from '../Models/Interfaces';
+import TripPhoto from '../Photos/tripphoto.jpg';
 import {
-  Heading,
-  Avatar,
   Box,
   Center,
-  Image,
+  Heading,
   Text,
   Stack,
-  Button,
+  Avatar,
   useColorModeValue,
-  Wrap,
 } from '@chakra-ui/react';
-import { TripModel } from '../Models/Interfaces';
-import { RootState } from '../redux/Store';
+
 
 
 interface ChakraTripCardProps {
   tripData: TripModel,
-  handleDelete: (event: SyntheticEvent) => void
 }
-  
 
 export default function ChakraTripCard(props: ChakraTripCardProps) {
-  const handleViewClick = (event: SyntheticEvent) => {
-    dispatch(makeCurrentTrip(props.tripData));
-    navigate(`/trip/${props.tripData.destination}/home`);
-  }
-
   const navigate = useNavigate(); 
   const dispatch = useDispatch();
 
   return (
-    <Center py={6}>
+    <Center py={6} onClick={handleViewClick} cursor={'pointer'}>
       <Box
-        maxW={'270px'}
+        maxW={'445px'}
         w={'full'}
-        bg={useColorModeValue('white', 'gray.800')}
+        bg={useColorModeValue('white', 'gray.900')}
         boxShadow={'2xl'}
         rounded={'md'}
+        p={6}
         overflow={'hidden'}>
-        <Image
-          h={'120px'}
-          w={'full'}
-          src={
-            'https://images.unsplash.com/photo-1612865547334-09cb8cb455da?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'
-          }
-          objectFit={'cover'}
-        />
-        <Box p={6}>
-          <Stack spacing={0} align={'center'} mb={5}>
-            <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>
-              {props.tripData.destination}
-            </Heading>
-            <Text color={'gray.500'}>{props.tripData.description}</Text>
-          </Stack>
-
-          <Stack direction={'row'} justify={'center'} spacing={6}>
-            <Stack spacing={0} align={'center'}>
-              <Text fontWeight={600}>{props.tripData.start_date.toString()}</Text>
-              <Text fontSize={'sm'} color={'gray.500'}>
-                Depart
-              </Text>
-            </Stack>
-            <Stack spacing={0} align={'center'}>
-              <Text fontWeight={600}>{props.tripData.end_date.toString()}</Text>
-              <Text fontSize={'sm'} color={'gray.500'}>
-                Return
-              </Text>
-            </Stack>
-          </Stack>
-
-          <Wrap>
-            <Button
-              onClick={handleViewClick}
-              w={'full'}
-              mt={8}
-              bg={useColorModeValue('#151f21', 'gray.900')}
-              color={'white'}
-              rounded={'md'}
-              _hover={{
-                transform: 'translateY(-2px)',
-                boxShadow: 'lg',
-              }}>
-              View
-            </Button>
-            {/* <Button
-              id={`delete${props.tripIndex}`}
-              onClick={props.handleDelete}
-              w={'full'}
-              mt={8}
-              bg={useColorModeValue('#151f21', 'gray.900')}
-              color={'white'}
-              rounded={'md'}
-              _hover={{
-                transform: 'translateY(-2px)',
-                boxShadow: 'lg',
-              }}>
-              Delete
-            </Button> */}
-          </Wrap>
+        <Box
+          h={'210px'}
+          bg={'gray.100'}
+          mt={-6}
+          mx={-6}
+          mb={6}
+          pos={'relative'}>
+          <img src={TripPhoto} alt={'trip'} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
         </Box>
+        <Stack>
+          <Text
+            color={'green.500'}
+            textTransform={'uppercase'}
+            fontWeight={800}
+            fontSize={'sm'}
+            letterSpacing={1.1}>
+            {`${props.tripData.start_date}`}
+          </Text>
+          <Heading
+            color={useColorModeValue('gray.700', 'white')}
+            fontSize={'2xl'}
+            fontFamily={'body'}>
+            {props.tripData.destination}
+          </Heading>
+          <Text color={'gray.500'}>
+            {props.tripData.description}
+          </Text>
+        </Stack>
+        <Stack mt={6} direction={'row'} spacing={4} align={'center'}>
+          <Avatar
+            src={'https://avatars0.githubusercontent.com/u/1164541?v=4'}
+          />
+          <Stack direction={'column'} spacing={0} fontSize={'sm'}>
+            <Text fontWeight={600}>Ya Boi</Text>
+            <Text color={'gray.500'}>{`Created ${props.tripData.created_at}`}</Text>
+          </Stack>
+        </Stack>
       </Box>
     </Center>
   );
+
+  function handleViewClick(event: SyntheticEvent) {
+    dispatch(makeCurrentTrip(props.tripData));
+    navigate(`/trip/${props.tripData.destination}/home`);
+  }
 }

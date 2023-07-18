@@ -14,7 +14,8 @@ export interface TripModel {
     destination: string,
     description: string,
     start_date: Date,
-    end_date: Date
+    end_date: Date,
+    created_at: Date
 }
 
 export interface ItineraryModel {

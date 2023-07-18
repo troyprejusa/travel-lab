@@ -3,14 +3,16 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
 import { TripModel, UserModel } from '../Models/Interfaces';
 import fetchHelpers from '../utilities/fetchHelpers';
+import ChakraContactCard from '../Components/ChakraContactCard';
+import { Wrap, Flex } from '@chakra-ui/react';
 
-interface ContactInfoProps {
+// interface ContactInfoProps {
 
-};
+// };
 
 function ContactInfo(): JSX.Element {
 
-    const user: UserModel = useSelector((state: RootState) => state.user);
+    // const user: UserModel = useSelector((state: RootState) => state.user);
     const trip: TripModel = useSelector((state: RootState) => state.trips.currentTrip);
 
     const initialState: Array<UserModel> = [];
@@ -20,10 +22,12 @@ function ContactInfo(): JSX.Element {
 
     return (
         <>
-            <h1>ContactInfo</h1>
-            {travelCompanions.map((a: UserModel) => {
-                return <h2>{a.first_name}</h2>
-            })}
+            <Flex justifyContent={'center'}>
+                <h1>Contact Info</h1>
+            </Flex>
+            <Wrap spacing={'5%'}>
+                {travelCompanions.map((a: UserModel, i: number) => <ChakraContactCard key={i} {...a}/>)}
+            </Wrap>
         </>
     )
 
@@ -38,7 +42,7 @@ function ContactInfo(): JSX.Element {
                 if (res.ok) {
                     const json = await res.json();
                     const travellers: Array<UserModel> = json.travellers;
-                    console.log(travellers)
+                    // console.log(travellers)
                     setTravelCompanions(travellers);
 
                 } else {

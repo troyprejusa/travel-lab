@@ -61,7 +61,7 @@ async def delete_trip(request: Request, trip: Trip) -> str:
         return JSONResponse(
             status_code=200,
             content = {
-                "message": f"SUCCESS: Deleted trip {trip.destination}"
+                "message": f"SUCCESS: Deleted trip {trip.id}"
             }
         )
     
@@ -69,11 +69,11 @@ async def delete_trip(request: Request, trip: Trip) -> str:
         return JSONResponse(
             status_code=500,
             content = {
-                "message": f"ERROR: Unable to delete trip {trip.destination}"
+                "message": f"ERROR: Unable to delete trip {trip.id}"
             }
         )
 
-# Get contact info for travel partners
+# Get contact info for trallers on this trip
 @trip_router.get('/contacts/{trip_id}')
 async def get_contact_info(trip_id: str) ->  str:
     try:

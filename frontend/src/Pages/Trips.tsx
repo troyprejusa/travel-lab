@@ -6,7 +6,7 @@ import { TripStateInterface } from '../redux/TripSlice';
 import { UserModel, TripModel } from '../Models/Interfaces';
 import { Wrap } from '@chakra-ui/react';
 import ChakraTripCard from '../Components/ChakraTripCard';
-import ChakraAddTripCard from '../Components/ChakraTripCard';
+// import ChakraAddTripCard from '../Components/ChakraTripCard';
 import fetchHelpers from '../utilities/fetchHelpers';
 
 interface TripsProps {
@@ -16,7 +16,7 @@ interface TripsProps {
 function Trips(): JSX.Element {
 
     const dispatch = useDispatch();
-    const user: UserModel = useSelector((state: RootState) => state.user);
+    // const user: UserModel = useSelector((state: RootState) => state.user);
     const trips: TripStateInterface = useSelector((state: RootState) => state.trips);
 
     useEffect(getTrips, []);
@@ -24,11 +24,7 @@ function Trips(): JSX.Element {
     return (
         <>
             <Wrap margin={'10%'} spacing={'10%'}>
-                {
-                    trips.allTrips.map((trip: TripModel, i: number) => {
-                        return <ChakraTripCard key = {i} tripData={trip} handleDelete={handleDeleteTripClick} />
-                    })
-                }
+                {trips.allTrips.map((trip: TripModel, i: number) => <ChakraTripCard key = {i} tripData={trip}/>)}
                 {/* <ChakraAddTripCard handleClick={handleNewTripClick}/> */}
             </Wrap>
         </>
@@ -41,67 +37,41 @@ function Trips(): JSX.Element {
                     method: 'GET',
                     headers: fetchHelpers.getTokenHeader()
                 });
+
+                const data = await res.json();
+                
                 if (res.ok) {
-                    const obj: TripModel = await res.json();
-                    dispatch(replaceTrips(obj));
+                    dispatch(replaceTrips(data));
                 } else {
-                    const obj = await res.json();
-                    throw new Error(JSON.stringify(obj));
+                    throw new Error(JSON.stringify(data));
                 }
+                
             } catch (e: any) {
                 console.error(e.message);
             }
         })();
     }
 
-    function handleNewTripClick(event: SyntheticEvent) {
-        const json: string = JSON.stringify(trips.allTrips[0]);
-        (async function() {
-            try {
-                const res: Response = await fetch(`/user/trips?userid=${user.id}`, {
-                    method: 'POST',
-                    body: json, 
-                    headers: fetchHelpers.getTokenJSONHeader(),
-                });
-                if (res.ok) {
-                    // Instead of adding the trip individually from local state,
-                    // we will reload all trips to avoid any synchronization issues
-                    // between the frontend and backend
-                    getTrips();
-                }
-            } catch (e) {
-                console.error('Unable to add trip');
-            }
-        })();
-    }
-
-    function handleDeleteTripClick(event: SyntheticEvent) {
-        const target = event.target as HTMLElement;
-        const cardId: string = target.id; 
-        const delIndex: number = parseInt(cardId.split('delete')[1]);
-        const json: string = JSON.stringify(trips.allTrips[delIndex]);
-        (async function() {
-            try {
-                const res: Response = await fetch(`/user/trips?userid=${user.id}`, {
-                    method: 'DELETE',
-                    body: json, 
-                    headers: fetchHelpers.getTokenJSONHeader(),
-                });
-                if (res.ok) {
-                    // Instead of deleting the trip individually from local state,
-                    // we will reload all trips to avoid any synchronization issues
-                    // between the frontend and backend
-                    getTrips();
-
-                } else {
-                    const obj = await res.json();
-                    throw new Error(obj);
-                }
-            } catch (e: any) {
-                console.error(e.message);
-            }
-        })();
-    }
+    // function handleNewTripClick(event: SyntheticEvent) {
+    //     const json: string = JSON.stringify(trips.allTrips[0]);
+    //     (async function() {
+    //         try {
+    //             const res: Response = await fetch(`/user/trips?userid=${user.id}`, {
+    //                 method: 'POST',
+    //                 body: json, 
+    //                 headers: fetchHelpers.getTokenJSONHeader(),
+    //             });
+    //             if (res.ok) {
+    //                 // Instead of adding the trip individually from local state,
+    //                 // we will reload all trips to avoid any synchronization issues
+    //                 // between the frontend and backend
+    //                 getTrips();
+    //             }
+    //         } catch (e) {
+    //             console.error('Unable to add trip');
+    //         }
+    //     })();
+    // }
 }
 
 export default Trips;

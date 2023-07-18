@@ -69,7 +69,8 @@ class DatabaseSetup:
                 destination VARCHAR(60),
                 description VARCHAR(200),
                 start_date DATE,
-                end_date DATE
+                end_date DATE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         """)
 
