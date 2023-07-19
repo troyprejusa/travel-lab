@@ -6,8 +6,12 @@ import { TripStateInterface } from '../redux/TripSlice';
 import { UserModel, TripModel } from '../Models/Interfaces';
 import { Wrap } from '@chakra-ui/react';
 import ChakraTripCard from '../Components/ChakraTripCard';
-// import ChakraAddTripCard from '../Components/ChakraTripCard';
+import ChakraNewTrip from '../Components/ChakraNewTrip';
 import fetchHelpers from '../utilities/fetchHelpers';
+import {
+    useDisclosure,
+    Button
+  } from '@chakra-ui/react'
 
 interface TripsProps {
 
@@ -25,7 +29,7 @@ function Trips(): JSX.Element {
         <>
             <Wrap margin={'10%'} spacing={'10%'}>
                 {trips.allTrips.map((trip: TripModel, i: number) => <ChakraTripCard key = {i} tripData={trip}/>)}
-                {/* <ChakraAddTripCard handleClick={handleNewTripClick}/> */}
+                <ChakraNewTrip />
             </Wrap>
         </>
     )
@@ -52,7 +56,11 @@ function Trips(): JSX.Element {
         })();
     }
 
-    // function handleNewTripClick(event: SyntheticEvent) {
+    function handleNewTripClick(event: SyntheticEvent) {
+
+    }
+
+    // function sendNewTrip() {
     //     const json: string = JSON.stringify(trips.allTrips[0]);
     //     (async function() {
     //         try {
