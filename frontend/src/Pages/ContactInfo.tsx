@@ -40,13 +40,13 @@ function ContactInfo(): JSX.Element {
                 });
 
                 if (res.ok) {
-                    const json = await res.json();
-                    const travellers: Array<UserModel> = json.travellers;
+                    const travellers: Array<UserModel> = await res.json();
                     // console.log(travellers)
                     setTravelCompanions(travellers);
 
                 } else {
-                    throw new Error();
+                    const message: any = await res.json();
+                    throw new Error(JSON.stringify(message));
                 }
 
             } catch(e) {

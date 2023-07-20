@@ -42,12 +42,14 @@ function Trips(): JSX.Element {
                     headers: fetchHelpers.getTokenHeader()
                 });
 
-                const data = await res.json();
                 
                 if (res.ok) {
-                    dispatch(replaceTrips(data));
+                    const trips: Array<TripModel> = await res.json();
+                    dispatch(replaceTrips(trips));
+                    
                 } else {
-                    throw new Error(JSON.stringify(data));
+                    const message: any = await res.json();
+                    throw new Error(JSON.stringify(message));
                 }
                 
             } catch (e: any) {

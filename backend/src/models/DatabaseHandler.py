@@ -61,6 +61,7 @@ class DatabaseHandler:
                         return None
 
                 except psycopg2.Error as pg_error:
+                    # print(f'QUERY FAILURE!')
                     print(f'QUERY FAILURE:\n\t{cursor.query}')
                     raise pg_error
     

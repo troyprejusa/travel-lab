@@ -1,4 +1,8 @@
-import { useRef } from 'react';
+import { useRef, SyntheticEvent } from 'react';
+import fetchHelpers from '../utilities/fetchHelpers';
+import { useDispatch } from 'react-redux';
+import { addTrip, makeCurrentTrip } from '../redux/TripSlice';
+import { useNavigate } from 'react-router-dom';
 import {
     Button,
     Modal,
@@ -13,7 +17,7 @@ import {
     FormLabel,
     Input
 } from '@chakra-ui/react'
-import { SyntheticEvent } from 'react';
+import { TripModel } from '../Models/Interfaces';
 
 interface ChakraNewTripProps {
 
@@ -21,6 +25,8 @@ interface ChakraNewTripProps {
 
 function ChakraNewTrip() {
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure()
     const destination = useRef<HTMLInputElement>(null);
     const description = useRef<HTMLInputElement>(null);
@@ -66,21 +72,55 @@ function ChakraNewTrip() {
       </>
     )
 
-    function handleSubmit(event: SyntheticEvent) {
-        event.preventDefault();
+    async function handleSubmit(event: SyntheticEvent) {
+        
+        try {
 
-        if (destination.current !== null && 
-            description.current !== null && 
-            departure_date.current !== null && 
-            return_date.current !== null) {
-            
-            // TODO: Send the fetch request
-            console.log('Submit me bro!')
-      
-        } else {
-            alert('Unable to create trip')
+            event.preventDefault();
+
+            if (destination.current !== null && 
+                description.current !== null && 
+                departure_date.current !== null && 
+                return_date.current !== null) {
+                
+                const formData: URLSearchParams = new URLSearchParams();
+                formData.append('destination', destination.current.value);
+                formData.append('description', description.current.value);
+                formData.append('start_date', departure_date.current.value);
+                formData.append('end_date', return_date.current.value);
+
+                const res: Response = await fetch('/trip/' , {
+                    method: 'POST',
+                    body: formData,
+                    headers: fetchHelpers.getTokenFormHeader()
+                })
+    
+                if (res.ok) {
+                    const trip: TripModel = await res.json();
+
+                    // Save this trip to state
+                    addTrip(trip);
+
+                    // Make trip the current trip
+                    makeCurrentTrip(trip);
+
+                    // Navigate to the trip
+                    navigate(`/trip/${trip.destination}/home`);
+    
+                } else {
+                    const message: any = await res.json();
+                    throw new Error(JSON.stringify(message));
+                }
+        
+            } else {
+                alert('Error in form submission')
+            }
+
+            } catch (e: any) {
+                console.error(e)
+                alert('Unable to create trip :(')
         }
-    }
+}
 }
 
 export default ChakraNewTrip;

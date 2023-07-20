@@ -157,8 +157,7 @@ function ChakraSignup({ setWantsLogin }: ChakraSignupProps) {
         }
       }
 
-      function signupUser(formData: URLSearchParams) {
-        (async function() {
+      async function signupUser(formData: URLSearchParams) {
             try {
             const res: Response = await fetch('/auth/createuser', {
                 method: 'POST',
@@ -167,9 +166,10 @@ function ChakraSignup({ setWantsLogin }: ChakraSignupProps) {
                     'content-type': 'application/x-www-form-urlencoded'
                 }
             });
+
+            const json = await res.json();
             if (res.ok) {
-                // NOW SIGN IN THE PERSON AFTER
-                const json = await res.json();
+                // Sign in the person
                 const user: UserModel = json.user;
                 
                 // Save token to localStorage
@@ -182,14 +182,14 @@ function ChakraSignup({ setWantsLogin }: ChakraSignupProps) {
                 navigate(`/user/${user.email}/trips`)
     
             } else {
-                const json = await res.json();
-                throw new Error(JSON.stringify(json));
+                const message: any = await res.json();
+                throw new Error(JSON.stringify(message));
             }
     
             } catch (e: any) {
-                console.error(`No developing today :(\n${e.message}`)
+                alert('Unable to sign up :(')
             }
-        })()
+
       }
   }
 

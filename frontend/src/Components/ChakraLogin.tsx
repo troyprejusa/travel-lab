@@ -135,8 +135,7 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
       loginUser(formData);
   }
 
-  function loginUser(formData: URLSearchParams) {
-    (async function() {
+  async function loginUser(formData: URLSearchParams) {
       try {
         const res: Response = await fetch('/auth/signin', {
             method: 'POST',
@@ -166,7 +165,7 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
       } catch (e: any) {
           console.error(`No developing today :(\n${e.message}`)
       }
-    })()
+
   }
 }
 
