@@ -77,6 +77,6 @@ export default function ChakraTripCard(props: ChakraTripCardProps) {
 
   function handleViewClick(event: SyntheticEvent) {
     dispatch(makeCurrentTrip(props.tripData));
-    navigate(`/trip/${props.tripData.destination}/home`);
+    navigate(`/trip/${props.tripData.id}/home`);
   }
 }

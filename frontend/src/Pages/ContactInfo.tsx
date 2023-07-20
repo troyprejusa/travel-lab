@@ -34,7 +34,7 @@ function ContactInfo(): JSX.Element {
     function getTravellers() {
         (async function() {
             try {
-                const res: Response = await fetch(`/trip/contacts/${trip.id}`, {
+                const res: Response = await fetch(`/trip/${trip.id}/contacts`, {
                     method: 'GET',
                     headers: fetchHelpers.getTokenHeader(),
                 });

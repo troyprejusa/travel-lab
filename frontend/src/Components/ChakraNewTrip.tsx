@@ -99,13 +99,13 @@ function ChakraNewTrip() {
                     const trip: TripModel = await res.json();
 
                     // Save this trip to state
-                    addTrip(trip);
+                    dispatch(addTrip(trip));
 
                     // Make trip the current trip
-                    makeCurrentTrip(trip);
+                    dispatch(makeCurrentTrip(trip));
 
                     // Navigate to the trip
-                    navigate(`/trip/${trip.destination}/home`);
+                    navigate(`/trip/${trip.id}/home`);
     
                 } else {
                     const message: any = await res.json();

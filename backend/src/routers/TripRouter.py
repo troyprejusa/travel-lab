@@ -50,18 +50,18 @@ async def create_trip(
         )
 
 # Delete a trip
-@trip_router.delete('/')
-async def delete_trip(request: Request, trip: Trip) -> str:
+@trip_router.delete('/{trip_id}')
+async def delete_trip(request: Request, trip_id: str) -> str:
     # TODO: Check if the delete requester is an admin on this trip
     try:
         db_handler.query("""
             DELETE FROM trip WHERE id = %s;
-        """, (str(trip.id),))
+        """, (trip_id,))
 
         return JSONResponse(
             status_code=200,
             content = {
-                "message": f"SUCCESS: Deleted trip {trip.id}"
+                "message": f"SUCCESS: Deleted trip {trip_id}"
             }
         )
     
@@ -69,12 +69,12 @@ async def delete_trip(request: Request, trip: Trip) -> str:
         return JSONResponse(
             status_code=500,
             content = {
-                "message": f"ERROR: Unable to delete trip {trip.id}"
+                "message": f"ERROR: Unable to delete trip {trip_id}"
             }
         )
 
 # Get contact info for trallers on this trip
-@trip_router.get('/contacts/{trip_id}')
+@trip_router.get('/{trip_id}/contacts')
 async def get_contact_info(trip_id: str) ->  list[Traveller] | str:
     try:
         travellers = db_handler.query("""

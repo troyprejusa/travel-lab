@@ -36,7 +36,7 @@ const router = createBrowserRouter(
       <Route path="/user/:username/trips" element={<Trips />}/>
       <Route path="/user/:username/settings" element={<UserSettings />}/>
 
-      <Route path="/trip/:tripname" element={<Project />}>
+      <Route path="/trip/:trip_id" element={<Project />}>
           <Route path="home" element={<Home />} />
           <Route path="itinerary" element={<Itinerary />} />
           <Route path="calendar" element={<Calendar />} />
