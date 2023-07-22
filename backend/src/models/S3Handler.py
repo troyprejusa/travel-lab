@@ -5,7 +5,7 @@ from utilities import Constants
 try:
     print('S3Handler.py: Attempting to connect to file storage...')
     minio_client = Minio(
-        "s3mock:9000",
+        f'{Constants.S3_HOST}:{Constants.S3_PORT}',
         access_key=Constants.S3_ACCESS_KEY,
         secret_key=Constants.S3_SECRET_KEY
     )
