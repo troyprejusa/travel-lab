@@ -18,7 +18,7 @@ db_setup.setup_db()
 DatabaseSetup.insert_data(db_handler)
 
 # Allow external access to the following endpoints:
-no_auth_endpoints = [
+whitelist = [
     'docs',
     'openapi.json',
     'auth',
@@ -29,21 +29,21 @@ no_auth_endpoints = [
 app = FastAPI()
 
 # Handle CORS
-origins = ["http://localhost:3000"]
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# origins = ["http://localhost:3000"]
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=origins,
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
 
 @app.middleware('http')
 async def verify_auth(request: Request, call_next):
     print('HTTP Request:', request.url.path)
     root_path = request.url.path.split('/')[1]
 
-    if root_path in no_auth_endpoints:
+    if root_path in whitelist:
         response = await call_next(request)
         return response
     else:

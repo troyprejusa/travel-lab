@@ -24,10 +24,10 @@ class DatabaseHandler:
 
         try:
             self.connection = psycopg2.connect(host = host, port = port, user = user, password = password, database = database)
-            print('Connected to database')
+            print('DatabaseHandler.py: Connected to database')
         except Exception as e:
             print(str(e))
-            raise Exception(f"Unable to connect to database{settings['database']}")
+            raise Exception(f"DatabaseHandler.py: Unable to connect to database{settings['database']}")
 
     '''
     Wrap the cursor.execute method as to open and close a cursor,

@@ -15,3 +15,7 @@ DB_DBNAME = os.getenv('DB_DBNAME')
 
 # API
 API_PORT = int(os.getenv('API_PORT'))
+
+# S3
+S3_ACCESS_KEY = os.getenv('S3_ACCESS_KEY')
+S3_SECRET_KEY = os.getenv('S3_SECRET_KEY')
