@@ -82,6 +82,37 @@ function ChakraNewTrip() {
                 description.current !== null && 
                 departure_date.current !== null && 
                 return_date.current !== null) {
+
+                // Validate form
+                const destination_entry  = destination.current.value;
+                const description_entry = description.current.value;
+                const start_date_entry = departure_date.current.value;
+                const end_date_entry = return_date.current.value;
+
+                if (destination_entry === '') {
+                    alert('Destination cannot be empty!');
+                    return;
+                }
+                
+                if (description_entry === '') {
+                    alert('Description cannot be empty!');
+                    return;
+                }
+                
+                if (start_date_entry === '') {
+                    alert('Departure date cannot be empty!');
+                    return;
+                }
+                
+                if (end_date_entry === '') {
+                    alert('Return date cannot be empty!');
+                    return;
+                }
+
+                if (Date.parse(start_date_entry) > Date.parse(end_date_entry)) {
+                    alert('Start date cannot be after end date!');
+                    return;
+                }
                 
                 const formData: URLSearchParams = new URLSearchParams();
                 formData.append('destination', destination.current.value);

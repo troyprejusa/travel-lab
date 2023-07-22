@@ -11,5 +11,20 @@ services:
       - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+
+  s3mock:
+    image: minio/minio
+    container_name: s3_storage
+    environment:
+      - MINIO_ROOT_USER=ROOTUSER
+      - MINIO_ROOT_PASSWORD=ROOTPWD123
+    ports:
+      - "9000:9000"
+      - "9090:9090"
+    volumes:
+      - s3data:/data
+    command: server /data --console-address ":9090"
+
 volumes:
   pgdata:
+  s3data:

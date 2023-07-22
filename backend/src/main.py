@@ -19,6 +19,8 @@ DatabaseSetup.insert_data(db_handler)
 
 # Allow external access to the following endpoints:
 no_auth_endpoints = [
+    'docs',
+    'openapi.json',
     'auth',
     'dev'
 ]
