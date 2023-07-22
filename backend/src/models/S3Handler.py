@@ -3,6 +3,7 @@ from minio.error import S3Error
 from utilities import Constants
 
 try:
+    print('S3Handler.py: Attempting to connect to file storage...')
     minio_client = Minio(
         "s3mock:9000",
         access_key=Constants.S3_ACCESS_KEY,
