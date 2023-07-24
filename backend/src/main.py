@@ -74,37 +74,29 @@ async def verify_auth(request: Request, call_next):
                 content= {"message": "Access forbidden"}
             )
 
+
 # /dev
 app.include_router(dev_router)
 
-''' 
-/auth
-    Sign in
-    Create User
-'''
+
+# /auth
 app.include_router(auth_router)
- 
-'''
-/user
-    Delete user
-    Get trips
-    Join trip
-    Leave trip 
-'''
+
+
+# /user
 app.include_router(user_router)
 
-'''
-/trip
-    Create trip
-    Delete trip
- '''
+
+# /trip
 app.include_router(trip_router)
+
 
 # Default redirection to handle client-side fwd/back/refresh
 @app.get('{full_path:path}')
 async def redirect_nav(request: Request, full_path:str):
     print(f'Requested unkown route:\n{full_path}\nRedirecting to root...')
     return RedirectResponse('/')
+
 
 # Global exception handler
 @app.exception_handler(Exception)
@@ -118,6 +110,7 @@ async def general_exception_handler(request: Request, e: Exception) -> str:
             "message": "Internal server error"
         }
     )
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=Constants.API_PORT)

@@ -7,7 +7,8 @@ const emptyTrip: TripModel = {
     description: '',
     start_date: '',
     end_date: '',
-    created_at: ''
+    created_at: '',
+    created_by: ''
 };
 
 const initialTripState: TripModel = emptyTrip;

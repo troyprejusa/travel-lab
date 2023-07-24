@@ -23,7 +23,7 @@ class Itinerary(BaseModel):
     trip_id: UUID
     title: str
     description: str
-    start_date: datetime
-    end_date: datetime
+    start_time: datetime
+    end_time: datetime
     created_at: datetime
     created_by: str

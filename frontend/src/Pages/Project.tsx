@@ -1,13 +1,15 @@
 import React from "react";
-import { useParams, Outlet} from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import ChakraNavbar from "../Components/ChakraNavbar";
+import { Box } from "@chakra-ui/react";
 
 function Project(): JSX.Element {
-    const { projectId } = useParams();
     return (
         <>
             <ChakraNavbar>
-                <Outlet />
+                <Box>
+                    <Outlet />
+                </Box>
             </ChakraNavbar>
         </>
     )

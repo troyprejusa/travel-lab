@@ -36,7 +36,6 @@ import {
   FiCalendar,
   FiBriefcase,
   FiMessageSquare,
-  FiCompass,
   FiMenu,
   FiBell,
   FiChevronDown,
@@ -57,8 +56,7 @@ interface LinkItemProps {
 
 const LinkItems: Array<LinkItemProps> = [
   { name: 'Home', icon: FiHome , path: 'home'},
-  { name: 'Itinerary', icon: FiCompass, path: 'itinerary' },
-  { name: 'Calendar', icon: FiCalendar, path: 'calendar' },
+  { name: 'Itinerary', icon: FiCalendar, path: 'itinerary' },
   { name: 'Transportation', icon: FiNavigation, path: 'transportation' },
   { name: 'Message Board', icon: FiMessageSquare, path: 'message' },
   { name: 'Poll', icon: FiThumbsUp, path: 'poll' },
@@ -207,7 +205,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         fontSize="2xl"
         fontFamily="monospace"
         fontWeight="bold">
-        Logo
+        Travel | Lab
       </Text>
 
       <HStack spacing={{ base: '0', md: '6' }}>

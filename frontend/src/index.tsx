@@ -19,7 +19,6 @@ import UserSettings from './Pages/UserSettings';
 import Project from './Pages/Project';
 import Home from './Pages/Home';
 import Itinerary from './Pages/Itinerary';
-import Calendar from './Pages/Calendar';
 import Transportation from './Pages/Transportation';
 import MessageBoard from './Pages/MessageBoard';
 import Poll from './Pages/Poll';
@@ -39,7 +38,6 @@ const router = createBrowserRouter(
       <Route path="/trip/:trip_id" element={<Project />}>
           <Route path="home" element={<Home />} />
           <Route path="itinerary" element={<Itinerary />} />
-          <Route path="calendar" element={<Calendar />} />
           <Route path="transportation" element={<Transportation />} />
           <Route path="message" element={<MessageBoard />}/>
           <Route path="poll" element={<Poll />}/>

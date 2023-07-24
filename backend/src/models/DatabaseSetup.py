@@ -101,8 +101,8 @@ class DatabaseSetup:
                 trip_id uuid references trip ON DELETE CASCADE,
                 title VARCHAR(60),
                 description VARCHAR(200),
-                start_date TIMESTAMP,
-                end_date TIMESTAMP,
+                start_time TIMESTAMP,
+                end_time TIMESTAMP,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 created_by varchar(320) references traveller(email) ON DELETE CASCADE
             );
