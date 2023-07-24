@@ -1,19 +1,19 @@
 import { Slice, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UserModel } from "../Models/Interfaces";
 
-const userState: UserModel = {
+const emptyUser: UserModel = {
     id: '',
     first_name: '',
     last_name: '',
     email: '',
     phone: ''
-}
+};
 
 const userSlice: Slice = createSlice({
     name: 'user',   // state.user
-    initialState: userState,
+    initialState: emptyUser,
     reducers: {
-        login: (state, action: PayloadAction<UserModel>) => {
+        reduxUserLogin: (state, action: PayloadAction<UserModel>) => {
             state.id = action.payload.id;
             state.first_name = action.payload.first_name;
             state.last_name = action.payload.last_name;
@@ -21,17 +21,13 @@ const userSlice: Slice = createSlice({
             state.phone = action.payload.phone;
         },
 
-        resetUserState: (state, action: PayloadAction<null>) => {
-            state.id = '';
-            state.first_name = '';
-            state.last_name = '';
-            state.email = '';
-            state.phone = '';
+        reduxUserLogout: (state, action: PayloadAction<null>) => {
+            return emptyUser;
         }
     }
 
 })
 
-export const { login, resetUserState } = userSlice.actions;
+export const { reduxUserLogin, reduxUserLogout } = userSlice.actions;
 
 export default userSlice.reducer

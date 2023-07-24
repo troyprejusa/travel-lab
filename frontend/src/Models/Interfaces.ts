@@ -13,9 +13,9 @@ export interface TripModel {
     id: string,
     destination: string,
     description: string,
-    start_date: Date,
-    end_date: Date,
-    created_at: Date
+    start_date: Date | string,
+    end_date: Date | string,
+    created_at: Date | string
 }
 
 export interface ItineraryModel {
@@ -24,6 +24,6 @@ export interface ItineraryModel {
     trip_id: string
     title: string
     description: string
-    start_date: Date
-    end_date: Date
+    start_date: Date | string
+    end_date: Date | string
 }

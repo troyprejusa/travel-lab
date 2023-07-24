@@ -1,4 +1,5 @@
 import React from 'react';
+import { Flex } from '@chakra-ui/react';
 
 interface MessageBoardProps {
 
@@ -6,7 +7,9 @@ interface MessageBoardProps {
 
 function MessageBoard(): JSX.Element {
     return (
-        <h1>Message</h1>
+        <Flex justifyContent={'center'}>
+            <h1>Message Board</h1>
+        </Flex>
     )
 }
 

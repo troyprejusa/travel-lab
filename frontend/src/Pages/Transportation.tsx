@@ -1,4 +1,5 @@
 import React from 'react';
+import { Flex } from '@chakra-ui/react';
 
 interface TransportationProps {
 
@@ -6,7 +7,9 @@ interface TransportationProps {
 
 function Transportation(): JSX.Element {
     return (
-        <h1>Transportation</h1>
+        <Flex justifyContent={'center'}>
+            <h1>Transportation</h1>
+        </Flex>
     )
 }
 

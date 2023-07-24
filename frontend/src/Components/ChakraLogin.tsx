@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../redux/Store';
 import { UserModel } from '../Models/Interfaces';
-import { login } from '../redux/UserSlice';
+import { reduxUserLogin } from '../redux/UserSlice';
 import {
   Flex,
   Box,
@@ -152,7 +152,7 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
             localStorage.setItem("token", json.token);
 
             // Put user information into state
-            dispatch(login(user));
+            dispatch(reduxUserLogin(user));
 
             // Navigate to the next page
             navigate(`/user/${user.email}/trips`)

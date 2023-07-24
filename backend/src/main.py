@@ -15,7 +15,7 @@ import uvicorn
 db_setup = DatabaseSetup(db_handler)
 db_setup.drop_tables()
 db_setup.setup_db()
-DatabaseSetup.insert_data(db_handler)
+db_setup.insert_data()
 
 # Allow external access to the following endpoints:
 whitelist = [
@@ -111,6 +111,7 @@ async def redirect_nav(request: Request, full_path:str):
 async def general_exception_handler(request: Request, e: Exception) -> str:
     # Same behavior as default exception handling, but returns
     # JSON instead of string
+    print(str(e))
     return JSONResponse(
         status_code=500,
         content = {

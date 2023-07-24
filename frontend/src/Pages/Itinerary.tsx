@@ -2,8 +2,15 @@ import React, { useEffect } from 'react';
 import { TripModel, ItineraryModel } from '../Models/Interfaces';
 import { RootState } from '../redux/Store';
 import { useSelector, useDispatch } from 'react-redux';
-import { TripStateInterface } from '../redux/TripSlice';
-import { ItineraryStateInterface, replaceItinerary } from '../redux/ItinerarySlice';
+import {
+    Flex,
+    Stack,
+    Card,
+    CardHeader,
+    CardBody,
+    Heading,
+    Text
+} from '@chakra-ui/react';
 
 
 interface ItineraryProps {
@@ -20,20 +27,28 @@ function Itinerary(): JSX.Element {
     }
 
     console.log('ITINERARY:')
-    const trip: TripModel = useSelector(((state: RootState) => state.trips.currentTrip))
+    const trip: TripModel = useSelector(((state: RootState) => state.trip))
     
-    const dispatch = useDispatch();
-    const stops: ItineraryStateInterface = useSelector((state: RootState) => state.itinerary);
-
     // useEffect(getItinerary, []);
 
 
     return (
         <>
-            <h1>Itinerary</h1>
-                <button>Add stop</button>
-                <h2>PUT A CALENDAR HERE!</h2>
-                <h2>Events</h2>
+            <Flex justifyContent={'center'}>
+                <h1>Itinerary</h1>
+            </Flex>
+            <Stack spacing='4'>
+                {['outline'].map((variant) => (
+                    <Card key={variant} variant={variant}>
+                    <CardHeader>
+                        <Heading size='md'> {variant}</Heading>
+                    </CardHeader>
+                    <CardBody>
+                        <Text>variant = {variant}</Text>
+                    </CardBody>
+                    </Card>
+                ))}
+            </Stack>
         </>
 
     )

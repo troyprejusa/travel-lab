@@ -2,7 +2,7 @@ import React, { useState, SyntheticEvent, useRef } from 'react';
 import { UserModel } from '../Models/Interfaces';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { login } from '../redux/UserSlice';
+import { reduxUserLogin } from '../redux/UserSlice';
 import {
     Flex,
     Box,
@@ -176,7 +176,7 @@ function ChakraSignup({ setWantsLogin }: ChakraSignupProps) {
                 localStorage.setItem("token", json.token);
     
                 // Put user information into state
-                dispatch(login(user));
+                dispatch(reduxUserLogin(user));
     
                 // Navigate to the next page
                 navigate(`/user/${user.email}/trips`)

@@ -13,7 +13,7 @@ import { Wrap, Flex } from '@chakra-ui/react';
 function ContactInfo(): JSX.Element {
 
     // const user: UserModel = useSelector((state: RootState) => state.user);
-    const trip: TripModel = useSelector((state: RootState) => state.trips.currentTrip);
+    const trip: TripModel = useSelector((state: RootState) => state.trip);
 
     const initialState: Array<UserModel> = [];
     const [travelCompanions, setTravelCompanions] = useState(initialState);

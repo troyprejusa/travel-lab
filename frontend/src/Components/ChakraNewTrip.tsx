@@ -1,7 +1,7 @@
 import { useRef, SyntheticEvent } from 'react';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { useDispatch } from 'react-redux';
-import { addTrip, makeCurrentTrip } from '../redux/TripSlice';
+import { reduxSetTrip } from '../redux/TripSlice';
 import { useNavigate } from 'react-router-dom';
 import {
     Button,
@@ -129,11 +129,8 @@ function ChakraNewTrip() {
                 if (res.ok) {
                     const trip: TripModel = await res.json();
 
-                    // Save this trip to state
-                    dispatch(addTrip(trip));
-
                     // Make trip the current trip
-                    dispatch(makeCurrentTrip(trip));
+                    dispatch(reduxSetTrip(trip));
 
                     // Navigate to the trip
                     navigate(`/trip/${trip.id}/home`);

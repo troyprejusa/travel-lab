@@ -13,44 +13,47 @@ auth_router = APIRouter(
 
 @auth_router.post('/signin')
 async def sign_in(username: Annotated[str, Form()], password: Annotated[str, Form()]) -> str:
+
+    bad_login = JSONResponse(
+            status_code=500,
+            content = {
+                "message": "ERROR: Incorrect username or password"
+            }
+        )
+    
     try:
         auth_q = db_handler.query("""
             SELECT password FROM auth WHERE email=%s;
             """, (username,))
         
         if len(auth_q) != 1:
-            raise Exception('INTERNAL: Incorrect username')
+            return bad_login
         
         auth_data = auth_q[0]
 
         pwd_check = bcrypt.checkpw(password.encode('utf-8'), auth_data['password'].encode('utf-8'))
 
-        if pwd_check:
-            user = db_handler.query("""
-                SELECT * FROM traveller WHERE email=%s
-                """, (username,))[0]
+        if not pwd_check:
+            return bad_login
             
-            encoded_jwt = jwt.encode(user, Constants.SECRET, algorithm = Constants.ALGORITHM)
+        user = db_handler.query("""
+            SELECT * FROM traveller WHERE email=%s
+            """, (username,))[0]
 
-            return JSONResponse(
-                status_code = 200,
-                content = {
-                    "message": "Successful login",
-                    "token": encoded_jwt,
-                    "user": user
-                }
-            )
-        
-        else:
-            raise Exception('INTERNAL: Incorrect password')
-    
-    except Exception as e:
+        encoded_jwt = jwt.encode(user, Constants.SECRET, algorithm = Constants.ALGORITHM)
+
         return JSONResponse(
-            status_code=500,
+            status_code = 200,
             content = {
-                "message": "ERROR: Incorrect username or password"
+                "message": "Successful login",
+                "token": encoded_jwt,
+                "user": user
             }
         )
+    
+    except Exception as e:
+        print(str(e))
+        return bad_login
 
 @auth_router.post('/createuser')
 async def create_user(
@@ -60,6 +63,7 @@ async def create_user(
     phone: Annotated[str, Form()],
     password: Annotated[str, Form()]
     ) -> str:
+    
     try:
         # Hash the password
         hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
@@ -91,6 +95,7 @@ async def create_user(
         )
     
     except Exception as e:
+        print(str(e))
         return JSONResponse(
             status_code=500,
             content = {

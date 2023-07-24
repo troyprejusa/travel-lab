@@ -23,6 +23,7 @@ async def delete_user(request: Request) -> str:
         )
     
     except Exception as e:
+        print(str(e))
         return JSONResponse(
             status_code=500,
             content={
@@ -43,6 +44,7 @@ async def get_trips(request: Request) -> list[Trip] | str:
         return data
     
     except Exception as e:
+        print(str(e))
         return JSONResponse(
             status_code=500,
             content = {
@@ -66,6 +68,7 @@ async def join_trip(request: Request, trip: Trip) -> str:
         )
     
     except Exception as e:
+        print(str(e))
         return JSONResponse(
             status_code=500,
             content = {
@@ -89,6 +92,7 @@ async def leave_trip(request: Request, trip: Trip) -> str:
         )
     
     except Exception as e:
+        print(str(e))
         return JSONResponse(
             status_code=500,
             content = {

@@ -2,8 +2,9 @@ import React, { ReactNode, SyntheticEvent } from 'react';
 import { IconType } from 'react-icons';
 import { ReactText } from 'react';
 import { Link as RRDLink, useNavigate } from 'react-router-dom';
-import { resetUserState } from '../redux/UserSlice';
-import { resetTripState } from '../redux/TripSlice';
+import { useSelector } from 'react-redux';
+import { reduxUserLogout } from '../redux/UserSlice';
+import { reduxResetTrip } from '../redux/TripSlice';
 
 import {
   IconButton,
@@ -44,6 +45,8 @@ import {
   FiThumbsUp
 } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
+import { RootState } from '../redux/Store';
+import { UserModel } from '../Models/Interfaces';
 
 
 interface LinkItemProps {
@@ -61,15 +64,13 @@ const LinkItems: Array<LinkItemProps> = [
   { name: 'Poll', icon: FiThumbsUp, path: 'poll' },
   { name: 'Packing', icon: FiBriefcase, path: 'packing' },
   { name: 'Contact Info', icon: FiUsers, path: 'contactinfo' },
-  { name: 'Settings', icon: FiSettings, path: 'settings' }
+  { name: 'Trip Settings', icon: FiSettings, path: 'settings' }
 ];
 
-export default function ChakraNavbar({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function ChakraNavbar({children}: {children: ReactNode;}) {
+
   const { isOpen, onOpen, onClose } = useDisclosure();
+  
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
       <SidebarContent
@@ -102,6 +103,11 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+
+  const navigate = useNavigate();
+  const user: UserModel = useSelector((state: RootState) => state.user)
+
+
   return (
     <Box
       transition="3s ease"
@@ -113,7 +119,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       h="full"
       {...rest}>
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
+        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold" cursor="pointer" onClick={handleChooseTrip}>
           Travel | Lab
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
@@ -125,6 +131,11 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       ))}
     </Box>
   );
+
+  function handleChooseTrip(event: SyntheticEvent) {
+    const nextURL: string = `/user/${user.email}/trips`;
+    navigate(nextURL);
+  }
 };
 
 interface NavItemProps extends FlexProps {
@@ -169,6 +180,7 @@ interface MobileProps extends FlexProps {
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 
   const navigate = useNavigate();
+  const user: UserModel = useSelector((state: RootState) => state.user)
   const dispatch = useDispatch();
 
   return (
@@ -223,10 +235,10 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                   alignItems="flex-start"
                   spacing="1px"
                   ml="2">
-                  <Text fontSize="sm">Justina Clark</Text>
-                  <Text fontSize="xs" color="gray.600">
+                  <Text fontSize="sm">{`${user.first_name} ${user.last_name}`}</Text>
+                  {/* <Text fontSize="xs" color="gray.600">
                     Admin
-                  </Text>
+                  </Text> */}
                 </VStack>
                 <Box display={{ base: 'none', md: 'flex' }}>
                   <FiChevronDown />
@@ -237,7 +249,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
               bg={useColorModeValue('white', 'gray.900')}
               borderColor={useColorModeValue('gray.200', 'gray.700')}>
               <MenuItem>Profile</MenuItem>
-              <MenuItem>Settings</MenuItem>
+              {/* <MenuItem>Settings</MenuItem> */}
               <MenuItem>Billing</MenuItem>
               <MenuDivider />
               <MenuItem onClick={handleSignOut}>Sign out</MenuItem>
@@ -251,8 +263,8 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   function handleSignOut(e: SyntheticEvent) {
     try {
       localStorage.removeItem('token');
-      dispatch(resetTripState(null));
-      dispatch(resetUserState(null));
+      dispatch(reduxResetTrip(null));
+      dispatch(reduxUserLogout(null));
       navigate('/');
 
     } catch(e) {

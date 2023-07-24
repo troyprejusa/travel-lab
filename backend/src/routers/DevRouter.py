@@ -8,7 +8,7 @@ dev_router = APIRouter(
     prefix='/dev'
 )
 
-@dev_router.get("/helloworld")
+@dev_router.get("/")
 async def root() -> dict[str, str]:
     return JSONResponse(
         status_code=200,

@@ -70,7 +70,8 @@ class DatabaseSetup:
                 description VARCHAR(200),
                 start_date DATE,
                 end_date DATE,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                created_by varchar(320) references traveller(email) ON DELETE CASCADE
             );
         """)
 
@@ -97,12 +98,13 @@ class DatabaseSetup:
         self.database.query("""
             CREATE TABLE IF NOT EXISTS itinerary (
                 id BIGSERIAL PRIMARY KEY,
-                traveller_id uuid references traveller,
-                trip_id uuid references trip,
+                trip_id uuid references trip ON DELETE CASCADE,
                 title VARCHAR(60),
                 description VARCHAR(200),
                 start_date TIMESTAMP,
-                end_date TIMESTAMP
+                end_date TIMESTAMP,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                created_by varchar(320) references traveller(email) ON DELETE CASCADE
             );
         """)
 
@@ -159,10 +161,9 @@ class DatabaseSetup:
         self.drop_traveller_trip_table()
         self.drop_itinerary_table()
 
-    @staticmethod
-    def insert_data(database):
+    def insert_data(self):
         # Insert a fake user troy
-        database.query("""
+        self.database.query("""
             INSERT INTO traveller 
             VALUES (
                 'ce475240-1b9f-4c52-900b-a83af218896a',
@@ -180,7 +181,7 @@ class DatabaseSetup:
         """)
 
         # Insert a fake user "joe"
-        database.query("""
+        self.database.query("""
             INSERT INTO traveller 
             VALUES (
                 '4d17d823-e31c-47c9-81ad-a53dff295e6b',
@@ -198,19 +199,21 @@ class DatabaseSetup:
         """)
 
         # Insert two trips
-        database.query("""
+        self.database.query("""
             INSERT INTO trip 
             (
                 destination,
                 description,
                 start_date,
-                end_date
+                end_date,
+                created_by
             )
             VALUES (
                 'Puerto Vallarta',
                 'Getaway trip',
                 '2020-06-10',
-                '2020-06-11'
+                '2020-06-11',
+                'troy@test.com'
             );
 
             INSERT INTO trip 
@@ -218,18 +221,20 @@ class DatabaseSetup:
                 destination,
                 description,
                 start_date,
-                end_date
+                end_date,
+                created_by
             )
             VALUES (
                 'Cabo',
                 'Getaway trip 2',
                 '2020-07-10',
-                '2020-07-11'
+                '2020-07-11',
+                'joe@test.com'
             );
         """)
 
         # Add both users to both trips
-        database.query("""
+        self.database.query("""
             INSERT INTO traveller_trip 
             VALUES (
                 (SELECT id FROM traveller WHERE first_name='troy'),

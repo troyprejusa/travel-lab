@@ -17,8 +17,8 @@ async def create_trip(
     request: Request,
     destination: Annotated[str, Form()],
     description: Annotated[str, Form()],
-    start_date: Annotated[str, Form()],
-    end_date: Annotated[str, Form()]
+    start_date: Annotated[date, Form()],
+    end_date: Annotated[date, Form()]
     ) -> Trip | str:   
 
     try:
@@ -28,12 +28,12 @@ async def create_trip(
         data = db_handler.query("""
             WITH temp_table as (
                 INSERT INTO trip 
-                (destination, description, start_date, end_date)
-                VALUES (%s, %s, %s, %s)
+                (destination, description, start_date, end_date, created_by)
+                VALUES (%s, %s, %s, %s, %s)
                 RETURNING id
             ) INSERT INTO traveller_trip VALUES (%s, (SELECT id from temp_table)) RETURNING trip_id;
                                 
-        """, (destination, description, start_date, end_date, request.state.user['id']))
+        """, (destination, description, start_date, end_date, request.state.user['email'], request.state.user['id']))
         trip_id = data[0]['trip_id']
         
         trip_data = db_handler.query("""
@@ -43,6 +43,7 @@ async def create_trip(
         return trip_data
     
     except Exception as e:
+        print(str(e))
         return JSONResponse(
             status_code=500,
             content = {
@@ -67,6 +68,7 @@ async def delete_trip(request: Request, trip_id: str) -> str:
         )
     
     except Exception as e:
+        print(str(e))
         return JSONResponse(
             status_code=500,
             content = {
@@ -85,6 +87,7 @@ async def get_contact_info(trip_id: str) ->  list[Traveller] | str:
         return travellers
 
     except Exception as e:
+        print(str(e))
         return JSONResponse(
             status_code=500,
             content = {

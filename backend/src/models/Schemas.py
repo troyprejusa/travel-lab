@@ -16,12 +16,14 @@ class Trip(BaseModel):
     start_date: date
     end_date: date
     created_at: datetime
+    created_by: str
 
 class Itinerary(BaseModel):
     id: int
-    traveller_id: UUID
     trip_id: UUID
     title: str
     description: str
     start_date: datetime
     end_date: datetime
+    created_at: datetime
+    created_by: str
