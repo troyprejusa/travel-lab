@@ -4,9 +4,6 @@ import { RootState } from '../redux/Store';
 import { UserModel, TripModel } from '../Models/Interfaces';
 import { Flex } from '@chakra-ui/react';
 
-interface HomeProps {
-
-};
 
 function Home(): JSX.Element {
     console.log('HOME:')

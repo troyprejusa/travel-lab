@@ -1,8 +1,5 @@
 import React from 'react';
 
-interface UserSettingsProps {
-
-};
 
 function UserSettings(): JSX.Element {
     return (

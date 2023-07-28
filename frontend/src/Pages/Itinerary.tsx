@@ -16,10 +16,6 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 
 
-interface ItineraryProps {
-
-};
-
 function Itinerary(): JSX.Element {
 
     // Local state

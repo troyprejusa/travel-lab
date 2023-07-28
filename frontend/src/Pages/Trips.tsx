@@ -5,9 +5,6 @@ import ChakraTripCard from '../Components/ChakraTripCard';
 import ChakraNewTrip from '../Components/ChakraNewTrip';
 import fetchHelpers from '../utilities/fetchHelpers';
 
-interface TripsProps {
-
-};
 
 function Trips(): JSX.Element {
 
