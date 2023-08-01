@@ -18,7 +18,7 @@ function Splash(): JSX.Element {
         <>
             <Flex minWidth={'40%'} backgroundImage={splashphotoHero} backgroundSize={'cover'} backgroundRepeat={'no-repeat'} justifyContent={'space-between'}>
                 <Flex alignItems={'center'}>
-                    <Text color='#9BA17B' fontSize="6xl" fontFamily="monospace" fontWeight="bold">Travel | Lab</Text>
+                    {/* <Text color='#9BA17B' fontSize="6xl" fontFamily="monospace" fontWeight="bold"></Text> */}
                 </Flex>
                 {wantsLogin ? <ChakraLogin setWantsLogin={setWantsLogin} /> : <ChakraSignup setWantsLogin={setWantsLogin}/>}
             </Flex>
