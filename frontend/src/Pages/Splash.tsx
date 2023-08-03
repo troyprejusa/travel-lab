@@ -1,5 +1,5 @@
 import React from 'react';
-import splashphotoHero from '../Photos/splashphoto_hero.jpg';
+import splashphotoHero from '../assets/splashphoto_hero.jpg';
 
 import { 
     Flex,

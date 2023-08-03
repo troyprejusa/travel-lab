@@ -5,6 +5,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import ChakraNewItinerary from '../Components/ChakraNewItinerary';
 import ItineraryEntry from '../Components/ChakraItineraryEntry';
 import fetchHelpers from '../utilities/fetchHelpers';
+import FullCalendar from '@fullcalendar/react'
+import dayGridPlugin from '@fullcalendar/daygrid'
 import {
     Flex,
     Stack,
@@ -12,8 +14,7 @@ import {
     Button,
     Text
 } from '@chakra-ui/react';
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
+
 
 
 function Itinerary(): JSX.Element {
@@ -34,12 +35,18 @@ function Itinerary(): JSX.Element {
             </Flex>
             <Flex flexWrap={'wrap'} justifyContent={'space-evenly'}>
                 <Box minWidth={'35vw'}>
-                    <FullCalendar plugins={[ dayGridPlugin ]} initialView="dayGridMonth"/>
+                    <FullCalendar 
+                    plugins={[ dayGridPlugin ]} 
+                    initialView="dayGridMonth" 
+                    events={itinerary.map((a) => {
+                        return {'title': 'hi', 'date': '2019-04-04'}
+                    })}
+                    />
                 </Box>
                 <Stack spacing='4' height={'80vh'} minWidth={'35vw'} overflowY={'scroll'}>
                     <ChakraNewItinerary getItinerary={getItinerary}/>
                     {itinerary.length === 0 ? 
-                    <Text>Nothing planned yet...</Text> :
+                    <Text>Nothing planned...</Text> :
                     itinerary.map((itin, index) => <ItineraryEntry key={index} {...itin} />)
                     }
                 </Stack>

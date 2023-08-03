@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { reduxSetTrip } from '../redux/TripSlice';
 import { TripModel } from '../Models/Interfaces';
-import TripPhoto from '../Photos/tripphoto.jpg';
+import TripPhoto from '../assets/tripphoto.jpg';
 import {
   Box,
   Center,
