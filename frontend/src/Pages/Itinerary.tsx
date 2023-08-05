@@ -34,6 +34,13 @@ function Itinerary(): JSX.Element {
                 <h1>Itinerary</h1>
             </Flex>
             <Flex flexWrap={'wrap'} justifyContent={'space-evenly'}>
+                <Stack spacing='4' height={'80vh'} minWidth={'35vw'} overflowY={'scroll'}>
+                    <ChakraNewItinerary getItinerary={getItinerary}/>
+                    {itinerary.length === 0 ? 
+                    <Text>Nothing planned...</Text> :
+                    itinerary.map((itin, index) => <ItineraryEntry key={index} {...itin} />)
+                    }
+                </Stack>
                 <Box minWidth={'35vw'}>
                     <FullCalendar 
                     plugins={[ dayGridPlugin ]} 
@@ -43,13 +50,6 @@ function Itinerary(): JSX.Element {
                     })}
                     />
                 </Box>
-                <Stack spacing='4' height={'80vh'} minWidth={'35vw'} overflowY={'scroll'}>
-                    <ChakraNewItinerary getItinerary={getItinerary}/>
-                    {itinerary.length === 0 ? 
-                    <Text>Nothing planned...</Text> :
-                    itinerary.map((itin, index) => <ItineraryEntry key={index} {...itin} />)
-                    }
-                </Stack>
             </Flex>
         </>
     )

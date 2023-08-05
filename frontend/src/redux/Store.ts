@@ -6,7 +6,7 @@ import tripReducer from './TripSlice';
 const store = configureStore({
     reducer: {
         user: userReducer,
-        trip: tripReducer    
+        trip: tripReducer
     }
 })
 

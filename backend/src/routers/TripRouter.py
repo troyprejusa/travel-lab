@@ -147,5 +147,3 @@ async def add_itinerary_info(
                 "message": f"ERROR: Unable to submit itinerary stop for trip id {trip_id}"
             }
         )
-
-

@@ -5,6 +5,7 @@ from routers.UserRouter import user_router
 from routers.TripRouter import trip_router
 from routers.AuthRouter import auth_router
 from routers.DevRouter import dev_router
+from models.WebSocketHandler import socketio_ASGI
 from models.DatabaseHandler import db_handler
 from models.DatabaseSetup import DatabaseSetup
 from utilities import Constants
@@ -18,25 +19,16 @@ db_setup.setup_db()
 db_setup.insert_data()
 
 # Allow external access to the following endpoints:
-whitelist = [
+whitelist = set([
     'docs',
     'openapi.json',
     'auth',
-    'dev'
-]
+    'dev',
+    'sio'
+])
 
 # Create app
 app = FastAPI()
-
-# Handle CORS
-# origins = ["http://localhost:3000"]
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
 
 @app.middleware('http')
 async def verify_auth(request: Request, call_next):
@@ -89,6 +81,11 @@ app.include_router(user_router)
 
 # /trip
 app.include_router(trip_router)
+
+
+# /socket.io
+# Mount ASGI interface-wrapped server
+app.mount('/sio', socketio_ASGI)
 
 
 # Default redirection to handle client-side fwd/back/refresh

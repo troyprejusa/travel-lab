@@ -1,9 +1,13 @@
-import React, { useState, SyntheticEvent, useRef } from 'react'; 
+import React, { useState, SyntheticEvent, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { RootState } from '../redux/Store';
 import { UserModel } from '../Models/Interfaces';
 import { reduxUserLogin } from '../redux/UserSlice';
+import { reduxSetSocket } from '../redux/SocketSlice';
+import TripSocket from '../utilities/socketHelpers';
+import { Socket } from 'socket.io-client';
+
 import {
   Flex,
   Box,
@@ -26,7 +30,7 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 interface ChakraLoginProps {
   setWantsLogin: any;
 }
-  
+
 function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
 
   const navigate = useNavigate();
@@ -40,9 +44,9 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
     <Flex
       align={'center'}
       justify={'center'}
-      // bg={useColorModeValue('gray.50', 'gray.800')}
-      // bgColor={'rgba(255, 255, 255, .25)'}
-      >
+    // bg={useColorModeValue('gray.50', 'gray.800')}
+    // bgColor={'rgba(255, 255, 255, .25)'}
+    >
       <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
         <Stack align={'center'}>
           <Heading fontSize={'4xl'}>Log in to your account</Heading>
@@ -56,19 +60,19 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
             <form onSubmit={handleLogin}>
               <FormControl id="email">
                 <FormLabel>Email address</FormLabel>
-                <Input type="email" ref={usernameRef}/>
+                <Input type="email" ref={usernameRef} />
               </FormControl>
               <FormControl id="password">
                 <FormLabel>Password</FormLabel>
                 <InputGroup>
-                  <Input type={showPassword ? 'text' : 'password'} ref={passwordRef}/>
+                  <Input type={showPassword ? 'text' : 'password'} ref={passwordRef} />
                   <InputRightElement h={'full'}>
                     <Button
-                    variant={'ghost'}
-                    onClick={() =>
-                      setShowPassword((showPassword) => !showPassword)
-                    }>
-                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                      variant={'ghost'}
+                      onClick={() =>
+                        setShowPassword((showPassword) => !showPassword)
+                      }>
+                      {showPassword ? <ViewIcon /> : <ViewOffIcon />}
                     </Button>
                   </InputRightElement>
                 </InputGroup>
@@ -94,17 +98,17 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
             </form>
             <Stack>
               <Button
-                  onClick={handleFakeLogin}
-                  bg={'blue.400'}
-                  color={'white'}
-                  _hover={{
-                    bg: 'blue.500',
-                  }}>
-                  DEV BYPASS
+                onClick={handleFakeLogin}
+                bg={'blue.400'}
+                color={'white'}
+                _hover={{
+                  bg: 'blue.500',
+                }}>
+                DEV BYPASS
               </Button>
             </Stack>
             <Text align={'center'}>
-                    Need an account? <Link color={'blue.400'} onClick={setWantsLogin.toggle}>Sign Up</Link>
+              Need an account? <Link color={'blue.400'} onClick={setWantsLogin.toggle}>Sign Up</Link>
             </Text>
           </Stack>
         </Box>
@@ -114,7 +118,7 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
 
   function handleLogin(event: SyntheticEvent) {
     event.preventDefault();   // Prevent URL redirection
-  
+
     // Check if null to avoid TypeScript error
     if (usernameRef.current !== null && passwordRef.current !== null) {
       const formData: URLSearchParams = new URLSearchParams();
@@ -129,42 +133,47 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
   }
 
   function handleFakeLogin(event: SyntheticEvent) {
-      const formData: URLSearchParams = new URLSearchParams();
-      formData.append('username', 'troy@test.com');
-      formData.append('password', 'abcd');
-      loginUser(formData);
+    const formData: URLSearchParams = new URLSearchParams();
+    formData.append('username', 'troy@test.com');
+    formData.append('password', 'abcd');
+    loginUser(formData);
   }
 
   async function loginUser(formData: URLSearchParams) {
-      try {
-        const res: Response = await fetch('/auth/signin', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'content-type': 'application/x-www-form-urlencoded'
-            }
-        });
-        if (res.ok) {
-            const json = await res.json();
-            const user: UserModel = json.user;
-            
-            // Save token to localStorage
-            localStorage.setItem("token", json.token);
-
-            // Put user information into state
-            dispatch(reduxUserLogin(user));
-
-            // Navigate to the next page
-            navigate(`/user/${user.email}/trips`)
-
-        } else {
-            const json = await res.json();
-            throw new Error(JSON.stringify(json));
+    try {
+      const res: Response = await fetch('/auth/signin', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded'
         }
+      });
+      if (res.ok) {
+        const json = await res.json();
+        const user: UserModel = json.user;
 
-      } catch (e: any) {
-          console.error(`No developing today :(\n${e.message}`)
+        const auth_token: string = json.token;
+
+        // Connect to websocket - Singleton
+        const socket = new TripSocket(auth_token);
+
+        // Save token to localStorage
+        localStorage.setItem("token", auth_token);
+
+        // Put user information into state
+        dispatch(reduxUserLogin(user));
+
+        // Navigate to the next page
+        navigate(`/user/${user.email}/trips`)
+
+      } else {
+        const json = await res.json();
+        throw new Error(JSON.stringify(json));
       }
+
+    } catch (e: any) {
+      console.error(`No developing today :(\n${e.message}`)
+    }
 
   }
 }
