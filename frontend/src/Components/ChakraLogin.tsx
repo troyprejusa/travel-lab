@@ -4,9 +4,6 @@ import { useDispatch } from 'react-redux'
 import { RootState } from '../redux/Store';
 import { UserModel } from '../Models/Interfaces';
 import { reduxUserLogin } from '../redux/UserSlice';
-import { reduxSetSocket } from '../redux/SocketSlice';
-import TripSocket from '../utilities/socketHelpers';
-import { Socket } from 'socket.io-client';
 
 import {
   Flex,
@@ -153,9 +150,6 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
         const user: UserModel = json.user;
 
         const auth_token: string = json.token;
-
-        // Connect to websocket - Singleton
-        const socket = new TripSocket(auth_token);
 
         // Save token to localStorage
         localStorage.setItem("token", auth_token);

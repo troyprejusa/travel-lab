@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { reduxSetTrip } from '../redux/TripSlice';
 import { TripModel } from '../Models/Interfaces';
 import TripPhoto from '../assets/tripphoto.jpg';
+import { tripSocket } from '../utilities/TripSocket';
 import {
   Box,
   Center,
@@ -79,7 +80,24 @@ export default function ChakraTripCard(props: ChakraTripCardProps) {
   );
 
   function handleViewClick(event: SyntheticEvent) {
-    dispatch(reduxSetTrip(props.tripData));
-    navigate(`/trip/${props.tripData.id}/home`);
+
+    const authToken: string | null = localStorage.getItem("token");
+
+    if (authToken) {
+      // Establish a websocket connection for these rooms
+      // globalSocket.establishSocket(authToken, props.tripData.id);
+      // msgSocket.establishSocket(authToken, props.tripData.id);
+      tripSocket.establishSocket(authToken, props.tripData.id);
+  
+      // Set this trip as the current trip in state
+      dispatch(reduxSetTrip(props.tripData));
+  
+      // Navigate on to view the trip
+      navigate(`/trip/${props.tripData.id}/home`);
+
+    } else {
+      alert('Unable to view trip!')
+    }
+
   }
 }
