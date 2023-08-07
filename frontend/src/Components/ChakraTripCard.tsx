@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { reduxSetTrip } from '../redux/TripSlice';
 import { TripModel } from '../Models/Interfaces';
 import TripPhoto from '../assets/tripphoto.jpg';
-import { tripSocket } from '../utilities/TripSocket';
+import { msgSocket, pollSocket } from '../utilities/TripSocket';
 import {
   Box,
   Center,
@@ -85,9 +85,8 @@ export default function ChakraTripCard(props: ChakraTripCardProps) {
 
     if (authToken) {
       // Establish a websocket connection for these rooms
-      // globalSocket.establishSocket(authToken, props.tripData.id);
-      // msgSocket.establishSocket(authToken, props.tripData.id);
-      tripSocket.establishSocket(authToken, props.tripData.id);
+      msgSocket.establishSocket(authToken, props.tripData.id);
+      pollSocket.establishSocket(authToken, props.tripData.id);
   
       // Set this trip as the current trip in state
       dispatch(reduxSetTrip(props.tripData));

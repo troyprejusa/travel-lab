@@ -4,64 +4,35 @@ class TripSocket {
 
     host: string;
     apiPath: string;
-    globalSocket: Socket;
-    msgSocket: Socket;
-    pollSocket: Socket;
+    namespace: string;
+    socket: Socket;
 
-    constructor(host: string, apiPath: string) {
+    constructor(host: string, apiPath: string, namespace: string) {
         this.host = host;
         this.apiPath = apiPath;
+        this.namespace = namespace;
     }
 
     establishSocket(token: string, trip_id: string) {
         // Have to establish the global connection, otherwise
         // namespace connections throw an error on the backend
-        this.globalSocket = io(this.host + '/', {
+        this.socket = io(this.host + this.namespace, {
             reconnectionDelayMax: 5000,
             path: this.apiPath,
-            query: {'token': token}
+            auth: {
+                token: token
+            }
         })
-    
-        this.globalSocket.on("connect", () => {
-            console.log(`Websocket connection successful for global namespace`);
 
+        this.socket.on('backend_msg', (data) => {
+            console.error(data);
+            alert(data)
+        })
 
-            // TODO: after the global namespace works, we can connect to the namespaces
-
-            // this.msgSocket = io(this.host + '/message', {
-            //     reconnectionDelayMax: 5000,
-            //     path: this.apiPath,
-            //     query: {
-            //         token: token,
-            //         trip_id: trip_id
-            //     }
-            // })
-
-            // this.msgSocket.on('connect', () => console.log('MSG: I guess this worked?'))
-
-            // this.pollSocket = io(this.host + '/poll', {
-            //     reconnectionDelayMax: 5000,
-            //     path: this.apiPath,
-            //     query: {
-            //         token: token,
-            //         trip_id: trip_id
-            //     }
-            // })
-
-            // this.pollSocket.on('connect', () => console.log('POLL: I guess this worked?'))
-
-
-            // });
-        
-        this.globalSocket.on("connect_error", (err: any) => {
-            console.log('Websocket connection failed for global namespace :(');
-        });
-    
-        this.globalSocket.on("disconnect", (err: any) => {
-            console.log('Disconnecting websocket for global namespace');
-        });
-
-        // TODO: Need a way to switch rooms when a new trip is selected
+        this.socket.on('backend_poll', (data) => {
+            console.error(data);
+            alert(data)
+        })
 
     }
     
@@ -70,4 +41,5 @@ class TripSocket {
 const host: string = 'ws://localhost:8000';
 const apiPath: string = '/sio/socket.io';
 
-export const tripSocket = new TripSocket(host, apiPath);
+export const msgSocket = new TripSocket(host, apiPath, '/message')
+export const pollSocket = new TripSocket(host, apiPath, '/poll');
