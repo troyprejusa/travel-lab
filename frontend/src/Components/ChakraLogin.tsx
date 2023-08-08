@@ -1,7 +1,6 @@
 import React, { useState, SyntheticEvent, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux'
-import { RootState } from '../redux/Store';
 import { UserModel } from '../Models/Interfaces';
 import { reduxUserLogin } from '../redux/UserSlice';
 

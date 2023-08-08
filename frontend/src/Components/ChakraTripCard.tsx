@@ -85,8 +85,10 @@ export default function ChakraTripCard(props: ChakraTripCardProps) {
 
     if (authToken) {
       // Establish a websocket connection for these rooms
-      msgSocket.establishSocket(authToken, props.tripData.id);
-      pollSocket.establishSocket(authToken, props.tripData.id);
+      // TODO: Ensure that this also leaves any previous rooms before joining
+      // the new one
+      msgSocket.establishSocket(authToken, props.tripData.id, dispatch);
+      pollSocket.establishSocket(authToken, props.tripData.id, dispatch);
   
       // Set this trip as the current trip in state
       dispatch(reduxSetTrip(props.tripData));

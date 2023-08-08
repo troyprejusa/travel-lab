@@ -34,3 +34,11 @@ export interface ItineraryModel {
     created_at: string
     created_by: string
 }
+
+export interface MessageModel {
+    id: number
+    trip_id: string
+    content: string
+    created_at: string
+    created_by: string
+}
