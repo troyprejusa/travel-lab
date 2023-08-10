@@ -5,16 +5,18 @@ import { UserModel, TripModel, MessageModel } from '../Models/Interfaces';
 import { useSelector, useDispatch } from 'react-redux';
 import { reduxSetMessages } from '../redux/MessageSlice';
 import { RootState } from '../redux/Store';
+import fetchHelpers from '../utilities/fetchHelpers';
 
 
 function MessageBoard(): JSX.Element {
 
     const user: UserModel = useSelector((state: RootState) => state.user);
     const trip: TripModel = useSelector((state: RootState) => state.trip);
+    const messages: Array<string> = useSelector((state: RootState) => state.messages);
 
     const dispatch = useDispatch();
 
-    useEffect(getOldMessages, [])
+    useEffect(getOldMessages, [])   // Initial render only
     
     return (
         <>
@@ -23,7 +25,11 @@ function MessageBoard(): JSX.Element {
             </Flex>
             <input type="text" id='temp_input'/>
             <button onClick={sendData}>Send data</button>
-
+            <ul>
+                {messages.length === 0 ?
+                <li>No messages yet...</li> : 
+                messages.map((msg: MessageModel, i: number) => <li key={i}>{msg.content}</li>)}
+            </ul>
         </>
 
     )
@@ -31,7 +37,6 @@ function MessageBoard(): JSX.Element {
     function sendData(event: SyntheticEvent) {
         const node = document.getElementById('temp_input');
         if (node) {
-            console.log('i did a thing')
             const data: string = node.value;
 
             const message: MessageModel = {
@@ -40,32 +45,31 @@ function MessageBoard(): JSX.Element {
                 created_by: user.email
             }
 
-            console.log(data)
-            msgSocket.socket.emit('frontend_msg', data)
-            
+            console.log('Sending message:', message)
+            msgSocket.socket.emit('frontend_msg', message)
         }
-
     }
 
     function getOldMessages() {
         (async function() {
             try {
-                const res: Response = await fetch(`/${trip.id}/message`);
-
-                console.log(res);
-                const json = await res.json();
+                const res: Response = await fetch(`/trip/${trip.id}/message`, {
+                    method: 'GET',
+                    headers: fetchHelpers.getTokenHeader()
+                });                
 
                 if (res.ok) {
-                    console.log(json);
-                    dispatch(reduxSetMessages(json));
+                    const messages: Array<MessageModel> = await res.json();
+                    dispatch(reduxSetMessages(messages));
 
                 } else {
-                    throw new Error(json.message);
+                    const errorMsg = await res.json();
+                    throw new Error(errorMsg.message);
                 }
 
             } catch (e: any) {
                 console.log(e);
-                // alert('Unable to retrieve messages for trip')
+                alert('Unable to retrieve messages for trip!')
             }
         })()
     }

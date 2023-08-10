@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
-from models.Schemas import Trip, Traveller, Itinerary
+from models.Schemas import Trip, Traveller, Itinerary, Message
 from typing import Annotated
 from datetime import date, datetime
 from models.S3Handler import minio_client
@@ -145,5 +145,23 @@ async def add_itinerary_info(
             status_code=500,
             content = {
                 "message": f"ERROR: Unable to submit itinerary stop for trip id {trip_id}"
+            }
+        )
+    
+@trip_router.get('/{trip_id}/message')
+async def get_messages(trip_id: str) -> list[Message] | str:
+    try:
+        data = db_handler.query("""
+            SELECT * FROM message WHERE trip_id = %s
+        """, (trip_id,))
+
+        return data
+    
+    except Exception as e:
+        print(str(e))
+        return JSONResponse(
+            status_code=500,
+            content= {
+                "message": f'ERROR: Unable to retrieve messages for trip id {trip_id}'
             }
         )

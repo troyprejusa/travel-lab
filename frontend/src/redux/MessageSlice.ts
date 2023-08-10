@@ -4,7 +4,7 @@ import { MessageModel } from "../Models/Interfaces";
 const initialMessageState: Array<MessageModel> = [];
 
 const messageSlice: Slice = createSlice({
-    name: 'message',  // state.message
+    name: 'messages',  // state.messages
     initialState: initialMessageState,
     reducers: {
 
@@ -13,12 +13,16 @@ const messageSlice: Slice = createSlice({
         },
 
         reduxAddMessage: (state, action: PayloadAction<MessageModel>) => {
-            return state.push(action.payload);
+            state.push(action.payload);
+        },
+
+        reduxResetMessages: (state, action: PayloadAction<null>) => {
+            return [];
         }
     }
 
 })
 
-export const { reduxSetMessages, reduxAddMessage } = messageSlice.actions;
+export const { reduxSetMessages, reduxAddMessage, reduxResetMessages } = messageSlice.actions;
 
 export default messageSlice.reducer

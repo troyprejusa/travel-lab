@@ -24,6 +24,7 @@ import Packing from './Pages/Packing';
 import ContactInfo from './Pages/ContactInfo';
 import TripSettings from './Pages/TripSettings';
 import NotFound from './Pages/NotFound';
+import Recommendations from './Pages/Recommendations';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -41,6 +42,7 @@ const router = createBrowserRouter(
           <Route path="poll" element={<Poll />}/>
           <Route path="packing" element={<Packing />} />
           <Route path="contactinfo" element={<ContactInfo />} />
+          <Route path="recommendations" element={<Recommendations />} />
           <Route path="settings" element={<TripSettings />} />
       </Route>
 

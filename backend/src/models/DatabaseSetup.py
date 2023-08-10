@@ -133,15 +133,56 @@ class DatabaseSetup:
         """)
 
     def initialize_messages_table(self) -> None:
-        # self.database.query("""
-            
-        # """)
+        self.database.query("""
+            CREATE TABLE IF NOT EXISTS message (
+                id BIGSERIAL PRIMARY KEY,
+                trip_id uuid references trip ON DELETE CASCADE,
+                content VARCHAR(1100),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                created_by varchar(320) references traveller(email) ON DELETE CASCADE
+            );
+        """)
+    
+    def drop_messages_table(self) -> None:
+        self.database.query("""
+            DROP TABLE IF EXISTS message;
+        """)
+    
+    def initialize_poll_tables(self) -> None:
+        self.database.query("""
+            CREATE TABLE IF NOT EXISTS poll (
+                id BIGSERIAL PRIMARY KEY,
+                trip_id uuid references trip ON DELETE CASCADE,
+                title VARCHAR(40),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                created_by varchar(320) references traveller(email) ON DELETE CASCADE
+            );
+                            
+            CREATE TABLE IF NOT EXISTS poll_option (
+                id BIGSERIAL PRIMARY KEY,
+                poll_id BIGINT references poll ON DELETE CASCADE,
+                option VARCHAR(120)
+            );
+                            
+            CREATE TABLE IF NOT EXISTS poll_vote (
+                id BIGSERIAL PRIMARY KEY,
+                poll_id BIGINT references poll ON DELETE CASCADE,
+                vote VARCHAR(120),
+                voted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                voted_by varchar(320) references traveller(email) ON DELETE CASCADE 
+            );
+        """)
+
+    def drop_poll_tables(self) -> None:
         pass
 
     def initialize_packing_table(self) -> None:
         # self.database.query("""
             
         # """)
+        pass
+
+    def drop_packing_table(self) -> None:
         pass
 
     def setup_db(self) -> None:
@@ -153,6 +194,8 @@ class DatabaseSetup:
         self.initialize_trip_table()
         self.initialize_traveller_trip_table()
         self.initialize_itinerary_table()
+        self.initialize_messages_table()
+        self.initialize_poll_tables()
     
     def drop_tables(self) -> None:
         self.drop_traveller_table()
@@ -160,6 +203,8 @@ class DatabaseSetup:
         self.drop_trip_table()
         self.drop_traveller_trip_table()
         self.drop_itinerary_table()
+        self.drop_messages_table()
+        self.drop_poll_tables()
 
     def insert_data(self):
         # Insert a fake user troy

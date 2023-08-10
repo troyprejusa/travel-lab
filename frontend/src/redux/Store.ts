@@ -8,7 +8,7 @@ const store = configureStore({
     reducer: {
         user: userReducer,
         trip: tripReducer,
-        message: messageReducer
+        messages: messageReducer
     }
 })
 

@@ -8,23 +8,26 @@ class TripSocket {
     host: string;
     apiPath: string;
     namespace: string;
-    eventHandlers: object;
     socket: Socket;
     dispatch: Dispatch
 
-    constructor(host: string, apiPath: string, namespace: string, eventHandlers: object) {
+    constructor(host: string, apiPath: string, namespace: string) {
         this.host = host;
         this.apiPath = apiPath;
         this.namespace = namespace;
-        this.eventHandlers = eventHandlers;
     }
 
     establishSocket(token: string, trip_id: string, dispatcher: Dispatch) {
 
         this.dispatch = dispatcher;
 
-        // Have to establish the global connection, otherwise
-        // namespace connections throw an error on the backend
+        if (this.socket !== undefined) {
+            // If we already have a connection, let's disconnect since we
+            // are potentially switching trips when we get to here
+
+            this.socket.disconnect();
+        }
+
         this.socket = io(this.host + this.namespace, {
             reconnectionDelayMax: 5000,
             path: this.apiPath,
@@ -36,33 +39,55 @@ class TripSocket {
               }
         })
 
-        for (const eventName in this.eventHandlers) {
-            this.socket.on(eventName, this.eventHandlers[eventName])
-        }
+    }
 
+    disconnectSocket() {
+        if (this.socket.connected) {
+            this.socket.disconnect();
+        }
     }
     
+}
+
+class MessageSocket extends TripSocket {
+
+    constructor(host: string, apiPath: string, namespace: string) {
+        super(host, apiPath, namespace);
+    }
+
+    establishSocket(token: string, trip_id: string, dispatcher: Dispatch) {
+
+        // Make a connection to the socket using the parent method
+        super.establishSocket(token, trip_id, dispatcher);
+
+        // Create event handlers for this
+        this.socket.on('backend_msg', (data: MessageModel) => {
+            console.log('I received a message!', data)
+            this.dispatch(reduxAddMessage(data));
+        })
+    }
+}
+
+class PollSocket extends TripSocket {
+    constructor(host: string, apiPath: string, namespace: string) {
+        super(host, apiPath, namespace);
+    }
+
+    establishSocket(token: string, trip_id: string, dispatcher: Dispatch) {
+        
+        // Make a connection to the socket using the parent method
+        super.establishSocket(token, trip_id, dispatcher);
+
+        // Create event handlers for this
+        // this.socket.on('backend_msg', (data: MessageModel) => {
+        //     this.dispatch(reduxAddMessage(data.content));
+        // })
+    }
 }
 
 const host: string = 'ws://localhost:8000';
 const apiPath: string = '/sio/socket.io';
 
-const msgEventHandlers: object = {
+export const msgSocket = new MessageSocket(host, apiPath, '/message');
 
-    // This must be a function not arrow function because of its
-    // use of "this"
-    'backend_msg': function(data: MessageModel) {
-        this.dispatch(reduxAddMessage(data.content))
-    }
-}
-
-
-export const msgSocket = new TripSocket(host, apiPath, '/message', msgEventHandlers);
-
-const pollEventHandlers = {
-    'backend_poll': (data) => {
-        console.error(data);
-        alert(data);
-    }
-}
-export const pollSocket = new TripSocket(host, apiPath, '/poll', pollEventHandlers);
+export const pollSocket = new PollSocket(host, apiPath, '/poll');

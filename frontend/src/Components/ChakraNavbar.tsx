@@ -41,11 +41,14 @@ import {
   FiChevronDown,
   FiNavigation,
   FiUsers,
-  FiThumbsUp
+  FiThumbsUp,
+  FiCompass
 } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
 import { RootState } from '../redux/Store';
 import { UserModel } from '../Models/Interfaces';
+import { msgSocket, pollSocket } from '../utilities/TripSocket';
+import { reduxResetMessages } from '../redux/MessageSlice';
 
 
 interface LinkItemProps {
@@ -62,6 +65,7 @@ const LinkItems: Array<LinkItemProps> = [
   { name: 'Poll', icon: FiThumbsUp, path: 'poll' },
   { name: 'Packing', icon: FiBriefcase, path: 'packing' },
   { name: 'Contact Info', icon: FiUsers, path: 'contactinfo' },
+  { name: 'Recommendations', icon: FiCompass, path: 'recommendations' },
   { name: 'Trip Settings', icon: FiSettings, path: 'settings' }
 ];
 
@@ -259,14 +263,13 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   );
 
   function handleSignOut(e: SyntheticEvent) {
-    try {
       localStorage.removeItem('token');
+      msgSocket.disconnectSocket();
+      pollSocket.disconnectSocket();
+      dispatch(reduxResetMessages(null));
       dispatch(reduxResetTrip(null));
       dispatch(reduxUserLogout(null));
       navigate('/');
-
-    } catch(e) {
-      console.error('Unable to sign out!')
-    }
   }
+
 };

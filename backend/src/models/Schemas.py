@@ -27,3 +27,20 @@ class Itinerary(BaseModel):
     end_time: datetime
     created_at: datetime
     created_by: str
+
+class Message(BaseModel):
+    id: int
+    trip_id: UUID
+    content: str
+    created_at: datetime
+    created_by: str
+
+class Poll(BaseModel):
+    id: int
+    trip_id: UUID
+    title: str
+    created_at: datetime
+    created_by: str
+
+class PollVote(BaseModel):
+    pass
