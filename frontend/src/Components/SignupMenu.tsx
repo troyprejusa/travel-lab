@@ -21,11 +21,11 @@ import {
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
-interface ChakraSignupProps {
+interface SignupMenuProps {
     setWantsLogin: any;
 }
   
-function ChakraSignup({ setWantsLogin }: ChakraSignupProps) {
+function SignupMenu({ setWantsLogin }: SignupMenuProps) {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfPassword, setShowConfPassword] = useState(false);
 
@@ -193,4 +193,4 @@ function ChakraSignup({ setWantsLogin }: ChakraSignupProps) {
       }
   }
 
-export default ChakraSignup;
+export default SignupMenu;

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
 import { TripModel, UserModel } from '../Models/Interfaces';
 import fetchHelpers from '../utilities/fetchHelpers';
-import ChakraContactCard from '../Components/ChakraContactCard';
+import ContactCard from '../Components/ContactCard';
 import { Wrap, Flex } from '@chakra-ui/react';
 
 // interface ContactInfoProps {
@@ -26,7 +26,7 @@ function ContactInfo(): JSX.Element {
                 <h1>Contact Info</h1>
             </Flex>
             <Wrap spacing={'5%'}>
-                {travelCompanions.map((a: UserModel, i: number) => <ChakraContactCard key={i} {...a}/>)}
+                {travelCompanions.map((a: UserModel, i: number) => <ContactCard key={i} {...a}/>)}
             </Wrap>
         </>
     )

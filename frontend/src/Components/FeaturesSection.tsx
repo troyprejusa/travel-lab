@@ -48,7 +48,7 @@ const features = [
     }
 ];
 
-function ChakraFeatures() {
+function FeaturesSection() {
     return (
         <Container maxW={'5xl'}>
             <Stack spacing={4} as={Container} maxW={'3xl'} textAlign={'center'}>
@@ -89,4 +89,4 @@ function ChakraFeatures() {
     );
 }
 
-export default ChakraFeatures
+export default FeaturesSection

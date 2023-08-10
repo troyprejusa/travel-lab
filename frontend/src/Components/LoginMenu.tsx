@@ -23,11 +23,11 @@ import {
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
 
-interface ChakraLoginProps {
+interface LoginMenuProps {
   setWantsLogin: any;
 }
 
-function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
+function LoginMenu({ setWantsLogin }: LoginMenuProps) {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -171,4 +171,4 @@ function ChakraLogin({ setWantsLogin }: ChakraLoginProps) {
   }
 }
 
-export default ChakraLogin
+export default LoginMenu

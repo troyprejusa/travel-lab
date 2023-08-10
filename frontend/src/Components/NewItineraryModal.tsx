@@ -1,8 +1,8 @@
 import { useRef, SyntheticEvent } from 'react';
 import fetchHelpers from '../utilities/fetchHelpers';
-import { useDispatch } from 'react-redux';
-import { reduxSetTrip } from '../redux/TripSlice';
-import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/Store';
+import { TripModel, ItineraryModel } from '../Models/Interfaces';
 import {
     Button,
     Modal,
@@ -17,25 +17,23 @@ import {
     FormLabel,
     Input
 } from '@chakra-ui/react'
-import { TripModel } from '../Models/Interfaces';
 
-interface ChakraNewTripProps {
+interface NewItineraryModalProps {
 
 }
 
-function ChakraNewTrip() {
+function NewItineraryModal(props: any) {
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+    const trip: TripModel = useSelector((state: RootState) => state.trip);
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const destination = useRef<HTMLInputElement>(null);
+    const title = useRef<HTMLInputElement>(null);
     const description = useRef<HTMLInputElement>(null);
-    const departure_date = useRef<HTMLInputElement>(null);
-    const return_date = useRef<HTMLInputElement>(null);
+    const start_time = useRef<HTMLInputElement>(null);
+    const end_time = useRef<HTMLInputElement>(null);
 
     return (
       <>
-        <Button onClick={onOpen}>New Trip</Button>
+        <Button onClick={onOpen} colorScheme={'orange'} width={'20%'} minWidth={'max-content'}>New Stop</Button>
   
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
@@ -45,20 +43,20 @@ function ChakraNewTrip() {
             <ModalBody>
                 <form onSubmit={handleSubmit}>
                     <FormControl isRequired>
-                        <FormLabel>Destination</FormLabel>
-                        <Input placeholder='Destination' ref={destination}/>
+                        <FormLabel>Title</FormLabel>
+                        <Input placeholder='Title' ref={title}/>
                     </FormControl>
                     <FormControl isRequired>
                         <FormLabel>Description</FormLabel>
                         <Input placeholder='Description' ref={description}/>
                     </FormControl>
                     <FormControl isRequired>
-                        <FormLabel>Departure Date</FormLabel>
-                        <Input placeholder='Departure Date' type="date" ref={departure_date}/>
+                        <FormLabel>Start Time</FormLabel>
+                        <Input placeholder='Departure Date' type="datetime-local" ref={start_time}/>
                     </FormControl>
                         <FormControl isRequired>
-                        <FormLabel>Return Date</FormLabel>
-                        <Input placeholder='Return Date' type="date" ref={return_date}/>
+                        <FormLabel>End Time</FormLabel>
+                        <Input placeholder='Return Date' type="datetime-local" ref={end_time}/>
                     </FormControl>
                 </form>
             </ModalBody>
@@ -78,19 +76,19 @@ function ChakraNewTrip() {
 
             event.preventDefault();
 
-            if (destination.current !== null && 
+            if (title.current !== null && 
                 description.current !== null && 
-                departure_date.current !== null && 
-                return_date.current !== null) {
+                start_time.current !== null && 
+                end_time.current !== null) {
 
                 // Validate form
-                const destination_entry  = destination.current.value;
+                const title_entry  = title.current.value;
                 const description_entry = description.current.value;
-                const start_date_entry = departure_date.current.value;
-                const end_date_entry = return_date.current.value;
+                const start_time_entry = start_time.current.value;
+                const end_time_entry = end_time.current.value;
 
-                if (destination_entry === '') {
-                    alert('Destination cannot be empty!');
+                if (title_entry === '') {
+                    alert('Title cannot be empty!');
                     return;
                 }
                 
@@ -99,48 +97,40 @@ function ChakraNewTrip() {
                     return;
                 }
                 
-                if (start_date_entry === '') {
-                    alert('Departure date cannot be empty!');
+                if (start_time_entry === '') {
+                    alert('Start time cannot be empty!');
                     return;
                 }
                 
-                if (end_date_entry === '') {
-                    alert('Return date cannot be empty!');
+                if (end_time_entry === '') {
+                    alert('End time cannot be empty!');
                     return;
                 }
 
-                if (Date.parse(start_date_entry) > Date.parse(end_date_entry)) {
-                    alert('Start date cannot be after end time!');
+                if (Date.parse(start_time_entry) > Date.parse(end_time_entry)) {
+                    alert('Event end cannot be before event start!');
                     return;
                 }
                 
                 const formData: URLSearchParams = new URLSearchParams();
-                formData.append('destination', destination_entry);
+                formData.append('title',title_entry);
                 formData.append('description', description_entry);
-                formData.append('start_date', start_date_entry);
-                formData.append('end_date', end_date_entry);
+                formData.append('start_time', start_time_entry);
+                formData.append('end_time', end_time_entry);
 
-                const res: Response = await fetch('/trip/' , {
+                const res: Response = await fetch(`/trip/${trip.id}/itinerary` , {
                     method: 'POST',
                     body: formData,
                     headers: fetchHelpers.getTokenFormHeader()
                 })
     
                 if (res.ok) {
-                    const trip: TripModel = await res.json();
-
-                    // Close the modal
+                    props.getItinerary();
                     onClose();
 
-                    // Make trip the current trip
-                    dispatch(reduxSetTrip(trip));
-
-                    // Navigate to the trip
-                    navigate(`/trip/${trip.id}/home`);
-    
                 } else {
-                    const message: any = await res.json();
-                    throw new Error(JSON.stringify(message));
+                    const json: any = await res.json();
+                    throw new Error(json.message);
                 }
         
             } else {
@@ -149,9 +139,9 @@ function ChakraNewTrip() {
 
             } catch (e: any) {
                 console.error(e)
-                alert('Unable to create trip :(')
+                alert('Unable to add stop :(')
         }
-}
+    }
 }
 
-export default ChakraNewTrip;
+export default NewItineraryModal;

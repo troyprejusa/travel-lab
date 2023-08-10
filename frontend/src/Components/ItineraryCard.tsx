@@ -8,11 +8,11 @@ import {
     Text
 } from "@chakra-ui/react";
 
-interface ItineraryEntryProps extends ItineraryModel {
+interface ItineraryCardProps extends ItineraryModel {
 
 }
 
-function ItineraryEntry(props: ItineraryEntryProps) {
+function ItineraryCard(props: ItineraryCardProps) {
 
     return (
         <Card variant={'outline'}>
@@ -27,4 +27,4 @@ function ItineraryEntry(props: ItineraryEntryProps) {
     )
 }
 
-export default ItineraryEntry;
+export default ItineraryCard;

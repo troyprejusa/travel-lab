@@ -2,8 +2,8 @@ import React, { SyntheticEvent, useEffect, useState } from 'react';
 import { TripModel, ItineraryModel } from '../Models/Interfaces';
 import { RootState } from '../redux/Store';
 import { useSelector, useDispatch } from 'react-redux';
-import ChakraNewItinerary from '../Components/ChakraNewItinerary';
-import ItineraryEntry from '../Components/ChakraItineraryEntry';
+import NewItineraryModal from '../Components/NewItineraryModal';
+import ItineraryCard from '../Components/ItineraryCard';
 import fetchHelpers from '../utilities/fetchHelpers';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -35,10 +35,10 @@ function Itinerary(): JSX.Element {
             </Flex>
             <Flex flexWrap={'wrap'} justifyContent={'space-evenly'}>
                 <Stack spacing='4' height={'80vh'} minWidth={'35vw'} overflowY={'scroll'}>
-                    <ChakraNewItinerary getItinerary={getItinerary}/>
+                    <NewItineraryModal getItinerary={getItinerary}/>
                     {itinerary.length === 0 ? 
                     <Text>Nothing planned...</Text> :
-                    itinerary.map((itin, index) => <ItineraryEntry key={index} {...itin} />)
+                    itinerary.map((itin, index) => <ItineraryCard key={index} {...itin} />)
                     }
                 </Stack>
                 <Box minWidth={'35vw'}>

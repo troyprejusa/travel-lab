@@ -11,11 +11,11 @@ import {
     useColorModeValue,
   } from '@chakra-ui/react';
 
-  interface ChakraContactCardProps extends UserModel {
+  interface ContactCardProps extends UserModel {
 
   }
   
-  export default function ChakraContactCard(props: ChakraContactCardProps) {
+  export default function ContactCard(props: ContactCardProps) {
     return (
       <Center py={6}>
         <Box

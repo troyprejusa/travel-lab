@@ -8,9 +8,9 @@ import {
     useBoolean 
 } from '@chakra-ui/react'
 
-import ChakraLogin from '../Components/ChakraLogin';
-import ChakraSignup from '../Components/ChakraSignup';
-import ChakraFeatures from '../Components/ChakraFeatures';
+import LoginMenu from '../Components/LoginMenu';
+import SignupMenu from '../Components/SignupMenu';
+import FeaturesSection from '../Components/FeaturesSection';
 
 function Splash(): JSX.Element {
     const [ wantsLogin, setWantsLogin ] = useBoolean(true);
@@ -20,9 +20,9 @@ function Splash(): JSX.Element {
                 <Flex alignItems={'center'}>
                     {/* <Text color='#9BA17B' fontSize="6xl" fontFamily="monospace" fontWeight="bold"></Text> */}
                 </Flex>
-                {wantsLogin ? <ChakraLogin setWantsLogin={setWantsLogin} /> : <ChakraSignup setWantsLogin={setWantsLogin}/>}
+                {wantsLogin ? <LoginMenu setWantsLogin={setWantsLogin} /> : <SignupMenu setWantsLogin={setWantsLogin}/>}
             </Flex>
-            <ChakraFeatures />
+            <FeaturesSection />
         </>
     )
 }

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { TripModel } from '../Models/Interfaces';
 import { Wrap } from '@chakra-ui/react';
-import ChakraTripCard from '../Components/ChakraTripCard';
-import ChakraNewTrip from '../Components/ChakraNewTrip';
+import TripCard from '../Components/TripCard';
+import NewTripModal from '../Components/NewTripModal';
 import fetchHelpers from '../utilities/fetchHelpers';
 
 
@@ -19,8 +19,8 @@ function Trips(): JSX.Element {
     return (
         <>
             <Wrap margin={'10%'} spacing={'10%'}>
-                {trips.map((trip: TripModel, i: number) => <ChakraTripCard key = {i} tripData={trip}/>)}
-                <ChakraNewTrip />
+                {trips.map((trip: TripModel, i: number) => <TripCard key = {i} tripData={trip}/>)}
+                <NewTripModal />
             </Wrap>
         </>
     )

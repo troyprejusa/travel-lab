@@ -17,11 +17,11 @@ import {
 
 
 
-interface ChakraTripCardProps {
+interface TripCardProps {
   tripData: TripModel,
 }
 
-export default function ChakraTripCard(props: ChakraTripCardProps) {
+export default function TripCard(props: TripCardProps) {
   const navigate = useNavigate(); 
   const dispatch = useDispatch();
 
@@ -97,6 +97,5 @@ export default function ChakraTripCard(props: ChakraTripCardProps) {
     } else {
       alert('Unable to view trip!')
     }
-
   }
 }

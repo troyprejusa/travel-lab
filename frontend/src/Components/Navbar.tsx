@@ -69,7 +69,7 @@ const LinkItems: Array<LinkItemProps> = [
   { name: 'Trip Settings', icon: FiSettings, path: 'settings' }
 ];
 
-export default function ChakraNavbar({children}: {children: ReactNode;}) {
+export default function Navbar({children}: {children: ReactNode;}) {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   
