@@ -175,7 +175,13 @@ class DatabaseSetup:
         """)
 
     def drop_poll_tables(self) -> None:
-        pass
+        self.database.query("""
+            DROP TABLE IF EXISTS poll CASCADE;
+                                
+            DROP TABLE IF EXISTS poll_option;
+                                
+            DROP TABLE IF EXISTS poll_vote;
+        """)
 
     def initialize_packing_table(self) -> None:
         # self.database.query("""
