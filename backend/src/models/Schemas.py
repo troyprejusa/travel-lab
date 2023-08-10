@@ -34,13 +34,3 @@ class Message(BaseModel):
     content: str
     created_at: datetime
     created_by: str
-
-class Poll(BaseModel):
-    id: int
-    trip_id: UUID
-    title: str
-    created_at: datetime
-    created_by: str
-
-class PollVote(BaseModel):
-    pass
