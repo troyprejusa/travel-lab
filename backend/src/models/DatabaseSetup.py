@@ -154,6 +154,7 @@ class DatabaseSetup:
                 id BIGSERIAL PRIMARY KEY,
                 trip_id uuid references trip ON DELETE CASCADE,
                 title VARCHAR(40),
+                anonymous BOOLEAN,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 created_by varchar(320) references traveller(email) ON DELETE CASCADE
             );
