@@ -4,7 +4,7 @@ import { PollModel, PollOptionModel, PollVoteModel } from "../utilities/Interfac
 // For now, it's not important to have the creation of polls be real time
 // I just want voting to be real time.
 
-interface PollState {
+export interface PollState {
     polls: Array<PollModel>;
     pollOptions: Array<PollOptionModel>;
     pollVotes: Array<PollVoteModel>

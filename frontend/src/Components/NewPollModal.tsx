@@ -1,4 +1,4 @@
-import { useRef, SyntheticEvent } from 'react';
+import { useState, useRef, SyntheticEvent, ReactElement } from 'react';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { useDispatch } from 'react-redux';
 import { reduxSetTrip } from '../redux/TripSlice';
@@ -15,51 +15,73 @@ import {
     useDisclosure,
     FormControl,
     FormLabel,
-    Input
+    Input,
+    Radio,
+    Box,
+    Select
 } from '@chakra-ui/react'
 import { TripModel } from '../utilities/Interfaces';
 
-interface NewPollModalProps {
+interface NewTripModalProps {
 
 }
 
-function NewPollModal() {
+function NewTripModal() {
 
+    
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const trip: TripModel = useSelector((state: RootState) => state.trip);
+    
+    const [ pollOptionCount, setPollOptionCount ] = useState(0);
+
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const destination = useRef<HTMLInputElement>(null);
-    const description = useRef<HTMLInputElement>(null);
-    const departure_date = useRef<HTMLInputElement>(null);
-    const return_date = useRef<HTMLInputElement>(null);
+    const title = useRef<HTMLInputElement>(null);
+    const anonymous = useRef<HTMLInputElement>(null);
+
+    const selectOptions: Array<ReactElement> = [];
+    for (let i = 1; i < 6; i++) {
+        selectOptions.push(<option key={i} value={i}>{i}</option>);
+    }
+
+    const pollOptionInputs: Array<ReactElement> = [];
+    for (let i = 0; i < pollOptionCount; i++) {
+        pollOptionInputs.push((
+            <FormControl key={i} id={`pollOption_${i}`}>
+                <FormLabel>{`Option ${i + 1}`}</FormLabel>
+                <Input />
+            </FormControl>
+        ))
+    }
 
     return (
       <>
-        <Button onClick={onOpen}>New Trip</Button>
+        <Button onClick={onOpen}>New Poll</Button>
   
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>New Trip</ModalHeader>
+            <ModalHeader>New Poll</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
                 <form onSubmit={handleSubmit}>
                     <FormControl isRequired>
-                        <FormLabel>Destination</FormLabel>
-                        <Input placeholder='Destination' ref={destination}/>
+                        <FormLabel>Title</FormLabel>
+                        <Input placeholder='title' ref={title}/>
                     </FormControl>
                     <FormControl isRequired>
-                        <FormLabel>Description</FormLabel>
-                        <Input placeholder='Description' ref={description}/>
+                        <FormLabel>Anonymous?</FormLabel>
+                        <Radio placeholder='Description' ref={anonymous}/>
                     </FormControl>
                     <FormControl isRequired>
-                        <FormLabel>Departure Date</FormLabel>
-                        <Input placeholder='Departure Date' type="date" ref={departure_date}/>
+                        <FormLabel>Number of poll choices</FormLabel>
+                        <Select placeholder='options' size='md' onChange={(event: SyntheticEvent) => setPollOptionCount(event.target.value)}>
+                            {selectOptions}
+                        </Select>
                     </FormControl>
-                        <FormControl isRequired>
-                        <FormLabel>Return Date</FormLabel>
-                        <Input placeholder='Return Date' type="date" ref={return_date}/>
-                    </FormControl>
+                    <Box overflowY={'scroll'}>
+                        {pollOptionInputs}
+                    </Box>
                 </form>
             </ModalBody>
   
@@ -78,49 +100,28 @@ function NewPollModal() {
 
             event.preventDefault();
 
-            if (destination.current !== null && 
-                description.current !== null && 
-                departure_date.current !== null && 
-                return_date.current !== null) {
+            if (title.current !== null && 
+                anonymous.current !== null) {
 
                 // Validate form
-                const destination_entry  = destination.current.value;
-                const description_entry = description.current.value;
-                const start_date_entry = departure_date.current.value;
-                const end_date_entry = return_date.current.value;
+                const title_entry: string  = title.current.value;
+                const anonymous_entry = anonymous.current.value;
 
-                if (destination_entry === '') {
-                    alert('Destination cannot be empty!');
-                    return;
-                }
-                
-                if (description_entry === '') {
-                    alert('Description cannot be empty!');
-                    return;
-                }
-                
-                if (start_date_entry === '') {
-                    alert('Departure date cannot be empty!');
-                    return;
-                }
-                
-                if (end_date_entry === '') {
-                    alert('Return date cannot be empty!');
-                    return;
-                }
-
-                if (Date.parse(start_date_entry) > Date.parse(end_date_entry)) {
-                    alert('Start date cannot be after end time!');
+                if (title_entry === '') {
+                    alert('Title cannot be empty!');
                     return;
                 }
                 
                 const formData: URLSearchParams = new URLSearchParams();
-                formData.append('destination', destination_entry);
-                formData.append('description', description_entry);
-                formData.append('start_date', start_date_entry);
-                formData.append('end_date', end_date_entry);
+                formData.append('title', title_entry);
+                formData.append('anonymous', anonymous_entry);
+                
+                // TODO:
+                for (let i = 0; i < pollOptionCount; i++) {
+                    formData.append(`${ajdfflajdl;kfj;akljdf}`)
+                }
 
-                const res: Response = await fetch('/trip/' , {
+                const res: Response = await fetch(`/trip/${trip.id}/poll` , {
                     method: 'POST',
                     body: formData,
                     headers: fetchHelpers.getTokenFormHeader()
@@ -154,4 +155,4 @@ function NewPollModal() {
 }
 }
 
-export default NewPollModal;
+export default NewTripModal;

@@ -21,7 +21,7 @@ interface TripCardProps {
   tripData: TripModel,
 }
 
-function TripCard(props: TripCardProps) {
+function PollCard(props: TripCardProps) {
   const navigate = useNavigate(); 
   const dispatch = useDispatch();
 
@@ -100,4 +100,4 @@ function TripCard(props: TripCardProps) {
   }
 }
 
-export default TripCard;
+export default PollCard;
