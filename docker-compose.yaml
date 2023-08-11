@@ -32,7 +32,8 @@ services:
     volumes:
       - /Users/troyprejusa/Dev/apps/travel-lab/backend:/app
     ports:
-      - "8000:8000"
+      - "8000:8000"   # For the API
+      - "5678:5678"   # For VSCode debugger
     depends_on:
       - database
       - s3mock
