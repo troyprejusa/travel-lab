@@ -169,8 +169,8 @@ class DatabaseSetup:
                 id BIGSERIAL PRIMARY KEY,
                 poll_id BIGINT references poll ON DELETE CASCADE,
                 vote VARCHAR(120),
-                voted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                voted_by varchar(320) references traveller(email) ON DELETE CASCADE 
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                created_by varchar(320) references traveller(email) ON DELETE CASCADE 
             );
         """)
 

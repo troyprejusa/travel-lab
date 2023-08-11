@@ -34,3 +34,23 @@ class Message(BaseModel):
     content: str
     created_at: datetime
     created_by: str
+
+class Poll(BaseModel):
+    id: int
+    trip_id: UUID
+    title: str
+    anonymous: bool
+    created_at: datetime
+    created_by: str
+
+class PollOption(BaseModel):
+    id: int
+    poll_id: int
+    option: str
+
+class PollVote(BaseModel):
+    id: int
+    poll_id: int
+    vote: str
+    created_at: datetime
+    created_by: str
