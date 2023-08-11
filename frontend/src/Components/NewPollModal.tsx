@@ -19,11 +19,11 @@ import {
 } from '@chakra-ui/react'
 import { TripModel } from '../utilities/Interfaces';
 
-interface NewTripModalProps {
+interface NewPollModalProps {
 
 }
 
-function NewTripModal() {
+function NewPollModal() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -154,4 +154,4 @@ function NewTripModal() {
 }
 }
 
-export default NewTripModal;
+export default NewPollModal;

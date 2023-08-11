@@ -1,5 +1,5 @@
 import React, { useState, SyntheticEvent, useRef } from 'react';
-import { UserModel } from '../Models/Interfaces';
+import { UserModel } from '../utilities/Interfaces';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { reduxUserLogin } from '../redux/UserSlice';

@@ -1,5 +1,5 @@
 import { Slice, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { UserModel } from "../Models/Interfaces";
+import { UserModel } from "../utilities/Interfaces";
 
 const emptyUser: UserModel = {
     id: '',

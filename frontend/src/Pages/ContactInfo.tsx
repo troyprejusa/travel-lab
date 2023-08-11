@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
-import { TripModel, UserModel } from '../Models/Interfaces';
+import { TripModel, UserModel } from '../utilities/Interfaces';
 import fetchHelpers from '../utilities/fetchHelpers';
 import ContactCard from '../Components/ContactCard';
 import { Wrap, Flex } from '@chakra-ui/react';

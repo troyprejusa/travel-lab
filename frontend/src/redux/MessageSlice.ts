@@ -1,5 +1,5 @@
 import { Slice, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { MessageModel } from "../Models/Interfaces";
+import { MessageModel } from "../utilities/Interfaces";
 
 const initialMessageState: Array<MessageModel> = [];
 

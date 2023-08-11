@@ -1,5 +1,5 @@
 import io, { Socket } from "socket.io-client";
-import { MessageModel } from "../Models/Interfaces";
+import { MessageModel } from "./Interfaces";
 import { reduxAddMessage } from "../redux/MessageSlice";
 import { Dispatch } from "@reduxjs/toolkit";
 

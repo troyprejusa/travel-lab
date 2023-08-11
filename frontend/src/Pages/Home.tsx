@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/Store';
-import { UserModel, TripModel } from '../Models/Interfaces';
+import { UserModel, TripModel } from '../utilities/Interfaces';
 import { Flex } from '@chakra-ui/react';
 
 

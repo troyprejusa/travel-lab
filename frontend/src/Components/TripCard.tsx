@@ -2,7 +2,7 @@ import { SyntheticEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { reduxSetTrip } from '../redux/TripSlice';
-import { TripModel } from '../Models/Interfaces';
+import { TripModel } from '../utilities/Interfaces';
 import TripPhoto from '../assets/tripphoto.jpg';
 import { msgSocket, pollSocket } from '../utilities/TripSocket';
 import {

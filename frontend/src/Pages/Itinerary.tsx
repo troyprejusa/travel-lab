@@ -1,5 +1,5 @@
 import React, { SyntheticEvent, useEffect, useState } from 'react';
-import { TripModel, ItineraryModel } from '../Models/Interfaces';
+import { TripModel, ItineraryModel } from '../utilities/Interfaces';
 import { RootState } from '../redux/Store';
 import { useSelector, useDispatch } from 'react-redux';
 import NewItineraryModal from '../Components/NewItineraryModal';

@@ -1,4 +1,4 @@
-import { UserModel } from '../Models/Interfaces';
+import { UserModel } from '../utilities/Interfaces';
 import {
     Heading,
     Avatar,

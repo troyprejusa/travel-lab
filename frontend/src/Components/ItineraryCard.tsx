@@ -1,5 +1,5 @@
 import React from "react";
-import { ItineraryModel } from "../Models/Interfaces";
+import { ItineraryModel } from "../utilities/Interfaces";
 import { 
     Card,
     CardHeader,

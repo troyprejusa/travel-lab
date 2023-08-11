@@ -1,5 +1,5 @@
 import { Slice, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { TripModel } from "../Models/Interfaces";
+import { TripModel } from "../utilities/Interfaces";
 
 const emptyTrip: TripModel = {
     id: '',

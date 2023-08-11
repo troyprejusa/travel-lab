@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Flex } from '@chakra-ui/react';
 import { msgSocket } from '../utilities/TripSocket';
-import { UserModel, TripModel, MessageModel } from '../Models/Interfaces';
+import { UserModel, TripModel, MessageModel } from '../utilities/Interfaces';
 import { useSelector, useDispatch } from 'react-redux';
 import { reduxSetMessages } from '../redux/MessageSlice';
 import { RootState } from '../redux/Store';

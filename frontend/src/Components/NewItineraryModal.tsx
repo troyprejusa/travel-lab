@@ -2,7 +2,7 @@ import { useRef, SyntheticEvent } from 'react';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
-import { TripModel, ItineraryModel } from '../Models/Interfaces';
+import { TripModel, ItineraryModel } from '../utilities/Interfaces';
 import {
     Button,
     Modal,

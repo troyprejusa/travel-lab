@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TripModel } from '../Models/Interfaces';
+import { TripModel } from '../utilities/Interfaces';
 import { Wrap } from '@chakra-ui/react';
 import TripCard from '../Components/TripCard';
 import NewTripModal from '../Components/NewTripModal';

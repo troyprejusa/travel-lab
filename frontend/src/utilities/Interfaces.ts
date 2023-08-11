@@ -42,3 +42,26 @@ export interface MessageModel {
     created_at: string
     created_by: string
 }
+
+export interface PollModel {
+    id: number
+    trip_id: string
+    title: string
+    anonymous: boolean
+    created_at: string
+    created_by: string
+}
+
+export interface PollOptionModel {
+    id: number
+    poll_id: number
+    option: string
+}
+
+export interface PollVoteModel {
+    id: number
+    poll_id: number
+    vote: string
+    created_at: string
+    created_by: string
+}

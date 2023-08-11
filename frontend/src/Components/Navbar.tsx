@@ -46,7 +46,7 @@ import {
 } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
 import { RootState } from '../redux/Store';
-import { UserModel } from '../Models/Interfaces';
+import { UserModel } from '../utilities/Interfaces';
 import { msgSocket, pollSocket } from '../utilities/TripSocket';
 import { reduxResetMessages } from '../redux/MessageSlice';
 
