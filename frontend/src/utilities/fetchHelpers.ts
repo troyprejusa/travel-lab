@@ -11,13 +11,6 @@ const fetchHelpers = {
             'authorization': `BEARER ${localStorage.getItem("token")}`,
             'content-type': 'application/json'
         })
-    },
-
-    getTokenFormHeader(): Headers {
-        return new Headers({
-            'authorization': `BEARER ${localStorage.getItem("token")}`,
-            'content-type': 'application/x-www-form-urlencoded'
-        })
     }
     
 }

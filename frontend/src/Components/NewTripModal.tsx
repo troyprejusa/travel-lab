@@ -19,19 +19,16 @@ import {
 } from '@chakra-ui/react'
 import { TripModel } from '../utilities/Interfaces';
 
-interface NewPollModalProps {
+interface NewTripModal {
 
 }
 
-function NewPollModal() {
+function NewTripModal() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const destination = useRef<HTMLInputElement>(null);
-    const description = useRef<HTMLInputElement>(null);
-    const departure_date = useRef<HTMLInputElement>(null);
-    const return_date = useRef<HTMLInputElement>(null);
+    const tripForm = useRef<HTMLFormElement>(null);
 
     return (
       <>
@@ -43,22 +40,22 @@ function NewPollModal() {
             <ModalHeader>New Trip</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} ref={tripForm}>
                     <FormControl isRequired>
                         <FormLabel>Destination</FormLabel>
-                        <Input placeholder='Destination' ref={destination}/>
+                        <Input placeholder='Destination' name='destination'/>
                     </FormControl>
                     <FormControl isRequired>
                         <FormLabel>Description</FormLabel>
-                        <Input placeholder='Description' ref={description}/>
+                        <Input placeholder='Description' name='description'/>
                     </FormControl>
                     <FormControl isRequired>
                         <FormLabel>Departure Date</FormLabel>
-                        <Input placeholder='Departure Date' type="date" ref={departure_date}/>
+                        <Input placeholder='Departure Date' type="date" name='start_date'/>
                     </FormControl>
                         <FormControl isRequired>
                         <FormLabel>Return Date</FormLabel>
-                        <Input placeholder='Return Date' type="date" ref={return_date}/>
+                        <Input placeholder='Return Date' type="date" name='end_date'/>
                     </FormControl>
                 </form>
             </ModalBody>
@@ -73,21 +70,19 @@ function NewPollModal() {
     )
 
     async function handleSubmit(event: SyntheticEvent) {
+
+        event.preventDefault();
         
         try {
+            if (tripForm.current !== null) {
 
-            event.preventDefault();
-
-            if (destination.current !== null && 
-                description.current !== null && 
-                departure_date.current !== null && 
-                return_date.current !== null) {
+                const formData = new FormData(tripForm.current)
 
                 // Validate form
-                const destination_entry  = destination.current.value;
-                const description_entry = description.current.value;
-                const start_date_entry = departure_date.current.value;
-                const end_date_entry = return_date.current.value;
+                const destination_entry: string  = formData.get('destination');
+                const description_entry: string = formData.get('description');
+                const start_date_entry: string = formData.get('start_date');
+                const end_date_entry: string = formData.get('end_date');
 
                 if (destination_entry === '') {
                     alert('Destination cannot be empty!');
@@ -113,17 +108,11 @@ function NewPollModal() {
                     alert('Start date cannot be after end time!');
                     return;
                 }
-                
-                const formData: URLSearchParams = new URLSearchParams();
-                formData.append('destination', destination_entry);
-                formData.append('description', description_entry);
-                formData.append('start_date', start_date_entry);
-                formData.append('end_date', end_date_entry);
 
                 const res: Response = await fetch('/trip/' , {
                     method: 'POST',
                     body: formData,
-                    headers: fetchHelpers.getTokenFormHeader()
+                    headers: fetchHelpers.getTokenHeader()
                 })
     
                 if (res.ok) {
@@ -154,4 +143,4 @@ function NewPollModal() {
 }
 }
 
-export default NewPollModal;
+export default NewTripModal;

@@ -1,6 +1,6 @@
 import { useState, useRef, SyntheticEvent, ReactElement } from 'react';
 import fetchHelpers from '../utilities/fetchHelpers';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { reduxSetTrip } from '../redux/TripSlice';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -26,7 +26,7 @@ interface NewTripModalProps {
 
 }
 
-function NewTripModal() {
+function NewPollModal() {
 
     
     const dispatch = useDispatch();
@@ -117,9 +117,9 @@ function NewTripModal() {
                 formData.append('anonymous', anonymous_entry);
                 
                 // TODO:
-                for (let i = 0; i < pollOptionCount; i++) {
-                    formData.append(`${ajdfflajdl;kfj;akljdf}`)
-                }
+                // for (let i = 0; i < pollOptionCount; i++) {
+                //     formData.append(`${ajdfflajdl;kfj;akljdf}`)
+                // }
 
                 const res: Response = await fetch(`/trip/${trip.id}/poll` , {
                     method: 'POST',
@@ -155,4 +155,4 @@ function NewTripModal() {
 }
 }
 
-export default NewTripModal;
+export default NewPollModal;
