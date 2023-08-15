@@ -22,7 +22,7 @@ import {
 } from '@chakra-ui/react'
 import { TripModel } from '../utilities/Interfaces';
 
-interface NewTripModalProps {
+interface NewPollModalProps {
 
 }
 
@@ -36,8 +36,7 @@ function NewPollModal() {
     const [ pollOptionCount, setPollOptionCount ] = useState(0);
 
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const title = useRef<HTMLInputElement>(null);
-    const anonymous = useRef<HTMLInputElement>(null);
+    const pollForm = useRef<HTMLFormElement>(null);
 
     const selectOptions: Array<ReactElement> = [];
     for (let i = 1; i < 6; i++) {
@@ -47,9 +46,9 @@ function NewPollModal() {
     const pollOptionInputs: Array<ReactElement> = [];
     for (let i = 0; i < pollOptionCount; i++) {
         pollOptionInputs.push((
-            <FormControl key={i} id={`pollOption_${i}`}>
+            <FormControl key={i}>
                 <FormLabel>{`Option ${i + 1}`}</FormLabel>
-                <Input />
+                <Input name={`pollOption_${i + 1}`}/>
             </FormControl>
         ))
     }
@@ -64,14 +63,14 @@ function NewPollModal() {
             <ModalHeader>New Poll</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} ref={pollForm}>
                     <FormControl isRequired>
                         <FormLabel>Title</FormLabel>
-                        <Input placeholder='title' ref={title}/>
+                        <Input placeholder='title' name='title'/>
                     </FormControl>
                     <FormControl isRequired>
                         <FormLabel>Anonymous?</FormLabel>
-                        <Radio placeholder='Description' ref={anonymous}/>
+                        <Radio placeholder='Description' name='anonymous'/>
                     </FormControl>
                     <FormControl isRequired>
                         <FormLabel>Number of poll choices</FormLabel>
@@ -96,63 +95,77 @@ function NewPollModal() {
 
     async function handleSubmit(event: SyntheticEvent) {
         
+        event.preventDefault();
+
+        if (pollForm === null) return;
+
+        const formData = new FormData(pollForm.current);
+
+        // TODO: CORRECT THE BELOW!
+        return;
+        
+        // Because we want to use an array to hold the multiple
+        // options, we're going to use JSON instead of the actual
+        // form
+        const body = {};
+        for (const [key, val] of formData) {
+            if (key === 'anonymous') {
+                body.anonymous = true;
+            } else if ()
+            body[key] = val;
+        }
+
+        if ('anonymous' in body) {
+            body.anonymous = true;
+        } else {
+            body['anonymous'] = false;
+        }
+
+
+        // Validate form
+        // const title_entry: string  = formData.get(); .current.value;
+        // const anonymous_entry = anonymous.current.value;
+
+        // if (title_entry === '') {
+        //     alert('Title cannot be empty!');
+        //     return;
+        // }
+        
+        // TODO:
+        // for (let i = 0; i < pollOptionCount; i++) {
+        //     formData.append(`${ajdfflajdl;kfj;akljdf}`)
+        // }
+
         try {
 
-            event.preventDefault();
+            const res: Response = await fetch(`/trip/${trip.id}/poll` , {
+                method: 'POST',
+                body: formData,
+                headers: fetchHelpers.getTokenHeader()
+            })
 
-            if (title.current !== null && 
-                anonymous.current !== null) {
+            if (res.ok) {
+                const trip: TripModel = await res.json();
 
-                // Validate form
-                const title_entry: string  = title.current.value;
-                const anonymous_entry = anonymous.current.value;
+                // Close the modal
+                onClose();
 
-                if (title_entry === '') {
-                    alert('Title cannot be empty!');
-                    return;
-                }
-                
-                const formData: URLSearchParams = new URLSearchParams();
-                formData.append('title', title_entry);
-                formData.append('anonymous', anonymous_entry);
-                
-                // TODO:
-                // for (let i = 0; i < pollOptionCount; i++) {
-                //     formData.append(`${ajdfflajdl;kfj;akljdf}`)
-                // }
+                // Make trip the current trip
+                dispatch(reduxSetTrip(trip));
 
-                const res: Response = await fetch(`/trip/${trip.id}/poll` , {
-                    method: 'POST',
-                    body: formData,
-                    headers: fetchHelpers.getTokenFormHeader()
-                })
-    
-                if (res.ok) {
-                    const trip: TripModel = await res.json();
+                // Navigate to the trip
+                navigate(`/trip/${trip.id}/home`);
 
-                    // Close the modal
-                    onClose();
-
-                    // Make trip the current trip
-                    dispatch(reduxSetTrip(trip));
-
-                    // Navigate to the trip
-                    navigate(`/trip/${trip.id}/home`);
-    
-                } else {
-                    const message: any = await res.json();
-                    throw new Error(JSON.stringify(message));
-                }
-        
             } else {
-                alert('Error in form submission')
+                const message: any = await res.json();
+                throw new Error(JSON.stringify(message));
             }
-
+        
             } catch (e: any) {
                 console.error(e)
                 alert('Unable to create trip :(')
         }
-}
+    }
 }
 
 export default NewPollModal;

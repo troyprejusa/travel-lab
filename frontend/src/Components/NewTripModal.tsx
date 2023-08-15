@@ -72,75 +72,71 @@ function NewTripModal() {
     async function handleSubmit(event: SyntheticEvent) {
 
         event.preventDefault();
-        
-        try {
-            if (tripForm.current !== null) {
 
-                const formData = new FormData(tripForm.current)
+        if (tripForm.current === null) return
 
-                // Validate form
-                const destination_entry: string  = formData.get('destination');
-                const description_entry: string = formData.get('description');
-                const start_date_entry: string = formData.get('start_date');
-                const end_date_entry: string = formData.get('end_date');
+        const formData = new FormData(tripForm.current)
 
-                if (destination_entry === '') {
-                    alert('Destination cannot be empty!');
-                    return;
-                }
-                
-                if (description_entry === '') {
-                    alert('Description cannot be empty!');
-                    return;
-                }
-                
-                if (start_date_entry === '') {
-                    alert('Departure date cannot be empty!');
-                    return;
-                }
-                
-                if (end_date_entry === '') {
-                    alert('Return date cannot be empty!');
-                    return;
-                }
+        // Validate form
+        const destination_entry: string  = formData.get('destination');
+        const description_entry: string = formData.get('description');
+        const start_date_entry: string = formData.get('start_date');
+        const end_date_entry: string = formData.get('end_date');
 
-                if (Date.parse(start_date_entry) > Date.parse(end_date_entry)) {
-                    alert('Start date cannot be after end time!');
-                    return;
-                }
-
-                const res: Response = await fetch('/trip/' , {
-                    method: 'POST',
-                    body: formData,
-                    headers: fetchHelpers.getTokenHeader()
-                })
-    
-                if (res.ok) {
-                    const trip: TripModel = await res.json();
-
-                    // Close the modal
-                    onClose();
-
-                    // Make trip the current trip
-                    dispatch(reduxSetTrip(trip));
-
-                    // Navigate to the trip
-                    navigate(`/trip/${trip.id}/home`);
-    
-                } else {
-                    const message: any = await res.json();
-                    throw new Error(JSON.stringify(message));
-                }
-        
-            } else {
-                alert('Error in form submission')
-            }
-
-            } catch (e: any) {
-                console.error(e)
-                alert('Unable to create trip :(')
+        if (destination_entry === '') {
+            alert('Destination cannot be empty!');
+            return;
         }
-}
+        
+        if (description_entry === '') {
+            alert('Description cannot be empty!');
+            return;
+        }
+        
+        if (start_date_entry === '') {
+            alert('Departure date cannot be empty!');
+            return;
+        }
+        
+        if (end_date_entry === '') {
+            alert('Return date cannot be empty!');
+            return;
+        }
+
+        if (Date.parse(start_date_entry) > Date.parse(end_date_entry)) {
+            alert('Start date cannot be after end time!');
+            return;
+        }   
+
+        try {
+            const res: Response = await fetch('/trip/' , {
+                method: 'POST',
+                body: formData,
+                headers: fetchHelpers.getTokenHeader()
+            })
+
+            if (res.ok) {
+                const trip: TripModel = await res.json();
+
+                // Close the modal
+                onClose();
+
+                // Make trip the current trip
+                dispatch(reduxSetTrip(trip));
+
+                // Navigate to the trip
+                navigate(`/trip/${trip.id}/home`);
+
+            } else {
+                const message: any = await res.json();
+                throw new Error(JSON.stringify(message));
+            }
+    
+        } catch (e: any) {
+            console.error(e)
+            alert('Unable to create trip :(')
+        }
+    }
 }
 
 export default NewTripModal;
