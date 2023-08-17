@@ -2,6 +2,9 @@ from pydantic import BaseModel
 from uuid import UUID
 from datetime import date, datetime
 
+
+# DATABASE SCHEMAS
+# -----------------------------------
 class Traveller(BaseModel):
     id: UUID
     first_name: str
@@ -52,5 +55,13 @@ class PollVote(BaseModel):
     id: int
     poll_id: int
     vote: str
-    created_at: datetime
-    created_by: str
+    voted_at: datetime
+    voted_by: str
+
+
+# BODY DEFINTIONS
+# -----------------------------------
+class NewPollBody(BaseModel):
+    title: str
+    anonymous: bool
+    options: list[str]

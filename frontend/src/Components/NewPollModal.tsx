@@ -20,13 +20,13 @@ import {
     Box,
     Select
 } from '@chakra-ui/react'
-import { TripModel } from '../utilities/Interfaces';
+import { PollModel, TripModel } from '../utilities/Interfaces';
 
 interface NewPollModalProps {
-
+    getPollsCallback: () => void
 }
 
-function NewPollModal() {
+function NewPollModal(props: NewPollModalProps) {
 
     
     const dispatch = useDispatch();
@@ -100,61 +100,42 @@ function NewPollModal() {
         if (pollForm === null) return;
 
         const formData = new FormData(pollForm.current);
-
-        // TODO: CORRECT THE BELOW!
-        return;
         
         // Because we want to use an array to hold the multiple
         // options, we're going to use JSON instead of the actual
         // form
         const body = {};
+        body.options = [];
         for (const [key, val] of formData) {
             if (key === 'anonymous') {
                 body.anonymous = true;
-            } else if ()
-            body[key] = val;
+            } else if (key.split('_').length > 1) {
+                // This is an option
+                body.options.push(val);
+            } else {
+                // Default case
+                body[key] = val;
+            }
         }
 
-        if ('anonymous' in body) {
-            body.anonymous = true;
-        } else {
-            body['anonymous'] = false;
+        // Set anonymous field if it has not been
+        if (!('anonymous' in body)) {
+            body.anonymous = false;
         }
-
-
-        // Validate form
-        // const title_entry: string  = formData.get(); .current.value;
-        // const anonymous_entry = anonymous.current.value;
-
-        // if (title_entry === '') {
-        //     alert('Title cannot be empty!');
-        //     return;
-        // }
-        
-        // TODO:
-        // for (let i = 0; i < pollOptionCount; i++) {
-        //     formData.append(`${ajdfflajdl;kfj;akljdf}`)
-        // }
 
         try {
-
             const res: Response = await fetch(`/trip/${trip.id}/poll` , {
                 method: 'POST',
-                body: formData,
-                headers: fetchHelpers.getTokenHeader()
+                body: JSON.stringify(body),
+                headers: fetchHelpers.getTokenJSONHeader()
             })
 
             if (res.ok) {
-                const trip: TripModel = await res.json();
+                // Call state update on the parent (the polls page)
+                props.getPollsCallback();
 
                 // Close the modal
                 onClose();
-
-                // Make trip the current trip
-                dispatch(reduxSetTrip(trip));
-
-                // Navigate to the trip
-                navigate(`/trip/${trip.id}/home`);
 
             } else {
                 const message: any = await res.json();
@@ -163,7 +144,7 @@ function NewPollModal() {
         
             } catch (e: any) {
                 console.error(e)
-                alert('Unable to create trip :(')
+                alert('Unable to create poll :(')
         }
     }
 }

@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
-from models.Schemas import Trip, Traveller, Itinerary, Message
+from models.Schemas import Trip, Traveller, Itinerary, Message, NewPollBody
 from typing import Annotated
 from datetime import date, datetime
 from models.S3Handler import minio_client
+import json
 
 
 trip_router = APIRouter(
@@ -163,5 +164,68 @@ async def get_messages(trip_id: str) -> list[Message] | str:
             status_code=500,
             content= {
                 "message": f'ERROR: Unable to retrieve messages for trip id {trip_id}'
+            }
+        )
+    
+
+    
+@trip_router.get('/{trip_id}/poll')
+async def get_polls(trip_id: str) -> str:
+    try:
+        data = db_handler.query("""
+            SELECT 
+                poll.title, poll.anonymous, poll.created_by,
+                poll_option.option,
+                poll_vote.vote, poll_vote.voted_by
+            FROM poll
+                JOIN poll_option ON poll.id = poll_option.poll_id
+                JOIN poll_vote ON poll.id = poll_vote.poll_id
+            WHERE poll.trip_id = %s
+        """, (trip_id,))
+
+        print(data)
+
+        return json.dumps(data)
+    
+    except Exception as e:
+        print(str(e))
+        return JSONResponse(
+            status_code=500,
+            content= {
+                "message": f'ERROR: Unable to retrieve polls for trip id {trip_id}'
+            }
+        )
+
+@trip_router.post('/{trip_id}/poll')
+async def add_poll(request: Request, trip_id: str, poll_body: NewPollBody) -> str:
+    try:
+        res = db_handler.query("""
+            INSERT INTO poll 
+                (trip_id, title, anonymous, created_by) 
+                VALUES (%s, %s, %s, %s)
+            RETURNING id;
+        """, (trip_id, poll_body.title, poll_body.anonymous, request.state.user['email']))
+        poll_id = res[0]['id']
+
+        # This would seem like a good place for a psycopg "executemany", but 
+        # the docs say it's not faster than just calling execute on a loop
+        for option in poll_body.options:
+            db_handler.query("""
+            INSERT INTO poll_option (poll_id, option) VALUES (%s, %s);
+            """, (poll_id, option))
+
+        return JSONResponse(
+            status_code=200,
+            content= {
+                "message": f'Poll posted successfully for {poll_body.title}'
+            }
+        )
+
+    except Exception as error:
+        print(str(error))
+        return JSONResponse(
+            status_code=500,
+            content= {
+                "message": f'ERROR: Unable to post poll'
             }
         )

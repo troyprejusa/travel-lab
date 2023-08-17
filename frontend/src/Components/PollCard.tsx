@@ -17,11 +17,11 @@ import {
 
 
 
-interface TripCardProps {
-  tripData: TripModel,
-}
+// interface PollCardProps {
+//   tripData: TripModel,
+// }
 
-function PollCard(props: TripCardProps) {
+function PollCard(props: any) {
   const navigate = useNavigate(); 
   const dispatch = useDispatch();
 
