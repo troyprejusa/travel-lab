@@ -172,19 +172,33 @@ async def get_messages(trip_id: str) -> list[Message] | str:
 @trip_router.get('/{trip_id}/poll')
 async def get_polls(trip_id: str) -> str:
     try:
+        # The results for one poll on this trip will have the following number
+        # of rows:
+        # M options * N people who voted this option, M >= 1 & N >= 1
+        # Repeat this for P polls. It's kind of a mess to sort through, 
+        # but at least we get everything we need out of 1 query.
         data = db_handler.query("""
             SELECT 
-                poll.title, poll.anonymous, poll.created_by,
+                poll.id AS poll_id,
+                poll.title,
                 poll_option.option,
-                poll_vote.vote, poll_vote.voted_by
-            FROM poll
-                JOIN poll_option ON poll.id = poll_option.poll_id
-                JOIN poll_vote ON poll.id = poll_vote.poll_id
-            WHERE poll.trip_id = %s
+                poll_vote.voted_by
+            FROM 
+                poll
+            JOIN
+                poll_option ON poll.id = poll_option.poll_id
+            LEFT JOIN
+                poll_vote ON poll_option.id = poll_vote.vote
+            WHERE 
+                poll.trip_id = %s
+            ORDER BY poll.id;
         """, (trip_id,))
 
+        print(len(data))
         print(data)
 
+        # Instead of grouping the data on the backend, we will
+        # leave it to the frontend to handle
         return json.dumps(data)
     
     except Exception as e:

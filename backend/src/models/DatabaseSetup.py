@@ -39,7 +39,7 @@ class DatabaseSetup:
                 id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
                 first_name VARCHAR(40),
                 last_name VARCHAR(40),
-                email VARCHAR(320) UNIQUE,
+                email VARCHAR(255) UNIQUE,
                 phone VARCHAR(11)
             );
         """)
@@ -52,7 +52,7 @@ class DatabaseSetup:
     def initialize_auth_table(self) -> None:
         self.database.query("""
             CREATE TABLE IF NOT EXISTS auth (
-                email VARCHAR(320) PRIMARY KEY references traveller(email) ON DELETE CASCADE,
+                email VARCHAR(255) PRIMARY KEY references traveller(email) ON DELETE CASCADE,
                 password VARCHAR(255)
             );
         """)
@@ -71,7 +71,7 @@ class DatabaseSetup:
                 start_date DATE,
                 end_date DATE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                created_by varchar(320) references traveller(email) ON DELETE CASCADE
+                created_by VARCHAR(255) references traveller(email) ON DELETE CASCADE
             );
         """)
 
@@ -104,7 +104,7 @@ class DatabaseSetup:
                 start_time TIMESTAMP,
                 end_time TIMESTAMP,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                created_by varchar(320) references traveller(email) ON DELETE CASCADE
+                created_by VARCHAR(255) references traveller(email) ON DELETE CASCADE
             );
         """)
 
@@ -139,7 +139,7 @@ class DatabaseSetup:
                 trip_id uuid references trip ON DELETE CASCADE,
                 content VARCHAR(1100),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                created_by varchar(320) references traveller(email) ON DELETE CASCADE
+                created_by VARCHAR(255) references traveller(email) ON DELETE CASCADE
             );
         """)
     
@@ -156,7 +156,7 @@ class DatabaseSetup:
                 title VARCHAR(40),
                 anonymous BOOLEAN,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                created_by varchar(320) references traveller(email) ON DELETE CASCADE
+                created_by VARCHAR(255) references traveller(email) ON DELETE CASCADE
             );
                             
             CREATE TABLE IF NOT EXISTS poll_option (
@@ -167,10 +167,9 @@ class DatabaseSetup:
                             
             CREATE TABLE IF NOT EXISTS poll_vote (
                 id BIGSERIAL PRIMARY KEY,
-                poll_id BIGINT references poll ON DELETE CASCADE,
-                vote VARCHAR(120),
+                vote BIGSERIAL references poll_option ON DELETE CASCADE,
                 voted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                voted_by varchar(320) references traveller(email) ON DELETE CASCADE 
+                voted_by VARCHAR(255) references traveller(email) ON DELETE CASCADE 
             );
         """)
 
@@ -178,7 +177,7 @@ class DatabaseSetup:
         self.database.query("""
             DROP TABLE IF EXISTS poll CASCADE;
                                 
-            DROP TABLE IF EXISTS poll_option;
+            DROP TABLE IF EXISTS poll_option CASCADE;
                                 
             DROP TABLE IF EXISTS poll_vote;
         """)
@@ -254,6 +253,7 @@ class DatabaseSetup:
         self.database.query("""
             INSERT INTO trip 
             (
+                id,
                 destination,
                 description,
                 start_date,
@@ -261,6 +261,7 @@ class DatabaseSetup:
                 created_by
             )
             VALUES (
+                'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
                 'Puerto Vallarta',
                 'Getaway trip',
                 '2020-06-10',
@@ -270,6 +271,7 @@ class DatabaseSetup:
 
             INSERT INTO trip 
             (
+                id,
                 destination,
                 description,
                 start_date,
@@ -277,6 +279,7 @@ class DatabaseSetup:
                 created_by
             )
             VALUES (
+                'ce60fd7b-6238-4bef-a924-269597fdaab1',
                 'Cabo',
                 'Getaway trip 2',
                 '2020-07-10',
@@ -310,5 +313,44 @@ class DatabaseSetup:
                 (SELECT id FROM traveller WHERE first_name='joe'),
                 (SELECT id FROM trip WHERE destination='Cabo')
             );
+        """)
+
+        self.database.query("""
+            INSERT INTO poll (
+                id,
+                trip_id,
+                title,
+                anonymous,
+                created_by
+            )
+            VALUES (
+                98,
+                'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
+                'test poll',
+                TRUE,
+                'troy@test.com'
+            );
+                            
+            INSERT INTO poll_option (id, poll_id, option) VALUES (101, 98, 'first');
+            INSERT INTO poll_option (id, poll_id, option) VALUES (102, 98, 'second');
+                            
+            INSERT INTO poll (
+                id,
+                trip_id,
+                title,
+                anonymous,
+                created_by
+            )
+            VALUES (
+                99,
+                'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
+                'test poll 2',
+                FALSE,
+                'troy@test.com'
+            );
+                            
+            INSERT INTO poll_option (id, poll_id, option) VALUES (103, 99, 'option a');
+            INSERT INTO poll_option (id, poll_id, option) VALUES (104, 99, 'option b');
+            INSERT INTO poll_option (id, poll_id, option) VALUES (105, 99, 'option c');
         """)
 
