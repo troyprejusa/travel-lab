@@ -8,13 +8,14 @@ import { RootState } from '../redux/Store';
 import PollCard from '../Components/PollCard';
 import { PollBackendResponse, PollModel } from '../utilities/Interfaces';
 import fetchHelpers from '../utilities/fetchHelpers';
+import { parsePollData } from '../utilities/pollHelpers';
 import { reduxSetPolls, PollState } from '../redux/PollSlice';
 
 
 
 function Poll(): JSX.Element {
 
-    // useEffect(getPolls, []);
+    useEffect(getPolls, []);
     const trip = useSelector((state: RootState) => state.trip)
     const pollState: PollState = useSelector((state: RootState) => state.polls);
 
@@ -42,9 +43,12 @@ function Poll(): JSX.Element {
 
                 
                 if (res.ok) {
-                    const polls = await res.json();
-                    console.log(polls)
-                    // reduxSetPolls(polls);
+                    const pollDataRaw = await res.json();
+
+                    // TODO: Parse poll data
+                    console.log(pollDataRaw)
+                    const parsedPollData = parsePollData(pollDataRaw)
+                    // reduxSetPolls(parsedPollData);
                     
                 } else {
                     const message = await res.json();

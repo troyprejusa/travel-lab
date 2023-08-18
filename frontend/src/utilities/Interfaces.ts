@@ -65,12 +65,3 @@ export interface PollVoteModel {
     voted_at: string
     voted_by: string
 }
-
-// export interface PollBackendResponse {
-//     title: string
-//     anonymous: boolean
-//     created_by: string
-//     option: string
-//     vote: string
-//     voted_by: string
-// }

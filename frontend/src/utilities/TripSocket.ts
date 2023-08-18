@@ -62,13 +62,15 @@ class MessageSocket extends TripSocket {
 
         // Create event handlers for this
         this.socket.on('backend_msg', (data: MessageModel) => {
-            console.log('I received a message!', data)
             this.dispatch(reduxAddMessage(data));
         })
     }
 }
 
 class PollSocket extends TripSocket {
+    // The construction of polls will be synchronous, but the act
+    // of voting will be real-time
+    
     constructor(host: string, apiPath: string, namespace: string) {
         super(host, apiPath, namespace);
     }
@@ -78,10 +80,8 @@ class PollSocket extends TripSocket {
         // Make a connection to the socket using the parent method
         super.establishSocket(token, trip_id, dispatcher);
 
-        // Create event handlers for this
-        // this.socket.on('backend_msg', (data: MessageModel) => {
-        //     this.dispatch(reduxAddMessage(data.content));
-        // })
+        // TODO: Add methods to handle poll actions
+
     }
 }
 
