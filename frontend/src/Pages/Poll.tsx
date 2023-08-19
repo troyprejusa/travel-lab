@@ -8,7 +8,6 @@ import { RootState } from '../redux/Store';
 import PollCard from '../Components/PollCard';
 import { PollBackendResponse, PollModel } from '../utilities/Interfaces';
 import fetchHelpers from '../utilities/fetchHelpers';
-import { parsePollData } from '../utilities/pollHelpers';
 import { reduxSetPolls, PollState } from '../redux/PollSlice';
 
 
@@ -43,11 +42,10 @@ function Poll(): JSX.Element {
 
                 
                 if (res.ok) {
-                    const pollDataRaw = await res.json();
+                    const pollData = await res.json();
 
                     // TODO: Parse poll data
-                    console.log(pollDataRaw)
-                    const parsedPollData = parsePollData(pollDataRaw)
+                    console.log(pollData)
                     // reduxSetPolls(parsedPollData);
                     
                 } else {

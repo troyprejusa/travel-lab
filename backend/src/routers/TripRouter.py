@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
-from models.Schemas import Trip, Traveller, Itinerary, Message, NewPollBody
+from models.Schemas import Trip, Traveller, Itinerary, Message, NewPollBody, PollResponseBody
 from typing import Annotated
 from datetime import date, datetime
 from models.S3Handler import minio_client
-import json
+from utilities.merge_polls import merge_polls
 
 
 trip_router = APIRouter(
@@ -170,7 +170,7 @@ async def get_messages(trip_id: str) -> list[Message] | str:
 
     
 @trip_router.get('/{trip_id}/poll')
-async def get_polls(trip_id: str) -> str:
+async def get_polls(trip_id: str) -> list[PollResponseBody] | str:
     try:
         # The results for one poll on this trip will have the following number
         # of rows:
@@ -181,6 +181,8 @@ async def get_polls(trip_id: str) -> str:
             SELECT 
                 poll.id AS poll_id,
                 poll.title,
+                poll.anonymous,
+                poll_option.id AS option_id,
                 poll_option.option,
                 poll_vote.voted_by
             FROM 
@@ -194,12 +196,14 @@ async def get_polls(trip_id: str) -> str:
             ORDER BY poll.id;
         """, (trip_id,))
 
-        print(len(data))
-        print(data)
-
-        # Instead of grouping the data on the backend, we will
-        # leave it to the frontend to handle
-        return json.dumps(data)
+        # With this table of data, we can either group it meaningfully
+        # on the backend or the frontend. However, to be true to the
+        # anonymous-ness of it all we will have to handle this on the
+        # backend. Note that the below logic relies on the data being
+        # sorted by poll_id. This is basically a merge intervals problem
+        output = merge_polls(data)
+        
+        return output
     
     except Exception as e:
         print(str(e))

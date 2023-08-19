@@ -149,6 +149,17 @@ class DatabaseSetup:
         """)
     
     def initialize_poll_tables(self) -> None:
+        '''
+        The relationship below is poll -> poll_option -> poll_vote
+        Once a poll is created, its fields will be locked in. There
+        will be no way or reason to modify the poll title or options
+        after creation, as it creates a scenario where the title, 
+        votes, or vote options are not captured faithfully as to
+        when people voted.
+
+        To add your votes, simply send over the option you want, 
+        which is a reference to the poll_option(id) field
+        '''
         self.database.query("""
             CREATE TABLE IF NOT EXISTS poll (
                 id BIGSERIAL PRIMARY KEY,
@@ -315,6 +326,7 @@ class DatabaseSetup:
             );
         """)
 
+        # Insert some fake polls
         self.database.query("""
             INSERT INTO poll (
                 id,
