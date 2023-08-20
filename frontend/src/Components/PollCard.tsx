@@ -2,7 +2,7 @@ import { SyntheticEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { reduxSetTrip } from '../redux/TripSlice';
-import { TripModel } from '../utilities/Interfaces';
+import { PollResponseModel } from '../utilities/Interfaces';
 import TripPhoto from '../assets/tripphoto.jpg';
 import { msgSocket, pollSocket } from '../utilities/TripSocket';
 import {
@@ -17,67 +17,71 @@ import {
 
 
 
-// interface PollCardProps {
-//   tripData: TripModel,
-// }
+interface PollCardProps extends PollResponseModel{
 
-function PollCard(props: any) {
+}
+
+function PollCard(props: PollCardProps) {
   const navigate = useNavigate(); 
   const dispatch = useDispatch();
 
   return (
-    <Center py={6} onClick={handleViewClick} cursor={'pointer'}>
-      <Box
-        maxW={'445px'}
-        w={'full'}
-        bg={useColorModeValue('white', 'gray.900')}
-        boxShadow={'2xl'}
-        rounded={'md'}
-        p={6}
-        overflow={'hidden'}>
-        <Box
-          h={'210px'}
-          bg={'gray.100'}
-          mt={-6}
-          mx={-6}
-          mb={6}
-          pos={'relative'}>
-          <img src={TripPhoto} alt={'trip'} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
-        </Box>
-        <Stack>
-          <Text
-            color={'green.500'}
-            textTransform={'uppercase'}
-            fontWeight={800}
-            fontSize={'sm'}
-            letterSpacing={1.1}>
-            {`${props.tripData.start_date}`}
-          </Text>
-          <Heading
-            color={useColorModeValue('gray.700', 'white')}
-            fontSize={'2xl'}
-            fontFamily={'body'}>
-            {props.tripData.destination}
-          </Heading>
-          <Text color={'gray.500'}>
-            {props.tripData.description}
-          </Text>
-        </Stack>
-        <Stack mt={6} direction={'row'} spacing={4} align={'center'}>
-          <Avatar
-            src={'https://avatars0.githubusercontent.com/u/1164541?v=4'}
-          />
-          <Stack direction={'column'} spacing={0} fontSize={'sm'}>
-            <Text fontWeight={600}>Ya Boi</Text>
-            {
-            props.tripData.created_at.constructor.name === 'Date' &&
-            <Text color={'gray.500'}>{`hi`}</Text>
-            }
-          </Stack>
-        </Stack>
-      </Box>
-    </Center>
-  );
+    <h1>{props.title}</h1>
+  )
+
+  // return (
+  //   <Center py={6} onClick={handleViewClick} cursor={'pointer'}>
+  //     <Box
+  //       maxW={'445px'}
+  //       w={'full'}
+  //       bg={useColorModeValue('white', 'gray.900')}
+  //       boxShadow={'2xl'}
+  //       rounded={'md'}
+  //       p={6}
+  //       overflow={'hidden'}>
+  //       <Box
+  //         h={'210px'}
+  //         bg={'gray.100'}
+  //         mt={-6}
+  //         mx={-6}
+  //         mb={6}
+  //         pos={'relative'}>
+  //         <img src={TripPhoto} alt={'trip'} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+  //       </Box>
+  //       <Stack>
+  //         <Text
+  //           color={'green.500'}
+  //           textTransform={'uppercase'}
+  //           fontWeight={800}
+  //           fontSize={'sm'}
+  //           letterSpacing={1.1}>
+  //           {`${props.tripData.start_date}`}
+  //         </Text>
+  //         <Heading
+  //           color={useColorModeValue('gray.700', 'white')}
+  //           fontSize={'2xl'}
+  //           fontFamily={'body'}>
+  //           {props.tripData.destination}
+  //         </Heading>
+  //         <Text color={'gray.500'}>
+  //           {props.tripData.description}
+  //         </Text>
+  //       </Stack>
+  //       <Stack mt={6} direction={'row'} spacing={4} align={'center'}>
+  //         <Avatar
+  //           src={'https://avatars0.githubusercontent.com/u/1164541?v=4'}
+  //         />
+  //         <Stack direction={'column'} spacing={0} fontSize={'sm'}>
+  //           <Text fontWeight={600}>Ya Boi</Text>
+  //           {
+  //           props.tripData.created_at.constructor.name === 'Date' &&
+  //           <Text color={'gray.500'}>{`hi`}</Text>
+  //           }
+  //         </Stack>
+  //       </Stack>
+  //     </Box>
+  //   </Center>
+  // );
 
   function handleViewClick(event: SyntheticEvent) {
 

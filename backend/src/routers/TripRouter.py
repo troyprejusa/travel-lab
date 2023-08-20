@@ -193,14 +193,14 @@ async def get_polls(trip_id: str) -> list[PollResponseBody] | str:
                 poll_vote ON poll_option.id = poll_vote.vote
             WHERE 
                 poll.trip_id = %s
-            ORDER BY poll.id;
+            ORDER BY poll.id, poll_option.id;
         """, (trip_id,))
 
         # With this table of data, we can either group it meaningfully
         # on the backend or the frontend. However, to be true to the
         # anonymous-ness of it all we will have to handle this on the
         # backend. Note that the below logic relies on the data being
-        # sorted by poll_id. This is basically a merge intervals problem
+        # SORTED by poll_id. This is basically a merge intervals problem
         output = merge_polls(data)
 
         return output

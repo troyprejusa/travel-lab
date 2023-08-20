@@ -6,9 +6,9 @@ import { Wrap } from '@chakra-ui/react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/Store';
 import PollCard from '../Components/PollCard';
-import { PollBackendResponse, PollModel } from '../utilities/Interfaces';
+import { PollResponseModel } from '../utilities/Interfaces';
 import fetchHelpers from '../utilities/fetchHelpers';
-import { reduxSetPolls, PollState } from '../redux/PollSlice';
+import { reduxSetPolls } from '../redux/PollSlice';
 
 
 
@@ -16,15 +16,15 @@ function Poll(): JSX.Element {
 
     useEffect(getPolls, []);
     const trip = useSelector((state: RootState) => state.trip)
-    const pollState: PollState = useSelector((state: RootState) => state.polls);
-
+    const pollState: Array<PollResponseModel> = useSelector((state: RootState) => state.polls);
+    console.log("my state is:", pollState)
     return (
         <>
             <Flex justifyContent={'center'}>
             <h1>Poll</h1>
             </Flex>
             <Wrap margin={'10%'} spacing={'10%'}>
-                {pollState.polls.map((poll: PollModel, i: number) => <PollCard key = {i} pollData={poll}/>)}
+                {pollState.map((poll, i: number) => <PollCard key = {i} {...poll}/>)}
                 <NewPollModal getPollsCallback={getPolls} />
                 <button onClick={getPolls}>Click me!</button>
             </Wrap>
@@ -42,11 +42,10 @@ function Poll(): JSX.Element {
 
                 
                 if (res.ok) {
-                    const pollData = await res.json();
+                    const pollData: Array<PollResponseModel> = await res.json();
 
-                    // TODO: Parse poll data
                     console.log(pollData)
-                    // reduxSetPolls(parsedPollData);
+                    reduxSetPolls(pollData);
                     
                 } else {
                     const message = await res.json();

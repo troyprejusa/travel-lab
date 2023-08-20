@@ -1,8 +1,7 @@
 import { useState, useRef, SyntheticEvent, ReactElement } from 'react';
 import fetchHelpers from '../utilities/fetchHelpers';
-import { useDispatch, useSelector } from 'react-redux';
-import { reduxSetTrip } from '../redux/TripSlice';
-import { useNavigate } from 'react-router-dom';
+import { TripModel, NewPollModel } from '../utilities/Interfaces';
+import { useSelector } from 'react-redux';
 import {
     Button,
     Modal,
@@ -20,7 +19,6 @@ import {
     Box,
     Select
 } from '@chakra-ui/react'
-import { PollModel, TripModel } from '../utilities/Interfaces';
 
 interface NewPollModalProps {
     getPollsCallback: () => void
@@ -28,9 +26,6 @@ interface NewPollModalProps {
 
 function NewPollModal(props: NewPollModalProps) {
 
-    
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
     const trip: TripModel = useSelector((state: RootState) => state.trip);
     
     const [ pollOptionCount, setPollOptionCount ] = useState(0);
@@ -104,29 +99,27 @@ function NewPollModal(props: NewPollModalProps) {
         // Because we want to use an array to hold the multiple
         // options, we're going to use JSON instead of the actual
         // form
-        const body = {};
-        body.options = [];
+        const pollData: NewPollModel = {
+            title: '',
+            anonymous: false,
+            options: []
+        };
+
         for (const [key, val] of formData) {
-            if (key === 'anonymous') {
-                body.anonymous = true;
+            if (key === 'title') {
+                pollData.title = val.toString();
+            } else if (key === 'anonymous') {
+                pollData.anonymous = true;
             } else if (key.split('_').length > 1) {
                 // This is an option
-                body.options.push(val);
-            } else {
-                // Default case
-                body[key] = val;
+                pollData.options.push(val.toString());
             }
-        }
-
-        // Set anonymous field if it has not been
-        if (!('anonymous' in body)) {
-            body.anonymous = false;
         }
 
         try {
             const res: Response = await fetch(`/trip/${trip.id}/poll` , {
                 method: 'POST',
-                body: JSON.stringify(body),
+                body: JSON.stringify(pollData),
                 headers: fetchHelpers.getTokenJSONHeader()
             })
 
