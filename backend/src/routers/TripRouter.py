@@ -202,7 +202,7 @@ async def get_polls(trip_id: str) -> list[PollResponseBody] | str:
         # backend. Note that the below logic relies on the data being
         # sorted by poll_id. This is basically a merge intervals problem
         output = merge_polls(data)
-        
+
         return output
     
     except Exception as e:

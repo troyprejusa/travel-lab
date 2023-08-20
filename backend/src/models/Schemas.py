@@ -55,6 +55,7 @@ class PollVoteBody(BaseModel):
     votes: list[str]
 
 class PollResponseBody(BaseModel):
+    poll_id: int
     title: str
     anonymous: bool
     options: list[PollVoteBody]
