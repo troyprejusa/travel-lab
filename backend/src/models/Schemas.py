@@ -58,4 +58,6 @@ class PollResponseBody(BaseModel):
     poll_id: int
     title: str
     anonymous: bool
+    created_at: datetime
+    created_by: str
     options: list[PollVoteBody]

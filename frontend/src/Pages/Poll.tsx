@@ -9,24 +9,27 @@ import PollCard from '../Components/PollCard';
 import { PollResponseModel } from '../utilities/Interfaces';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { reduxSetPolls } from '../redux/PollSlice';
+import { Box } from '@chakra-ui/react';
 
 
 
 function Poll(): JSX.Element {
 
     useEffect(getPolls, []);
+
+    // Redux
+    const dispatch = useDispatch();
     const trip = useSelector((state: RootState) => state.trip)
     const pollState: Array<PollResponseModel> = useSelector((state: RootState) => state.polls);
-    console.log("my state is:", pollState)
+
     return (
         <>
             <Flex justifyContent={'center'}>
             <h1>Poll</h1>
             </Flex>
+            <NewPollModal getPollsCallback={getPolls} />
             <Wrap margin={'10%'} spacing={'10%'}>
-                {pollState.map((poll, i: number) => <PollCard key = {i} {...poll}/>)}
-                <NewPollModal getPollsCallback={getPolls} />
-                <button onClick={getPolls}>Click me!</button>
+                {pollState.map((poll, i: number) => <Box key={i}><PollCard {...poll} /></Box>)}
             </Wrap>
         </>
 
@@ -40,12 +43,11 @@ function Poll(): JSX.Element {
                     headers: fetchHelpers.getTokenHeader()
                 });
 
-                
                 if (res.ok) {
                     const pollData: Array<PollResponseModel> = await res.json();
 
-                    console.log(pollData)
-                    reduxSetPolls(pollData);
+                    // console.log(pollData)
+                    dispatch(reduxSetPolls(pollData));
                     
                 } else {
                     const message = await res.json();

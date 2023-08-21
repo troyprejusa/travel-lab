@@ -182,6 +182,8 @@ async def get_polls(trip_id: str) -> list[PollResponseBody] | str:
                 poll.id AS poll_id,
                 poll.title,
                 poll.anonymous,
+                poll.created_at,
+                poll.created_by,
                 poll_option.id AS option_id,
                 poll_option.option,
                 poll_vote.voted_by

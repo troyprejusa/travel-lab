@@ -1,107 +1,113 @@
-import { SyntheticEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { reduxSetTrip } from '../redux/TripSlice';
-import { PollResponseModel } from '../utilities/Interfaces';
-import TripPhoto from '../assets/tripphoto.jpg';
-import { msgSocket, pollSocket } from '../utilities/TripSocket';
+import { PollResponseModel, PollVoteModel } from '../utilities/Interfaces'
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip } from 'recharts'
 import {
+  Flex,
   Box,
-  Center,
-  Heading,
-  Text,
-  Stack,
-  Avatar,
   useColorModeValue,
-} from '@chakra-ui/react';
+  Icon,
+  chakra,
+  Tooltip,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalHeader,
+  ModalCloseButton,
+  ModalContent,
+  ModalBody,
+  ModalFooter,
+  Button,
+  VStack
+} from '@chakra-ui/react'
+import { FiEye } from 'react-icons/fi'
 
+interface PollChartData {
+  option: string
+  count: number
+}
 
-
-interface PollCardProps extends PollResponseModel{
+interface PollCardProps extends PollResponseModel {
 
 }
 
 function PollCard(props: PollCardProps) {
-  const navigate = useNavigate(); 
-  const dispatch = useDispatch();
+
+  const pollChartData = makeDataArray(props.options);
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
-    <h1>{props.title}</h1>
+    <>
+      <Flex p={'40px'} w="full" alignItems="center" justifyContent="center">
+        <Box
+          bg={useColorModeValue('white', 'gray.800')}
+          maxW="sm"
+          borderWidth="1px"
+          rounded="lg"
+          shadow="lg"
+          position="relative">
+
+          <Box p="6">
+            <Flex mt="1" justifyContent="space-between" alignContent="center">
+              <Box
+                fontSize="2xl"
+                fontWeight="semibold"
+                as="h4"
+                lineHeight="tight"
+                isTruncated>
+                {props.title}
+              </Box>
+              <Tooltip
+                label="View"
+                bg="white"
+                placement={'top'}
+                color={'gray.800'}
+                fontSize={'1.2em'}>
+                <chakra.a display={'flex'} cursor={'pointer'} onClick={onOpen}>
+                  <Icon as={FiEye} h={7} w={7} alignSelf={'center'} />
+                </chakra.a>
+              </Tooltip>
+            </Flex>
+            <h2>{`${props.created_by}`}</h2>
+            <h3>{`${props.created_at}`}</h3>
+          </Box>
+        </Box>
+      </Flex>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent width={'80vw'} height={'80vh'} maxW={'80vw'} maxH={'80vh'}>
+            <ModalHeader>{props.title}</ModalHeader>
+            <ModalCloseButton />
+
+            {/* TODO: Add a click to vote feature if this user hasn't voted! */}
+            <ModalBody>
+              <VStack>
+                <Box width={'40vw'} height={'40vh'}>
+                  <ResponsiveContainer width={'100%'} height={'100%'}>
+                    <BarChart data={pollChartData}>
+                        <XAxis dataKey={'option'}/>
+                        <YAxis />
+                        <Bar dataKey={'count'}/>
+                        <RechartsTooltip />
+                      </BarChart>
+                  </ResponsiveContainer>
+                </Box>
+              </VStack>
+            </ModalBody>
+  
+            <ModalFooter>
+              {/* <Button colorScheme='blue' mr={3} onClick={handleClick}>Create</Button> */}
+              <Button variant='ghost' onClick={onClose}>Close</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+    </>
   )
 
-  // return (
-  //   <Center py={6} onClick={handleViewClick} cursor={'pointer'}>
-  //     <Box
-  //       maxW={'445px'}
-  //       w={'full'}
-  //       bg={useColorModeValue('white', 'gray.900')}
-  //       boxShadow={'2xl'}
-  //       rounded={'md'}
-  //       p={6}
-  //       overflow={'hidden'}>
-  //       <Box
-  //         h={'210px'}
-  //         bg={'gray.100'}
-  //         mt={-6}
-  //         mx={-6}
-  //         mb={6}
-  //         pos={'relative'}>
-  //         <img src={TripPhoto} alt={'trip'} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
-  //       </Box>
-  //       <Stack>
-  //         <Text
-  //           color={'green.500'}
-  //           textTransform={'uppercase'}
-  //           fontWeight={800}
-  //           fontSize={'sm'}
-  //           letterSpacing={1.1}>
-  //           {`${props.tripData.start_date}`}
-  //         </Text>
-  //         <Heading
-  //           color={useColorModeValue('gray.700', 'white')}
-  //           fontSize={'2xl'}
-  //           fontFamily={'body'}>
-  //           {props.tripData.destination}
-  //         </Heading>
-  //         <Text color={'gray.500'}>
-  //           {props.tripData.description}
-  //         </Text>
-  //       </Stack>
-  //       <Stack mt={6} direction={'row'} spacing={4} align={'center'}>
-  //         <Avatar
-  //           src={'https://avatars0.githubusercontent.com/u/1164541?v=4'}
-  //         />
-  //         <Stack direction={'column'} spacing={0} fontSize={'sm'}>
-  //           <Text fontWeight={600}>Ya Boi</Text>
-  //           {
-  //           props.tripData.created_at.constructor.name === 'Date' &&
-  //           <Text color={'gray.500'}>{`hi`}</Text>
-  //           }
-  //         </Stack>
-  //       </Stack>
-  //     </Box>
-  //   </Center>
-  // );
-
-  function handleViewClick(event: SyntheticEvent) {
-
-    const authToken: string | null = localStorage.getItem("token");
-
-    if (authToken) {
-      // Establish a websocket connection for these rooms
-      msgSocket.establishSocket(authToken, props.tripData.id, dispatch);
-      pollSocket.establishSocket(authToken, props.tripData.id, dispatch);
-  
-      // Set this trip as the current trip in state
-      dispatch(reduxSetTrip(props.tripData));
-  
-      // Navigate on to view the trip
-      navigate(`/trip/${props.tripData.id}/home`);
-
-    } else {
-      alert('Unable to view trip!')
-    }
+  function makeDataArray(data: Array<PollVoteModel>): Array<PollChartData> {
+    return data.map((optionData: PollVoteModel) => ({option: optionData.option, count: optionData.votes.length}));
   }
+
 }
 
-export default PollCard;
+export default PollCard
