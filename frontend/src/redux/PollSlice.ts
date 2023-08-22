@@ -1,8 +1,8 @@
 import { Slice, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { PollResponseModel } from "../utilities/Interfaces";
+import { PollResponseModel, PollVoteModel, PollVoteSendModel} from "../utilities/Interfaces";
 
-// For now, it's not important to have the creation of polls be real time
-// I just want voting to be real time.
+// For now, the creation of polls will not be real time.
+// Onlyh the voting will be real time.
 
 const initialPollState: Array<PollResponseModel> = []
 
@@ -19,9 +19,16 @@ const pollSlice: Slice = createSlice({
             state.push(action.payload)
         },
 
-        reduxAddVote: (state, action: PayloadAction<PollVoteModel>) => {
-            // TODO: This logic isn't right!
-            state.poll_votes.push(action.payload);
+        reduxAddVote: (state, action: PayloadAction<PollVoteSendModel>) => {
+            const matchingPoll: number = state.findIndex((poll: PollResponseModel) => poll.poll_id === action.payload.poll_id);
+            
+            if (matchingPoll === -1) return
+
+            const matchingOption: number = state[matchingPoll].options.findIndex((option: PollVoteModel) => option.option_id === action.payload.option_id);
+
+            if (matchingOption === -1) return
+
+            state[matchingPoll].options[matchingOption].votes.push(action.payload.voted_by);
         },
 
         reduxResetPolls: (state, action: PayloadAction<null>) => {

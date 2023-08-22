@@ -2,6 +2,7 @@ import { useState, useRef, SyntheticEvent, ReactElement } from 'react';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { TripModel, NewPollModel } from '../utilities/Interfaces';
 import { useSelector } from 'react-redux';
+import { RootState } from '../redux/Store';
 import {
     Button,
     Modal,
@@ -34,7 +35,7 @@ function NewPollModal(props: NewPollModalProps) {
     const pollForm = useRef<HTMLFormElement>(null);
 
     const selectOptions: Array<ReactElement> = [];
-    for (let i = 1; i < 6; i++) {
+    for (let i = 2; i < 6; i++) {
         selectOptions.push(<option key={i} value={i}>{i}</option>);
     }
 

@@ -1,7 +1,8 @@
 import io, { Socket } from "socket.io-client";
-import { MessageModel } from "./Interfaces";
+import { MessageModel, PollVoteSendModel } from "./Interfaces";
 import { reduxAddMessage } from "../redux/MessageSlice";
 import { Dispatch } from "@reduxjs/toolkit";
+import { reduxAddVote } from "../redux/PollSlice";
 
 class TripSocket {
 
@@ -80,7 +81,9 @@ class PollSocket extends TripSocket {
         // Make a connection to the socket using the parent method
         super.establishSocket(token, trip_id, dispatcher);
 
-        // TODO: Add methods to handle poll actions
+        this.socket.on('backend_vote', (data: PollVoteSendModel) => {
+            this.dispatch(reduxAddVote(data));
+        })
 
     }
 }

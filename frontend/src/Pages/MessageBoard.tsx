@@ -24,17 +24,16 @@ function MessageBoard(): JSX.Element {
             <h1>Message</h1>
             </Flex>
             <input type="text" id='temp_input'/>
-            <button onClick={sendData}>Send data</button>
+            <button onClick={sendMessage}>Send message</button>
             <ul>
                 {messages.length === 0 ?
-                <li>No messages yet...</li> : 
-                messages.map((msg: MessageModel, i: number) => <li key={i}>{msg.content}</li>)}
+                <li>No messages yet...</li> : messages.map((msg: MessageModel, i: number) => <li key={i}>{msg.content}</li>)}
             </ul>
         </>
 
     )
 
-    function sendData(event: SyntheticEvent) {
+    function sendMessage(event: SyntheticEvent) {
         const node = document.getElementById('temp_input');
         if (node) {
             const data: string = node.value;

@@ -1,5 +1,8 @@
-import { PollResponseModel, PollVoteModel } from '../utilities/Interfaces'
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip } from 'recharts'
+import BarChartComponent from './BarChartComponent';
+import PieChartComponent from './PieChartComponent';
+import { pollSocket } from '../utilities/TripSocket';
+import { useSelector } from 'react-redux';
+import { PollResponseModel, PollVoteModel, PollChartDataPoint, TripModel, UserModel, PollVoteSendModel } from '../utilities/Interfaces'
 import {
   Flex,
   Box,
@@ -16,24 +19,28 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  VStack
+  VStack,
+  Badge
 } from '@chakra-ui/react'
 import { FiEye } from 'react-icons/fi'
+import { RootState } from '../redux/Store';
 
-interface PollChartData {
-  option: string
-  count: number
-}
-
-interface PollCardProps extends PollResponseModel {
-
+interface PollCardProps {
+  data: PollResponseModel
 }
 
 function PollCard(props: PollCardProps) {
 
-  const pollChartData = makeDataArray(props.options);
+  const pollChartData: Array<PollChartDataPoint> = makeDataArray(props.data);
+
+  const trip: TripModel = useSelector((state: RootState) => state.trip);
+  const user: UserModel = useSelector((state: RootState) => state.user);
 
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+  // Create a closure function to bind arguments to the poll information for
+  // this poll card
+  const constructVote = constructVoteClosure();
 
   return (
     <>
@@ -45,7 +52,9 @@ function PollCard(props: PollCardProps) {
           rounded="lg"
           shadow="lg"
           position="relative">
-
+          <Box width={'300px'} height={'300px'}>
+            <PieChartComponent data={pollChartData} />
+          </Box>
           <Box p="6">
             <Flex mt="1" justifyContent="space-between" alignContent="center">
               <Box
@@ -54,7 +63,7 @@ function PollCard(props: PollCardProps) {
                 as="h4"
                 lineHeight="tight"
                 isTruncated>
-                {props.title}
+                {props.data.title}
               </Box>
               <Tooltip
                 label="View"
@@ -67,8 +76,11 @@ function PollCard(props: PollCardProps) {
                 </chakra.a>
               </Tooltip>
             </Flex>
-            <h2>{`${props.created_by}`}</h2>
-            <h3>{`${props.created_at}`}</h3>
+            <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="red">
+              New
+            </Badge>
+            <h2>{`${props.data.created_by}`}</h2>
+            <h3>{`${props.data.created_at}`}</h3>
           </Box>
         </Box>
       </Flex>
@@ -76,21 +88,13 @@ function PollCard(props: PollCardProps) {
       <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent width={'80vw'} height={'80vh'} maxW={'80vw'} maxH={'80vh'}>
-            <ModalHeader>{props.title}</ModalHeader>
+            <ModalHeader>{props.data.title}</ModalHeader>
             <ModalCloseButton />
 
-            {/* TODO: Add a click to vote feature if this user hasn't voted! */}
             <ModalBody>
               <VStack>
                 <Box width={'40vw'} height={'40vh'}>
-                  <ResponsiveContainer width={'100%'} height={'100%'}>
-                    <BarChart data={pollChartData}>
-                        <XAxis dataKey={'option'}/>
-                        <YAxis />
-                        <Bar dataKey={'count'}/>
-                        <RechartsTooltip />
-                      </BarChart>
-                  </ResponsiveContainer>
+                  <BarChartComponent data={pollChartData} constructVoteCallback={constructVote} />
                 </Box>
               </VStack>
             </ModalBody>
@@ -104,10 +108,37 @@ function PollCard(props: PollCardProps) {
     </>
   )
 
-  function makeDataArray(data: Array<PollVoteModel>): Array<PollChartData> {
-    return data.map((optionData: PollVoteModel) => ({option: optionData.option, count: optionData.votes.length}));
+  function makeDataArray(pollData: PollResponseModel): Array<PollChartDataPoint> {
+    return pollData.options.map((optionData: PollVoteModel) => ({
+      option: optionData.option, 
+      count: optionData.votes.length,
+      voted_by: optionData.votes
+    }));
   }
+
+  function constructVoteClosure() {
+    return (chosenOption: string): PollVoteSendModel | null=> {
+      // Look through the various options to find the option_id
+      const matchingIndex: number = props.data.options.findIndex((item: PollVoteModel) => item.option === chosenOption);
+
+      if (matchingIndex === -1) return null;
+
+      const optionId: number = props.data.options[matchingIndex].option_id
+
+      const data: PollVoteSendModel = {
+        trip_id: trip.id,
+        poll_id: props.data.poll_id,
+        option_id: optionId,
+        voted_by: user.email
+      }
+
+      return data;
+
+    }
+
+  }
+
 
 }
 
-export default PollCard
+export default PollCard;

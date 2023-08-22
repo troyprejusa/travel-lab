@@ -18,7 +18,6 @@ class MsgSocket(socketio.AsyncNamespace):
 
     def on_disconnect(self, sid):
         print(f'{sid} disconnected from message socket')
-        pass
 
     async def on_frontend_msg(self, sid, data):
         try:
@@ -30,12 +29,12 @@ class MsgSocket(socketio.AsyncNamespace):
                 )
             """, (data['trip_id'], data['content'], data['created_by']))
 
+            # If message was saved successfully, send to everyone else
             await self.emit('backend_msg', data, room = data['trip_id'])
 
         except Exception as e:
             print(str(e))
             raise Exception('Unable to process message from frontend')
-
 
 
 class PollSocket(socketio.AsyncNamespace):
@@ -52,7 +51,20 @@ class PollSocket(socketio.AsyncNamespace):
 
     def on_disconnect(self, sid):
         print(f'{sid} disconnected from poll socket')
-        pass
+
+    async def on_frontend_vote(self, sid, data) -> None | str:
+        try:
+            db_handler.query("""
+                INSERT INTO poll_vote (vote, voted_by) VALUES (%s, %s);
+            """, (data['option_id'], data['voted_by']))
+
+            # If vote was successful, send to everyone else
+            await self.emit('backend_vote', data, room = data['trip_id'])
+
+        except Exception as e:
+            print(str(e))
+            raise Exception('Unable to vote on this poll')
+
 
 def parse_trip_id(query: str) -> str:
     query_components = query.split('&')

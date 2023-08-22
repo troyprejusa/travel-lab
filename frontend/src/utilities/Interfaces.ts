@@ -63,3 +63,19 @@ export interface PollResponseModel {
     created_by: string,
     options: Array<PollVoteModel>
 }
+
+export interface PollChartDataPoint {
+    option: string
+    count: number
+    voted_by: Array<string>
+}
+
+export interface PollVoteSendModel {
+    // Data needed to save a poll vote and be distributed 
+    // out to other listeners on the websocket
+    trip_id: string,
+    poll_id: number,
+    option_id: number,
+    voted_by: string
+
+}
