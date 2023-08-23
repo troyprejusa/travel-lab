@@ -42,7 +42,7 @@ function BarChartComponent(props: BarChartComponentProps) {
         try {
             const chosenOption: string = data['activeLabel'];
             
-            console.log('Sending vote', chosenOption);
+            // console.log('Sending vote', chosenOption);
             const poll_vote: PollVoteSendModel | null = props.constructVoteCallback(chosenOption);
 
             if (poll_vote) {

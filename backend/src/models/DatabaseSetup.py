@@ -156,6 +156,9 @@ class DatabaseSetup:
             CREATE TABLE IF NOT EXISTS packing (
                 id BIGSERIAL PRIMARY KEY,
                 trip_id UUID NOT NULL references trip ON DELETE CASCADE,
+                item VARCHAR(64) NOT NULL,
+                quantity INTEGER NOT NULL,
+                description VARCHAR(200),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 created_by VARCHAR(255) references traveller(email) ON DELETE SET NULL,
                 packed_by VARCHAR(255) references traveller(email) ON DELETE SET NULL 

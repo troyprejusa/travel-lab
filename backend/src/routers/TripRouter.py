@@ -249,3 +249,87 @@ async def add_poll(request: Request, trip_id: str, poll_body: NewPollBody) -> di
                 "message": f'ERROR: Unable to post poll'
             }
         )
+    
+@trip_router.post('/{trip_id}/packing')
+async def add_packing_item(
+    request: Request,
+    trip_id: str,
+    item: Annotated[str, Form()],
+    quantity: Annotated[int, Form()],
+    description: Annotated[str, Form()]
+    ) -> dict[str, str]:
+
+    try:
+        db_handler.query("""
+            INSERT INTO packing (trip_id, item, quantity, description, created_by) 
+            VALUES (%s, %s, %s, %s, %s)
+        """, (trip_id, item, quantity, description, request.state.user['email']))
+
+        return JSONResponse(
+            status_code=200,
+            content= {
+                "message": f'Successfully added {item} to trip {trip_id}'
+            }
+        )
+    
+    except Exception as e:
+        print(str(e))
+        return JSONResponse(
+            status_code=500,
+            content= {
+                "message": f'Unable to add packing item {item} to trip {trip_id}'
+            }
+        )
+
+@trip_router.delete('/{trip_id}/packing/{item_id}')
+async def delete_packing_item(trip_id: str, item_id: int) -> dict[str, str]:
+    try:
+        db_handler.query("""
+            DELETE FROM packing WHERE id=%s;
+        """, (item_id,))
+
+        return JSONResponse(
+            status_code=200,
+            content= {
+                "message": f'Successfully deleted item_id {item_id} from trip {trip_id}'
+            }
+        )
+
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content= {
+                "message": f'Unable to delete item_id {item_id} from trip {trip_id}'
+            }
+        )
+
+
+@trip_router.patch('/{trip_id}/packing/claim/{item_id}')
+async def claim_packing_item(request: Request, trip_id: str, item_id: int) -> dict[str, str]:
+    try:
+        db_handler.query("""
+            UPDATE packing SET packed_by = %s WHERE packed_by IS NULL AND id = %s;
+        """, (request.state.user['email'], item_id))
+
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content= {
+                "message": f'Unable to claim item_id {item_id}'
+            }
+        )
+
+@trip_router.patch('/{trip_id}/packing/unclaim/{item_id}')
+async def unclaim_packing_item(trip_id: str, item_id: int) -> dict[str, str]:
+    try:
+        db_handler.query("""
+            UPDATE packing SET packed_by = NULL WHERE packed_by IS NOT NULL AND id = %s;
+        """, (item_id,))
+
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content= {
+                "message": f'Unable to unclaim item_id {item_id}'
+            }
+        )

@@ -44,7 +44,7 @@ function MessageBoard(): JSX.Element {
                 created_by: user.email
             }
 
-            console.log('Sending message:', message)
+            // console.log('Sending message:', message)
             msgSocket.socket.emit('frontend_msg', message)
         }
     }
