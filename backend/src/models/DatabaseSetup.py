@@ -48,7 +48,7 @@ class DatabaseSetup:
                 start_date DATE NOT NULL,
                 end_date DATE NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                created_by VARCHAR(255) NOT NULL references traveller(email) ON DELETE CASCADE
+                created_by VARCHAR(255) references traveller(email) ON DELETE SET NULL
             );
         """)
 
@@ -81,7 +81,7 @@ class DatabaseSetup:
                 start_time TIMESTAMP NOT NULL,
                 end_time TIMESTAMP NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                created_by VARCHAR(255) NOT NULL references traveller(email) ON DELETE CASCADE
+                created_by VARCHAR(255) references traveller(email) ON DELETE SET NULL
             );
         """)
 
@@ -97,7 +97,7 @@ class DatabaseSetup:
                 trip_id uuid NOT NULL references trip ON DELETE CASCADE,
                 content VARCHAR(1100) NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                created_by VARCHAR(255) NOT NULL references traveller(email) ON DELETE CASCADE
+                created_by VARCHAR(255) references traveller(email) ON DELETE SET NULL
             );
         """)
     
@@ -125,7 +125,7 @@ class DatabaseSetup:
                 title VARCHAR(40) NOT NULL,
                 anonymous BOOLEAN NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                created_by VARCHAR(255) NOT NULL references traveller(email) ON DELETE CASCADE
+                created_by VARCHAR(255) references traveller(email) ON DELETE SET NULL
             );
                             
             CREATE TABLE IF NOT EXISTS poll_option (
@@ -152,24 +152,19 @@ class DatabaseSetup:
         """)
 
     def initialize_packing_tables(self) -> None:
-        self.database.query("""
+        self.database.query("""                            
             CREATE TABLE IF NOT EXISTS packing (
                 id BIGSERIAL PRIMARY KEY,
-                trip_id UUID NOT NULL references trip ON DELETE CASCADE
-            );
-                            
-            CREATE TABLE IF NOT EXISTS packing_item (
-                id BIGSERIAL PRIMARY KEY,
-                packing_id BIGINT NOT NULL references packing ON DELETE CASCADE,
+                trip_id UUID NOT NULL references trip ON DELETE CASCADE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                created_by VARCHAR(255) references traveller(email) ON DELETE SET NULL,
                 packed_by VARCHAR(255) references traveller(email) ON DELETE SET NULL 
             );
         """)
 
     def drop_packing_tables(self) -> None:
         self.database.query("""
-            DROP TABLE IF EXISTS packing CASCADE;
-                            
-            DROP TABLE IF EXISTS packing_item;
+            DROP TABLE IF EXISTS packing;
         """)
 
     # def create_types(self) -> None:
