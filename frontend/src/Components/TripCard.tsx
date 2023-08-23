@@ -1,19 +1,20 @@
 import { SyntheticEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { reduxSetTrip } from '../redux/TripSlice';
-import { TripModel } from '../utilities/Interfaces';
+import { TripModel, UserModel } from '../utilities/Interfaces';
 import TripPhoto from '../assets/tripphoto.jpg';
 import { msgSocket, pollSocket } from '../utilities/TripSocket';
+import { AvatarWrapper } from './AvatarWrapper';
 import {
   Box,
   Center,
   Heading,
   Text,
   Stack,
-  Avatar,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { RootState } from '../redux/Store';
 
 
 
@@ -22,6 +23,7 @@ interface TripCardProps {
 }
 
 function TripCard(props: TripCardProps) {
+  const user: UserModel = useSelector((state: RootState) => state.user);
   const navigate = useNavigate(); 
   const dispatch = useDispatch();
 
@@ -64,11 +66,9 @@ function TripCard(props: TripCardProps) {
           </Text>
         </Stack>
         <Stack mt={6} direction={'row'} spacing={4} align={'center'}>
-          <Avatar
-            src={'https://avatars0.githubusercontent.com/u/1164541?v=4'}
-          />
+          <AvatarWrapper userData={user} />
           <Stack direction={'column'} spacing={0} fontSize={'sm'}>
-            <Text fontWeight={600}>Ya Boi</Text>
+            <Text fontWeight={600}>{`${user.first_name} ${user.last_name}`}</Text>
             {
             props.tripData.created_at.constructor.name === 'Date' &&
             <Text color={'gray.500'}>{`hi`}</Text>

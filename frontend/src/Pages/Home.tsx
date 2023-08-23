@@ -6,7 +6,6 @@ import { Flex } from '@chakra-ui/react';
 
 
 function Home(): JSX.Element {
-    console.log('HOME:')
     const trip: TripModel = useSelector(((state: RootState) => state.trip))
 
     return (

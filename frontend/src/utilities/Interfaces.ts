@@ -77,5 +77,4 @@ export interface PollVoteSendModel {
     poll_id: number,
     option_id: number,
     voted_by: string
-
 }

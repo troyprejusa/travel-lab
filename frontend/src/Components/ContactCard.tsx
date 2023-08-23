@@ -1,7 +1,7 @@
 import { UserModel } from '../utilities/Interfaces';
+import Constants from '../utilities/Constants';
 import {
     Heading,
-    Avatar,
     Box,
     Center,
     Text,
@@ -10,9 +10,10 @@ import {
     Badge,
     useColorModeValue,
   } from '@chakra-ui/react';
+import { AvatarWrapper } from './AvatarWrapper';
 
-  interface ContactCardProps extends UserModel {
-
+  interface ContactCardProps {
+    userData: UserModel
   }
   
   export default function ContactCard(props: ContactCardProps) {
@@ -26,11 +27,9 @@ import {
           rounded={'lg'}
           p={6}
           textAlign={'center'}>
-          <Avatar
+          <AvatarWrapper
+            userData={props.userData}
             size={'xl'}
-            src={
-              'https://images.unsplash.com/photo-1520810627419-35e362c5dc07?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ'
-            }
             mb={4}
             pos={'relative'}
             // _after={{
@@ -46,10 +45,10 @@ import {
             // }}
           />
           <Heading fontSize={'2xl'} fontFamily={'body'}>
-            {`${props.first_name} ${props.last_name}`}
+            {`${props.userData.first_name} ${props.userData.last_name}`}
           </Heading>
           {/* <Text fontWeight={600} color={'gray.500'} mb={4}>
-            {`${props.email}`}
+            {`${props.userData.email}`}
           </Text> */}
           <Text
             textAlign={'center'}
@@ -69,14 +68,14 @@ import {
               py={1}
               bg={useColorModeValue('gray.50', 'gray.800')}
               fontWeight={'400'}>
-              {`Email: ${props.email}`}
+              {`Email: ${props.userData.email}`}
             </Badge>
             <Badge
               px={2}
               py={1}
               bg={useColorModeValue('gray.50', 'gray.800')}
               fontWeight={'400'}>
-              {`Phone: ${props.phone}`}
+              {`Phone: ${props.userData.phone}`}
             </Badge>
           </Stack>
   

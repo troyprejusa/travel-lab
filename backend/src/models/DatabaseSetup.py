@@ -4,43 +4,20 @@ class DatabaseSetup:
     def __init__(self, database: DatabaseHandler) -> None:
         self.database = database;
     
+    # UUID Extension
     def initialize_extensions(self) -> None:
         self.database.query("""
             CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-        """)
-    
-    def create_types(self) -> None:
-        self.database.query("""
-            DROP TYPE transp_mode;
-            CREATE TYPE transp_mode AS ENUM (
-                'plane',
-                'car',
-                'train',
-                'bus',
-                'boat',
-                'other'
-            );
-        """)
-
-    def initalize_test_table(self) -> None:
-        self.database.query("""
-            DROP TABLE IF EXISTS test;
-        """)
-        self.database.query(""" 
-            CREATE TABLE IF NOT EXISTS test (
-                name varchar(40)
-            );
-            INSERT INTO test (name) VALUES ('troy');
         """)
     
     def intialize_traveller_table(self) -> None:
         self.database.query("""
             CREATE TABLE IF NOT EXISTS traveller (
                 id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
-                first_name VARCHAR(40),
-                last_name VARCHAR(40),
-                email VARCHAR(255) UNIQUE,
-                phone VARCHAR(11)
+                first_name VARCHAR(40) NOT NULL,
+                last_name VARCHAR(40) NOT NULL,
+                email VARCHAR(255) UNIQUE NOT NULL,
+                phone VARCHAR(11) NOT NULL
             );
         """)
     
@@ -53,7 +30,7 @@ class DatabaseSetup:
         self.database.query("""
             CREATE TABLE IF NOT EXISTS auth (
                 email VARCHAR(255) PRIMARY KEY references traveller(email) ON DELETE CASCADE,
-                password VARCHAR(255)
+                password VARCHAR(255) NOT NULL
             );
         """)
 
@@ -66,12 +43,12 @@ class DatabaseSetup:
         self.database.query("""
             CREATE TABLE IF NOT EXISTS trip (
                 id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
-                destination VARCHAR(60),
+                destination VARCHAR(60) NOT NULL,
                 description VARCHAR(200),
-                start_date DATE,
-                end_date DATE,
+                start_date DATE NOT NULL,
+                end_date DATE NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                created_by VARCHAR(255) references traveller(email) ON DELETE CASCADE
+                created_by VARCHAR(255) NOT NULL references traveller(email) ON DELETE CASCADE
             );
         """)
 
@@ -98,13 +75,13 @@ class DatabaseSetup:
         self.database.query("""
             CREATE TABLE IF NOT EXISTS itinerary (
                 id BIGSERIAL PRIMARY KEY,
-                trip_id uuid references trip ON DELETE CASCADE,
-                title VARCHAR(60),
+                trip_id uuid NOT NULL references trip ON DELETE CASCADE,
+                title VARCHAR(60) NOT NULL,
                 description VARCHAR(200),
-                start_time TIMESTAMP,
-                end_time TIMESTAMP,
+                start_time TIMESTAMP NOT NULL,
+                end_time TIMESTAMP NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                created_by VARCHAR(255) references traveller(email) ON DELETE CASCADE
+                created_by VARCHAR(255) NOT NULL references traveller(email) ON DELETE CASCADE
             );
         """)
 
@@ -113,33 +90,14 @@ class DatabaseSetup:
             DROP TABLE IF EXISTS itinerary;
         """)
 
-    def intialize_transportation_table(self) -> None:
-        self.database.query("""
-            CREATE TABLE IF NOT EXISTS itinerary (
-                id BIGSERIAL PRIMARY KEY,
-                traveller_id uuid references traveller,
-                trip_id uuid references trip,
-                title VARCHAR(60),
-                mode transp_mode,
-                details VARCHAR(200),
-                start_date TIMESTAMP,
-                end_date TIMESTAMP
-            );
-        """)
-    
-    def drop_transportation_table(self) -> None:
-        self.database.query("""
-            DROP TABLE IF EXISTS transportation;
-        """)
-
     def initialize_messages_table(self) -> None:
         self.database.query("""
             CREATE TABLE IF NOT EXISTS message (
                 id BIGSERIAL PRIMARY KEY,
-                trip_id uuid references trip ON DELETE CASCADE,
-                content VARCHAR(1100),
+                trip_id uuid NOT NULL references trip ON DELETE CASCADE,
+                content VARCHAR(1100) NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                created_by VARCHAR(255) references traveller(email) ON DELETE CASCADE
+                created_by VARCHAR(255) NOT NULL references traveller(email) ON DELETE CASCADE
             );
         """)
     
@@ -163,24 +121,24 @@ class DatabaseSetup:
         self.database.query("""
             CREATE TABLE IF NOT EXISTS poll (
                 id BIGSERIAL PRIMARY KEY,
-                trip_id uuid references trip ON DELETE CASCADE,
-                title VARCHAR(40),
-                anonymous BOOLEAN,
+                trip_id uuid NOT NULL references trip ON DELETE CASCADE,
+                title VARCHAR(40) NOT NULL,
+                anonymous BOOLEAN NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                created_by VARCHAR(255) references traveller(email) ON DELETE CASCADE
+                created_by VARCHAR(255) NOT NULL references traveller(email) ON DELETE CASCADE
             );
                             
             CREATE TABLE IF NOT EXISTS poll_option (
                 id BIGSERIAL PRIMARY KEY,
-                poll_id BIGINT references poll ON DELETE CASCADE,
-                option VARCHAR(120)
+                poll_id BIGINT NOT NULL references poll ON DELETE CASCADE,
+                option VARCHAR(120) NOT NULL
             );
                             
             CREATE TABLE IF NOT EXISTS poll_vote (
                 id BIGSERIAL PRIMARY KEY,
-                vote BIGSERIAL references poll_option ON DELETE CASCADE,
+                vote BIGINT NOT NULL references poll_option ON DELETE CASCADE,
                 voted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                voted_by VARCHAR(255) references traveller(email) ON DELETE CASCADE 
+                voted_by VARCHAR(255) NOT NULL references traveller(email) ON DELETE CASCADE 
             );
         """)
 
@@ -193,19 +151,61 @@ class DatabaseSetup:
             DROP TABLE IF EXISTS poll_vote;
         """)
 
-    def initialize_packing_table(self) -> None:
-        # self.database.query("""
-            
-        # """)
-        pass
+    def initialize_packing_tables(self) -> None:
+        self.database.query("""
+            CREATE TABLE IF NOT EXISTS packing (
+                id BIGSERIAL PRIMARY KEY,
+                trip_id UUID NOT NULL references trip ON DELETE CASCADE
+            );
+                            
+            CREATE TABLE IF NOT EXISTS packing_item (
+                id BIGSERIAL PRIMARY KEY,
+                packing_id BIGINT NOT NULL references packing ON DELETE CASCADE,
+                packed_by VARCHAR(255) references traveller(email) ON DELETE SET NULL 
+            );
+        """)
 
-    def drop_packing_table(self) -> None:
-        pass
+    def drop_packing_tables(self) -> None:
+        self.database.query("""
+            DROP TABLE IF EXISTS packing CASCADE;
+                            
+            DROP TABLE IF EXISTS packing_item;
+        """)
+
+    # def create_types(self) -> None:
+    #     self.database.query("""
+    #         DROP TYPE transp_mode;
+    #         CREATE TYPE transp_mode AS ENUM (
+    #             'plane',
+    #             'car',
+    #             'train',
+    #             'bus',
+    #             'boat',
+    #             'other'
+    #         );
+    #     """)
+
+    # def intialize_transportation_table(self) -> None:
+    #     self.database.query("""
+    #         CREATE TABLE IF NOT EXISTS itinerary (
+    #             id BIGSERIAL PRIMARY KEY,
+    #             traveller_id uuid references traveller,
+    #             trip_id uuid references trip,
+    #             title VARCHAR(60),
+    #             mode transp_mode,
+    #             details VARCHAR(200),
+    #             start_date TIMESTAMP,
+    #             end_date TIMESTAMP
+    #         );
+    #     """)
+    
+    # def drop_transportation_table(self) -> None:
+    #     self.database.query("""
+    #         DROP TABLE IF EXISTS transportation;
+    #     """)
 
     def setup_db(self) -> None:
         self.initialize_extensions()
-        self.create_types()
-        self.initalize_test_table()
         self.intialize_traveller_table()
         self.initialize_auth_table()
         self.initialize_trip_table()
@@ -213,6 +213,7 @@ class DatabaseSetup:
         self.initialize_itinerary_table()
         self.initialize_messages_table()
         self.initialize_poll_tables()
+        self.initialize_packing_tables()
     
     def drop_tables(self) -> None:
         self.drop_traveller_table()
@@ -222,6 +223,7 @@ class DatabaseSetup:
         self.drop_itinerary_table()
         self.drop_messages_table()
         self.drop_poll_tables()
+        self.drop_packing_tables()
 
     def insert_data(self):
         # Insert a fake user troy

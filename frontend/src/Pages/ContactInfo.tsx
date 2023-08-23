@@ -26,7 +26,7 @@ function ContactInfo(): JSX.Element {
                 <h1>Contact Info</h1>
             </Flex>
             <Wrap spacing={'5%'}>
-                {travelCompanions.map((a: UserModel, i: number) => <ContactCard key={i} {...a}/>)}
+                {travelCompanions.map((user: UserModel, i: number) => <ContactCard key={i} userData={user}/>)}
             </Wrap>
         </>
     )

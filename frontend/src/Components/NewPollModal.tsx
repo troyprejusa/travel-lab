@@ -11,7 +11,7 @@ import {
     ModalHeader,
     ModalFooter,
     ModalBody,
-    ModalCloseButton,
+    // ModalCloseButton,
     useDisclosure,
     FormControl,
     FormLabel,
@@ -57,7 +57,8 @@ function NewPollModal(props: NewPollModalProps) {
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>New Poll</ModalHeader>
-            <ModalCloseButton />
+            {/* <ModalCloseButton /> */}
+
             <ModalBody>
                 <form onSubmit={handleSubmit} ref={pollForm}>
                     <FormControl isRequired>

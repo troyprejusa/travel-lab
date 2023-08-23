@@ -8,7 +8,6 @@ import { reduxResetTrip } from '../redux/TripSlice';
 
 import {
   IconButton,
-  Avatar,
   Box,
   CloseButton,
   Flex,
@@ -39,16 +38,16 @@ import {
   FiMenu,
   FiBell,
   FiChevronDown,
-  FiNavigation,
   FiUsers,
   FiThumbsUp,
-  FiCompass
 } from 'react-icons/fi';
 import { useDispatch } from 'react-redux';
 import { RootState } from '../redux/Store';
 import { UserModel } from '../utilities/Interfaces';
 import { msgSocket, pollSocket } from '../utilities/TripSocket';
 import { reduxResetMessages } from '../redux/MessageSlice';
+import { AvatarWrapper } from './AvatarWrapper';
+import { reduxResetPolls } from '../redux/PollSlice';
 
 
 interface LinkItemProps {
@@ -60,14 +59,15 @@ interface LinkItemProps {
 const LinkItems: Array<LinkItemProps> = [
   { name: 'Home', icon: FiHome , path: 'home'},
   { name: 'Itinerary', icon: FiCalendar, path: 'itinerary' },
-  { name: 'Transportation', icon: FiNavigation, path: 'transportation' },
   { name: 'Message Board', icon: FiMessageSquare, path: 'message' },
   { name: 'Poll', icon: FiThumbsUp, path: 'poll' },
   { name: 'Packing', icon: FiBriefcase, path: 'packing' },
   { name: 'Contact Info', icon: FiUsers, path: 'contactinfo' },
-  { name: 'Recommendations', icon: FiCompass, path: 'recommendations' },
   { name: 'Trip Settings', icon: FiSettings, path: 'settings' }
 ];
+// { name: 'Recommendations', icon: FiCompass, path: 'recommendations' },
+// { name: 'Transportation', icon: FiNavigation, path: 'transportation' },
+
 
 export default function Navbar({children}: {children: ReactNode;}) {
 
@@ -226,12 +226,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
               transition="all 0.3s"
               _focus={{ boxShadow: 'none' }}>
               <HStack>
-                <Avatar
-                  size={'sm'}
-                  src={
-                    'https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
-                  }
-                />
+                <AvatarWrapper userData={user} size={'sm'}/>
                 <VStack
                   display={{ base: 'none', md: 'flex' }}
                   alignItems="flex-start"
@@ -250,9 +245,8 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
             <MenuList
               bg={useColorModeValue('white', 'gray.900')}
               borderColor={useColorModeValue('gray.200', 'gray.700')}>
-              <MenuItem>Profile</MenuItem>
-              {/* <MenuItem>Settings</MenuItem> */}
-              <MenuItem>Billing</MenuItem>
+              <MenuItem onClick={(event: SyntheticEvent) => navigate(`/user/${user.email}/settings`)}>Profile</MenuItem>
+              {/* <MenuItem>Billing</MenuItem> */}
               <MenuDivider />
               <MenuItem onClick={handleSignOut}>Sign out</MenuItem>
             </MenuList>
@@ -267,6 +261,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       msgSocket.disconnectSocket();
       pollSocket.disconnectSocket();
       dispatch(reduxResetMessages(null));
+      dispatch(reduxResetPolls(null))
       dispatch(reduxResetTrip(null));
       dispatch(reduxUserLogout(null));
       navigate('/');

@@ -20,10 +20,12 @@ import {
   ModalFooter,
   Button,
   VStack,
-  Badge
+  Badge,
+  Heading
 } from '@chakra-ui/react'
 import { FiEye } from 'react-icons/fi'
 import { RootState } from '../redux/Store';
+import { AvatarRipple } from './AvatarWrapper';
 
 interface PollCardProps {
   data: PollResponseModel
@@ -52,9 +54,17 @@ function PollCard(props: PollCardProps) {
           rounded="lg"
           shadow="lg"
           position="relative">
-          <Box width={'300px'} height={'300px'}>
+          <Flex width={'300px'} height={'300px'} justifyContent={'center'} alignItems={'center'}>
+            {
+            pollChartData.every((datum: PollChartDataPoint) => datum.count === 0) ?
+            <VStack width={'100%'}>
+              <Heading as='h4' size='sm'>No votes yet...</Heading>
+              <AvatarRipple userData={user} />
+            </VStack>
+            : 
             <PieChartComponent data={pollChartData} />
-          </Box>
+            }
+          </Flex>
           <Box p="6">
             <Flex mt="1" justifyContent="space-between" alignContent="center">
               <Box
@@ -88,8 +98,8 @@ function PollCard(props: PollCardProps) {
       <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent width={'80vw'} height={'80vh'} maxW={'80vw'} maxH={'80vh'}>
-            <ModalHeader>{props.data.title}</ModalHeader>
-            <ModalCloseButton />
+            <ModalHeader></ModalHeader>
+            {/* <ModalCloseButton /> */}
 
             <ModalBody>
               <VStack>
@@ -97,6 +107,10 @@ function PollCard(props: PollCardProps) {
                   <BarChartComponent data={pollChartData} constructVoteCallback={constructVote} />
                 </Box>
               </VStack>
+              <Heading as='h1'>{props.data.title}</Heading>
+              <Heading as='h2'>Vote metadata</Heading>
+              <Heading as='h2'>Description</Heading>
+              <Heading as='h3'>Avatar group</Heading>
             </ModalBody>
   
             <ModalFooter>
@@ -108,6 +122,7 @@ function PollCard(props: PollCardProps) {
     </>
   )
 
+
   function makeDataArray(pollData: PollResponseModel): Array<PollChartDataPoint> {
     return pollData.options.map((optionData: PollVoteModel) => ({
       option: optionData.option, 
@@ -115,6 +130,7 @@ function PollCard(props: PollCardProps) {
       voted_by: optionData.votes
     }));
   }
+
 
   function constructVoteClosure() {
     return (chosenOption: string): PollVoteSendModel | null=> {

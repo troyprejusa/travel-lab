@@ -38,7 +38,8 @@ function NewTripModal() {
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>New Trip</ModalHeader>
-            <ModalCloseButton />
+            {/* <ModalCloseButton /> */}
+
             <ModalBody>
                 <form onSubmit={handleSubmit} ref={tripForm}>
                     <FormControl isRequired>
