@@ -151,7 +151,7 @@ class DatabaseSetup:
             DROP TABLE IF EXISTS poll_vote;
         """)
 
-    def initialize_packing_tables(self) -> None:
+    def initialize_packing_table(self) -> None:
         self.database.query("""                            
             CREATE TABLE IF NOT EXISTS packing (
                 id BIGSERIAL PRIMARY KEY,
@@ -162,7 +162,7 @@ class DatabaseSetup:
             );
         """)
 
-    def drop_packing_tables(self) -> None:
+    def drop_packing_table(self) -> None:
         self.database.query("""
             DROP TABLE IF EXISTS packing;
         """)
@@ -208,7 +208,7 @@ class DatabaseSetup:
         self.initialize_itinerary_table()
         self.initialize_messages_table()
         self.initialize_poll_tables()
-        self.initialize_packing_tables()
+        self.initialize_packing_table()
     
     def drop_tables(self) -> None:
         self.drop_traveller_table()
@@ -218,7 +218,7 @@ class DatabaseSetup:
         self.drop_itinerary_table()
         self.drop_messages_table()
         self.drop_poll_tables()
-        self.drop_packing_tables()
+        self.drop_packing_table()
 
     def insert_data(self):
         # Insert a fake user troy
