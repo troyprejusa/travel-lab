@@ -20,7 +20,7 @@ async def create_trip(
     description: Annotated[str, Form()],
     start_date: Annotated[date, Form()],
     end_date: Annotated[date, Form()]
-    ) -> Trip | str:   
+    ) -> Trip | dict[str, str]:   
 
     try:
         # This call must not only create the trip, but must add
@@ -54,7 +54,7 @@ async def create_trip(
 
 # Delete a trip
 @trip_router.delete('/{trip_id}')
-async def delete_trip(request: Request, trip_id: str) -> str:
+async def delete_trip(request: Request, trip_id: str) -> dict[str, str]:
     # TODO: Check if the delete requester is an admin on this trip
     try:
         db_handler.query("""
@@ -79,7 +79,7 @@ async def delete_trip(request: Request, trip_id: str) -> str:
 
 # Get contact info for travellers on this trip
 @trip_router.get('/{trip_id}/contacts')
-async def get_contact_info(trip_id: str) ->  list[Traveller] | str:
+async def get_contact_info(trip_id: str) ->  list[Traveller] | dict[str, str]:
     try:
         travellers = db_handler.query("""
             SELECT * from traveller WHERE id in (SELECT traveller_id FROM traveller_trip WHERE trip_id=%s);
@@ -99,7 +99,7 @@ async def get_contact_info(trip_id: str) ->  list[Traveller] | str:
 
 # Get itinerary for this trip
 @trip_router.get('/{trip_id}/itinerary')
-async def get_itinerary_info(trip_id: str) -> list[Itinerary] | str:
+async def get_itinerary_info(trip_id: str) -> list[Itinerary] | dict[str, str]:
     try:
         itinerary = db_handler.query("""
             SELECT * FROM itinerary WHERE trip_id = %s
@@ -125,7 +125,7 @@ async def add_itinerary_info(
     description: Annotated[str, Form()],
     start_time: Annotated[datetime, Form()],
     end_time: Annotated[datetime, Form()]
-    ) ->  str:
+    ) ->  dict[str, str]:
 
     try:
         db_handler.query("""
@@ -150,7 +150,7 @@ async def add_itinerary_info(
         )
     
 @trip_router.get('/{trip_id}/message')
-async def get_messages(trip_id: str) -> list[Message] | str:
+async def get_messages(trip_id: str) -> list[Message] | dict[str, str]:
     try:
         data = db_handler.query("""
             SELECT * FROM message WHERE trip_id = %s
@@ -170,7 +170,7 @@ async def get_messages(trip_id: str) -> list[Message] | str:
 
     
 @trip_router.get('/{trip_id}/poll')
-async def get_polls(trip_id: str) -> list[PollResponseBody] | str:
+async def get_polls(trip_id: str) -> list[PollResponseBody] | dict[str, str]:
     try:
         # The results for one poll on this trip will have the following number
         # of rows:
@@ -217,7 +217,7 @@ async def get_polls(trip_id: str) -> list[PollResponseBody] | str:
         )
 
 @trip_router.post('/{trip_id}/poll')
-async def add_poll(request: Request, trip_id: str, poll_body: NewPollBody) -> str:
+async def add_poll(request: Request, trip_id: str, poll_body: NewPollBody) -> dict[str, str]:
     try:
         res = db_handler.query("""
             INSERT INTO poll 

@@ -10,7 +10,7 @@ user_router = APIRouter(
 
 # Delete account
 @user_router.delete('/')
-async def delete_user(request: Request) -> str:
+async def delete_user(request: Request) -> dict[str, str]:
     try:
         db_handler.query("""
             DELETE FROM traveller WHERE email=%s;
@@ -33,7 +33,7 @@ async def delete_user(request: Request) -> str:
 
 # Get a user's trips
 @user_router.get('/trips')
-async def get_trips(request: Request) -> list[Trip] | str:
+async def get_trips(request: Request) -> list[Trip] | dict[str, str]:
     try:
         data = db_handler.query("""
             SELECT * FROM trip
@@ -54,7 +54,7 @@ async def get_trips(request: Request) -> list[Trip] | str:
     
 # Join a trip
 @user_router.post('/trips')
-async def join_trip(request: Request, trip: Trip) -> str:    
+async def join_trip(request: Request, trip: Trip) -> dict[str, str]:    
     try:
         db_handler.query("""
             INSERT INTO traveller_trip VALUES (%s, %s);
@@ -78,7 +78,7 @@ async def join_trip(request: Request, trip: Trip) -> str:
 
 # Leave a trip
 @user_router.delete('/trips')
-async def leave_trip(request: Request, trip: Trip) -> str:
+async def leave_trip(request: Request, trip: Trip) -> dict[str, str]:
     try:
         db_handler.query("""
             DELETE FROM traveller_trip WHERE traveller_id=%s AND trip_id=%s;

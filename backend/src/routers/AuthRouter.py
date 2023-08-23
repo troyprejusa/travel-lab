@@ -12,7 +12,7 @@ auth_router = APIRouter(
 )
 
 @auth_router.post('/signin')
-async def sign_in(username: Annotated[str, Form()], password: Annotated[str, Form()]) -> str:
+async def sign_in(username: Annotated[str, Form()], password: Annotated[str, Form()]) -> dict[str, str]:
 
     bad_login = JSONResponse(
             status_code=500,
@@ -62,7 +62,7 @@ async def create_user(
     email: Annotated[str, Form()], 
     phone: Annotated[str, Form()],
     password: Annotated[str, Form()]
-    ) -> str:
+    ) -> dict[str, str]:
     
     try:
         # Hash the password
