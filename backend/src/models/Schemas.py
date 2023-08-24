@@ -38,6 +38,15 @@ class Message(BaseModel):
     created_at: datetime
     created_by: str
 
+class Packing(BaseModel):
+    id: int
+    trip_id: UUID
+    item: str
+    quantity: int
+    description: str | None = None
+    created_at: datetime
+    created_by: str
+    packed_by: str | None = None
 
 # INCOMING MESSAGE BODY DEFINTIONS
 # -----------------------------------

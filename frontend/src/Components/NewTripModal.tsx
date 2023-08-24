@@ -19,7 +19,7 @@ import {
 } from '@chakra-ui/react'
 import { TripModel } from '../utilities/Interfaces';
 
-interface NewTripModal {
+interface NewTripModalProps {
 
 }
 

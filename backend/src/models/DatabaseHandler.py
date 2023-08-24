@@ -36,7 +36,7 @@ class DatabaseHandler:
     Still throw an error, as the caller needs to know if the
     query failed
     '''
-    def query(self, query: str, params: None | tuple | dict = None) -> None | list[tuple]:
+    def query(self, query: str, params: None | tuple | dict = None, **kwargs) -> None | list[dict] | int:
         # Use connection context manager for autocommit/rollback
         with self.connection as conn:
             # Use cursor context manager to automatically close cursor
@@ -48,18 +48,30 @@ class DatabaseHandler:
                         cursor.execute(query)
 
                     # print(f'QUERY SUCCESS:\n\t{cursor.query}')
-
-                    # If the query returns a value, return it to the user
-                    try:
-                        data = cursor.fetchall()
-
-                        # Convert to normal dict
-                        array_of_dicts = [dict(row) for row in data]
-
-                        return array_of_dicts
                     
-                    except psycopg2.ProgrammingError as pe:
-                        return None
+                    if kwargs.get('row_count_only'):
+                        # if row_count_only is specified and truthy,
+                        # get the number of affected items
+                        data = cursor.rowcount
+
+                        return data
+                    
+                    else:
+                        # If the query returns a value, return it to the user
+                        try:
+                            data = cursor.fetchall()
+
+                            # Convert to normal dict
+                            array_of_dicts = [dict(row) for row in data]
+
+                            return array_of_dicts
+                        
+                        except psycopg2.ProgrammingError:
+                            # This is needed because executing fetchall()
+                            # on psql statements not explicitly returning 
+                            # anything (CREATE, DROP, INSERT, UPDATE, DELETE, etc.)
+                            # will throw an error
+                            return None
 
                 except psycopg2.Error as pg_error:
                     # print(f'QUERY FAILURE!')

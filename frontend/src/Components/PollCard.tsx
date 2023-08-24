@@ -2,6 +2,7 @@ import BarChartComponent from './BarChartComponent';
 import PieChartComponent from './PieChartComponent';
 import { pollSocket } from '../utilities/TripSocket';
 import { useSelector } from 'react-redux';
+import fetchHelpers from '../utilities/fetchHelpers';
 import { PollResponseModel, PollVoteModel, PollChartDataPoint, TripModel, UserModel, PollVoteSendModel } from '../utilities/Interfaces'
 import {
   Flex,
@@ -21,14 +22,17 @@ import {
   Button,
   VStack,
   Badge,
-  Heading
+  Heading,
+  IconButton
 } from '@chakra-ui/react'
-import { FiEye } from 'react-icons/fi'
+import { FiTrash } from 'react-icons/fi'
 import { RootState } from '../redux/Store';
 import { AvatarRipple } from './AvatarWrapper';
+import { SyntheticEvent } from 'react';
 
 interface PollCardProps {
   data: PollResponseModel
+  getPollsCallback: () => void
 }
 
 function PollCard(props: PollCardProps) {
@@ -48,6 +52,7 @@ function PollCard(props: PollCardProps) {
     <>
       <Flex p={'40px'} w="full" alignItems="center" justifyContent="center">
         <Box
+          onClick={onOpen} cursor={'pointer'}
           bg={useColorModeValue('white', 'gray.800')}
           maxW="sm"
           borderWidth="1px"
@@ -75,7 +80,7 @@ function PollCard(props: PollCardProps) {
                 isTruncated>
                 {props.data.title}
               </Box>
-              <Tooltip
+              {/* <Tooltip
                 label="View"
                 bg="white"
                 placement={'top'}
@@ -84,7 +89,7 @@ function PollCard(props: PollCardProps) {
                 <chakra.a display={'flex'} cursor={'pointer'} onClick={onOpen}>
                   <Icon as={FiEye} h={7} w={7} alignSelf={'center'} />
                 </chakra.a>
-              </Tooltip>
+              </Tooltip> */}
             </Flex>
             <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="red">
               New
@@ -111,6 +116,19 @@ function PollCard(props: PollCardProps) {
               <Heading as='h2'>Vote metadata</Heading>
               <Heading as='h2'>Description</Heading>
               <Heading as='h3'>Avatar group</Heading>
+              {
+                props.data.created_by === user.email ? 
+                  <IconButton
+                    variant='outline'
+                    colorScheme='red'
+                    aria-label='delete packing item'
+                    fontSize='20px'
+                    icon={<FiTrash />} 
+                    onClick={handleDeleteButtonClick}
+                  /> 
+                : 
+                  null
+            }
             </ModalBody>
   
             <ModalFooter>
@@ -150,6 +168,31 @@ function PollCard(props: PollCardProps) {
 
       return data;
 
+    }
+  }
+
+  async function handleDeleteButtonClick(event: SyntheticEvent) {
+    try {
+      const res: Response = await fetch(`/trip/${trip.id}/poll/${props.data.poll_id}`, {
+          method: 'DELETE',
+          headers: fetchHelpers.getTokenHeader()
+      });
+
+      if (res.ok) {
+
+        // Refetch poll data
+        props.getPollsCallback();
+
+        // Close the modal
+        onClose()
+        
+      } else {
+          const message = await res.json();
+          throw new Error(message);
+      }
+
+    } catch (e: any) {
+        console.error(JSON.stringify(e));
     }
 
   }

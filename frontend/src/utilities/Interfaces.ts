@@ -43,6 +43,17 @@ export interface MessageModel {
     created_by: string
 }
 
+export interface PackingModel {
+    id: number
+    trip_id: string
+    item: string
+    quantity: number
+    description: string | null
+    created_at: string
+    created_by: string
+    packed_by: string | null
+}
+
 export interface NewPollModel {
     title: string
     anonymous: boolean

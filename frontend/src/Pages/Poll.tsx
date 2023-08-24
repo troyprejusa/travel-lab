@@ -29,7 +29,7 @@ function Poll(): JSX.Element {
             </Flex>
             <NewPollModal getPollsCallback={getPolls} />
             <Wrap margin={'10%'} spacing={'10%'}>
-                {pollState.map((poll: PollResponseModel, i: number) => <Box key={i}><PollCard data={poll} /></Box>)}
+                {pollState.map((poll: PollResponseModel, i: number) => <Box key={i}><PollCard data={poll} getPollsCallback={getPolls} /></Box>)}
             </Wrap>
         </>
 

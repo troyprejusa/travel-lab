@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
-from models.Schemas import Trip, Traveller, Itinerary, Message, NewPollBody, PollResponseBody
+from models.Schemas import Trip, Traveller, Itinerary, Message, NewPollBody, PollResponseBody, Packing
 from typing import Annotated
 from datetime import date, datetime
 from models.S3Handler import minio_client
@@ -250,13 +250,58 @@ async def add_poll(request: Request, trip_id: str, poll_body: NewPollBody) -> di
             }
         )
     
+@trip_router.delete('/{trip_id}/poll/{poll_id}')
+async def delete_poll(request: Request, trip_id: str, poll_id: int) -> dict[str, str]:
+    try:
+        # Only allow deletion of a poll by the creator, or allow anyone to delete
+        # if the creator deleted account (creator is null)
+        count = db_handler.query("""
+            DELETE FROM poll WHERE id=%s AND (created_by=%s OR created_by IS NULL);
+        """, (poll_id, request.state.user['email']), row_count_only=True)
+
+        if count != 1:
+            raise Exception('Expected to delete one poll entry')
+
+        return JSONResponse(
+            status_code=200,
+            content= {
+                "message": f'Poll id {poll_id} deleted successfully'
+            }
+        )
+
+    except Exception as error:
+        print(str(error))
+        return JSONResponse(
+            status_code=500,
+            content= {
+                "message": f'ERROR: Unable to delete poll id {poll_id}'
+            }
+        ) 
+
+@trip_router.get('/{trip_id}/packing')
+async def get_packing_items(trip_id: str) -> list[Packing] | dict[str, str]:
+    try:
+        data = db_handler.query("""
+            SELECT * FROM packing WHERE trip_id=%s;
+        """, (trip_id,))
+
+        return data
+
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content= {
+                "message": f'Unable to retrieve itms for trip {trip_id}'
+            }
+        )
+    
 @trip_router.post('/{trip_id}/packing')
 async def add_packing_item(
     request: Request,
     trip_id: str,
     item: Annotated[str, Form()],
     quantity: Annotated[int, Form()],
-    description: Annotated[str, Form()]
+    description: Annotated[str | None, Form()] = None
     ) -> dict[str, str]:
 
     try:
@@ -296,6 +341,7 @@ async def delete_packing_item(trip_id: str, item_id: int) -> dict[str, str]:
         )
 
     except Exception as e:
+        print(str(e))
         return JSONResponse(
             status_code=500,
             content= {
@@ -311,7 +357,15 @@ async def claim_packing_item(request: Request, trip_id: str, item_id: int) -> di
             UPDATE packing SET packed_by = %s WHERE packed_by IS NULL AND id = %s;
         """, (request.state.user['email'], item_id))
 
+        return JSONResponse(
+            status_code=200,
+            content= {
+                "message": f'Successfully cliaimed item_id {item_id} on trip {trip_id}'
+            }
+        )
+
     except Exception as e:
+        print(str(e))
         return JSONResponse(
             status_code=500,
             content= {
@@ -326,7 +380,15 @@ async def unclaim_packing_item(trip_id: str, item_id: int) -> dict[str, str]:
             UPDATE packing SET packed_by = NULL WHERE packed_by IS NOT NULL AND id = %s;
         """, (item_id,))
 
+        return JSONResponse(
+            status_code=200,
+            content= {
+                "message": f'Successfully unclaimed item_id {item_id} on trip {trip_id}'
+            }
+        )
+
     except Exception as e:
+        print(str(e))
         return JSONResponse(
             status_code=500,
             content= {
