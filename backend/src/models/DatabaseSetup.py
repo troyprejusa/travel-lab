@@ -124,6 +124,7 @@ class DatabaseSetup:
                 trip_id uuid NOT NULL references trip ON DELETE CASCADE,
                 title VARCHAR(40) NOT NULL,
                 anonymous BOOLEAN NOT NULL,
+                description VARCHAR(200),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 created_by VARCHAR(255) references traveller(email) ON DELETE SET NULL
             );

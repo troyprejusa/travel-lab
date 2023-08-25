@@ -53,6 +53,7 @@ class Packing(BaseModel):
 class NewPollBody(BaseModel):
     title: str
     anonymous: bool
+    description: str | None = None
     options: list[str]
 
 
@@ -67,6 +68,7 @@ class PollResponseBody(BaseModel):
     poll_id: int
     title: str
     anonymous: bool
+    description: str | None = None
     created_at: datetime
     created_by: str
     options: list[PollVoteBody]

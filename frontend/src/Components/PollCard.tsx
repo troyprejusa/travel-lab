@@ -115,6 +115,7 @@ function PollCard(props: PollCardProps) {
               <Heading as='h1'>{props.data.title}</Heading>
               <Heading as='h2'>Vote metadata</Heading>
               <Heading as='h2'>Description</Heading>
+              <h3>{props.data.description}</h3>
               <Heading as='h3'>Avatar group</Heading>
               {
                 props.data.created_by === user.email ? 

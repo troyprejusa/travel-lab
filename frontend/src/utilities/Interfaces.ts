@@ -57,6 +57,7 @@ export interface PackingModel {
 export interface NewPollModel {
     title: string
     anonymous: boolean
+    description: string | null
     options: Array<string>
 }
 
@@ -70,6 +71,7 @@ export interface PollResponseModel {
     poll_id: number
     title: string
     anonymous: boolean
+    description: string | null
     created_at: string,
     created_by: string,
     options: Array<PollVoteModel>

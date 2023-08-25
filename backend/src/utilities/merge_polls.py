@@ -40,6 +40,7 @@ def create_new_poll(row: dict) -> dict:
     poll_body = {}
     poll_body['poll_id'] = row['poll_id']
     poll_body['title'] = row['title']
+    poll_body['description'] = row['description']
     poll_body['anonymous'] = row['anonymous']
     poll_body['created_at'] = row['created_at']
     poll_body['created_by'] = row['created_by']

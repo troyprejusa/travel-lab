@@ -18,7 +18,8 @@ import {
     Input,
     Radio,
     Box,
-    Select
+    Select,
+    Textarea
 } from '@chakra-ui/react'
 
 interface NewPollModalProps {
@@ -42,7 +43,7 @@ function NewPollModal(props: NewPollModalProps) {
     const pollOptionInputs: Array<ReactElement> = [];
     for (let i = 0; i < pollOptionCount; i++) {
         pollOptionInputs.push((
-            <FormControl key={i}>
+            <FormControl key={i} isRequired>
                 <FormLabel>{`Option ${i + 1}`}</FormLabel>
                 <Input name={`pollOption_${i + 1}`}/>
             </FormControl>
@@ -68,6 +69,10 @@ function NewPollModal(props: NewPollModalProps) {
                     <FormControl isRequired>
                         <FormLabel>Anonymous?</FormLabel>
                         <Radio placeholder='Description' name='anonymous'/>
+                    </FormControl>
+                    <FormControl>
+                        <FormLabel>Description</FormLabel>
+                        <Textarea placeholder='description' name='description'/>
                     </FormControl>
                     <FormControl isRequired>
                         <FormLabel>Number of poll choices</FormLabel>
@@ -104,14 +109,21 @@ function NewPollModal(props: NewPollModalProps) {
         const pollData: NewPollModel = {
             title: '',
             anonymous: false,
+            description: null,
             options: []
         };
 
         for (const [key, val] of formData) {
             if (key === 'title') {
                 pollData.title = val.toString();
+                
             } else if (key === 'anonymous') {
                 pollData.anonymous = true;
+
+            } else if (key === 'description') {
+                const descriptionEntry = formData.get('description');
+                if (descriptionEntry !== '') pollData.description = descriptionEntry;
+
             } else if (key.split('_').length > 1) {
                 // This is an option
                 pollData.options.push(val.toString());

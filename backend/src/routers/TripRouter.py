@@ -182,6 +182,7 @@ async def get_polls(trip_id: str) -> list[PollResponseBody] | dict[str, str]:
                 poll.id AS poll_id,
                 poll.title,
                 poll.anonymous,
+                poll.description,
                 poll.created_at,
                 poll.created_by,
                 poll_option.id AS option_id,
@@ -221,10 +222,10 @@ async def add_poll(request: Request, trip_id: str, poll_body: NewPollBody) -> di
     try:
         res = db_handler.query("""
             INSERT INTO poll 
-                (trip_id, title, anonymous, created_by) 
-                VALUES (%s, %s, %s, %s)
+                (trip_id, title, anonymous, description, created_by) 
+                VALUES (%s, %s, %s, %s, %s)
             RETURNING id;
-        """, (trip_id, poll_body.title, poll_body.anonymous, request.state.user['email']))
+        """, (trip_id, poll_body.title, poll_body.anonymous, poll_body.description, request.state.user['email']))
         poll_id = res[0]['id']
 
         # This would seem like a good place for a psycopg "executemany", but 
@@ -255,9 +256,9 @@ async def delete_poll(request: Request, trip_id: str, poll_id: int) -> dict[str,
     try:
         # Only allow deletion of a poll by the creator, or allow anyone to delete
         # if the creator deleted account (creator is null)
-        count = db_handler.query("""
+        db_handler.query("""
             DELETE FROM poll WHERE id=%s AND (created_by=%s OR created_by IS NULL);
-        """, (poll_id, request.state.user['email']), row_count_only=True)
+        """, (poll_id, request.state.user['email']))
 
         if count != 1:
             raise Exception('Expected to delete one poll entry')
