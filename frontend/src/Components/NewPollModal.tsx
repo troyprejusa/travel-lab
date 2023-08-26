@@ -99,7 +99,7 @@ function NewPollModal(props: NewPollModalProps) {
         
         event.preventDefault();
 
-        if (pollForm === null) return;
+        if (pollForm.current === null) return;
 
         const formData = new FormData(pollForm.current);
         
@@ -116,7 +116,7 @@ function NewPollModal(props: NewPollModalProps) {
         for (const [key, val] of formData) {
             if (key === 'title') {
                 pollData.title = val.toString();
-                
+
             } else if (key === 'anonymous') {
                 pollData.anonymous = true;
 

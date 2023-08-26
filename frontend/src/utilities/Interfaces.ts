@@ -28,7 +28,7 @@ export interface ItineraryModel {
     id: number
     trip_id: string
     title: string
-    description: string
+    description: string | null
     start_time: string
     end_time: string
     created_at: string

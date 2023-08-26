@@ -82,8 +82,8 @@ function NewItemModal(props: NewItemModalProps) {
             return;
         }
         
-        if (quantity === '') {
-            alert('Quantity cannot be empty!');
+        if (quantity === '' || parseInt(quantity) < 1) {
+            alert('Quantity entry is not valid!');
             return;
         }
 

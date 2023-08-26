@@ -55,7 +55,6 @@ async def create_trip(
 # Delete a trip
 @trip_router.delete('/{trip_id}')
 async def delete_trip(request: Request, trip_id: str) -> dict[str, str]:
-    # TODO: Check if the delete requester is an admin on this trip
     try:
         db_handler.query("""
             DELETE FROM trip WHERE id = %s;
@@ -103,6 +102,7 @@ async def get_itinerary_info(trip_id: str) -> list[Itinerary] | dict[str, str]:
     try:
         itinerary = db_handler.query("""
             SELECT * FROM itinerary WHERE trip_id = %s
+            ORDER BY start_time;
         """, (trip_id,))
 
         return itinerary
@@ -118,13 +118,13 @@ async def get_itinerary_info(trip_id: str) -> list[Itinerary] | dict[str, str]:
 
 # Add itinerary item for this trip
 @trip_router.post('/{trip_id}/itinerary')
-async def add_itinerary_info(
+async def add_itinerary_stop(
     request: Request,
     trip_id: str,
     title: Annotated[str, Form()],
-    description: Annotated[str, Form()],
     start_time: Annotated[datetime, Form()],
-    end_time: Annotated[datetime, Form()]
+    end_time: Annotated[datetime, Form()],
+    description: Annotated[str | None, Form()] = None
     ) ->  dict[str, str]:
 
     try:
@@ -148,7 +148,33 @@ async def add_itinerary_info(
                 "message": f"ERROR: Unable to submit itinerary stop for trip id {trip_id}"
             }
         )
+
+# Add itinerary item for this trip
+@trip_router.delete('/{trip_id}/itinerary/{item_id}')
+async def remove_itinerary_stop( trip_id: str, item_id: int) ->  dict[str, str]:
+    try:
+        # Even though we technically only need the item id to delete, we
+        # will also use the trip id for improved robustness since we have it
+        db_handler.query("""
+            DELETE FROM itinerary WHERE trip_id=%s AND id=%s;
+        """, (trip_id, item_id))
+     
+        return JSONResponse(
+            status_code=200,
+            content= {
+                "message": f"SUCCESS: Deleted itinerary stop from trip id {trip_id}"
+            }
+        )
     
+    except Exception as e:
+        print(str(e))
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": f"ERROR: Unable to delete itinerary stop for trip id {trip_id}"
+            }
+        )
+
 @trip_router.get('/{trip_id}/message')
 async def get_messages(trip_id: str) -> list[Message] | dict[str, str]:
     try:
@@ -256,9 +282,11 @@ async def delete_poll(request: Request, trip_id: str, poll_id: int) -> dict[str,
     try:
         # Only allow deletion of a poll by the creator, or allow anyone to delete
         # if the creator deleted account (creator is null)
+        # Even though we technically don't need the trip_id to delete, we
+        # will also use it for improved robustness since we have it
         db_handler.query("""
-            DELETE FROM poll WHERE id=%s AND (created_by=%s OR created_by IS NULL);
-        """, (poll_id, request.state.user['email']))
+            DELETE FROM poll WHERE trip_id=%s AND id=%s AND (created_by=%s OR created_by IS NULL);
+        """, (trip_id, poll_id, request.state.user['email']))
 
         if count != 1:
             raise Exception('Expected to delete one poll entry')
@@ -330,9 +358,11 @@ async def add_packing_item(
 @trip_router.delete('/{trip_id}/packing/{item_id}')
 async def delete_packing_item(trip_id: str, item_id: int) -> dict[str, str]:
     try:
+        # Even though we technically only need the item id to delete, we
+        # will also use the trip id for improved robustness since we have it
         db_handler.query("""
-            DELETE FROM packing WHERE id=%s;
-        """, (item_id,))
+            DELETE FROM packing WHERE trip_id=%s AND id=%s;
+        """, (trip_id, item_id))
 
         return JSONResponse(
             status_code=200,
@@ -354,6 +384,7 @@ async def delete_packing_item(trip_id: str, item_id: int) -> dict[str, str]:
 @trip_router.patch('/{trip_id}/packing/claim/{item_id}')
 async def claim_packing_item(request: Request, trip_id: str, item_id: int) -> dict[str, str]:
     try:
+        # Allow a user to claim this item as long as it is not currently claimed
         db_handler.query("""
             UPDATE packing SET packed_by = %s WHERE packed_by IS NULL AND id = %s;
         """, (request.state.user['email'], item_id))

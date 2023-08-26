@@ -25,7 +25,7 @@ class Itinerary(BaseModel):
     id: int
     trip_id: UUID
     title: str
-    description: str
+    description: str | None = None
     start_time: datetime
     end_time: datetime
     created_at: datetime

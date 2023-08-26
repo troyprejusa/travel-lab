@@ -225,6 +225,15 @@ class DatabaseSetup:
         self.drop_packing_table()
 
     def insert_data(self):
+        self.insert_users()
+        self.insert_trips()
+        self.add_users_to_trips()
+        self.insert_itinerary()
+        self.insert_messages()
+        self.insert_polls()
+        self.insert_packing()
+
+    def insert_users(self):
         # Insert a fake user troy
         self.database.query("""
             INSERT INTO traveller 
@@ -261,7 +270,8 @@ class DatabaseSetup:
             );
         """)
 
-        # Insert two trips
+    def insert_trips(self):
+         # Insert two trips
         self.database.query("""
             INSERT INTO trip 
             (
@@ -300,6 +310,7 @@ class DatabaseSetup:
             );
         """)
 
+    def add_users_to_trips(self):
         # Add both users to both trips
         self.database.query("""
             INSERT INTO traveller_trip 
@@ -327,6 +338,38 @@ class DatabaseSetup:
             );
         """)
 
+    def insert_itinerary(self):
+        self.database.query("""
+            INSERT INTO itinerary (trip_id, title, description, start_time, end_time, created_by)
+            VALUES (
+                'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
+                'first',
+                'fake description',
+                '2023-08-02 14:32:00',
+                '2023-08-03 15:00:00',
+                'troy@test.com'
+            );
+                            
+            INSERT INTO itinerary (trip_id, title, start_time, end_time, created_by)
+            VALUES (
+                'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
+                'second',
+                '2023-08-02 16:32:00',
+                '2023-08-03 17:32:00',
+                'troy@test.com'
+            );
+        """)
+
+    def insert_messages(self):
+        self.database.query("""
+            INSERT INTO message (trip_id, content, created_by)
+            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'message from joe', 'joe@test.com');
+                            
+            INSERT INTO message (trip_id, content, created_by)
+            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'message from troy', 'troy@test.com');
+        """)
+
+    def insert_polls(self):
         # Insert some fake polls
         self.database.query("""
             INSERT INTO poll (
@@ -352,6 +395,7 @@ class DatabaseSetup:
                 trip_id,
                 title,
                 anonymous,
+                description,
                 created_by
             )
             VALUES (
@@ -359,7 +403,8 @@ class DatabaseSetup:
                 'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
                 'test poll 2',
                 FALSE,
-                'troy@test.com'
+                'WAZZAP',
+                'joe@test.com'
             );
                             
             INSERT INTO poll_option (id, poll_id, option) VALUES (103, 99, 'option a');
@@ -367,3 +412,14 @@ class DatabaseSetup:
             INSERT INTO poll_option (id, poll_id, option) VALUES (105, 99, 'option c');
         """)
 
+    def insert_packing(self):
+        self.database.query("""
+            INSERT INTO packing (trip_id, item, quantity, description, created_by, packed_by)
+            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'pans', 2, 'safe for grilling', 'joe@test.com', 'troy@test.com');
+                            
+            INSERT INTO packing (trip_id, item, quantity, created_by)
+            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'spatula', 5, 'troy@test.com');
+                            
+            INSERT INTO packing (trip_id, item, quantity, description, created_by, packed_by)
+            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'firestarter', 1, 'Please bring something easy to use', 'troy@test.com', 'joe@test.com');
+        """)

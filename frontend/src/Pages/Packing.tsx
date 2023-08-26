@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { TripModel, UserModel } from '../utilities/Interfaces';
-import { FiTrash } from 'react-icons/fi';
-import NewItemModal from '../Components/NewItemModal';
+import NewItemModal from '../Components/NewPackingItemModal';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { PackingModel } from '../utilities/Interfaces';
 import { RootState } from '../redux/Store';
@@ -16,11 +15,13 @@ import {
     Th,
     Td,
     TableContainer,
-    Button,
-    IconButton,
     ButtonGroup,
 } from '@chakra-ui/react'
-import { FiUserCheck, FiUserX } from 'react-icons/fi';
+import { 
+    TrashButton,
+    ClaimButton,
+    UnclaimButton
+} from '../Components/Buttons';
 
 
 function Packing(): JSX.Element {
@@ -68,43 +69,20 @@ function Packing(): JSX.Element {
                                             (() => {
                                                 if (!thing.packed_by) {
                                                     return (
-                                                        <IconButton 
-                                                            variant={'outline'} 
-                                                            colorScheme='teal' 
-                                                            aria-label='claim packing item' 
-                                                            fontSize={'20px'} 
-                                                            icon={<FiUserCheck />} 
-                                                            onClick={(_) => handleClaimButtonClick(thing.id)}
-                                                        />
+                                                        <ClaimButton aria-label='claim packing item' claimHandler={() => handleClaimButtonClick(thing.id)} />
                                                     );
-
                                                 } else if (thing.packed_by === user.email) {
                                                     // THe current user is packing this
                                                     return (
-                                                        <IconButton 
-                                                            variant={'outline'} 
-                                                            colorScheme='yellow' 
-                                                            aria-label='unclaim packing item' 
-                                                            fontSize={'20px'} 
-                                                            icon={<FiUserX />} 
-                                                            onClick={(_) => handleUnclaimButtonClick(thing.id)}
-                                                        />
+                                                        <UnclaimButton aria-label='unclaim packing item' unclaimHandler={() => handleUnclaimButtonClick(thing.id)} />
                                                     );
-
                                                 } else {
-                                                    // Someone else is packing this
+                                                    // Someone else is packing this already, no action available
                                                     return null;
                                                 }
                                             })()
                                         }
-                                        <IconButton
-                                            variant='outline'
-                                            colorScheme='red'
-                                            aria-label='delete packing item'
-                                            fontSize='20px'
-                                            icon={<FiTrash />} 
-                                            onClick={(_) => handleDeleteButtonClick(thing.id)}
-                                        />
+                                        <TrashButton aria-label='delete packing item' deleteHandler={() => handleDeleteButtonClick(thing.id)}/>
                                     </ButtonGroup>
 
                                 </Td>

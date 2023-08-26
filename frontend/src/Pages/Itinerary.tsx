@@ -38,7 +38,7 @@ function Itinerary(): JSX.Element {
                     <NewItineraryModal getItinerary={getItinerary}/>
                     {itinerary.length === 0 ? 
                     <Text>Nothing planned...</Text> :
-                    itinerary.map((itin, index) => <ItineraryCard key={index} {...itin} />)
+                    itinerary.map((itin: ItineraryModel, index: number) => <ItineraryCard key={index} itineraryData={itin} tripData={trip} getItineraryCallback={getItinerary} />)
                     }
                 </Stack>
                 <Box minWidth={'35vw'}>

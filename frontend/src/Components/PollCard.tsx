@@ -64,7 +64,7 @@ function PollCard(props: PollCardProps) {
             pollChartData.every((datum: PollChartDataPoint) => datum.count === 0) ?
             <VStack width={'100%'}>
               <Heading as='h4' size='sm'>No votes yet...</Heading>
-              <AvatarRipple userData={user} />
+              <AvatarRipple userData={user} />  // TODO: THIS IS WRONG, IT SHOULD RENDER THE CREATOR NOT THE CURRENT USER
             </VStack>
             : 
             <PieChartComponent data={pollChartData} />
