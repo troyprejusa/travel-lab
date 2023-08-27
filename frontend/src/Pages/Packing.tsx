@@ -104,19 +104,17 @@ function Packing(): JSX.Element {
                 })
 
                 if (res.ok) {
-                    const data: Array<PackingModel> = await res.json();
-                    
-                    // console.log(data);
-                    setPackingList(data);
+                    const packingData: Array<PackingModel> = await res.json();
+                    // console.log(packingData);
+                    setPackingList(packingData);
                     
                 } else {
-                    const message: any = await res.json();
-                    throw new Error(JSON.stringify(message));
+                    const errorRes: any = await res.json();
+                    throw new Error(errorRes);
                 }
 
-            } catch (e: any) {
-                console.error(e)
-                alert('Unable to retrieve packing list :(')
+            } catch (error: any) {
+                console.error('Unable to retrieve packing list :( \n', error)
             }
         })()
     }
@@ -133,7 +131,7 @@ function Packing(): JSX.Element {
                 getItems();
 
             } else {
-                const message: any = await res.json();
+                const errorRes: any = await res.json();
                 throw new Error(JSON.stringify(message));
             }
 

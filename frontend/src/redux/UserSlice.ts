@@ -10,9 +10,11 @@ const emptyUser: UserModel = {
 };
 
 const userSlice: Slice = createSlice({
-    name: 'user',   // state.user
+    name: 'user',   // user/<action_name>
     initialState: emptyUser,
     reducers: {
+
+        // user/reduxUserLogin
         reduxUserLogin: (state, action: PayloadAction<UserModel>) => {
             state.id = action.payload.id;
             state.first_name = action.payload.first_name;
@@ -21,6 +23,7 @@ const userSlice: Slice = createSlice({
             state.phone = action.payload.phone;
         },
 
+        // user/reduxUserLogout
         reduxUserLogout: (state, action: PayloadAction<null>) => {
             return emptyUser;
         }

@@ -3,9 +3,8 @@ import { Flex } from '@chakra-ui/react';
 import { msgSocket } from '../utilities/TripSocket';
 import { UserModel, TripModel, MessageModel } from '../utilities/Interfaces';
 import { useSelector, useDispatch } from 'react-redux';
-import { reduxSetMessages } from '../redux/MessageSlice';
+import { reduxFetchMessages } from '../redux/MessageSlice';
 import { RootState } from '../redux/Store';
-import fetchHelpers from '../utilities/fetchHelpers';
 
 
 function MessageBoard(): JSX.Element {
@@ -16,7 +15,9 @@ function MessageBoard(): JSX.Element {
 
     const dispatch = useDispatch();
 
-    useEffect(getOldMessages, [])   // Initial render only
+    useEffect(() => {
+        dispatch(reduxFetchMessages(trip.id))
+    }, [])   // Initial render only
     
     return (
         <>
@@ -47,30 +48,6 @@ function MessageBoard(): JSX.Element {
             // console.log('Sending message:', message)
             msgSocket.socket.emit('frontend_msg', message)
         }
-    }
-
-    function getOldMessages() {
-        (async function() {
-            try {
-                const res: Response = await fetch(`/trip/${trip.id}/message`, {
-                    method: 'GET',
-                    headers: fetchHelpers.getTokenHeader()
-                });                
-
-                if (res.ok) {
-                    const messages: Array<MessageModel> = await res.json();
-                    dispatch(reduxSetMessages(messages));
-
-                } else {
-                    const errorMsg = await res.json();
-                    throw new Error(errorMsg.message);
-                }
-
-            } catch (e: any) {
-                console.log(e);
-                alert('Unable to retrieve messages for trip!')
-            }
-        })()
     }
 }
 

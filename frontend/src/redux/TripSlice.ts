@@ -14,14 +14,16 @@ const emptyTrip: TripModel = {
 const initialTripState: TripModel = emptyTrip;
 
 const tripSlice: Slice = createSlice({
-    name: 'trip',  // state.trip
+    name: 'trip',  // trip/<action_name>
     initialState: initialTripState,
     reducers: {
 
+        // trip/reduxSetTrip
         reduxSetTrip: (state, action: PayloadAction<TripModel>) => {
             return action.payload;
         },
 
+        // trip/reduxResetTrip
         reduxResetTrip: (state, action: PayloadAction<null>) => {
             return emptyTrip;
         }

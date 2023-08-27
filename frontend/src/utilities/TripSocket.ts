@@ -1,8 +1,8 @@
 import io, { Socket } from "socket.io-client";
-import { MessageModel, PollVoteSendModel } from "./Interfaces";
 import { reduxAddMessage } from "../redux/MessageSlice";
-import { Dispatch } from "@reduxjs/toolkit";
 import { reduxAddVote } from "../redux/PollSlice";
+import { Dispatch } from "@reduxjs/toolkit";
+import { MessageModel, PollVoteSendModel } from "./Interfaces";
 
 class TripSocket {
 
