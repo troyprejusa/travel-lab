@@ -5,6 +5,7 @@ import { Box } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { TripModel } from "../utilities/Interfaces";
 import { RootState } from "../redux/Store";
+import { reduxFetchTravellers } from "../redux/TravellersSlice";
 import { reduxFetchItinerary } from "../redux/ItinerarySlice";
 import { reduxFetchMessages } from "../redux/MessageSlice";
 import { reduxFetchPolls } from "../redux/PollSlice";
@@ -29,6 +30,7 @@ function Project(): JSX.Element {
     )
 
     function fetchAllStates() {
+        dispatch(reduxFetchTravellers(trip.id));
         dispatch(reduxFetchItinerary(trip.id));
         dispatch(reduxFetchMessages(trip.id));
         dispatch(reduxFetchPolls(trip.id));
