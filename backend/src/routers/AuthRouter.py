@@ -71,17 +71,15 @@ async def create_user(
         # the database write will convert it into the wrong content
         ascii_hashed = hashed.decode('ascii')
 
-        db_handler.query("""
+        user = db_handler.query("""
             INSERT INTO traveller 
             (first_name, last_name, email, phone)
             VALUES (%s, %s, %s, %s);
 
             INSERT INTO auth VALUES (%s, %s);
-        """, (first_name, last_name, email, phone, email, ascii_hashed))
-
-        user = db_handler.query("""
+                         
             SELECT * FROM traveller WHERE email=%s
-            """, (email,))[0]
+        """, (first_name, last_name, email, phone, email, ascii_hashed, email))[0]
 
         encoded_jwt = jwt.encode(user, Constants.SECRET, algorithm = Constants.ALGORITHM)
 
