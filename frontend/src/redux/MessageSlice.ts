@@ -60,12 +60,13 @@ export const reduxFetchMessages = createAsyncThunk('messages/reduxFetchMessages'
                 return messages;
 
             } else {
-                // Error from backend
+                // Send to rejected case
                 const errorRes = await res.json();
-                throw errorRes;
+                return thunkAPI.rejectWithValue(errorRes);
             }
 
         } catch (error: any) {
+            // Send to rejected case
             return thunkAPI.rejectWithValue(error);
         }
     }

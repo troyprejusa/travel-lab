@@ -73,12 +73,14 @@ export const reduxFetchPolls = createAsyncThunk('messages/reduxFetchPolls',
                 return pollData;
                 
             } else {
+                // Send to rejected case
                 const errorRes = await res.json();
-                throw errorRes;
+                return thunkAPI.rejectWithValue(errorRes);
             }
 
         } catch (error: any) {
-            thunkAPI.rejectWithValue(error);
+            // Send to rejected case
+            return thunkAPI.rejectWithValue(error);
         }
     }
 );

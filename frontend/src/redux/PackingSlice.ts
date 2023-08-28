@@ -1,5 +1,5 @@
 import { Slice, createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { PackingModel, PollResponseModel, PollVoteModel, PollVoteSendModel} from "../utilities/Interfaces";
+import { PackingModel } from "../utilities/Interfaces";
 import fetchHelpers from "../utilities/fetchHelpers";
 
 // For now, the creation of polls will not be real time.
@@ -48,15 +48,15 @@ export const reduxFetchPacking = createAsyncThunk('messages/reduxFetchPacking',
                 
             } else {
                 const errorRes: any = await res.json();
-                throw new Error(errorRes);
+                return thunkAPI.rejectWithValue(errorRes);
             }
 
         } catch (error: any) {
-            thunkAPI.rejectWithValue(error);
+            return thunkAPI.rejectWithValue(error);
         }
     }
 );
 
 // export const { } = packingSlice.actions;
 
-export default packingSlice.reducer
+export default packingSlice.reducer;

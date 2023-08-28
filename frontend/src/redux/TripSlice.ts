@@ -33,4 +33,4 @@ const tripSlice: Slice = createSlice({
 
 export const { reduxSetTrip, reduxResetTrip } = tripSlice.actions;
 
-export default tripSlice.reducer
+export default tripSlice.reducer;

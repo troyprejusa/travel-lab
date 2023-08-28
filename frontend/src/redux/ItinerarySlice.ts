@@ -1,5 +1,5 @@
 import { Slice, createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { ItineraryModel, MessageModel } from "../utilities/Interfaces";
+import { ItineraryModel } from "../utilities/Interfaces";
 import fetchHelpers from "../utilities/fetchHelpers";
 
 const initialItineraryState: Array<ItineraryModel> = [];
@@ -20,7 +20,6 @@ const itinerarySlice: Slice = createSlice({
             .addCase(reduxFetchItinerary.fulfilled, (state, action: PayloadAction<Array<ItineraryModel>>) => {
                 // messages/reduxFetchItinerary/fulfilled
                 return action.payload
-
             })
             .addCase(reduxFetchItinerary.rejected, (state, action) => {
                 // messages/reduxFetchItinerary/rejected
@@ -44,11 +43,14 @@ export const reduxFetchItinerary = createAsyncThunk('messages/reduxFetchItinerar
                 return itineraryArray;
 
             } else {
+                // Send to rejected case
                 const errorRes = await res.json();
-                throw errorRes;
+                return thunkAPI.rejectWithValue(errorRes);
             }
+
         } catch (error: any) {
-            thunkAPI.rejectWithValue(error);
+            // Send to rejected case
+            return thunkAPI.rejectWithValue(error);
         }
     }
 );
