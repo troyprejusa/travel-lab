@@ -4,9 +4,9 @@ import { RootState } from '../redux/Store';
 import { useSelector, useDispatch } from 'react-redux';
 import NewItineraryModal from '../Components/NewItineraryModal';
 import ItineraryCard from '../Components/ItineraryCard';
-import fetchHelpers from '../utilities/fetchHelpers';
+import { reduxFetchItinerary } from '../redux/ItinerarySlice';
 import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
+import dayGridPlugin from '@fullcalendar/daygrid';
 import {
     Flex,
     Stack,
@@ -19,13 +19,11 @@ import {
 
 function Itinerary(): JSX.Element {
 
-    // Local state
-    const itineraryInitial: Array<ItineraryModel> = [];
-    const [itinerary, setItinerary] = useState(itineraryInitial);
-
     // Redux
+    const dispatch = useDispatch();
     const trip: TripModel = useSelector(((state: RootState) => state.trip))
-    
+    const itinerary: Array<ItineraryModel> = useSelector((state: RootState) => state.itinerary);
+
     useEffect(getItinerary, []);
 
     return (
@@ -55,26 +53,7 @@ function Itinerary(): JSX.Element {
     )
 
     function getItinerary() {
-        (async function() {
-            try {
-                const res: Response = await fetch(`/trip/${trip.id}/itinerary`, {
-                    method: 'GET',
-                    headers: fetchHelpers.getTokenHeader()
-                })
-
-                if (res.ok) {
-                    const itineraryArray: Array<ItineraryModel> = await res.json();
-                    setItinerary(itineraryArray);
-
-                } else {
-                    const json = await res.json();
-                    throw new Error(json.message)
-                }
-            } catch (e) {
-                console.error(e);
-                alert('Unable to get itinerary information!')
-            }
-        })();
+        dispatch(reduxFetchItinerary(trip.id));
     }
 }
 

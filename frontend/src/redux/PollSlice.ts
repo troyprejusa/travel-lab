@@ -5,30 +5,6 @@ import fetchHelpers from "../utilities/fetchHelpers";
 // For now, the creation of polls will not be real time.
 // Only the voting will be real time.
 
-export const reduxFetchPolls = createAsyncThunk('messages/reduxFetchPolls',
-    async (trip_id: string, thunkAPI) => {
-        try {
-            const res: Response = await fetch(`/trip/${trip_id}/poll`, {
-                method: 'GET',
-                headers: fetchHelpers.getTokenHeader()
-            });
-
-            if (res.ok) {
-                const pollData: Array<PollResponseModel> = await res.json();
-                // console.log(pollData)
-                return pollData;
-                
-            } else {
-                const errorRes = await res.json();
-                throw errorRes;
-            }
-
-        } catch (error: any) {
-            thunkAPI.rejectWithValue(error);
-        }
-    }
-);
-
 const initialPollState: Array<PollResponseModel> = []
 
 const pollSlice: Slice = createSlice({
@@ -81,7 +57,31 @@ const pollSlice: Slice = createSlice({
             })
     }
 
-})
+});
+
+export const reduxFetchPolls = createAsyncThunk('messages/reduxFetchPolls',
+    async (trip_id: string, thunkAPI) => {
+        try {
+            const res: Response = await fetch(`/trip/${trip_id}/poll`, {
+                method: 'GET',
+                headers: fetchHelpers.getTokenHeader()
+            });
+
+            if (res.ok) {
+                const pollData: Array<PollResponseModel> = await res.json();
+                // console.log(pollData)
+                return pollData;
+                
+            } else {
+                const errorRes = await res.json();
+                throw errorRes;
+            }
+
+        } catch (error: any) {
+            thunkAPI.rejectWithValue(error);
+        }
+    }
+);
 
 export const { reduxAddVote,  reduxResetPolls} = pollSlice.actions;
 

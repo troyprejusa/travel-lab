@@ -38,7 +38,7 @@ async def create_trip(
         trip_id = data[0]['trip_id']
         
         trip_data = db_handler.query("""
-            SELECT * FROM trip WHERE id=%s;
+            SELECT * FROM trip WHERE id=%s ORDER BY start_date;
         """, (trip_id,))[0]
         
         return trip_data
@@ -81,7 +81,7 @@ async def delete_trip(request: Request, trip_id: str) -> dict[str, str]:
 async def get_contact_info(trip_id: str) ->  list[Traveller] | dict[str, str]:
     try:
         travellers = db_handler.query("""
-            SELECT * from traveller WHERE id in (SELECT traveller_id FROM traveller_trip WHERE trip_id=%s);
+            SELECT * from traveller WHERE id in (SELECT traveller_id FROM traveller_trip WHERE trip_id=%s) ORDER BY last_name;
             """, (trip_id,))
         
         return travellers
@@ -101,8 +101,7 @@ async def get_contact_info(trip_id: str) ->  list[Traveller] | dict[str, str]:
 async def get_itinerary_info(trip_id: str) -> list[Itinerary] | dict[str, str]:
     try:
         itinerary = db_handler.query("""
-            SELECT * FROM itinerary WHERE trip_id = %s
-            ORDER BY start_time;
+            SELECT * FROM itinerary WHERE trip_id = %s ORDER BY start_time;
         """, (trip_id,))
 
         return itinerary
@@ -179,7 +178,7 @@ async def remove_itinerary_stop( trip_id: str, item_id: int) ->  dict[str, str]:
 async def get_messages(trip_id: str) -> list[Message] | dict[str, str]:
     try:
         data = db_handler.query("""
-            SELECT * FROM message WHERE trip_id = %s
+            SELECT * FROM message WHERE trip_id = %s ORDER BY created_at;
         """, (trip_id,))
 
         return data
@@ -311,7 +310,7 @@ async def delete_poll(request: Request, trip_id: str, poll_id: int) -> dict[str,
 async def get_packing_items(trip_id: str) -> list[Packing] | dict[str, str]:
     try:
         data = db_handler.query("""
-            SELECT * FROM packing WHERE trip_id=%s;
+            SELECT * FROM packing WHERE trip_id=%s ORDER BY created_at;
         """, (trip_id,))
 
         return data

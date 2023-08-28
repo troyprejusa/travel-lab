@@ -3,32 +3,6 @@ import { MessageModel } from "../utilities/Interfaces";
 import fetchHelpers from "../utilities/fetchHelpers";
 
 
-// Thunks
-export const reduxFetchMessages = createAsyncThunk('messages/reduxFetchMessages',
-    async (trip_id: string, thunkAPI) => {
-        try {
-            const res: Response = await fetch(`/trip/${trip_id}/message`, {
-                method: 'GET',
-                headers: fetchHelpers.getTokenHeader()
-            });                
-
-            if (res.ok) {
-                const messages: Array<MessageModel> = await res.json();
-                // console.log(messages);
-                return messages;
-
-            } else {
-                // Error from backend
-                const errorRes = await res.json();
-                throw errorRes;
-            }
-
-        } catch (error: any) {
-            return thunkAPI.rejectWithValue(error);
-        }
-    }
-);
-
 const initialMessageState: Array<MessageModel> = [];
 
 const messageSlice: Slice = createSlice({
@@ -70,7 +44,32 @@ const messageSlice: Slice = createSlice({
             })
     },
 
-})
+});
+
+export const reduxFetchMessages = createAsyncThunk('messages/reduxFetchMessages',
+    async (trip_id: string, thunkAPI) => {
+        try {
+            const res: Response = await fetch(`/trip/${trip_id}/message`, {
+                method: 'GET',
+                headers: fetchHelpers.getTokenHeader()
+            });                
+
+            if (res.ok) {
+                const messages: Array<MessageModel> = await res.json();
+                // console.log(messages);
+                return messages;
+
+            } else {
+                // Error from backend
+                const errorRes = await res.json();
+                throw errorRes;
+            }
+
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue(error);
+        }
+    }
+);
 
 export const { reduxAddMessage, reduxResetMessages } = messageSlice.actions;
 

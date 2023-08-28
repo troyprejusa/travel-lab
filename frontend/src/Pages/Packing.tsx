@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { TripModel, UserModel } from '../utilities/Interfaces';
 import NewItemModal from '../Components/NewPackingItemModal';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { PackingModel } from '../utilities/Interfaces';
 import { RootState } from '../redux/Store';
+import { reduxFetchPacking } from '../redux/PackingSlice';
 import {
     Flex,
     Table,
@@ -26,13 +27,12 @@ import {
 
 function Packing(): JSX.Element {
 
-    const initialPackingState: Array<PackingModel> = [];
-    const [packingList, setPackingList] = useState(initialPackingState)
-
-    useEffect(getItems, [])
-
+    const dispatch = useDispatch();
     const user: UserModel = useSelector((state: RootState) => state.user);
     const trip: TripModel = useSelector((state: RootState) => state.trip);
+    const packingList: Array<PackingModel> = useSelector((state: RootState) => state.packing);
+    
+    useEffect(getItems, [])
 
     return (
         <>
@@ -96,27 +96,7 @@ function Packing(): JSX.Element {
     )
 
     function getItems() {
-        (async function() {
-            try {
-                const res: Response = await fetch(`/trip/${trip.id}/packing` , {
-                    method: 'GET',
-                    headers: fetchHelpers.getTokenHeader()
-                })
-
-                if (res.ok) {
-                    const packingData: Array<PackingModel> = await res.json();
-                    // console.log(packingData);
-                    setPackingList(packingData);
-                    
-                } else {
-                    const errorRes: any = await res.json();
-                    throw new Error(errorRes);
-                }
-
-            } catch (error: any) {
-                console.error('Unable to retrieve packing list :( \n', error)
-            }
-        })()
+        dispatch(reduxFetchPacking(trip.id));
     }
 
     async function handleClaimButtonClick(item_id: number) {
