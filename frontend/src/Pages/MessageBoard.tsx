@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Flex } from '@chakra-ui/react';
 import { msgSocket } from '../utilities/TripSocket';
 import { UserModel, TripModel, MessageModel } from '../utilities/Interfaces';
-import { useSelector, useDispatch } from 'react-redux';
-import { reduxFetchMessages } from '../redux/MessageSlice';
+import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
 
 
@@ -12,12 +11,6 @@ function MessageBoard(): JSX.Element {
     const user: UserModel = useSelector((state: RootState) => state.user);
     const trip: TripModel = useSelector((state: RootState) => state.trip);
     const messages: Array<string> = useSelector((state: RootState) => state.messages);
-
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(reduxFetchMessages(trip.id))
-    }, [])   // Initial render only
     
     return (
         <>

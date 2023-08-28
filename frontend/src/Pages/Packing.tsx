@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { TripModel, UserModel } from '../utilities/Interfaces';
 import NewItemModal from '../Components/NewPackingItemModal';
@@ -31,8 +31,6 @@ function Packing(): JSX.Element {
     const user: UserModel = useSelector((state: RootState) => state.user);
     const trip: TripModel = useSelector((state: RootState) => state.trip);
     const packingList: Array<PackingModel> = useSelector((state: RootState) => state.packing);
-    
-    useEffect(getItems, [])
 
     return (
         <>

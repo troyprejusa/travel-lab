@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useEffect, useState } from 'react';
+import React from 'react';
 import { TripModel, ItineraryModel } from '../utilities/Interfaces';
 import { RootState } from '../redux/Store';
 import { useSelector, useDispatch } from 'react-redux';
@@ -19,12 +19,9 @@ import {
 
 function Itinerary(): JSX.Element {
 
-    // Redux
     const dispatch = useDispatch();
     const trip: TripModel = useSelector(((state: RootState) => state.trip))
     const itinerary: Array<ItineraryModel> = useSelector((state: RootState) => state.itinerary);
-
-    useEffect(getItinerary, []);
 
     return (
         <>

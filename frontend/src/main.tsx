@@ -37,12 +37,10 @@ const router = createBrowserRouter(
       <Route path="/trip/:trip_id" element={<Project />}>
           <Route path="home" element={<Home />} />
           <Route path="itinerary" element={<Itinerary />} />
-          <Route path="transportation" element={<Transportation />} />
           <Route path="message" element={<MessageBoard />}/>
           <Route path="poll" element={<Poll />}/>
           <Route path="packing" element={<Packing />} />
           <Route path="contactinfo" element={<ContactInfo />} />
-          <Route path="recommendations" element={<Recommendations />} />
           <Route path="settings" element={<TripSettings />} />
       </Route>
 
