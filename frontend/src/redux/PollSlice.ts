@@ -35,9 +35,11 @@ const pollSlice: Slice = createSlice({
             state[matchingPoll].options[matchingOption].votes.push(action.payload.voted_by);
         },
 
+        // polls/reduxResetPolls
         reduxResetPolls: (state, action: PayloadAction<null>) => {
             return initialPollState;
         }
+
     },
     
     extraReducers: (builder) => {

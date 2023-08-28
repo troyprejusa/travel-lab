@@ -9,6 +9,11 @@ const itinerarySlice: Slice = createSlice({
     initialState: initialItineraryState,
     reducers: {
 
+        // itinerary/reduxResetItinerary
+        reduxResetItinerary: (state, action: PayloadAction<null>) => {
+            return initialItineraryState;
+        }
+        
     },
 
     extraReducers: (builder) => {

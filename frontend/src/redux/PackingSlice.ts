@@ -12,6 +12,11 @@ const packingSlice: Slice = createSlice({
     initialState: initialPackingState,
     reducers: {
 
+        // packing/reduxResetPacking
+        reduxResetPacking: (state, action: PayloadAction<null>) => {
+            return initialPackingState;
+        }
+
     },
     
     extraReducers: (builder) => {

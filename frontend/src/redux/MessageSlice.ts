@@ -22,7 +22,7 @@ const messageSlice: Slice = createSlice({
 
         // messages/reduxResetMessages
         reduxResetMessages: (state, action: PayloadAction<null>) => {
-            return [];
+            return initialMessageState;
         }
     },
 
