@@ -8,7 +8,7 @@ import fetchHelpers from "../utilities/fetchHelpers";
 const initialPollState: Array<PollResponseModel> = []
 
 const pollSlice: Slice = createSlice({
-    name: 'polls',  // messages/<action_name>
+    name: 'polls',  // polls/<action_name>
     initialState: initialPollState,
     reducers: {
 
