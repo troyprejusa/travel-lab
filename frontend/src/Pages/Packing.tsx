@@ -110,7 +110,7 @@ function Packing(): JSX.Element {
 
             } else {
                 const errorRes: any = await res.json();
-                throw new Error(JSON.stringify(message));
+                throw new Error(errorRes);
             }
 
         } catch (e: any) {

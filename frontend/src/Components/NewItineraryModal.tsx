@@ -5,6 +5,7 @@ import { RootState } from '../redux/Store';
 import { TripModel, ItineraryModel } from '../utilities/Interfaces';
 import {
     Button,
+    ButtonGroup,
     Modal,
     ModalOverlay,
     ModalContent,
@@ -30,8 +31,10 @@ function NewItineraryModal(props: any) {
 
     return (
       <>
-        <Button onClick={onOpen} colorScheme={'orange'} width={'20%'} minWidth={'max-content'}>New Stop</Button>
-  
+        <ButtonGroup>
+            <Button size='md' colorScheme='orange' onClick={onOpen}>New stop</Button>
+        </ButtonGroup>
+
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>

@@ -34,7 +34,7 @@ function ItineraryCard(props: ItineraryCardProps) {
             </CardBody>
             <CardFooter>
                 <ButtonGroup>
-                    <EditButton aria-label="edit itinerary details" editHandler={() => console.log('Ya got me')} />
+                    <EditButton aria-label="edit itinerary details" editHandler={() => console.log('TODO')} />
                     <TrashButton aria-label="delete itinerary stop" deleteHandler={() => handleItineraryDelete(props.itineraryData.id)} />
                 </ButtonGroup>
             </CardFooter>
@@ -53,8 +53,8 @@ function ItineraryCard(props: ItineraryCardProps) {
                 props.getItineraryCallback();
 
             } else {
-                const message: any = await res.json();
-                throw new Error(JSON.stringify(message));
+                const errorRes: any = await res.json();
+                throw new Error(errorRes);
             }
 
         } catch (e: any) {

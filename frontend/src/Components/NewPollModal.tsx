@@ -19,7 +19,8 @@ import {
     Radio,
     Box,
     Select,
-    Textarea
+    Textarea,
+    ButtonGroup
 } from '@chakra-ui/react'
 
 interface NewPollModalProps {
@@ -52,7 +53,9 @@ function NewPollModal(props: NewPollModalProps) {
 
     return (
       <>
-        <Button onClick={onOpen}>New Poll</Button>
+        <ButtonGroup>
+            <Button size='md' colorScheme='orange' onClick={onOpen}>New poll</Button>
+        </ButtonGroup>
   
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />

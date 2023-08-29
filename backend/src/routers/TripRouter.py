@@ -96,7 +96,7 @@ async def get_contact_info(trip_id: str) ->  list[Traveller] | dict[str, str]:
         )
 
 
-# Get itinerary for this trip
+# Get itinerary entries for this trip
 @trip_router.get('/{trip_id}/itinerary')
 async def get_itinerary_info(trip_id: str) -> list[Itinerary] | dict[str, str]:
     try:
@@ -178,7 +178,7 @@ async def remove_itinerary_stop( trip_id: str, item_id: int) ->  dict[str, str]:
 async def get_messages(trip_id: str) -> list[Message] | dict[str, str]:
     try:
         data = db_handler.query("""
-            SELECT * FROM message WHERE trip_id = %s ORDER BY created_at;
+            SELECT * FROM message WHERE trip_id = %s ORDER BY id;
         """, (trip_id,))
 
         return data
@@ -287,9 +287,6 @@ async def delete_poll(request: Request, trip_id: str, poll_id: int) -> dict[str,
             DELETE FROM poll WHERE trip_id=%s AND id=%s AND (created_by=%s OR created_by IS NULL);
         """, (trip_id, poll_id, request.state.user['email']))
 
-        if count != 1:
-            raise Exception('Expected to delete one poll entry')
-
         return JSONResponse(
             status_code=200,
             content= {
@@ -310,7 +307,7 @@ async def delete_poll(request: Request, trip_id: str, poll_id: int) -> dict[str,
 async def get_packing_items(trip_id: str) -> list[Packing] | dict[str, str]:
     try:
         data = db_handler.query("""
-            SELECT * FROM packing WHERE trip_id=%s ORDER BY created_at;
+            SELECT * FROM packing WHERE trip_id=%s ORDER BY id;
         """, (trip_id,))
 
         return data

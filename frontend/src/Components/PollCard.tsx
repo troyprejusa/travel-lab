@@ -8,9 +8,6 @@ import {
   Flex,
   Box,
   useColorModeValue,
-  Icon,
-  chakra,
-  Tooltip,
   useDisclosure,
   Modal,
   ModalOverlay,
@@ -23,12 +20,13 @@ import {
   VStack,
   Badge,
   Heading,
-  IconButton
+  ButtonGroup
 } from '@chakra-ui/react'
 import { FiTrash } from 'react-icons/fi'
 import { RootState } from '../redux/Store';
 import { AvatarRipple } from './AvatarWrapper';
 import { SyntheticEvent } from 'react';
+import { TrashButton } from './Buttons';
 
 interface PollCardProps {
   data: PollResponseModel
@@ -41,6 +39,7 @@ function PollCard(props: PollCardProps) {
 
   const trip: TripModel = useSelector((state: RootState) => state.trip);
   const user: UserModel = useSelector((state: RootState) => state.user);
+  const travellers: Array<UserModel> = useSelector((state: RootState) => state.travellers);
 
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -64,7 +63,7 @@ function PollCard(props: PollCardProps) {
             pollChartData.every((datum: PollChartDataPoint) => datum.count === 0) ?
             <VStack width={'100%'}>
               <Heading as='h4' size='sm'>No votes yet...</Heading>
-              <AvatarRipple userData={user} />  // TODO: THIS IS WRONG, IT SHOULD RENDER THE CREATOR NOT THE CURRENT USER
+              <AvatarRipple userData={travellers[travellers.findIndex((traveller: UserModel) => props.data.created_by === traveller.email)]} />
             </VStack>
             : 
             <PieChartComponent data={pollChartData} />
@@ -117,24 +116,18 @@ function PollCard(props: PollCardProps) {
               <Heading as='h2'>Description</Heading>
               <h3>{props.data.description}</h3>
               <Heading as='h3'>Avatar group</Heading>
-              {
-                props.data.created_by === user.email ? 
-                  <IconButton
-                    variant='outline'
-                    colorScheme='red'
-                    aria-label='delete packing item'
-                    fontSize='20px'
-                    icon={<FiTrash />} 
-                    onClick={handleDeleteButtonClick}
-                  /> 
-                : 
-                  null
-            }
             </ModalBody>
   
             <ModalFooter>
-              {/* <Button colorScheme='blue' mr={3} onClick={handleClick}>Create</Button> */}
-              <Button variant='ghost' onClick={onClose}>Close</Button>
+              <ButtonGroup>
+                <Button variant='ghost' onClick={onClose}>Close</Button>
+                {
+                  props.data.created_by === user.email ? 
+                  <Button colorScheme='red' size='md' onClick={() => handleDeleteButtonClick(props.data.poll_id)}>Delete poll</Button>
+                  : 
+                  null 
+                }
+             </ButtonGroup>
             </ModalFooter>
           </ModalContent>
         </Modal>
@@ -172,9 +165,9 @@ function PollCard(props: PollCardProps) {
     }
   }
 
-  async function handleDeleteButtonClick(event: SyntheticEvent) {
+  async function handleDeleteButtonClick(poll_id: number) {
     try {
-      const res: Response = await fetch(`/trip/${trip.id}/poll/${props.data.poll_id}`, {
+      const res: Response = await fetch(`/trip/${trip.id}/poll/${poll_id}`, {
           method: 'DELETE',
           headers: fetchHelpers.getTokenHeader()
       });

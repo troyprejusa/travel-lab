@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
 import {
     Button,
+    ButtonGroup,
     Modal,
     ModalOverlay,
     ModalContent,
@@ -31,7 +32,9 @@ function NewItemModal(props: NewItemModalProps) {
 
     return (
       <>
-        <Button onClick={onOpen}>Add item</Button>
+        <ButtonGroup>
+            <Button size='md' colorScheme='orange' onClick={onOpen}>Add item</Button>
+        </ButtonGroup>
   
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
