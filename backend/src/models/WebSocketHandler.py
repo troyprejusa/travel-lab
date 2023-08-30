@@ -55,8 +55,8 @@ class PollSocket(socketio.AsyncNamespace):
     async def on_frontend_vote(self, sid, data) -> None | str:
         try:
             db_handler.query("""
-                INSERT INTO poll_vote (vote, voted_by) VALUES (%s, %s);
-            """, (data['option_id'], data['voted_by']))
+                INSERT INTO poll_vote (poll_id, vote, voted_by) VALUES (%s, %s, %s);
+            """, (data['poll_id'], data['option_id'], data['voted_by']))
 
             # If vote was successful, send to everyone else
             await self.emit('backend_vote', data, room = data['trip_id'])

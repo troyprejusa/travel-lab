@@ -137,9 +137,11 @@ class DatabaseSetup:
                             
             CREATE TABLE IF NOT EXISTS poll_vote (
                 id BIGSERIAL PRIMARY KEY,
+                poll_id BIGINT NOT NULL references poll ON DELETE CASCADE,
                 vote BIGINT NOT NULL references poll_option ON DELETE CASCADE,
                 voted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                voted_by VARCHAR(255) NOT NULL references traveller(email) ON DELETE CASCADE 
+                voted_by VARCHAR(255) NOT NULL references traveller(email) ON DELETE CASCADE,
+                UNIQUE (poll_id, voted_by)
             );
         """)
 
@@ -380,15 +382,15 @@ class DatabaseSetup:
                 created_by
             )
             VALUES (
-                98,
+                101,
                 'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
                 'test poll',
                 TRUE,
                 'troy@test.com'
             );
                             
-            INSERT INTO poll_option (id, poll_id, option) VALUES (101, 98, 'first');
-            INSERT INTO poll_option (id, poll_id, option) VALUES (102, 98, 'second');
+            INSERT INTO poll_option (id, poll_id, option) VALUES (201, 101, 'first');
+            INSERT INTO poll_option (id, poll_id, option) VALUES (202, 101, 'second');
                             
             INSERT INTO poll (
                 id,
@@ -399,7 +401,7 @@ class DatabaseSetup:
                 created_by
             )
             VALUES (
-                99,
+                102,
                 'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
                 'test poll 2',
                 FALSE,
@@ -407,9 +409,11 @@ class DatabaseSetup:
                 'joe@test.com'
             );
                             
-            INSERT INTO poll_option (id, poll_id, option) VALUES (103, 99, 'option a');
-            INSERT INTO poll_option (id, poll_id, option) VALUES (104, 99, 'option b');
-            INSERT INTO poll_option (id, poll_id, option) VALUES (105, 99, 'option c');
+            INSERT INTO poll_option (id, poll_id, option) VALUES (203, 102, 'option a');
+            INSERT INTO poll_option (id, poll_id, option) VALUES (204, 102, 'option b');
+            INSERT INTO poll_option (id, poll_id, option) VALUES (205, 102, 'option c');
+                            
+            INSERT INTO poll_vote (id, poll_id, vote, voted_by) VALUES (301, 102, 204, 'joe@test.com');
         """)
 
     def insert_packing(self):
@@ -423,3 +427,4 @@ class DatabaseSetup:
             INSERT INTO packing (trip_id, item, quantity, description, created_by, packed_by)
             VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'firestarter', 1, 'Please bring something easy to use', 'troy@test.com', 'joe@test.com');
         """)
+        
