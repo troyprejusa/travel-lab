@@ -1,9 +1,17 @@
 import BarChartComponent from './BarChartComponent';
 import PieChartComponent from './PieChartComponent';
-import { pollSocket } from '../utilities/TripSocket';
 import { useSelector } from 'react-redux';
 import fetchHelpers from '../utilities/fetchHelpers';
-import { PollResponseModel, PollVoteModel, PollChartDataPoint, TripModel, UserModel, PollVoteSendModel } from '../utilities/Interfaces'
+import { RootState } from '../redux/Store';
+import { AvatarRipple } from './AvatarWrapper';
+import { 
+  PollResponseModel, 
+  PollVoteModel, 
+  PollChartDataPoint, 
+  TripModel, 
+  UserModel, 
+  PollVoteSendModel 
+} from '../utilities/Interfaces'
 import {
   Flex,
   Box,
@@ -22,11 +30,7 @@ import {
   Heading,
   ButtonGroup
 } from '@chakra-ui/react'
-import { FiTrash } from 'react-icons/fi'
-import { RootState } from '../redux/Store';
-import { AvatarRipple } from './AvatarWrapper';
-import { SyntheticEvent } from 'react';
-import { TrashButton } from './Buttons';
+
 
 interface PollCardProps {
   data: PollResponseModel
@@ -41,11 +45,20 @@ function PollCard(props: PollCardProps) {
   const user: UserModel = useSelector((state: RootState) => state.user);
   const travellers: Array<UserModel> = useSelector((state: RootState) => state.travellers);
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // Create a closure function to bind arguments to the poll information for
-  // this poll card
-  const constructVote = constructVoteClosure();
+  // Did this user make this poll?
+  let userMade: boolean = props.data.created_by === user.email ? true : false;
+
+  // Did this user vote on this poll?
+  let userVoted: boolean = false;
+  props.data.options.forEach((optionItem: PollVoteModel) => {
+    optionItem.votes.forEach((voter: string) => {
+      if (voter === user.email) {
+        userVoted = true;
+      }
+    })
+  })
 
   return (
     <>
@@ -79,21 +92,13 @@ function PollCard(props: PollCardProps) {
                 isTruncated>
                 {props.data.title}
               </Box>
-              {/* <Tooltip
-                label="View"
-                bg="white"
-                placement={'top'}
-                color={'gray.800'}
-                fontSize={'1.2em'}>
-                <chakra.a display={'flex'} cursor={'pointer'} onClick={onOpen}>
-                  <Icon as={FiEye} h={7} w={7} alignSelf={'center'} />
-                </chakra.a>
-              </Tooltip> */}
             </Flex>
-            <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="red">
-              New
-            </Badge>
-            <h2>{`${props.data.created_by}`}</h2>
+            {userVoted ? 
+              <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="green">voted</Badge>
+              :
+              <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="red">vote</Badge>
+            }
+            <h2>{props.data.created_by}</h2>
             <h3>{`${props.data.created_at}`}</h3>
           </Box>
         </Box>
@@ -108,7 +113,7 @@ function PollCard(props: PollCardProps) {
             <ModalBody>
               <VStack>
                 <Box width={'40vw'} height={'40vh'}>
-                  <BarChartComponent data={pollChartData} constructVoteCallback={constructVote} />
+                  <BarChartComponent userVoted={userVoted} dataPoints={pollChartData} constructVoteCallback={constructVote} />
                 </Box>
               </VStack>
               <Heading as='h1'>{props.data.title}</Heading>
@@ -134,7 +139,6 @@ function PollCard(props: PollCardProps) {
     </>
   )
 
-
   function makeDataArray(pollData: PollResponseModel): Array<PollChartDataPoint> {
     return pollData.options.map((optionData: PollVoteModel) => ({
       option: optionData.option, 
@@ -143,9 +147,7 @@ function PollCard(props: PollCardProps) {
     }));
   }
 
-
-  function constructVoteClosure() {
-    return (chosenOption: string): PollVoteSendModel | null=> {
+  function constructVote(chosenOption: string): PollVoteSendModel | null {
       // Look through the various options to find the option_id
       const matchingIndex: number = props.data.options.findIndex((item: PollVoteModel) => item.option === chosenOption);
 
@@ -161,8 +163,6 @@ function PollCard(props: PollCardProps) {
       }
 
       return data;
-
-    }
   }
 
   async function handleDeleteButtonClick(poll_id: number) {
@@ -188,9 +188,7 @@ function PollCard(props: PollCardProps) {
     } catch (e: any) {
         console.error(JSON.stringify(e));
     }
-
   }
-
 
 }
 

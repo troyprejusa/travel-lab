@@ -17,6 +17,7 @@ import {
     Td,
     TableContainer,
     ButtonGroup,
+    Text
 } from '@chakra-ui/react'
 import { 
     TrashButton,
@@ -35,7 +36,7 @@ function Packing(): JSX.Element {
     return (
         <>
         <Flex justifyContent={'center'}>
-            <h1>Packing</h1>
+            <Text fontSize={'xl'} fontWeight={'bold'}>Packing</Text>
         </Flex>
         <NewItemModal getItemsCallback={getItems}/>
         <TableContainer>

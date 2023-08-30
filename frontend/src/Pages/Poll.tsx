@@ -7,7 +7,7 @@ import { RootState } from '../redux/Store';
 import PollCard from '../Components/PollCard';
 import { PollResponseModel } from '../utilities/Interfaces';
 import { reduxFetchPolls } from '../redux/PollSlice';
-import { Box } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 
 
 
@@ -20,7 +20,7 @@ function Poll(): JSX.Element {
     return (
         <>
             <Flex justifyContent={'center'}>
-            <h1>Poll</h1>
+            <Text fontSize={'xl'} fontWeight={'bold'}>Poll</Text>
             </Flex>
             <NewPollModal getPollsCallback={getPolls} />
             <Wrap margin={'10%'} spacing={'10%'}>

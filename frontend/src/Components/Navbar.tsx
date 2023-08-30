@@ -62,7 +62,7 @@ const LinkItems: Array<LinkItemProps> = [
   { name: 'Message Board', icon: FiMessageSquare, path: 'message' },
   { name: 'Poll', icon: FiThumbsUp, path: 'poll' },
   { name: 'Packing', icon: FiBriefcase, path: 'packing' },
-  { name: 'Contact Info', icon: FiUsers, path: 'contactinfo' },
+  { name: 'Travellers', icon: FiUsers, path: 'travellers' },
   { name: 'Trip Settings', icon: FiSettings, path: 'settings' }
 ];
 // { name: 'Recommendations', icon: FiCompass, path: 'recommendations' },

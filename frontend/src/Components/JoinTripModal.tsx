@@ -16,17 +16,17 @@ import {
     FormControl,
     FormLabel,
     Input,
-    Box,
     Heading,
-    Text
+    Text,
+    Box
 } from '@chakra-ui/react'
 import { TripModel } from '../utilities/Interfaces';
 
-interface NewTripModalProps {
+interface JoinTripModalProps {
 
 }
 
-function NewTripModal() {
+function JoinTripModal() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -35,31 +35,19 @@ function NewTripModal() {
 
     return (
       <>
-        <Button size='md' colorScheme='orange' onClick={onOpen}>Create trip</Button>
-
+        <Button size='md' colorScheme='teal' onClick={onOpen}>Join trip</Button>
+  
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Create Trip</ModalHeader>
+            <ModalHeader>Join trip</ModalHeader>
             {/* <ModalCloseButton /> */}
 
             <ModalBody>
                 <form onSubmit={handleSubmit} ref={tripForm}>
                     <FormControl isRequired>
-                        <FormLabel>Destination</FormLabel>
-                        <Input placeholder='Destination' name='destination'/>
-                    </FormControl>
-                    <FormControl isRequired>
-                        <FormLabel>Description</FormLabel>
-                        <Input placeholder='Description' name='description'/>
-                    </FormControl>
-                    <FormControl isRequired>
-                        <FormLabel>Departure Date</FormLabel>
-                        <Input placeholder='Departure Date' type="date" name='start_date'/>
-                    </FormControl>
-                        <FormControl isRequired>
-                        <FormLabel>Return Date</FormLabel>
-                        <Input placeholder='Return Date' type="date" name='end_date'/>
+                        <FormLabel>Trip id</FormLabel>
+                        <Input placeholder='trip id' name='trip_id'/>
                     </FormControl>
                 </form>
             </ModalBody>
@@ -143,4 +131,4 @@ function NewTripModal() {
     }
 }
 
-export default NewTripModal;
+export default JoinTripModal;

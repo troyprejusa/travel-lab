@@ -3,14 +3,14 @@ import { msgSocket } from '../utilities/TripSocket';
 import { UserModel, TripModel, MessageModel } from '../utilities/Interfaces';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
+import { ReceivedMessage, SentMessage } from '../Components/Messages';
 import { 
     Flex,
-    UnorderedList,
-    ListItem,
     Box,
     Textarea,
     Button,
     HStack,
+    Text
 } from '@chakra-ui/react';
 
 
@@ -26,34 +26,31 @@ function MessageBoard(): JSX.Element {
     useEffect(() => {
         if (!listDivRef.current) return;
         listDivRef.current.scrollTop = listDivRef.current.scrollHeight;
-    }, [])
+    }, [messages])
     
     return (
         <>
             <Flex justifyContent={'center'}>
-            <h1>Messages</h1>
+            <Text fontSize={'xl'} fontWeight={'bold'}>Messages</Text>
             </Flex>
             <Box height={'80vh'}>
                 <Box height={'90%'} overflowY={'scroll'} margin='20px' ref={listDivRef}>
-                    <UnorderedList>
-                        {messages.length === 0 ?
-                        <ListItem>No messages yet...</ListItem> 
-                        : 
-                        messages.map((msg: MessageModel, i: number) => {
-                            if (msg.created_by === user.email) {
-                                return <ListItem key={i} float={'right'}>{msg.content}</ListItem>
-                            } else {
-                                return <ListItem key={i}>{msg.content}</ListItem>
-                            }
-                        })}
-                    </UnorderedList>
+                    {messages.length === 0 ?
+                    <Box>No messages yet...</Box> 
+                    : 
+                    messages.map((msg: MessageModel, i: number) => {
+                        if (msg.created_by === user.email) {
+                            return <SentMessage key={i} {...msg} />
+                        } else {
+                            return <ReceivedMessage key={i} {...msg} />
+                        }
+                    })}
                 </Box>
-                <HStack height={'10%'} margin={'20px'}>
-                    <Textarea placeholder='New message' size='sm' resize={'none'} bg={'white'} ref={msgRef}/>
+                <HStack height={'10%'}>
+                    <Textarea placeholder='New message' size='sm' resize={'none'} bg={'white'} borderRadius={'8px'} ref={msgRef}/>
                     <Button size='md' colorScheme='blue' onClick={sendMessage}>Send</Button>
                 </HStack>
             </Box>
-
         </>
 
     )

@@ -20,10 +20,10 @@ import {
 } from '@chakra-ui/react'
 
 interface NewItineraryModalProps {
-
+    getItineraryCallback: () => void
 }
 
-function NewItineraryModal(props: any) {
+function NewItineraryModal(props: NewItineraryModalProps) {
 
     const trip: TripModel = useSelector((state: RootState) => state.trip);
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -38,7 +38,7 @@ function NewItineraryModal(props: any) {
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>New Trip</ModalHeader>
+            <ModalHeader>New itinerary stop</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
                 <form onSubmit={handleSubmit} ref={itineraryForm}>
@@ -112,7 +112,7 @@ function NewItineraryModal(props: any) {
             })
 
             if (res.ok) {
-                props.getItinerary();
+                props.getItineraryCallback();
                 onClose();
 
             } else {

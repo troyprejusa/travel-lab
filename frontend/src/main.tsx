@@ -17,14 +17,12 @@ import UserSettings from './Pages/UserSettings';
 import Project from './Pages/Project';
 import Home from './Pages/Home';
 import Itinerary from './Pages/Itinerary';
-import Transportation from './Pages/Transportation';
 import MessageBoard from './Pages/MessageBoard';
 import Poll from './Pages/Poll';
 import Packing from './Pages/Packing';
-import ContactInfo from './Pages/ContactInfo';
+import Travellers from './Pages/Travellers';
 import TripSettings from './Pages/TripSettings';
 import NotFound from './Pages/NotFound';
-import Recommendations from './Pages/Recommendations';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -40,7 +38,7 @@ const router = createBrowserRouter(
           <Route path="message" element={<MessageBoard />}/>
           <Route path="poll" element={<Poll />}/>
           <Route path="packing" element={<Packing />} />
-          <Route path="contactinfo" element={<ContactInfo />} />
+          <Route path="travellers" element={<Travellers />} />
           <Route path="settings" element={<TripSettings />} />
       </Route>
 

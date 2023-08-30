@@ -7,7 +7,6 @@ import {
     Bar, 
     XAxis, 
     YAxis, 
-    Tooltip,
     Cell
 } from 'recharts'
 import Constants from "../utilities/Constants";
@@ -15,25 +14,35 @@ import Constants from "../utilities/Constants";
 const COLORS = Constants.COLORS;
 
 interface BarChartComponentProps {
-    data: Array<PollChartDataPoint>
+    userVoted: boolean,
+    dataPoints: Array<PollChartDataPoint>
     constructVoteCallback: (chosenOption: string) => PollVoteSendModel | null
 }
 
 function BarChartComponent(props: BarChartComponentProps) {
+
+    // The styling and interaction on this component will depend
+    // on whether or not this user has voted.
+    const userInteractions = {barChartInteractions: {}, barInteractions: {}};
+    if (!props.userVoted) {
+        userInteractions.barChartInteractions['onClick'] = handleBarClick;
+        userInteractions.barInteractions['cursor'] = 'pointer';
+        userInteractions.barInteractions['background'] = { fill: 'transparent', cursor: 'pointer' };
+    } 
+
     return (
         <ResponsiveContainer width={'100%'} height={'100%'}>
-            <BarChart data={props.data} onClick={handleBarClick}>
+            <BarChart data={props.dataPoints} {...userInteractions.barChartInteractions}>
                 <XAxis dataKey={'option'}/>
                 <YAxis />
-                <Bar dataKey={'count'} >
-                    { props.data.map((datum, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />) }
+                <Bar dataKey={'count'} {...userInteractions.barInteractions}>
+                    { props.dataPoints.map((datum, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />) }
                 </Bar>
-                <Tooltip />
             </BarChart>
         </ResponsiveContainer>
     )
 
-    function handleBarClick(data) {
+    function handleBarClick(data: object) {
         // We are putting the handle click on the BarChart so that
         // users can click on bars for which there are currently
         // no votes. However, that means that there are areas of

@@ -26,11 +26,11 @@ function Itinerary(): JSX.Element {
     return (
         <>
             <Flex justifyContent={'center'}>
-                <h1>Itinerary</h1>
+            <Text fontSize={'xl'} fontWeight={'bold'}>Itinerary</Text>
             </Flex>
             <Flex flexWrap={'wrap'} justifyContent={'space-evenly'}>
                 <Stack spacing='4' height={'80vh'} minWidth={'35vw'} overflowY={'scroll'}>
-                    <NewItineraryModal getItinerary={getItinerary}/>
+                    <NewItineraryModal getItineraryCallback={getItinerary}/>
                     {itinerary.length === 0 ? 
                     <Text>Nothing planned...</Text> :
                     itinerary.map((itin: ItineraryModel, index: number) => <ItineraryCard key={index} itineraryData={itin} tripData={trip} getItineraryCallback={getItinerary} />)
