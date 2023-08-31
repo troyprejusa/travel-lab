@@ -5,9 +5,9 @@ import {
   createRoutesFromElements,
   Route,
   RouterProvider,
-} from "react-router-dom";
+} from 'react-router-dom';
 import { ChakraProvider } from '@chakra-ui/react';
-import { Provider as ReduxProvider} from 'react-redux';
+import { Provider as ReduxProvider } from 'react-redux';
 import reduxStore from './redux/Store';
 
 // Pages
@@ -29,20 +29,20 @@ const router = createBrowserRouter(
     <>
       <Route path="/" element={<Splash />} />
 
-      <Route path="/user/:username/trips" element={<Trips />}/>
-      <Route path="/user/:username/settings" element={<UserSettings />}/>
+      <Route path="/user/:username/trips" element={<Trips />} />
+      <Route path="/user/:username/settings" element={<UserSettings />} />
 
       <Route path="/trip/:trip_id" element={<Project />}>
-          <Route path="home" element={<Home />} />
-          <Route path="itinerary" element={<Itinerary />} />
-          <Route path="message" element={<MessageBoard />}/>
-          <Route path="poll" element={<Poll />}/>
-          <Route path="packing" element={<Packing />} />
-          <Route path="travellers" element={<Travellers />} />
-          <Route path="settings" element={<TripSettings />} />
+        <Route path="home" element={<Home />} />
+        <Route path="itinerary" element={<Itinerary />} />
+        <Route path="message" element={<MessageBoard />} />
+        <Route path="poll" element={<Poll />} />
+        <Route path="packing" element={<Packing />} />
+        <Route path="travellers" element={<Travellers />} />
+        <Route path="settings" element={<TripSettings />} />
       </Route>
 
-      <Route path='*' element={<NotFound />} />
+      <Route path="*" element={<NotFound />} />
     </>
   )
 );
@@ -52,10 +52,10 @@ const root: ReactDOM.Root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-      <ChakraProvider>
-        <ReduxProvider store={reduxStore}>
-          <RouterProvider router={router} />
-        </ReduxProvider>
-      </ChakraProvider>
+    <ChakraProvider>
+      <ReduxProvider store={reduxStore}>
+        <RouterProvider router={router} />
+      </ReduxProvider>
+    </ChakraProvider>
   </React.StrictMode>
 );

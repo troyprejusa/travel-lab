@@ -16,15 +16,13 @@ import {
 } from '@chakra-ui/react';
 import { RootState } from '../redux/Store';
 
-
-
 interface TripCardProps {
-  tripData: TripModel,
+  tripData: TripModel;
 }
 
 function TripCard(props: TripCardProps) {
   const user: UserModel = useSelector((state: RootState) => state.user);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   return (
@@ -36,15 +34,21 @@ function TripCard(props: TripCardProps) {
         boxShadow={'2xl'}
         rounded={'md'}
         p={6}
-        overflow={'hidden'}>
+        overflow={'hidden'}
+      >
         <Box
           h={'210px'}
           bg={'gray.100'}
           mt={-6}
           mx={-6}
           mb={6}
-          pos={'relative'}>
-          <img src={TripPhoto} alt={'trip'} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+          pos={'relative'}
+        >
+          <img
+            src={TripPhoto}
+            alt={'trip'}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
         </Box>
         <Stack>
           <Text
@@ -52,27 +56,28 @@ function TripCard(props: TripCardProps) {
             textTransform={'uppercase'}
             fontWeight={800}
             fontSize={'sm'}
-            letterSpacing={1.1}>
+            letterSpacing={1.1}
+          >
             {`${props.tripData.start_date}`}
           </Text>
           <Heading
             color={useColorModeValue('gray.700', 'white')}
             fontSize={'2xl'}
-            fontFamily={'body'}>
+            fontFamily={'body'}
+          >
             {props.tripData.destination}
           </Heading>
-          <Text color={'gray.500'}>
-            {props.tripData.description}
-          </Text>
+          <Text color={'gray.500'}>{props.tripData.description}</Text>
         </Stack>
         <Stack mt={6} direction={'row'} spacing={4} align={'center'}>
           <AvatarWrapper userData={user} />
           <Stack direction={'column'} spacing={0} fontSize={'sm'}>
-            <Text fontWeight={600}>{`${user.first_name} ${user.last_name}`}</Text>
-            {
-            props.tripData.created_at.constructor.name === 'Date' &&
-            <Text color={'gray.500'}>{`hi`}</Text>
-            }
+            <Text
+              fontWeight={600}
+            >{`${user.first_name} ${user.last_name}`}</Text>
+            {props.tripData.created_at.constructor.name === 'Date' && (
+              <Text color={'gray.500'}>{`hi`}</Text>
+            )}
           </Stack>
         </Stack>
       </Box>
@@ -80,22 +85,20 @@ function TripCard(props: TripCardProps) {
   );
 
   function handleViewClick(event: SyntheticEvent) {
-
-    const authToken: string | null = localStorage.getItem("token");
+    const authToken: string | null = localStorage.getItem('token');
 
     if (authToken) {
       // Establish a websocket connection for these rooms
       msgSocket.establishSocket(authToken, props.tripData.id, dispatch);
       pollSocket.establishSocket(authToken, props.tripData.id, dispatch);
-  
+
       // Set this trip as the current trip in state
       dispatch(reduxSetTrip(props.tripData));
-  
+
       // Navigate on to view the trip
       navigate(`/trip/${props.tripData.id}/home`);
-
     } else {
-      alert('Unable to view trip!')
+      alert('Unable to view trip!');
     }
   }
 }

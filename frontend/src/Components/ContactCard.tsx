@@ -1,75 +1,82 @@
 import { UserModel } from '../utilities/Interfaces';
 import Constants from '../utilities/Constants';
 import {
-    Heading,
-    Box,
-    Center,
-    Text,
-    Stack,
-    Link,
-    Badge,
-    useColorModeValue,
-  } from '@chakra-ui/react';
+  Heading,
+  Box,
+  Center,
+  Text,
+  Stack,
+  Link,
+  Badge,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import { AvatarWrapper } from './AvatarWrapper';
 
-  interface ContactCardProps {
-    userData: UserModel
-  }
-  
-  export default function ContactCard(props: ContactCardProps) {
-    return (
-      <Center py={6}>
-        <Box
-          maxW={'320px'}
-          w={'full'}
-          bg={useColorModeValue('white', 'gray.900')}
-          boxShadow={'2xl'}
-          rounded={'lg'}
-          p={6}
-          textAlign={'center'}>
-          <AvatarWrapper
-            userData={props.userData}
-            size={'xl'}
-            mb={4}
-            pos={'relative'}
-            // _after={{
-            //   content: '""',
-            //   w: 4,
-            //   h: 4,
-            //   bg: 'green.300',
-            //   border: '2px solid white',
-            //   rounded: 'full',
-            //   pos: 'absolute',
-            //   bottom: 0,
-            //   right: 3,
-            // }}
-          />
-          <Heading fontSize={'2xl'} fontFamily={'body'}>
-            {`${props.userData.first_name} ${props.userData.last_name}`}
-          </Heading>
-          {/* <Text fontWeight={600} color={'gray.500'} mb={4}>
+interface ContactCardProps {
+  userData: UserModel;
+}
+
+export default function ContactCard(props: ContactCardProps) {
+  return (
+    <Center py={6}>
+      <Box
+        maxW={'320px'}
+        w={'full'}
+        bg={useColorModeValue('white', 'gray.900')}
+        boxShadow={'2xl'}
+        rounded={'lg'}
+        p={6}
+        textAlign={'center'}
+      >
+        <AvatarWrapper
+          userData={props.userData}
+          size={'xl'}
+          mb={4}
+          pos={'relative'}
+          // _after={{
+          //   content: '""',
+          //   w: 4,
+          //   h: 4,
+          //   bg: 'green.300',
+          //   border: '2px solid white',
+          //   rounded: 'full',
+          //   pos: 'absolute',
+          //   bottom: 0,
+          //   right: 3,
+          // }}
+        />
+        <Heading fontSize={'2xl'} fontFamily={'body'}>
+          {`${props.userData.first_name} ${props.userData.last_name}`}
+        </Heading>
+        {/* <Text fontWeight={600} color={'gray.500'} mb={4}>
             {`${props.userData.email}`}
           </Text> */}
 
-  
-          <Stack align={'flex-start'} justify={'flex-start'} direction={'column'} mt={6}>
-            <Badge
-              px={2}
-              py={1}
-              bg={useColorModeValue('gray.50', 'gray.800')}
-              fontWeight={'400'}>
-              {`Email: ${props.userData.email}`}
-            </Badge>
-            <Badge
-              px={2}
-              py={1}
-              bg={useColorModeValue('gray.50', 'gray.800')}
-              fontWeight={'400'}>
-              {`Phone: ${props.userData.phone}`}
-            </Badge>
-          </Stack>
-  
-          {/* <Stack mt={8} direction={'row'} spacing={4}>
+        <Stack
+          align={'flex-start'}
+          justify={'flex-start'}
+          direction={'column'}
+          mt={6}
+        >
+          <Badge
+            px={2}
+            py={1}  
+            bg={useColorModeValue('gray.50', 'gray.800')}
+            fontWeight={'400'}
+          >
+            {`Email: ${props.userData.email}`}
+          </Badge>
+          <Badge
+            px={2}
+            py={1}
+            bg={useColorModeValue('gray.50', 'gray.800')}
+            fontWeight={'400'}
+          >
+            {`Phone: ${props.userData.phone}`}
+          </Badge>
+        </Stack>
+
+        {/* <Stack mt={8} direction={'row'} spacing={4}>
             <Button
               flex={1}
               fontSize={'sm'}
@@ -97,7 +104,7 @@ import { AvatarWrapper } from './AvatarWrapper';
               Follow
             </Button>
           </Stack> */}
-        </Box>
-      </Center>
-    );
-  }
+      </Box>
+    </Center>
+  );
+}

@@ -4,14 +4,14 @@ import { useSelector } from 'react-redux';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { RootState } from '../redux/Store';
 import { AvatarRipple } from './AvatarWrapper';
-import { 
-  PollResponseModel, 
-  PollVoteModel, 
-  PollChartDataPoint, 
-  TripModel, 
-  UserModel, 
-  PollVoteSendModel 
-} from '../utilities/Interfaces'
+import {
+  PollResponseModel,
+  PollVoteModel,
+  PollChartDataPoint,
+  TripModel,
+  UserModel,
+  PollVoteSendModel,
+} from '../utilities/Interfaces';
 import {
   Flex,
   Box,
@@ -28,22 +28,22 @@ import {
   VStack,
   Badge,
   Heading,
-  ButtonGroup
-} from '@chakra-ui/react'
-
+  ButtonGroup,
+} from '@chakra-ui/react';
 
 interface PollCardProps {
-  data: PollResponseModel
-  getPollsCallback: () => void
+  data: PollResponseModel;
+  getPollsCallback: () => void;
 }
 
 function PollCard(props: PollCardProps) {
-
   const pollChartData: Array<PollChartDataPoint> = makeDataArray(props.data);
 
   const trip: TripModel = useSelector((state: RootState) => state.trip);
   const user: UserModel = useSelector((state: RootState) => state.user);
-  const travellers: Array<UserModel> = useSelector((state: RootState) => state.travellers);
+  const travellers: Array<UserModel> = useSelector(
+    (state: RootState) => state.travellers
+  );
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -57,30 +57,49 @@ function PollCard(props: PollCardProps) {
       if (voter === user.email) {
         userVoted = true;
       }
-    })
-  })
+    });
+  });
 
   return (
     <>
       <Flex p={'40px'} w="full" alignItems="center" justifyContent="center">
         <Box
-          onClick={onOpen} cursor={'pointer'}
+          onClick={onOpen}
+          cursor={'pointer'}
           bg={useColorModeValue('white', 'gray.800')}
           maxW="sm"
           borderWidth="1px"
           rounded="lg"
           shadow="lg"
-          position="relative">
-          <Flex width={'300px'} height={'300px'} justifyContent={'center'} alignItems={'center'}>
-            {
-            pollChartData.every((datum: PollChartDataPoint) => datum.count === 0) ?
-            <VStack width={'100%'}>
-              <Heading as='h4' size='sm'>No votes yet...</Heading>
-              <AvatarRipple userData={travellers[travellers.findIndex((traveller: UserModel) => props.data.created_by === traveller.email)]} />
-            </VStack>
-            : 
-            <PieChartComponent data={pollChartData} />
-            }
+          position="relative"
+        >
+          <Flex
+            width={'300px'}
+            height={'300px'}
+            justifyContent={'center'}
+            alignItems={'center'}
+          >
+            {pollChartData.every(
+              (datum: PollChartDataPoint) => datum.count === 0
+            ) ? (
+              <VStack width={'100%'}>
+                <Heading as="h4" size="sm">
+                  No votes yet...
+                </Heading>
+                <AvatarRipple
+                  userData={
+                    travellers[
+                      travellers.findIndex(
+                        (traveller: UserModel) =>
+                          props.data.created_by === traveller.email
+                      )
+                    ]
+                  }
+                />
+              </VStack>
+            ) : (
+              <PieChartComponent data={pollChartData} />
+            )}
           </Flex>
           <Box p="6">
             <Flex mt="1" justifyContent="space-between" alignContent="center">
@@ -89,15 +108,20 @@ function PollCard(props: PollCardProps) {
                 fontWeight="semibold"
                 as="h4"
                 lineHeight="tight"
-                isTruncated>
+                isTruncated
+              >
                 {props.data.title}
               </Box>
             </Flex>
-            {userVoted ? 
-              <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="green">voted</Badge>
-              :
-              <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="red">vote</Badge>
-            }
+            {userVoted ? (
+              <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="green">
+                voted
+              </Badge>
+            ) : (
+              <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="red">
+                vote
+              </Badge>
+            )}
             <h2>{props.data.created_by}</h2>
             <h3>{`${props.data.created_at}`}</h3>
           </Box>
@@ -105,91 +129,105 @@ function PollCard(props: PollCardProps) {
       </Flex>
 
       <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent width={'80vw'} height={'80vh'} maxW={'80vw'} maxH={'80vh'}>
-            <ModalHeader></ModalHeader>
-            {/* <ModalCloseButton /> */}
+        <ModalOverlay />
+        <ModalContent
+          width={'80vw'}
+          height={'80vh'}
+          maxW={'80vw'}
+          maxH={'80vh'}
+        >
+          <ModalHeader></ModalHeader>
+          {/* <ModalCloseButton /> */}
 
-            <ModalBody>
-              <VStack>
-                <Box width={'40vw'} height={'40vh'}>
-                  <BarChartComponent userVoted={userVoted} dataPoints={pollChartData} constructVoteCallback={constructVote} />
-                </Box>
-              </VStack>
-              <Heading as='h1'>{props.data.title}</Heading>
-              <Heading as='h2'>Vote metadata</Heading>
-              <Heading as='h2'>Description</Heading>
-              <h3>{props.data.description}</h3>
-              <Heading as='h3'>Avatar group</Heading>
-            </ModalBody>
-  
-            <ModalFooter>
-              <ButtonGroup>
-                <Button variant='ghost' onClick={onClose}>Close</Button>
-                {
-                  props.data.created_by === user.email ? 
-                  <Button colorScheme='red' size='md' onClick={() => handleDeleteButtonClick(props.data.poll_id)}>Delete poll</Button>
-                  : 
-                  null 
-                }
-             </ButtonGroup>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+          <ModalBody>
+            <VStack>
+              <Box width={'40vw'} height={'40vh'}>
+                <BarChartComponent
+                  userVoted={userVoted}
+                  dataPoints={pollChartData}
+                  constructVoteCallback={constructVote}
+                />
+              </Box>
+            </VStack>
+            <Heading as="h1">{props.data.title}</Heading>
+            <Heading as="h2">Vote metadata</Heading>
+            <Heading as="h2">Description</Heading>
+            <h3>{props.data.description}</h3>
+            <Heading as="h3">Avatar group</Heading>
+          </ModalBody>
+
+          <ModalFooter>
+            <ButtonGroup>
+              <Button variant="ghost" onClick={onClose}>
+                Close
+              </Button>
+              {props.data.created_by === user.email ? (
+                <Button
+                  colorScheme="red"
+                  size="md"
+                  onClick={() => handleDeleteButtonClick(props.data.poll_id)}
+                >
+                  Delete poll
+                </Button>
+              ) : null}
+            </ButtonGroup>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
-  )
+  );
 
-  function makeDataArray(pollData: PollResponseModel): Array<PollChartDataPoint> {
+  function makeDataArray(
+    pollData: PollResponseModel
+  ): Array<PollChartDataPoint> {
     return pollData.options.map((optionData: PollVoteModel) => ({
-      option: optionData.option, 
+      option: optionData.option,
       count: optionData.votes.length,
-      voted_by: optionData.votes
+      voted_by: optionData.votes,
     }));
   }
 
   function constructVote(chosenOption: string): PollVoteSendModel | null {
-      // Look through the various options to find the option_id
-      const matchingIndex: number = props.data.options.findIndex((item: PollVoteModel) => item.option === chosenOption);
+    // Look through the various options to find the option_id
+    const matchingIndex: number = props.data.options.findIndex(
+      (item: PollVoteModel) => item.option === chosenOption
+    );
 
-      if (matchingIndex === -1) return null;
+    if (matchingIndex === -1) return null;
 
-      const optionId: number = props.data.options[matchingIndex].option_id
+    const optionId: number = props.data.options[matchingIndex].option_id;
 
-      const data: PollVoteSendModel = {
-        trip_id: trip.id,
-        poll_id: props.data.poll_id,
-        option_id: optionId,
-        voted_by: user.email
-      }
+    const data: PollVoteSendModel = {
+      trip_id: trip.id,
+      poll_id: props.data.poll_id,
+      option_id: optionId,
+      voted_by: user.email,
+    };
 
-      return data;
+    return data;
   }
 
   async function handleDeleteButtonClick(poll_id: number) {
     try {
       const res: Response = await fetch(`/trip/${trip.id}/poll/${poll_id}`, {
-          method: 'DELETE',
-          headers: fetchHelpers.getTokenHeader()
+        method: 'DELETE',
+        headers: fetchHelpers.getTokenHeader(),
       });
 
       if (res.ok) {
-
         // Refetch poll data
         props.getPollsCallback();
 
         // Close the modal
-        onClose()
-        
+        onClose();
       } else {
-          const message = await res.json();
-          throw new Error(message);
+        const message = await res.json();
+        throw new Error(message);
       }
-
     } catch (e: any) {
-        console.error(JSON.stringify(e));
+      console.error(JSON.stringify(e));
     }
   }
-
 }
 
 export default PollCard;

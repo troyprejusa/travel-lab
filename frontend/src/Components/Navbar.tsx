@@ -49,7 +49,6 @@ import { reduxResetMessages } from '../redux/MessageSlice';
 import { AvatarWrapper } from './AvatarWrapper';
 import { reduxResetPolls } from '../redux/PollSlice';
 
-
 interface LinkItemProps {
   name: string;
   icon: IconType;
@@ -57,22 +56,20 @@ interface LinkItemProps {
 }
 
 const LinkItems: Array<LinkItemProps> = [
-  { name: 'Home', icon: FiHome , path: 'home'},
+  { name: 'Home', icon: FiHome, path: 'home' },
   { name: 'Itinerary', icon: FiCalendar, path: 'itinerary' },
   { name: 'Message Board', icon: FiMessageSquare, path: 'message' },
   { name: 'Poll', icon: FiThumbsUp, path: 'poll' },
   { name: 'Packing', icon: FiBriefcase, path: 'packing' },
   { name: 'Travellers', icon: FiUsers, path: 'travellers' },
-  { name: 'Trip Settings', icon: FiSettings, path: 'settings' }
+  { name: 'Trip Settings', icon: FiSettings, path: 'settings' },
 ];
 // { name: 'Recommendations', icon: FiCompass, path: 'recommendations' },
 // { name: 'Transportation', icon: FiNavigation, path: 'transportation' },
 
-
-export default function Navbar({children}: {children: ReactNode;}) {
-
+export default function Navbar({ children }: { children: ReactNode }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  
+
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
       <SidebarContent
@@ -86,7 +83,8 @@ export default function Navbar({children}: {children: ReactNode;}) {
         onClose={onClose}
         returnFocusOnClose={false}
         onOverlayClick={onClose}
-        size="full">
+        size="full"
+      >
         <DrawerContent>
           <SidebarContent onClose={onClose} />
         </DrawerContent>
@@ -105,10 +103,8 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
-
   const navigate = useNavigate();
-  const user: UserModel = useSelector((state: RootState) => state.user)
-
+  const user: UserModel = useSelector((state: RootState) => state.user);
 
   return (
     <Box
@@ -119,9 +115,16 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       w={{ base: 'full', md: 60 }}
       pos="fixed"
       h="full"
-      {...rest}>
+      {...rest}
+    >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold" cursor="pointer" onClick={handleChooseTrip}>
+        <Text
+          fontSize="2xl"
+          fontFamily="monospace"
+          fontWeight="bold"
+          cursor="pointer"
+          onClick={handleChooseTrip}
+        >
           Travel | Lab
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
@@ -147,7 +150,12 @@ interface NavItemProps extends FlexProps {
 }
 const NavItem = ({ icon, path, children, ...rest }: NavItemProps) => {
   return (
-    <Link as={RRDLink} to={path} style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}>
+    <Link
+      as={RRDLink}
+      to={path}
+      style={{ textDecoration: 'none' }}
+      _focus={{ boxShadow: 'none' }}
+    >
       <Flex
         align="center"
         p="4"
@@ -159,7 +167,8 @@ const NavItem = ({ icon, path, children, ...rest }: NavItemProps) => {
           bg: 'cyan.400',
           color: 'white',
         }}
-        {...rest}>
+        {...rest}
+      >
         {icon && (
           <Icon
             mr="4"
@@ -180,9 +189,8 @@ interface MobileProps extends FlexProps {
   onOpen: () => void;
 }
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
-
   const navigate = useNavigate();
-  const user: UserModel = useSelector((state: RootState) => state.user)
+  const user: UserModel = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
 
   return (
@@ -195,7 +203,8 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       borderBottomWidth="1px"
       borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
       justifyContent={{ base: 'space-between', md: 'flex-end' }}
-      {...rest}>
+      {...rest}
+    >
       <IconButton
         display={{ base: 'flex', md: 'none' }}
         onClick={onOpen}
@@ -208,7 +217,8 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         display={{ base: 'flex', md: 'none' }}
         fontSize="2xl"
         fontFamily="monospace"
-        fontWeight="bold">
+        fontWeight="bold"
+      >
         Travel | Lab
       </Text>
 
@@ -224,14 +234,16 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
             <MenuButton
               py={2}
               transition="all 0.3s"
-              _focus={{ boxShadow: 'none' }}>
+              _focus={{ boxShadow: 'none' }}
+            >
               <HStack>
-                <AvatarWrapper userData={user} size={'sm'}/>
+                <AvatarWrapper userData={user} size={'sm'} />
                 <VStack
                   display={{ base: 'none', md: 'flex' }}
                   alignItems="flex-start"
                   spacing="1px"
-                  ml="2">
+                  ml="2"
+                >
                   <Text fontSize="sm">{`${user.first_name} ${user.last_name}`}</Text>
                   {/* <Text fontSize="xs" color="gray.600">
                     Admin
@@ -244,8 +256,15 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
             </MenuButton>
             <MenuList
               bg={useColorModeValue('white', 'gray.900')}
-              borderColor={useColorModeValue('gray.200', 'gray.700')}>
-              <MenuItem onClick={(event: SyntheticEvent) => navigate(`/user/${user.email}/settings`)}>Profile</MenuItem>
+              borderColor={useColorModeValue('gray.200', 'gray.700')}
+            >
+              <MenuItem
+                onClick={(event: SyntheticEvent) =>
+                  navigate(`/user/${user.email}/settings`)
+                }
+              >
+                Profile
+              </MenuItem>
               {/* <MenuItem>Billing</MenuItem> */}
               <MenuDivider />
               <MenuItem onClick={handleSignOut}>Sign out</MenuItem>
@@ -257,14 +276,13 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   );
 
   function handleSignOut(e: SyntheticEvent) {
-      localStorage.removeItem('token');
-      msgSocket.disconnectSocket();
-      pollSocket.disconnectSocket();
-      dispatch(reduxResetMessages(null));
-      dispatch(reduxResetPolls(null))
-      dispatch(reduxResetTrip(null));
-      dispatch(reduxUserLogout(null));
-      navigate('/');
+    localStorage.removeItem('token');
+    msgSocket.disconnectSocket();
+    pollSocket.disconnectSocket();
+    dispatch(reduxResetMessages(null));
+    dispatch(reduxResetPolls(null));
+    dispatch(reduxResetTrip(null));
+    dispatch(reduxUserLogout(null));
+    navigate('/');
   }
-
 };

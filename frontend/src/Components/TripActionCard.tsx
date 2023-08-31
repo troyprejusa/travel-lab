@@ -10,14 +10,9 @@ import {
   Divider,
 } from '@chakra-ui/react';
 
-
-
-interface TripActionCardProps {
-
-}
+interface TripActionCardProps {}
 
 function TripActionCard(props: TripActionCardProps) {
-
   return (
     <Center py={6}>
       <Box
@@ -27,14 +22,15 @@ function TripActionCard(props: TripActionCardProps) {
         boxShadow={'2xl'}
         rounded={'md'}
         p={6}
-        overflow={'hidden'}>
-          <VStack spacing={'40px'}>
-            <Heading size={'md'}>Join an existing trip</Heading>
-            <JoinTripModal />
-            <Divider />
-            <Heading size={'md'}>Create your own trip</Heading>
-            <NewTripModal />
-          </VStack>
+        overflow={'hidden'}
+      >
+        <VStack spacing={'40px'}>
+          <Heading size={'md'}>Join an existing trip</Heading>
+          <JoinTripModal />
+          <Divider />
+          <Heading size={'md'}>Create your own trip</Heading>
+          <NewTripModal />
+        </VStack>
       </Box>
     </Center>
   );
