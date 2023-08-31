@@ -1,24 +1,14 @@
-import { SyntheticEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { reduxSetTrip } from '../redux/TripSlice';
-import { TripModel, UserModel } from '../utilities/Interfaces';
-import TripPhoto from '../assets/tripphoto.jpg';
-import { msgSocket, pollSocket } from '../utilities/TripSocket';
-import { AvatarWrapper } from './AvatarWrapper';
+import React from 'react';
 import NewTripModal from '../Components/NewTripModal';
 import JoinTripModal from '../Components/JoinTripModal';
 import {
   Box,
   Center,
   Heading,
-  Text,
-  Stack,
   useColorModeValue,
   VStack,
   Divider,
 } from '@chakra-ui/react';
-import { RootState } from '../redux/Store';
 
 
 
