@@ -1,8 +1,5 @@
 import { useRef, SyntheticEvent } from 'react';
 import fetchHelpers from '../utilities/fetchHelpers';
-import { useDispatch } from 'react-redux';
-import { reduxSetTrip } from '../redux/TripSlice';
-import { useNavigate } from 'react-router-dom';
 import {
     Button,
     Modal,
@@ -15,12 +12,8 @@ import {
     useDisclosure,
     FormControl,
     FormLabel,
-    Input,
-    Heading,
-    Text,
-    Box
+    Input
 } from '@chakra-ui/react'
-import { TripModel } from '../utilities/Interfaces';
 
 interface JoinTripModalProps {
 
@@ -28,10 +21,8 @@ interface JoinTripModalProps {
 
 function JoinTripModal() {
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const tripForm = useRef<HTMLFormElement>(null);
+    const joinForm = useRef<HTMLFormElement>(null);
 
     return (
       <>
@@ -40,14 +31,14 @@ function JoinTripModal() {
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Join trip</ModalHeader>
+            <ModalHeader>Request to join trip</ModalHeader>
             {/* <ModalCloseButton /> */}
 
             <ModalBody>
-                <form onSubmit={handleSubmit} ref={tripForm}>
+                <form onSubmit={handleSubmit} ref={joinForm}>
                     <FormControl isRequired>
                         <FormLabel>Trip id</FormLabel>
-                        <Input placeholder='trip id' name='trip_id'/>
+                        <Input name='trip_id'/>
                     </FormControl>
                 </form>
             </ModalBody>
@@ -65,68 +56,36 @@ function JoinTripModal() {
 
         event.preventDefault();
 
-        if (tripForm.current === null) return
+        if (joinForm.current === null) return
 
-        const formData = new FormData(tripForm.current)
+        const formData = new FormData(joinForm.current)
 
         // Validate form
-        const destination_entry: string  = formData.get('destination');
-        const description_entry: string = formData.get('description');
-        const start_date_entry: string = formData.get('start_date');
-        const end_date_entry: string = formData.get('end_date');
+        const id_entry: string  = formData.get('trip_id');
 
-        if (destination_entry === '') {
-            alert('Destination cannot be empty!');
+        if (id_entry === '') {
+            alert('Trip id cannot be empty!');
             return;
-        }
-        
-        if (description_entry === '') {
-            alert('Description cannot be empty!');
-            return;
-        }
-        
-        if (start_date_entry === '') {
-            alert('Departure date cannot be empty!');
-            return;
-        }
-        
-        if (end_date_entry === '') {
-            alert('Return date cannot be empty!');
-            return;
-        }
-
-        if (Date.parse(start_date_entry) > Date.parse(end_date_entry)) {
-            alert('Start date cannot be after end time!');
-            return;
-        }   
+        }  
 
         try {
-            const res: Response = await fetch('/trip/' , {
+            const res: Response = await fetch(`/trip/${id_entry}/travellers/request`, {
                 method: 'POST',
-                body: formData,
                 headers: fetchHelpers.getTokenHeader()
             })
 
             if (res.ok) {
-                const trip: TripModel = await res.json();
-
                 // Close the modal
                 onClose();
 
-                // Make trip the current trip
-                dispatch(reduxSetTrip(trip));
-
-                // Navigate to the trip
-                navigate(`/trip/${trip.id}/home`);
-
             } else {
-                const message: any = await res.json();
-                throw new Error(JSON.stringify(message));
+                const errorRes: any = await res.json();
+                throw new Error(errorRes);
             }
     
         } catch (e: any) {
             console.error(e)
-            alert('Unable to create trip :(')
+            alert('Request to join trip was unsuccessful :(')
         }
     }
 }

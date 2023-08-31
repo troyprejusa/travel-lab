@@ -62,6 +62,7 @@ class DatabaseSetup:
                 CREATE TABLE IF NOT EXISTS traveller_trip (
                     traveller_id uuid references traveller ON DELETE CASCADE,
                     trip_id uuid references trip ON DELETE CASCADE,
+                    confirmed BOOLEAN NOT NULL DEFAULT FALSE, 
                     PRIMARY KEY (traveller_id, trip_id)
             );
         """)
@@ -310,6 +311,25 @@ class DatabaseSetup:
                 '2020-07-11',
                 'joe@test.com'
             );
+                            
+            INSERT INTO trip 
+            (
+                id,
+                destination,
+                description,
+                start_date,
+                end_date,
+                created_by
+            )
+            VALUES (
+                '47fc5568-568e-4124-9e08-60508719dfb6',
+                'Europe',
+                'Boys trip',
+                '2023-08-30',
+                '2023-08-31',
+                'joe@test.com'
+            );
+            
         """)
 
     def add_users_to_trips(self):
@@ -318,25 +338,29 @@ class DatabaseSetup:
             INSERT INTO traveller_trip 
             VALUES (
                 (SELECT id FROM traveller WHERE first_name='troy'),
-                (SELECT id FROM trip WHERE destination='Puerto Vallarta')
+                (SELECT id FROM trip WHERE destination='Puerto Vallarta'),
+                TRUE
             );
 
             INSERT INTO traveller_trip 
                 VALUES (
                 (SELECT id FROM traveller WHERE first_name='joe'),
-                (SELECT id FROM trip WHERE destination='Puerto Vallarta')
+                (SELECT id FROM trip WHERE destination='Puerto Vallarta'),
+                TRUE
             );
 
             INSERT INTO traveller_trip 
                 VALUES (
                 (SELECT id FROM traveller WHERE first_name='troy'),
-                (SELECT id FROM trip WHERE destination='Cabo')
+                (SELECT id FROM trip WHERE destination='Cabo'),
+                TRUE
             );
 
             INSERT INTO traveller_trip 
                 VALUES (
                 (SELECT id FROM traveller WHERE first_name='joe'),
-                (SELECT id FROM trip WHERE destination='Cabo')
+                (SELECT id FROM trip WHERE destination='Cabo'),
+                TRUE
             );
         """)
 

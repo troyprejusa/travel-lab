@@ -41,7 +41,7 @@ const travellersSlice: Slice = createSlice({
 export const reduxFetchTravellers = createAsyncThunk('messages/reduxFetchTravellers',
     async (trip_id: string, thunkAPI) => {
         try {
-            const res: Response = await fetch(`/trip/${trip_id}/contacts`, {
+            const res: Response = await fetch(`/trip/${trip_id}/travellers`, {
                 method: 'GET',
                 headers: fetchHelpers.getTokenHeader(),
             });

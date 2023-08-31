@@ -76,25 +76,6 @@ async def delete_trip(request: Request, trip_id: str) -> dict[str, str]:
             }
         )
 
-# Get contact info for travellers on this trip
-@trip_router.get('/{trip_id}/contacts')
-async def get_contact_info(trip_id: str) ->  list[Traveller] | dict[str, str]:
-    try:
-        travellers = db_handler.query("""
-            SELECT * from traveller WHERE id in (SELECT traveller_id FROM traveller_trip WHERE trip_id=%s) ORDER BY last_name;
-            """, (trip_id,))
-        
-        return travellers
-
-    except Exception as e:
-        print(str(e))
-        return JSONResponse(
-            status_code=500,
-            content = {
-                "message": f"ERROR: Unable to find travellers for trip id {trip_id}"
-            }
-        )
-
 
 # Get itinerary entries for this trip
 @trip_router.get('/{trip_id}/itinerary')
@@ -114,6 +95,7 @@ async def get_itinerary_info(trip_id: str) -> list[Itinerary] | dict[str, str]:
                 "message": f"ERROR: Unable to retrieve itinerary for trip id {trip_id}"
             }
         )
+
 
 # Add itinerary item for this trip
 @trip_router.post('/{trip_id}/itinerary')
@@ -147,6 +129,7 @@ async def add_itinerary_stop(
                 "message": f"ERROR: Unable to submit itinerary stop for trip id {trip_id}"
             }
         )
+
 
 # Add itinerary item for this trip
 @trip_router.delete('/{trip_id}/itinerary/{item_id}')
@@ -191,7 +174,6 @@ async def get_messages(trip_id: str) -> list[Message] | dict[str, str]:
                 "message": f'ERROR: Unable to retrieve messages for trip id {trip_id}'
             }
         )
-    
 
     
 @trip_router.get('/{trip_id}/poll')
@@ -242,6 +224,7 @@ async def get_polls(trip_id: str) -> list[PollResponseBody] | dict[str, str]:
             }
         )
 
+
 @trip_router.post('/{trip_id}/poll')
 async def add_poll(request: Request, trip_id: str, poll_body: NewPollBody) -> dict[str, str]:
     try:
@@ -275,7 +258,8 @@ async def add_poll(request: Request, trip_id: str, poll_body: NewPollBody) -> di
                 "message": f'ERROR: Unable to post poll'
             }
         )
-    
+
+
 @trip_router.delete('/{trip_id}/poll/{poll_id}')
 async def delete_poll(request: Request, trip_id: str, poll_id: int) -> dict[str, str]:
     try:
@@ -303,6 +287,7 @@ async def delete_poll(request: Request, trip_id: str, poll_id: int) -> dict[str,
             }
         ) 
 
+
 @trip_router.get('/{trip_id}/packing')
 async def get_packing_items(trip_id: str) -> list[Packing] | dict[str, str]:
     try:
@@ -320,6 +305,7 @@ async def get_packing_items(trip_id: str) -> list[Packing] | dict[str, str]:
             }
         )
     
+
 @trip_router.post('/{trip_id}/packing')
 async def add_packing_item(
     request: Request,
@@ -350,6 +336,7 @@ async def add_packing_item(
                 "message": f'Unable to add packing item {item} to trip {trip_id}'
             }
         )
+
 
 @trip_router.delete('/{trip_id}/packing/{item_id}')
 async def delete_packing_item(trip_id: str, item_id: int) -> dict[str, str]:
@@ -401,6 +388,7 @@ async def claim_packing_item(request: Request, trip_id: str, item_id: int) -> di
             }
         )
 
+
 @trip_router.patch('/{trip_id}/packing/unclaim/{item_id}')
 async def unclaim_packing_item(trip_id: str, item_id: int) -> dict[str, str]:
     try:
@@ -421,5 +409,124 @@ async def unclaim_packing_item(trip_id: str, item_id: int) -> dict[str, str]:
             status_code=500,
             content= {
                 "message": f'Unable to unclaim item_id {item_id}'
+            }
+        )
+    
+
+# Get info for travellers on this trip
+@trip_router.get('/{trip_id}/travellers')
+async def get_travellers(trip_id: str) ->  list[Traveller] | dict[str, str]:
+    try:
+        travellers = db_handler.query("""
+            SELECT * from traveller WHERE id in (SELECT traveller_id FROM traveller_trip WHERE trip_id=%s) ORDER BY last_name;
+            """, (trip_id,))
+        
+        return travellers
+
+    except Exception as e:
+        print(str(e))
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": f"ERROR: Unable to find travellers for trip id {trip_id}"
+            }
+        )
+
+
+# User sends a request to join trip
+@trip_router.post('/{trip_id}/travellers/request')
+async def request_join_trip(request: Request, trip_id: str) -> dict[str, str]:
+    try:
+        db_handler.query("""
+            INSERT INTO traveller_trip VALUES (%s, %s, %s);
+        """, (request.state.user['id'], trip_id, False))
+        
+        return JSONResponse(
+            status_code=200,
+            content={
+                "message": f"SUCCESS: Submitted request for user {request.state.user['email']} to join {trip_id}"
+            }
+        )
+    
+    except Exception as e:
+        print(str(e))
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": f"ERROR: Unable for user {request.state.user['email']} to request joining trip {trip_id}"
+            }
+        )
+    
+# Trip admin accepts request to join trip
+@trip_router.patch('/{trip_id}/travellers/accept/{requestor_id}')
+async def accept_join_trip(request: Request, trip_id: str, requestor_id: str) -> dict[str, str]:
+    try:
+        db_handler.query("""
+            UPDATE traveller_trip SET confirmed=TRUE WHERE traveller_id=%s AND trip_id=%s;
+        """, (requestor_id, trip_id))
+        
+        return JSONResponse(
+            status_code=200,
+            content={
+                "message": f"SUCCESS: Accepted user {requestor_id} on trip {trip_id}"
+            }
+        )
+    
+    except Exception as e:
+        print(str(e))
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": f"ERROR: Unable accept user {requestor_id} for trip {trip_id}"
+            }
+        )
+
+
+# Trip admin removes current or potential user from trip
+@trip_router.delete('/{trip_id}/travellers/remove/{requestor_id}')
+async def deny_join_trip(request: Request, trip_id: str, requestor_id: str) -> dict[str, str]:
+    try:
+        db_handler.query("""
+            DELETE FROM traveller_trip WHERE traveller_id=%s AND trip_id=%s;
+        """, (requestor_id, trip_id))
+        
+        return JSONResponse(
+            status_code=200,
+            content={
+                "message": f"SUCCESS: Denied request for user {requestor_id} to join trip {trip_id}"
+            }
+        )
+    
+    except Exception as e:
+        print(str(e))
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": f"ERROR: Unable to reject user {requestor_id} from trip {trip_id}"
+            }
+        )
+
+
+# User leaves a trip
+@trip_router.post('/{trip_id}/travellers/leave')
+async def leave_trip(request: Request, trip_id: str) -> dict[str, str]:
+    try:
+        db_handler.query("""
+            DELETE FROM traveller_trip WHERE traveller_id=%s AND trip_id=%s;
+        """, (request.state.user['id'], trip_id))
+        
+        return JSONResponse(
+            status_code=200,
+            content={
+                "message": f"SUCCESS: Removed user {request.state.user['email']} from trip {trip_id}"
+            }
+        )
+    
+    except Exception as e:
+        print(str(e))
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": f"ERROR: Unable to remove user {request.state.user['email']} from trip {trip_id}"
             }
         )
