@@ -63,6 +63,7 @@ class DatabaseSetup:
                     traveller_id uuid references traveller ON DELETE CASCADE,
                     trip_id uuid references trip ON DELETE CASCADE,
                     confirmed BOOLEAN NOT NULL DEFAULT FALSE, 
+                    admin BOOLEAN NOT NULL DEFAULT FALSE,
                     PRIMARY KEY (traveller_id, trip_id)
             );
         """)
@@ -339,6 +340,7 @@ class DatabaseSetup:
             VALUES (
                 (SELECT id FROM traveller WHERE first_name='troy'),
                 (SELECT id FROM trip WHERE destination='Puerto Vallarta'),
+                TRUE,
                 TRUE
             );
 
@@ -346,20 +348,23 @@ class DatabaseSetup:
                 VALUES (
                 (SELECT id FROM traveller WHERE first_name='joe'),
                 (SELECT id FROM trip WHERE destination='Puerto Vallarta'),
-                TRUE
+                TRUE,
+                FALSE
             );
 
             INSERT INTO traveller_trip 
                 VALUES (
                 (SELECT id FROM traveller WHERE first_name='troy'),
                 (SELECT id FROM trip WHERE destination='Cabo'),
-                TRUE
+                TRUE,
+                FALSE
             );
 
             INSERT INTO traveller_trip 
                 VALUES (
                 (SELECT id FROM traveller WHERE first_name='joe'),
                 (SELECT id FROM trip WHERE destination='Cabo'),
+                TRUE,
                 TRUE
             );
         """)

@@ -30,16 +30,17 @@ whitelist = set([
 # Create app
 app = FastAPI()
 
+# Authentication middleware
 @app.middleware('http')
-async def verify_auth(request: Request, call_next):
-    print('HTTP Request:', request.url.path)
+async def authenticate_user(request: Request, call_next):
+    # print('HTTP Request:', request.url.path)
     root_path = request.url.path.split('/')[1]
 
     if root_path in whitelist:
         response = await call_next(request)
         return response
     else:
-        # Verify JWT before proceeding with path operations
+        # Authenticate by verifying JWT before proceeding with path operations
         try:
             encoded_jwt = request.headers['authorization'].split(' ')[1]
 
@@ -51,7 +52,7 @@ async def verify_auth(request: Request, call_next):
             
             return response
         
-        except KeyError as ke:
+        except KeyError:
             # No authorization token
             print('INTERNAL: No authorization header')
             return JSONResponse(

@@ -1,11 +1,11 @@
+import { PackingModel } from '../utilities/Interfaces';
+import fetchHelpers from '../utilities/fetchHelpers';
 import {
   Slice,
   createSlice,
   PayloadAction,
   createAsyncThunk,
 } from '@reduxjs/toolkit';
-import { PackingModel } from '../utilities/Interfaces';
-import fetchHelpers from '../utilities/fetchHelpers';
 
 // For now, the creation of polls will not be real time.
 // Only the voting will be real time.
@@ -66,6 +66,6 @@ export const reduxFetchPacking = createAsyncThunk(
   }
 );
 
-// export const { } = packingSlice.actions;
+export const { reduxResetPacking } = packingSlice.actions;
 
 export default packingSlice.reducer;

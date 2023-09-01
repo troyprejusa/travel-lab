@@ -2,8 +2,7 @@ from fastapi import APIRouter, Form
 from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
 from typing import Annotated
-import jwt
-from utilities import Constants
+from utilities import auth_helpers
 import bcrypt
 
 
@@ -39,8 +38,8 @@ async def sign_in(username: Annotated[str, Form()], password: Annotated[str, For
         user = db_handler.query("""
             SELECT * FROM traveller WHERE email=%s
             """, (username,))[0]
-
-        encoded_jwt = jwt.encode(user, Constants.SECRET, algorithm = Constants.ALGORITHM)
+        
+        encoded_jwt = auth_helpers.create_jwt(user)
 
         return JSONResponse(
             status_code = 200,
@@ -81,7 +80,7 @@ async def create_user(
             SELECT * FROM traveller WHERE email=%s
         """, (first_name, last_name, email, phone, email, ascii_hashed, email))[0]
 
-        encoded_jwt = jwt.encode(user, Constants.SECRET, algorithm = Constants.ALGORITHM)
+        encoded_jwt = auth_helpers.create_jwt(user)
 
         return JSONResponse(
             status_code = 200,

@@ -3,9 +3,11 @@ import { IconType } from 'react-icons';
 import { ReactText } from 'react';
 import { Link as RRDLink, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { reduxUserLogout } from '../redux/UserSlice';
-import { reduxResetTrip } from '../redux/TripSlice';
-
+import { signOutAfterTripSelect } from '../utilities/stateResets';
+import { useDispatch } from 'react-redux';
+import { RootState } from '../redux/Store';
+import { UserModel } from '../utilities/Interfaces';
+import { AvatarWrapper } from './AvatarWrapper';
 import {
   IconButton,
   Box,
@@ -41,13 +43,6 @@ import {
   FiUsers,
   FiThumbsUp,
 } from 'react-icons/fi';
-import { useDispatch } from 'react-redux';
-import { RootState } from '../redux/Store';
-import { UserModel } from '../utilities/Interfaces';
-import { msgSocket, pollSocket } from '../utilities/TripSocket';
-import { reduxResetMessages } from '../redux/MessageSlice';
-import { AvatarWrapper } from './AvatarWrapper';
-import { reduxResetPolls } from '../redux/PollSlice';
 
 interface LinkItemProps {
   name: string;
@@ -64,8 +59,6 @@ const LinkItems: Array<LinkItemProps> = [
   { name: 'Travellers', icon: FiUsers, path: 'travellers' },
   { name: 'Trip Settings', icon: FiSettings, path: 'settings' },
 ];
-// { name: 'Recommendations', icon: FiCompass, path: 'recommendations' },
-// { name: 'Transportation', icon: FiNavigation, path: 'transportation' },
 
 export default function Navbar({ children }: { children: ReactNode }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -89,7 +82,6 @@ export default function Navbar({ children }: { children: ReactNode }) {
           <SidebarContent onClose={onClose} />
         </DrawerContent>
       </Drawer>
-      {/* mobilenav */}
       <MobileNav onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p="4">
         {children}
@@ -123,7 +115,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           fontFamily="monospace"
           fontWeight="bold"
           cursor="pointer"
-          onClick={handleChooseTrip}
+          onClick={handleReturnToTrips}
         >
           Travel | Lab
         </Text>
@@ -137,9 +129,8 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
     </Box>
   );
 
-  function handleChooseTrip(event: SyntheticEvent) {
-    const nextURL: string = `/user/${user.email}/trips`;
-    navigate(nextURL);
+  function handleReturnToTrips(event: SyntheticEvent) {
+    navigate(`/user/${user.email}/trips`);
   }
 };
 
@@ -188,6 +179,7 @@ const NavItem = ({ icon, path, children, ...rest }: NavItemProps) => {
 interface MobileProps extends FlexProps {
   onOpen: () => void;
 }
+
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   const navigate = useNavigate();
   const user: UserModel = useSelector((state: RootState) => state.user);
@@ -275,14 +267,8 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
     </Flex>
   );
 
-  function handleSignOut(e: SyntheticEvent) {
-    localStorage.removeItem('token');
-    msgSocket.disconnectSocket();
-    pollSocket.disconnectSocket();
-    dispatch(reduxResetMessages(null));
-    dispatch(reduxResetPolls(null));
-    dispatch(reduxResetTrip(null));
-    dispatch(reduxUserLogout(null));
+  function handleSignOut(event: SyntheticEvent) {
+    signOutAfterTripSelect(dispatch)
     navigate('/');
   }
 };

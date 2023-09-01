@@ -1,3 +1,4 @@
+import fetchHelpers from '../utilities/fetchHelpers';
 import {
   Slice,
   createSlice,
@@ -9,7 +10,6 @@ import {
   PollVoteModel,
   PollVoteSendModel,
 } from '../utilities/Interfaces';
-import fetchHelpers from '../utilities/fetchHelpers';
 
 // For now, the creation of polls will not be real time.
 // Only the voting will be real time.
@@ -77,7 +77,7 @@ const pollSlice: Slice = createSlice({
 });
 
 export const reduxFetchPolls = createAsyncThunk(
-  'messages/reduxFetchPolls',
+  'polls/reduxFetchPolls',
   async (trip_id: string, thunkAPI) => {
     try {
       const res: Response = await fetch(`/trip/${trip_id}/poll`, {

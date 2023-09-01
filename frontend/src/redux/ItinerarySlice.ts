@@ -1,11 +1,11 @@
+import { ItineraryModel } from '../utilities/Interfaces';
+import fetchHelpers from '../utilities/fetchHelpers';
 import {
   Slice,
   createSlice,
   PayloadAction,
   createAsyncThunk,
 } from '@reduxjs/toolkit';
-import { ItineraryModel } from '../utilities/Interfaces';
-import fetchHelpers from '../utilities/fetchHelpers';
 
 const initialItineraryState: Array<ItineraryModel> = [];
 
@@ -65,6 +65,6 @@ export const reduxFetchItinerary = createAsyncThunk(
   }
 );
 
-// export const { } = itinerarySlice.actions;
+export const { reduxResetItinerary } = itinerarySlice.actions;
 
 export default itinerarySlice.reducer;
