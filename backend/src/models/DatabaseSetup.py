@@ -252,7 +252,7 @@ class DatabaseSetup:
             INSERT INTO auth 
             VALUES (
                 'troy@test.com',
-                '$2b$12$k.Sh6JulrK/e/R3bFKQ36OaKf/UjaWjDXQLYEVbhHTcZ43GzU7g6e'
+                '$2b$12$p67sgjkGgne2voz4R0zLpuAQYQpgA5P0XdENAP1JRuRqHPFdmqArG'
             );
         """)
 
@@ -270,7 +270,7 @@ class DatabaseSetup:
             INSERT INTO auth 
             VALUES (
                 'joe@test.com',
-                '$2b$12$k.Sh6JulrK/e/R3bFKQ36OaKf/UjaWjDXQLYEVbhHTcZ43GzU7g6e'
+                '$2b$12$dQ5AfqWuSowhxYt9EnAOVObPyrhZNDWRn4oxRt2oy.I5ZS/UGi3CC'
             );
         """)
 

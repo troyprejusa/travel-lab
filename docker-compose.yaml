@@ -1,17 +1,5 @@
 version: "3"
 services:
-  database:
-    image: postgres
-    container_name: sql_database
-    environment:
-      - POSTGRES_USER=docker
-      - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=travel_lab
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
   s3mock:
     image: minio/minio
     container_name: minio_storage
@@ -35,7 +23,6 @@ services:
       - "8000:8000"   # For the API
       - "5678:5678"   # For VSCode debugger
     depends_on:
-      - database
       - s3mock
 
 volumes:

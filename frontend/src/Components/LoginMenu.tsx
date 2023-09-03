@@ -99,14 +99,24 @@ function LoginMenu({ setWantsLogin }: LoginMenuProps) {
             </form>
             <Stack>
               <Button
-                onClick={handleFakeLogin}
+                onClick={() => handleFakeLogin('troy')}
                 bg={'blue.400'}
                 color={'white'}
                 _hover={{
                   bg: 'blue.500',
                 }}
               >
-                DEV BYPASS
+                Sign in Troy
+              </Button>
+              <Button
+                onClick={() => handleFakeLogin('joe')}
+                bg={'blue.400'}
+                color={'white'}
+                _hover={{
+                  bg: 'blue.500',
+                }}
+              >
+                Sign in Joe
               </Button>
             </Stack>
             <Text align={'center'}>
@@ -136,10 +146,22 @@ function LoginMenu({ setWantsLogin }: LoginMenuProps) {
     }
   }
 
-  function handleFakeLogin(event: SyntheticEvent) {
+  function handleFakeLogin(name: string) {
     const formData: URLSearchParams = new URLSearchParams();
-    formData.append('username', 'troy@test.com');
-    formData.append('password', 'abcd');
+
+    switch (name) {
+      case 'troy':
+        formData.append('username', 'troy@test.com');
+        formData.append('password', import.meta.env.VITE_TROY_PASSWORD);
+        break;
+      case 'joe':
+        formData.append('username', 'joe@test.com');
+        formData.append('password', import.meta.env.VITE_JOE_PASSWORD);
+        break;
+      default:
+        throw new Error('Unrecognized fake user')
+    }
+
     loginUser(formData);
   }
 
