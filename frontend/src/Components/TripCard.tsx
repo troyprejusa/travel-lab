@@ -70,11 +70,11 @@ function TripCard(props: TripCardProps) {
           <Text color={'gray.500'}>{props.tripData.description}</Text>
         </Stack>
         <Stack mt={6} direction={'row'} spacing={4} align={'center'}>
-          <AvatarWrapper userData={user} />
+          {/* <AvatarWrapper userData={user} /> */}
           <Stack direction={'column'} spacing={0} fontSize={'sm'}>
             <Text
               fontWeight={600}
-            >{`${user.first_name} ${user.last_name}`}</Text>
+            >{props.tripData.created_by}</Text>
             {props.tripData.created_at.constructor.name === 'Date' && (
               <Text color={'gray.500'}>{`hi`}</Text>
             )}
