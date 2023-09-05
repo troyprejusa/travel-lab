@@ -3,6 +3,7 @@ import { reduxAddMessage } from '../redux/MessageSlice';
 import { reduxAddVote } from '../redux/PollSlice';
 import { Dispatch } from '@reduxjs/toolkit';
 import { MessageModel, PollVoteSendModel } from './Interfaces';
+import Constants from './Constants';
 
 class TripSocket {
   host: string;
@@ -80,7 +81,7 @@ class PollSocket extends TripSocket {
   }
 }
 
-const host: string = 'ws://localhost:8000';
+const host: string = `ws://${Constants.API_HOST}:${Constants.API_PORT}`;
 const apiPath: string = '/sio/socket.io';
 
 export const msgSocket = new MessageSocket(host, apiPath, '/message');

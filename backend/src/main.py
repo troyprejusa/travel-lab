@@ -12,11 +12,11 @@ from utilities import Constants
 import jwt
 import uvicorn
 
-# DB SETUP DEV ONLY
-db_setup = DatabaseSetup(db_handler)
-db_setup.drop_tables()
-db_setup.setup_db()
-db_setup.insert_data()
+if Constants.MODE == 'development':
+    db_setup = DatabaseSetup(db_handler)
+    db_setup.drop_tables()
+    db_setup.setup_db()
+    db_setup.insert_data()
 
 # Allow external access to the following endpoints:
 whitelist = set([

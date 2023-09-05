@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { UserModel } from '../utilities/Interfaces';
 import { reduxUserLogin } from '../redux/UserSlice';
+import Constants from '../utilities/Constants';
 
 import {
   Flex,
@@ -98,26 +99,30 @@ function LoginMenu({ setWantsLogin }: LoginMenuProps) {
               </Stack>
             </form>
             <Stack>
-              <Button
-                onClick={() => handleFakeLogin('troy')}
-                bg={'blue.400'}
-                color={'white'}
-                _hover={{
-                  bg: 'blue.500',
-                }}
-              >
-                Sign in Troy
-              </Button>
-              <Button
-                onClick={() => handleFakeLogin('joe')}
-                bg={'blue.400'}
-                color={'white'}
-                _hover={{
-                  bg: 'blue.500',
-                }}
-              >
-                Sign in Joe
-              </Button>
+              {Constants.MODE === 'development' && (
+                <Button
+                  onClick={() => handleFakeLogin('troy')}
+                  bg={'blue.400'}
+                  color={'white'}
+                  _hover={{
+                    bg: 'blue.500',
+                  }}
+                >
+                  Sign in Troy
+                </Button>
+              )}
+              {Constants.MODE === 'development' && (
+                <Button
+                  onClick={() => handleFakeLogin('joe')}
+                  bg={'blue.400'}
+                  color={'white'}
+                  _hover={{
+                    bg: 'blue.500',
+                  }}
+                >
+                  Sign in Joe
+                </Button>
+              )}
             </Stack>
             <Text align={'center'}>
               Need an account?{' '}
@@ -152,14 +157,14 @@ function LoginMenu({ setWantsLogin }: LoginMenuProps) {
     switch (name) {
       case 'troy':
         formData.append('username', 'troy@test.com');
-        formData.append('password', import.meta.env.VITE_TROY_PASSWORD);
+        formData.append('password', Constants.TROY_PASSWORD);
         break;
       case 'joe':
         formData.append('username', 'joe@test.com');
-        formData.append('password', import.meta.env.VITE_JOE_PASSWORD);
+        formData.append('password', Constants.JOE_PASSWORD);
         break;
       default:
-        throw new Error('Unrecognized fake user')
+        throw new Error('Unrecognized fake user');
     }
 
     loginUser(formData);

@@ -2,6 +2,12 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+MODE = os.getenv('MODE')
+
+# API
+API_HOST = os.getenv('API_HOST')
+API_PORT = int(os.getenv('API_PORT'))
+
 # JWT
 SECRET = os.getenv('SECRET')
 ALGORITHM = os.getenv('ALGORITHM')
@@ -12,9 +18,6 @@ DB_PORT = os.getenv('DB_PORT')
 DB_USER = os.getenv('DB_USER')
 DB_PWD = os.getenv('DB_PWD')
 DB_DBNAME = os.getenv('DB_DBNAME')
-
-# API
-API_PORT = int(os.getenv('API_PORT'))
 
 # S3
 S3_HOST = os.getenv('S3_HOST')
