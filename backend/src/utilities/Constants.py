@@ -3,8 +3,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # JWT
-SECRET = os.getenv('SECRET')
-ALGORITHM = os.getenv('ALGORITHM')
+AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
+AUTH0_AUDIENCE = os.getenv('AUTH0_AUDIENCE')
+AUTH0_ALGORITHM = [os.getenv('AUTH0_ALGORITHM')]
 
 # Database
 DB_HOST =  os.getenv('DB_HOST')

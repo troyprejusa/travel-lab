@@ -1,20 +1,20 @@
 import React, { SyntheticEvent, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { TripModel } from '../utilities/Interfaces';
 import TripCard from '../Components/TripCard';
 import fetchHelpers from '../utilities/fetchHelpers';
 import TripActionCard from '../Components/TripActionCard';
 import { Wrap, Flex, Button, Heading } from '@chakra-ui/react';
 import { signOutBeforeTripSelect } from '../utilities/stateResets';
+import { useAuth0 } from '@auth0/auth0-react';
 
 function Trips(): JSX.Element {
-  const navigate = useNavigate();
   const initialTripState: Array<TripModel> = [];
   const [trips, setTrips] = useState(initialTripState);
   const dispatch = useDispatch();
   // const user: UserModel = useSelector((state: RootState) => state.user);
   // const trip: TripModel = useSelector((state: RootState) => state.trip);
+  const { getAccessTokenSilently, getAccessTokenWithPopup, logout } = useAuth0();
 
   useEffect(getTrips, []);
 
@@ -38,10 +38,14 @@ function Trips(): JSX.Element {
   function getTrips() {
     (async function () {
       try {
+        console.log('About to send the request')
+        const tokenHeader = await fetchHelpers.getTokenHeader(getAccessTokenSilently);
         const res: Response = await fetch(`/user/trips`, {
           method: 'GET',
-          headers: fetchHelpers.getTokenHeader(),
+          headers: tokenHeader
         });
+
+        console.log('I sent the request!')
 
         if (res.ok) {
           const trips: Array<TripModel> = await res.json();
@@ -51,14 +55,18 @@ function Trips(): JSX.Element {
           throw new Error(JSON.stringify(message));
         }
       } catch (e: any) {
-        console.error(e.message);
+        console.error(e);
       }
     })();
   }
 
   function handleSignOut(event: SyntheticEvent) {
     signOutBeforeTripSelect(dispatch);
-    navigate('/');
+    logout({
+      logoutParams: {
+        returnTo: window.location.origin
+      }
+    });
   }
 
 }

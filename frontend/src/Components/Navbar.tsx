@@ -43,6 +43,7 @@ import {
   FiUsers,
   FiThumbsUp,
 } from 'react-icons/fi';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface LinkItemProps {
   name: string;
@@ -184,6 +185,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   const navigate = useNavigate();
   const user: UserModel = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
+  const { logout } = useAuth0();
 
   return (
     <Flex
@@ -268,7 +270,11 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   );
 
   function handleSignOut(event: SyntheticEvent) {
-    signOutAfterTripSelect(dispatch)
-    navigate('/');
+    signOutAfterTripSelect(dispatch);
+    logout({
+      logoutParams: {
+        returnTo: window.location.origin
+      }
+    });
   }
 };

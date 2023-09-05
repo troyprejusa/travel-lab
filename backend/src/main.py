@@ -11,6 +11,8 @@ from models.DatabaseSetup import DatabaseSetup
 from utilities import Constants
 import jwt
 import uvicorn
+from utilities import auth_helpers
+
 
 # DB SETUP DEV ONLY
 db_setup = DatabaseSetup(db_handler)
@@ -41,11 +43,15 @@ async def authenticate_user(request: Request, call_next):
         return response
     else:
         # Authenticate by verifying JWT before proceeding with path operations
+        # Expecting "BEARER <token>"
         try:
-            encoded_jwt = request.headers['authorization'].split(' ')[1]
+            auth_header = request.headers['authorization'].split()
 
+            if (auth_header[0].lower() != 'bearer'):
+                raise Exception('No bearer header')
+            
             # Decode the JWT and add it to the request state - no exception on decode means we're good to proceed
-            decoded_jwt = jwt.decode(encoded_jwt, Constants.SECRET, algorithms=Constants.ALGORITHM)
+            decoded_jwt = await auth_helpers.jwt_decode_w_retry(auth_header[1])
             request.state.user = decoded_jwt
 
             response = await call_next(request)
@@ -59,12 +65,20 @@ async def authenticate_user(request: Request, call_next):
                 status_code=500,
                 content= {"message": "Access forbidden"}
             )
+        
         except jwt.InvalidSignatureError as se:
             # Invalid JWT
             print('INTERNAL: Invalid JWT Signature')
             return JSONResponse(
                 status_code=500,
                 content= {"message": "Access forbidden"}
+            )
+        
+        except Exception as error:
+            print(str(error))
+            return JSONResponse(
+                status_code=500,
+                content={"message": "Access forbidden"}
             )
 
 
