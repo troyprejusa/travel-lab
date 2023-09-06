@@ -14,6 +14,7 @@ import Constants from './utilities/Constants';
 
 // Pages
 import Splash from './Pages/Splash';
+import Staging from './Pages/Staging';
 import Trips from './Pages/Trips';
 import UserSettings from './Pages/UserSettings';
 import Project from './Pages/Project';
@@ -32,6 +33,7 @@ const router = createBrowserRouter(
     <>
       <Route path="/" element={<Splash />} />
 
+      <Route path="/user/:username" element={<Staging />}/>
       <Route path="/user/:username/trips" element={<Trips />} />
       <Route path="/user/:username/settings" element={<UserSettings />} />
 

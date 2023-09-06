@@ -15,8 +15,8 @@ function Project(): JSX.Element {
   const dispatch = useDispatch();
   const trip: TripModel = useSelector((state: RootState) => state.trip);
 
-  // Fetch all states for this project on project load
-  useEffect(fetchAllStates, []);
+  // Fetch all data for this project on project load
+  useEffect(fetchAllTripData, []);
 
   return (
     <>
@@ -28,7 +28,7 @@ function Project(): JSX.Element {
     </>
   );
 
-  function fetchAllStates() {
+  function fetchAllTripData() {
     dispatch(reduxFetchTravellers(trip.id));
     dispatch(reduxFetchItinerary(trip.id));
     dispatch(reduxFetchMessages(trip.id));

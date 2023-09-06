@@ -6,6 +6,8 @@ import { TripModel, UserModel } from '../utilities/Interfaces';
 import TripPhoto from '../assets/tripphoto.jpg';
 import { msgSocket, pollSocket } from '../utilities/TripSocket';
 import { AvatarWrapper } from './AvatarWrapper';
+import fetchHelpers from '../utilities/fetchHelpers';
+import { useAuth0 } from '@auth0/auth0-react';
 import {
   Box,
   Center,
@@ -24,6 +26,7 @@ function TripCard(props: TripCardProps) {
   const user: UserModel = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { getAccessTokenSilently } = useAuth0();
 
   return (
     <Center py={6} onClick={handleViewClick} cursor={'pointer'}>
@@ -84,21 +87,26 @@ function TripCard(props: TripCardProps) {
     </Center>
   );
 
-  function handleViewClick(event: SyntheticEvent) {
-    const authToken: string | null = localStorage.getItem('token');
+  async function handleViewClick(event: SyntheticEvent) {
+    try {
+      const authToken = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
 
-    if (authToken) {
-      // Establish a websocket connection for these rooms
-      msgSocket.establishSocket(authToken, props.tripData.id, dispatch);
-      pollSocket.establishSocket(authToken, props.tripData.id, dispatch);
+      if (authToken) {
+        // Establish a websocket connection for these rooms
+        msgSocket.establishSocket(authToken, props.tripData.id, dispatch);
+        pollSocket.establishSocket(authToken, props.tripData.id, dispatch);
 
-      // Set this trip as the current trip in state
-      dispatch(reduxSetTrip(props.tripData));
+        // Set this trip as the current trip in state
+        dispatch(reduxSetTrip(props.tripData));
 
-      // Navigate on to view the trip
-      navigate(`/trip/${props.tripData.id}/home`);
-    } else {
-      alert('Unable to view trip!');
+        // Navigate on to view the trip
+        navigate(`/trip/${props.tripData.id}/home`);
+      } else {
+        alert('Unable to view trip!');
+      }
+    } catch (error: any) {
+      console.error(error);
+      alert('Unable to view trip');
     }
   }
 }

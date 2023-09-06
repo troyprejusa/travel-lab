@@ -10,6 +10,9 @@ import { useNavigate } from 'react-router-dom';
 function Splash(): JSX.Element {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth0();
+
+  // If authentication status changes, check if
+  // we are logged in an navigate pages if so
   useEffect(checkForLogin, [isAuthenticated]);
 
   return (
@@ -31,7 +34,7 @@ function Splash(): JSX.Element {
 
   function checkForLogin() {
     if (isAuthenticated && user) {
-      navigate(`/user/${user.email}/trips`);
+      navigate(`/user/${user.email}`);
     }
   }
 }

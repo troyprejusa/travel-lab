@@ -11,24 +11,20 @@ from utilities import Constants
 key_cache = {}
 
 async def jwt_decode_w_retry(token: str) -> dict:
-    key_id = jwt.get_unverified_header(token)['kid']
-
     payload = {}
-
+    key_id = jwt.get_unverified_header(token)['kid']
     if key_id in key_cache:
         try:
             rsa_key = key_cache[key_id]
             payload = decode_jwt(token, rsa_key)
         except jwt.exceptions.InvalidTokenError:
             # Retry with updated keys
-            rsa_key = await get_rsa_keys(key_id)
+            rsa_key = await get_rsa_keys(token)
             payload = decode_jwt(token, rsa_key)
 
     else:
-        rsa_key = await get_rsa_keys(key_id)
+        rsa_key = await get_rsa_keys(token)
         payload = decode_jwt(token, rsa_key)
-
-    print(payload)
 
     return payload
 
@@ -84,7 +80,7 @@ def verify_attendance(trip_id, trips) -> None:
         if trip['trip_id'] == trip_id:
             return
 
-    raise Exception('User not authorized for this trip')
+    raise Exception('User not attending this trip')
 
 
 def verify_admin(trip_id, trips) -> None:

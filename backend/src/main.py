@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
 from routers.UserRouter import user_router
 from routers.TripRouter import trip_router
-from routers.AuthRouter import auth_router
 from routers.DevRouter import dev_router
 from models.WebSocketHandler import socketio_ASGI
 from models.DatabaseHandler import db_handler
@@ -24,7 +23,6 @@ db_setup.insert_data()
 whitelist = set([
     'docs',
     'openapi.json',
-    'auth',
     'dev',
     'sio'
 ])
@@ -48,46 +46,28 @@ async def authenticate_user(request: Request, call_next):
             auth_header = request.headers['authorization'].split()
 
             if (auth_header[0].lower() != 'bearer'):
-                raise Exception('No bearer header')
+                raise KeyError('No bearer header')
             
             # Decode the JWT and add it to the request state - no exception on decode means we're good to proceed
-            decoded_jwt = await auth_helpers.jwt_decode_w_retry(auth_header[1])
-            request.state.user = decoded_jwt
+            await auth_helpers.jwt_decode_w_retry(auth_header[1])
+
+            # Get users 
 
             response = await call_next(request)
             
             return response
         
-        except KeyError:
-            # No authorization token
-            print('INTERNAL: No authorization header')
-            return JSONResponse(
-                status_code=500,
-                content= {"message": "Access forbidden"}
-            )
-        
-        except jwt.InvalidSignatureError as se:
+        except jwt.exceptions.InvalidTokenError as token_error:
             # Invalid JWT
-            print('INTERNAL: Invalid JWT Signature')
+            print('Invalid JWT:\n', token_error)
             return JSONResponse(
                 status_code=500,
                 content= {"message": "Access forbidden"}
-            )
-        
-        except Exception as error:
-            print(str(error))
-            return JSONResponse(
-                status_code=500,
-                content={"message": "Access forbidden"}
             )
 
 
 # /dev
 app.include_router(dev_router)
-
-
-# /auth
-app.include_router(auth_router)
 
 
 # /user

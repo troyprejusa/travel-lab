@@ -2,12 +2,13 @@ import socketio
 import jwt
 from utilities import Constants
 from models.DatabaseHandler import db_handler
+from utilities import auth_helpers
 
 
 class MsgSocket(socketio.AsyncNamespace):
-    def on_connect(self, sid, environ, auth):
+    async def on_connect(self, sid, environ, auth):
         try:
-            jwt.decode(auth.get('token'), Constants.SECRET, algorithms=Constants.ALGORITHM)
+            await auth_helpers.jwt_decode_w_retry(auth.get('token'))
 
             # Enter the correct room for this trip
             trip_id = parse_trip_id(environ['QUERY_STRING'])
@@ -38,9 +39,9 @@ class MsgSocket(socketio.AsyncNamespace):
 
 
 class PollSocket(socketio.AsyncNamespace):
-    def on_connect(self, sid, environ, auth):
+    async def on_connect(self, sid, environ, auth):
         try:
-            jwt.decode(auth.get('token'), Constants.SECRET, algorithms=Constants.ALGORITHM)
+            await auth_helpers.jwt_decode_w_retry(auth.get('token'))
 
             # Enter the correct room for this trip
             trip_id = parse_trip_id(environ['QUERY_STRING'])

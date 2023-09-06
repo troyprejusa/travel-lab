@@ -10,12 +10,10 @@ import { msgSocket } from "./TripSocket";
 import { pollSocket } from "./TripSocket";
 
 export const signOutBeforeTripSelect = (dispatch: Dispatch) => {
-    localStorage.removeItem('token');
     dispatch(reduxUserLogout(null));
 }
 
 export const signOutAfterTripSelect = (dispatch: Dispatch) => {
-    localStorage.removeItem('token');
     dispatch(reduxUserLogout(null));
 
     msgSocket.disconnectSocket();

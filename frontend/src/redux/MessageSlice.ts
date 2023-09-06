@@ -56,7 +56,7 @@ export const reduxFetchMessages = createAsyncThunk(
     try {
       const res: Response = await fetch(`/trip/${trip_id}/message`, {
         method: 'GET',
-        headers: fetchHelpers.getTokenHeader(),
+        headers: fetchHelpers.getTokenHeader()
       });
 
       if (res.ok) {
