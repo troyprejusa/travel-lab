@@ -3,7 +3,7 @@ import { IconType } from 'react-icons';
 import { ReactText } from 'react';
 import { Link as RRDLink, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { signOutAfterTripSelect } from '../utilities/stateResets';
+import { resetAfterLeavingTrip, signOutAfterTripSelect } from '../utilities/stateResets';
 import { useDispatch } from 'react-redux';
 import { RootState } from '../redux/Store';
 import { UserModel } from '../utilities/Interfaces';
@@ -43,6 +43,7 @@ import {
   FiUsers,
   FiThumbsUp,
 } from 'react-icons/fi';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface LinkItemProps {
   name: string;
@@ -97,6 +98,7 @@ interface SidebarProps extends BoxProps {
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   const navigate = useNavigate();
   const user: UserModel = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
 
   return (
     <Box
@@ -130,6 +132,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   );
 
   function handleReturnToTrips(event: SyntheticEvent) {
+    resetAfterLeavingTrip(dispatch);
     navigate(`/user/${user.email}/trips`);
   }
 };
@@ -184,6 +187,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   const navigate = useNavigate();
   const user: UserModel = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
+  const { logout } = useAuth0();
 
   return (
     <Flex
@@ -268,7 +272,11 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   );
 
   function handleSignOut(event: SyntheticEvent) {
-    signOutAfterTripSelect(dispatch)
-    navigate('/');
+    signOutAfterTripSelect(dispatch);
+    logout({
+      logoutParams: {
+        returnTo: window.location.origin
+      }
+    });
   }
 };

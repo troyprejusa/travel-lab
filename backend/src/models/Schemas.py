@@ -7,10 +7,10 @@ from datetime import date, datetime
 # -----------------------------------
 class Traveller(BaseModel):
     id: UUID
-    first_name: str
-    last_name: str
+    first_name: str | None = None
+    last_name: str | None = None
     email: str
-    phone: str
+    phone: str | None = None
 
 class Trip(BaseModel):
     id: UUID

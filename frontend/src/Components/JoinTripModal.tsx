@@ -1,5 +1,6 @@
 import { useRef, SyntheticEvent } from 'react';
 import fetchHelpers from '../utilities/fetchHelpers';
+import { useAuth0 } from '@auth0/auth0-react';
 import {
   Button,
   Modal,
@@ -20,6 +21,7 @@ interface JoinTripModalProps {}
 function JoinTripModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const joinForm = useRef<HTMLFormElement>(null);
+  const {getAccessTokenSilently} = useAuth0();
 
   return (
     <>
@@ -71,11 +73,12 @@ function JoinTripModal() {
     }
 
     try {
+      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
       const res: Response = await fetch(
         `/trip/${id_entry}/travellers/request`,
         {
           method: 'POST',
-          headers: fetchHelpers.getTokenHeader(),
+          headers: fetchHelpers.getTokenHeader(token),
         }
       );
 

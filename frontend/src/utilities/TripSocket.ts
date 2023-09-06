@@ -81,7 +81,8 @@ class PollSocket extends TripSocket {
   }
 }
 
-const host: string = `ws://${Constants.API_HOST}:${Constants.API_PORT}`;
+const host: string = 'ws://localhost:8000';  // DEBUG
+// const host: string = `ws://${Constants.API_HOST}:${Constants.API_PORT}`;
 const apiPath: string = '/sio/socket.io';
 
 export const msgSocket = new MessageSocket(host, apiPath, '/message');

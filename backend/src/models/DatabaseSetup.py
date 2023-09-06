@@ -11,32 +11,20 @@ class DatabaseSetup:
         """)
     
     def intialize_traveller_table(self) -> None:
+        # As this is now provided by Auth0, we only have the email by default
         self.database.query("""
             CREATE TABLE IF NOT EXISTS traveller (
                 id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
-                first_name VARCHAR(40) NOT NULL,
-                last_name VARCHAR(40) NOT NULL,
+                first_name VARCHAR(40),
+                last_name VARCHAR(40),
                 email VARCHAR(255) UNIQUE NOT NULL,
-                phone VARCHAR(11) NOT NULL
+                phone VARCHAR(11)
             );
         """)
     
     def drop_traveller_table(self) -> None:
         self.database.query("""
             DROP TABLE IF EXISTS traveller CASCADE;
-        """)
-
-    def initialize_auth_table(self) -> None:
-        self.database.query("""
-            CREATE TABLE IF NOT EXISTS auth (
-                email VARCHAR(255) PRIMARY KEY references traveller(email) ON DELETE CASCADE,
-                password VARCHAR(255) NOT NULL
-            );
-        """)
-
-    def drop_auth_table(self) -> None:
-        self.database.query("""
-            DROP TABLE IF EXISTS auth;
         """)
 
     def initialize_trip_table(self) -> None:
@@ -175,42 +163,9 @@ class DatabaseSetup:
             DROP TABLE IF EXISTS packing;
         """)
 
-    # def create_types(self) -> None:
-    #     self.database.query("""
-    #         DROP TYPE transp_mode;
-    #         CREATE TYPE transp_mode AS ENUM (
-    #             'plane',
-    #             'car',
-    #             'train',
-    #             'bus',
-    #             'boat',
-    #             'other'
-    #         );
-    #     """)
-
-    # def intialize_transportation_table(self) -> None:
-    #     self.database.query("""
-    #         CREATE TABLE IF NOT EXISTS itinerary (
-    #             id BIGSERIAL PRIMARY KEY,
-    #             traveller_id uuid references traveller,
-    #             trip_id uuid references trip,
-    #             title VARCHAR(60),
-    #             mode transp_mode,
-    #             details VARCHAR(200),
-    #             start_date TIMESTAMP,
-    #             end_date TIMESTAMP
-    #         );
-    #     """)
-    
-    # def drop_transportation_table(self) -> None:
-    #     self.database.query("""
-    #         DROP TABLE IF EXISTS transportation;
-    #     """)
-
     def setup_db(self) -> None:
         self.initialize_extensions()
         self.intialize_traveller_table()
-        self.initialize_auth_table()
         self.initialize_trip_table()
         self.initialize_traveller_trip_table()
         self.initialize_itinerary_table()
@@ -220,7 +175,6 @@ class DatabaseSetup:
     
     def drop_tables(self) -> None:
         self.drop_traveller_table()
-        self.drop_auth_table()
         self.drop_trip_table()
         self.drop_traveller_trip_table()
         self.drop_itinerary_table()
@@ -248,12 +202,6 @@ class DatabaseSetup:
                 'troy@test.com',
                 '1234567890'
             );
-
-            INSERT INTO auth 
-            VALUES (
-                'troy@test.com',
-                '$2b$12$p67sgjkGgne2voz4R0zLpuAQYQpgA5P0XdENAP1JRuRqHPFdmqArG'
-            );
         """)
 
         # Insert a fake user "joe"
@@ -265,12 +213,6 @@ class DatabaseSetup:
                 'schmo',
                 'joe@test.com',
                 '1234567890'
-            );
-
-            INSERT INTO auth 
-            VALUES (
-                'joe@test.com',
-                '$2b$12$dQ5AfqWuSowhxYt9EnAOVObPyrhZNDWRn4oxRt2oy.I5ZS/UGi3CC'
             );
         """)
 

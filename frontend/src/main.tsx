@@ -9,9 +9,12 @@ import {
 import { ChakraProvider } from '@chakra-ui/react';
 import { Provider as ReduxProvider } from 'react-redux';
 import reduxStore from './redux/Store';
+import { Auth0Provider } from '@auth0/auth0-react';
+import Constants from './utilities/Constants';
 
 // Pages
 import Splash from './Pages/Splash';
+import Staging from './Pages/Staging';
 import Trips from './Pages/Trips';
 import UserSettings from './Pages/UserSettings';
 import Project from './Pages/Project';
@@ -24,11 +27,13 @@ import Travellers from './Pages/Travellers';
 import TripSettings from './Pages/TripSettings';
 import NotFound from './Pages/NotFound';
 
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<Splash />} />
 
+      <Route path="/user/:username" element={<Staging />}/>
       <Route path="/user/:username/trips" element={<Trips />} />
       <Route path="/user/:username/settings" element={<UserSettings />} />
 
@@ -50,11 +55,20 @@ const router = createBrowserRouter(
 const root: ReactDOM.Root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
 root.render(
   <React.StrictMode>
     <ChakraProvider>
       <ReduxProvider store={reduxStore}>
-        <RouterProvider router={router} />
+        <Auth0Provider
+          domain={Constants.AUTH0_DOMAIN}
+          clientId={Constants.AUTH0_CLIENT}
+          authorizationParams={{
+            redirect_uri: window.location.origin,
+          }}
+        >
+          <RouterProvider router={router} />
+        </Auth0Provider>
       </ReduxProvider>
     </ChakraProvider>
   </React.StrictMode>

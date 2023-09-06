@@ -10,13 +10,16 @@ import { reduxFetchItinerary } from '../redux/ItinerarySlice';
 import { reduxFetchMessages } from '../redux/MessageSlice';
 import { reduxFetchPolls } from '../redux/PollSlice';
 import { reduxFetchPacking } from '../redux/PackingSlice';
+import { useAuth0 } from '@auth0/auth0-react';
+import fetchHelpers from '../utilities/fetchHelpers';
 
 function Project(): JSX.Element {
   const dispatch = useDispatch();
   const trip: TripModel = useSelector((state: RootState) => state.trip);
+  const { getAccessTokenSilently } = useAuth0();
 
-  // Fetch all states for this project on project load
-  useEffect(fetchAllStates, []);
+  // Fetch all data for this project on project load
+  useEffect(() => {fetchAllTripData()}, []);
 
   return (
     <>
@@ -28,12 +31,13 @@ function Project(): JSX.Element {
     </>
   );
 
-  function fetchAllStates() {
-    dispatch(reduxFetchTravellers(trip.id));
-    dispatch(reduxFetchItinerary(trip.id));
-    dispatch(reduxFetchMessages(trip.id));
-    dispatch(reduxFetchPolls(trip.id));
-    dispatch(reduxFetchPacking(trip.id));
+  async function fetchAllTripData() {
+    const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
+    dispatch(reduxFetchTravellers({trip_id: trip.id, token: token}));
+    dispatch(reduxFetchItinerary({trip_id: trip.id, token: token}));
+    dispatch(reduxFetchMessages({trip_id: trip.id, token: token}));
+    dispatch(reduxFetchPolls({trip_id: trip.id, token: token}));
+    dispatch(reduxFetchPacking({trip_id: trip.id, token: token}));
   }
 }
 

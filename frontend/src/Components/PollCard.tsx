@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { RootState } from '../redux/Store';
 import { AvatarRipple } from './AvatarWrapper';
+import { useAuth0 } from '@auth0/auth0-react';
 import {
   PollResponseModel,
   PollVoteModel,
@@ -46,6 +47,7 @@ function PollCard(props: PollCardProps) {
   );
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { getAccessTokenSilently } = useAuth0();
 
   // Did this user make this poll?
   let userMade: boolean = props.data.created_by === user.email ? true : false;
@@ -209,9 +211,10 @@ function PollCard(props: PollCardProps) {
 
   async function handleDeleteButtonClick(poll_id: number) {
     try {
+      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
       const res: Response = await fetch(`/trip/${trip.id}/poll/${poll_id}`, {
         method: 'DELETE',
-        headers: fetchHelpers.getTokenHeader(),
+        headers: fetchHelpers.getTokenHeader(token),
       });
 
       if (res.ok) {

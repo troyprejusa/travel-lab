@@ -6,6 +6,7 @@ import fetchHelpers from '../utilities/fetchHelpers';
 import { PackingModel } from '../utilities/Interfaces';
 import { RootState } from '../redux/Store';
 import { reduxFetchPacking } from '../redux/PackingSlice';
+import { useAuth0 } from '@auth0/auth0-react';
 import {
   Flex,
   Table,
@@ -28,6 +29,7 @@ function Packing(): JSX.Element {
   const packingList: Array<PackingModel> = useSelector(
     (state: RootState) => state.packing
   );
+  const { getAccessTokenSilently } = useAuth0();
 
   return (
     <>
@@ -105,16 +107,20 @@ function Packing(): JSX.Element {
   );
 
   function getItems() {
-    dispatch(reduxFetchPacking(trip.id));
+    (async function() {
+      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
+      dispatch(reduxFetchPacking({trip_id: trip.id, token: token}));
+    })()
   }
 
   async function handleClaimButtonClick(item_id: number) {
     try {
+      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
       const res: Response = await fetch(
         `/trip/${trip.id}/packing/claim/${item_id}`,
         {
           method: 'PATCH',
-          headers: fetchHelpers.getTokenHeader(),
+          headers: fetchHelpers.getTokenHeader(token),
         }
       );
 
@@ -133,11 +139,12 @@ function Packing(): JSX.Element {
 
   async function handleUnclaimButtonClick(item_id: number) {
     try {
+      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
       const res: Response = await fetch(
         `/trip/${trip.id}/packing/unclaim/${item_id}`,
         {
           method: 'PATCH',
-          headers: fetchHelpers.getTokenHeader(),
+          headers: fetchHelpers.getTokenHeader(token),
         }
       );
 
@@ -156,9 +163,10 @@ function Packing(): JSX.Element {
 
   async function handleDeleteButtonClick(item_id: number) {
     try {
+      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
       const res: Response = await fetch(`/trip/${trip.id}/packing/${item_id}`, {
         method: 'DELETE',
-        headers: fetchHelpers.getTokenHeader(),
+        headers: fetchHelpers.getTokenHeader(token),
       });
 
       if (res.ok) {

@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
 from routers.UserRouter import user_router
 from routers.TripRouter import trip_router
-from routers.AuthRouter import auth_router
 from routers.DevRouter import dev_router
 from models.WebSocketHandler import socketio_ASGI
 from models.DatabaseHandler import db_handler
@@ -11,6 +10,8 @@ from models.DatabaseSetup import DatabaseSetup
 from utilities import Constants
 import jwt
 import uvicorn
+from utilities import auth_helpers
+
 
 if Constants.MODE == 'development':
     db_setup = DatabaseSetup(db_handler)
@@ -22,7 +23,6 @@ if Constants.MODE == 'development':
 whitelist = set([
     'docs',
     'openapi.json',
-    'auth',
     'dev',
     'sio'
 ])
@@ -37,31 +37,31 @@ async def authenticate_user(request: Request, call_next):
     root_path = request.url.path.split('/')[1]
 
     if root_path in whitelist:
+        # Bypass JWT verification
         response = await call_next(request)
         return response
+    
     else:
-        # Authenticate by verifying JWT before proceeding with path operations
         try:
-            encoded_jwt = request.headers['authorization'].split(' ')[1]
+            # Authenticate by verifying JWT before proceeding with path operations
+            # Expecting "BEARER <token>"
+            auth_header = request.headers['authorization'].split()
 
+            if (auth_header[0].lower() != 'bearer'):
+                raise KeyError('No bearer header')
+            
             # Decode the JWT and add it to the request state - no exception on decode means we're good to proceed
-            decoded_jwt = jwt.decode(encoded_jwt, Constants.SECRET, algorithms=Constants.ALGORITHM)
-            request.state.user = decoded_jwt
+            decoded_jwt = await auth_helpers.jwt_decode_w_retry(auth_header[1])
+
+            request.state.user = auth_helpers.establish_user_attendance(decoded_jwt[f'{Constants.AUTH0_CLAIM_NAMESPACE}/email'])
 
             response = await call_next(request)
             
             return response
         
-        except KeyError:
-            # No authorization token
-            print('INTERNAL: No authorization header')
-            return JSONResponse(
-                status_code=500,
-                content= {"message": "Access forbidden"}
-            )
-        except jwt.InvalidSignatureError as se:
+        except jwt.exceptions.InvalidTokenError as token_error:
             # Invalid JWT
-            print('INTERNAL: Invalid JWT Signature')
+            print('authenticate_user: Invalid JWT\n', token_error)
             return JSONResponse(
                 status_code=500,
                 content= {"message": "Access forbidden"}
@@ -70,10 +70,6 @@ async def authenticate_user(request: Request, call_next):
 
 # /dev
 app.include_router(dev_router)
-
-
-# /auth
-app.include_router(auth_router)
 
 
 # /user
@@ -91,17 +87,17 @@ app.mount('/sio', socketio_ASGI)
 
 # Default redirection to handle client-side fwd/back/refresh
 @app.get('{full_path:path}')
-async def redirect_nav(request: Request, full_path:str):
-    print(f'Requested unkown route:\n{full_path}\nRedirecting to root...')
+async def redirect_nav(request: Request, full_path: str):
+    print(f'redirect_nav: Requested unkown route:\n{full_path}\nRedirecting to root...')
     return RedirectResponse('/')
 
 
 # Global exception handler
 @app.exception_handler(Exception)
-async def general_exception_handler(request: Request, e: Exception) -> str:
+async def general_exception_handler(request: Request, error: Exception) -> str:
     # Same behavior as default exception handling, but returns
     # JSON instead of string
-    print(str(e))
+    print('general_exception_handler:\n', error)
     return JSONResponse(
         status_code=500,
         content = {

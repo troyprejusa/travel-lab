@@ -9,8 +9,10 @@ API_HOST = os.getenv('API_HOST')
 API_PORT = int(os.getenv('API_PORT'))
 
 # JWT
-SECRET = os.getenv('SECRET')
-ALGORITHM = os.getenv('ALGORITHM')
+AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
+AUTH0_AUDIENCE = os.getenv('AUTH0_AUDIENCE')
+AUTH0_ALGORITHM = [os.getenv('AUTH0_ALGORITHM')]
+AUTH0_CLAIM_NAMESPACE = os.getenv('AUTH0_CLAIM_NAMESPACE')
 
 # Database
 DB_HOST =  os.getenv('DB_HOST')

@@ -1,6 +1,8 @@
 import React from 'react';
 import fetchHelpers from '../utilities/fetchHelpers';
+import { useAuth0 } from '@auth0/auth0-react';
 import { ItineraryModel, TripModel } from '../utilities/Interfaces';
+import { EditButton, TrashButton } from './Buttons';
 import {
   Card,
   CardHeader,
@@ -10,7 +12,6 @@ import {
   CardFooter,
   ButtonGroup,
 } from '@chakra-ui/react';
-import { EditButton, TrashButton } from './Buttons';
 
 interface ItineraryCardProps {
   itineraryData: ItineraryModel;
@@ -19,6 +20,9 @@ interface ItineraryCardProps {
 }
 
 function ItineraryCard(props: ItineraryCardProps) {
+
+  const { getAccessTokenSilently } = useAuth0();
+
   return (
     <Card variant={'outline'}>
       <CardHeader>
@@ -48,11 +52,12 @@ function ItineraryCard(props: ItineraryCardProps) {
 
   async function handleItineraryDelete(itinerary_id: number) {
     try {
+      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
       const res: Response = await fetch(
         `/trip/${props.tripData.id}/itinerary/${itinerary_id}`,
         {
           method: 'DELETE',
-          headers: fetchHelpers.getTokenHeader(),
+          headers: fetchHelpers.getTokenHeader(token),
         }
       );
 

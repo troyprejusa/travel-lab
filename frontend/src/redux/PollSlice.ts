@@ -78,11 +78,11 @@ const pollSlice: Slice = createSlice({
 
 export const reduxFetchPolls = createAsyncThunk(
   'polls/reduxFetchPolls',
-  async (trip_id: string, thunkAPI) => {
+  async ({trip_id, token}, thunkAPI) => {
     try {
       const res: Response = await fetch(`/trip/${trip_id}/poll`, {
         method: 'GET',
-        headers: fetchHelpers.getTokenHeader(),
+        headers: fetchHelpers.getTokenHeader(token),
       });
 
       if (res.ok) {

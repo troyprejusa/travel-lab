@@ -1,27 +1,37 @@
 import React, { SyntheticEvent, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { TripModel } from '../utilities/Interfaces';
 import TripCard from '../Components/TripCard';
 import fetchHelpers from '../utilities/fetchHelpers';
 import TripActionCard from '../Components/TripActionCard';
 import { Wrap, Flex, Button, Heading } from '@chakra-ui/react';
 import { signOutBeforeTripSelect } from '../utilities/stateResets';
+import { useAuth0 } from '@auth0/auth0-react';
 
 function Trips(): JSX.Element {
-  const navigate = useNavigate();
+
+  // This state will just be local to this component, because it doesn't
+  // make sense to store all trips with all metadata, since we will only
+  // be viewing one trip at a time
   const initialTripState: Array<TripModel> = [];
   const [trips, setTrips] = useState(initialTripState);
+  
   const dispatch = useDispatch();
-  // const user: UserModel = useSelector((state: RootState) => state.user);
-  // const trip: TripModel = useSelector((state: RootState) => state.trip);
+  const { getAccessTokenSilently, logout } = useAuth0();
 
-  useEffect(getTrips, []);
+  useEffect(getTrips, [getAccessTokenSilently]);
 
   return (
     <>
       <Flex justifyContent={'flex-end'}>
-        <Button margin='20px' size='md' colorScheme='red' onClick={handleSignOut}>Sign Out</Button>
+        <Button
+          margin="20px"
+          size="md"
+          colorScheme="red"
+          onClick={handleSignOut}
+        >
+          Sign Out
+        </Button>
       </Flex>
       <Flex justifyContent={'center'}>
         <Heading>Choose your adventure!</Heading>
@@ -38,9 +48,10 @@ function Trips(): JSX.Element {
   function getTrips() {
     (async function () {
       try {
+        const token = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
         const res: Response = await fetch(`/user/trips`, {
           method: 'GET',
-          headers: fetchHelpers.getTokenHeader(),
+          headers: fetchHelpers.getTokenHeader(token),
         });
 
         if (res.ok) {
@@ -51,16 +62,19 @@ function Trips(): JSX.Element {
           throw new Error(JSON.stringify(message));
         }
       } catch (e: any) {
-        console.error(e.message);
+        console.error(e);
       }
     })();
   }
 
   function handleSignOut(event: SyntheticEvent) {
     signOutBeforeTripSelect(dispatch);
-    navigate('/');
+    logout({
+      logoutParams: {
+        returnTo: window.location.origin,
+      },
+    });
   }
-
 }
 
 export default Trips;

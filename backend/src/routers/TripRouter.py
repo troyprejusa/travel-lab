@@ -33,9 +33,9 @@ async def create_trip(
                 (destination, description, start_date, end_date, created_by)
                 VALUES (%s, %s, %s, %s, %s)
                 RETURNING id
-            ) INSERT INTO traveller_trip VALUES (%s, (SELECT id from temp_table), TRUE, TRUE) RETURNING trip_id;
+            ) INSERT INTO traveller_trip VALUES ((SELECT id FROM traveller WHERE email=%s), (SELECT id from temp_table), TRUE, TRUE) RETURNING trip_id;
                                 
-        """, (destination, description, start_date, end_date, request.state.user['email'], request.state.user['id']))
+        """, (destination, description, start_date, end_date, request.state.user['email'], request.state.user['email']))
         trip_id = data[0]['trip_id']
         
         trip_data = db_handler.query("""
@@ -44,8 +44,8 @@ async def create_trip(
         
         return trip_data
     
-    except Exception as e:
-        print(str(e))
+    except Exception as error:
+        print(error)
         return JSONResponse(
             status_code=500,
             content = {
@@ -70,8 +70,8 @@ async def delete_trip(request: Request, trip_id: str) -> dict[str, str]:
             }
         )
     
-    except Exception as e:
-        print(str(e))
+    except Exception as error:
+        print(error)
         return JSONResponse(
             status_code=500,
             content = {
@@ -92,8 +92,8 @@ async def get_itinerary_info(request: Request, trip_id: str) -> list[Itinerary] 
 
         return itinerary
 
-    except Exception as e:
-        print(str(e))
+    except Exception as error:
+        print(error)
         return JSONResponse(
             status_code=500,
             content = {
@@ -128,8 +128,8 @@ async def add_itinerary_stop(
             }
         )
     
-    except Exception as e:
-        print(str(e))
+    except Exception as error:
+        print(error)
         return JSONResponse(
             status_code=500,
             content = {
@@ -157,8 +157,8 @@ async def remove_itinerary_stop(request: Request, trip_id: str, item_id: int) ->
             }
         )
     
-    except Exception as e:
-        print(str(e))
+    except Exception as error:
+        print(error)
         return JSONResponse(
             status_code=500,
             content = {
@@ -177,8 +177,8 @@ async def get_messages(request: Request, trip_id: str) -> list[Message] | dict[s
 
         return data
     
-    except Exception as e:
-        print(str(e))
+    except Exception as error:
+        print(error)
         return JSONResponse(
             status_code=500,
             content= {
@@ -228,8 +228,8 @@ async def get_polls(request: Request, trip_id: str) -> list[PollResponseBody] | 
 
         return output
     
-    except Exception as e:
-        print(str(e))
+    except Exception as error:
+        print(error)
         return JSONResponse(
             status_code=500,
             content= {
@@ -266,7 +266,7 @@ async def add_poll(request: Request, trip_id: str, poll_body: NewPollBody) -> di
         )
 
     except Exception as error:
-        print(str(error))
+        print(error)
         return JSONResponse(
             status_code=500,
             content= {
@@ -294,7 +294,7 @@ async def delete_poll(request: Request, trip_id: str, poll_id: int) -> dict[str,
         )
 
     except Exception as error:
-        print(str(error))
+        print(error)
         return JSONResponse(
             status_code=500,
             content= {
@@ -314,7 +314,7 @@ async def get_packing_items(request: Request, trip_id: str) -> list[Packing] | d
 
         return data
 
-    except Exception as e:
+    except Exception as error:
         return JSONResponse(
             status_code=500,
             content= {
@@ -347,8 +347,8 @@ async def add_packing_item(
             }
         )
     
-    except Exception as e:
-        print(str(e))
+    except Exception as error:
+        print(error)
         return JSONResponse(
             status_code=500,
             content= {
@@ -375,8 +375,8 @@ async def delete_packing_item(request: Request, trip_id: str, item_id: int) -> d
             }
         )
 
-    except Exception as e:
-        print(str(e))
+    except Exception as error:
+        print(error)
         return JSONResponse(
             status_code=500,
             content= {
@@ -402,8 +402,8 @@ async def claim_packing_item(request: Request, trip_id: str, item_id: int) -> di
             }
         )
 
-    except Exception as e:
-        print(str(e))
+    except Exception as error:
+        print(error)
         return JSONResponse(
             status_code=500,
             content= {
@@ -428,8 +428,8 @@ async def unclaim_packing_item(request: Request, trip_id: str, item_id: int) -> 
             }
         )
 
-    except Exception as e:
-        print(str(e))
+    except Exception as error:
+        print(error)
         return JSONResponse(
             status_code=500,
             content= {
@@ -450,8 +450,8 @@ async def get_travellers(request: Request, trip_id: str) ->  list[Traveller] | d
         
         return travellers
 
-    except Exception as e:
-        print(str(e))
+    except Exception as error:
+        print(error)
         return JSONResponse(
             status_code=500,
             content = {
@@ -465,8 +465,8 @@ async def get_travellers(request: Request, trip_id: str) ->  list[Traveller] | d
 async def request_join_trip(request: Request, trip_id: str) -> dict[str, str]:
     try:
         db_handler.query("""
-            INSERT INTO traveller_trip VALUES (%s, %s, %s);
-        """, (request.state.user['id'], trip_id, False))
+            INSERT INTO traveller_trip VALUES ((SELECT id from traveller where email=%s), %s, %s);
+        """, (request.state.user['email'], trip_id, False))
         
         return JSONResponse(
             status_code=200,
@@ -475,8 +475,8 @@ async def request_join_trip(request: Request, trip_id: str) -> dict[str, str]:
             }
         )
     
-    except Exception as e:
-        print(str(e))
+    except Exception as error:
+        print(error)
         return JSONResponse(
             status_code=500,
             content = {
@@ -501,8 +501,8 @@ async def accept_join_trip(request: Request, trip_id: str, requestor_id: str) ->
             }
         )
     
-    except Exception as e:
-        print(str(e))
+    except Exception as error:
+        print(error)
         return JSONResponse(
             status_code=500,
             content = {
@@ -528,8 +528,8 @@ async def deny_join_trip(request: Request, trip_id: str, requestor_id: str) -> d
             }
         )
     
-    except Exception as e:
-        print(str(e))
+    except Exception as error:
+        print(error)
         return JSONResponse(
             status_code=500,
             content = {
@@ -545,8 +545,8 @@ async def leave_trip(request: Request, trip_id: str) -> dict[str, str]:
         verify_attendance(trip_id, request.state.user['trips'])
 
         db_handler.query("""
-            DELETE FROM traveller_trip WHERE traveller_id=%s AND trip_id=%s;
-        """, (request.state.user['id'], trip_id))
+            DELETE FROM traveller_trip WHERE traveller_id = (SELECT id from traveller WHERE email=%s) AND trip_id=%s;
+        """, (request.state.user['email'], trip_id))
         
         return JSONResponse(
             status_code=200,
@@ -555,8 +555,8 @@ async def leave_trip(request: Request, trip_id: str) -> dict[str, str]:
             }
         )
     
-    except Exception as e:
-        print(str(e))
+    except Exception as error:
+        print(error)
         return JSONResponse(
             status_code=500,
             content = {
