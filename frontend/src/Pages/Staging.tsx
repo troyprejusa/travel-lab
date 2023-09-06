@@ -22,7 +22,9 @@ function Staging(): JSX.Element {
   const { user, getAccessTokenSilently, logout } = useAuth0();
 
   // Fetch user data and set state
-  useEffect(() => {setUser(user.email)}, []);
+  useEffect(() => {
+    setUser(user);
+  }, [user]);
 
   return (
     <>
@@ -38,18 +40,20 @@ function Staging(): JSX.Element {
       </Flex>
       <Flex justifyContent={'center'}>
         <Text fontSize={'xl'} fontWeight={'bold'}>
-          Staging
+          Loading...
         </Text>
       </Flex>
     </>
   );
 
-  async function setUser(email: string) {
-    if (email) {
+  async function setUser(user: object | undefined) {
+    if (user && user.email) {
       try {
-        const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
-        dispatch(reduxFetchUser({email: email, token: token}));
-        navigate(`user/${email}/trips`);
+        const token: string = await fetchHelpers.getAuth0Token(
+          getAccessTokenSilently
+        );
+        dispatch(reduxFetchUser({ email: user.email, token: token }));
+        navigate(`user/${user.email}/trips`);
       } catch (error: any) {
         console.error('Unable to retrieve user data:\n', error);
       }
