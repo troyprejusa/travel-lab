@@ -3,6 +3,7 @@ import fetchHelpers from '../utilities/fetchHelpers';
 import { TripModel, NewPollModel } from '../utilities/Interfaces';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
+import { useAuth0 } from '@auth0/auth0-react';
 import {
   Button,
   Modal,
@@ -28,11 +29,13 @@ interface NewPollModalProps {
 }
 
 function NewPollModal(props: NewPollModalProps) {
+  const { getAccessTokenSilently } = useAuth0();
   const trip: TripModel = useSelector((state: RootState) => state.trip);
 
   const [pollOptionCount, setPollOptionCount] = useState(0);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+
   const pollForm = useRef<HTMLFormElement>(null);
 
   const selectOptions: Array<ReactElement> = [];
@@ -143,10 +146,11 @@ function NewPollModal(props: NewPollModalProps) {
     }
 
     try {
+      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
       const res: Response = await fetch(`/trip/${trip.id}/poll`, {
         method: 'POST',
         body: JSON.stringify(pollData),
-        headers: fetchHelpers.getTokenJSONHeader(),
+        headers: fetchHelpers.getTokenJSONHeader(token),
       });
 
       if (res.ok) {

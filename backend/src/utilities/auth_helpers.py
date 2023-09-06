@@ -53,25 +53,26 @@ def decode_jwt(token: str, rsa_key) -> dict:
     )
    
 
-def create_jwt(user: dict) -> str:
+def establish_user_attendance(email: str) -> dict:
     try:
-        user_data = user.copy()
+        user_data = {}
+        user_data['email'] = email
         user_data['trips'] = []
 
         user_trips = db_handler.query("""
-            SELECT trip_id, admin FROM traveller_trip WHERE traveller_id=%s AND confirmed=TRUE;
-        """, (user['id'],))
+            SELECT trip_id, admin FROM traveller_trip WHERE 
+            traveller_id=(SELECT id FROM traveller WHERE email=%s) AND 
+            confirmed=TRUE;
+        """, (email,))
 
         for trip in user_trips:
             user_data['trips'].append(trip)
         # print(user_data)
 
-        encoded_jwt = jwt.encode(user_data, Constants.SECRET, algorithm = Constants.ALGORITHM)
-
-        return encoded_jwt
+        return user_data
     
     except Exception as error:
-        print('Unable to create JWT\n', str(error))
+        print('Unable to assemble user data\n', str(error))
         raise error
 
 

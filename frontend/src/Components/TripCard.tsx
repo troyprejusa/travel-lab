@@ -89,12 +89,12 @@ function TripCard(props: TripCardProps) {
 
   async function handleViewClick(event: SyntheticEvent) {
     try {
-      const authToken = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
+      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
 
-      if (authToken) {
+      if (token) {
         // Establish a websocket connection for these rooms
-        msgSocket.establishSocket(authToken, props.tripData.id, dispatch);
-        pollSocket.establishSocket(authToken, props.tripData.id, dispatch);
+        msgSocket.establishSocket(token, props.tripData.id, dispatch);
+        pollSocket.establishSocket(token, props.tripData.id, dispatch);
 
         // Set this trip as the current trip in state
         dispatch(reduxSetTrip(props.tripData));

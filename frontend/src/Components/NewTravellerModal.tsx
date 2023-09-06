@@ -120,7 +120,7 @@ function NewTravellerModal() {
   //         const res: Response = await fetch('/trip/' , {
   //             method: 'POST',
   //             body: formData,
-  //             headers: fetchHelpers.getTokenHeader()
+  //             headers: fetchHelpers.getTokenHeader(token)
   //         })
 
   //         if (res.ok) {

@@ -3,6 +3,7 @@ import fetchHelpers from '../utilities/fetchHelpers';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
 import { TripModel, ItineraryModel } from '../utilities/Interfaces';
+import { useAuth0 } from '@auth0/auth0-react';
 import {
   Button,
   ButtonGroup,
@@ -27,6 +28,7 @@ function NewItineraryModal(props: NewItineraryModalProps) {
   const trip: TripModel = useSelector((state: RootState) => state.trip);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const itineraryForm = useRef<HTMLFormElement>(null);
+  const { getAccessTokenSilently } = useAuth0();
 
   return (
     <>
@@ -117,10 +119,11 @@ function NewItineraryModal(props: NewItineraryModalProps) {
     }
 
     try {
+      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
       const res: Response = await fetch(`/trip/${trip.id}/itinerary`, {
         method: 'POST',
         body: formData,
-        headers: fetchHelpers.getTokenHeader(),
+        headers: fetchHelpers.getTokenHeader(token),
       });
 
       if (res.ok) {

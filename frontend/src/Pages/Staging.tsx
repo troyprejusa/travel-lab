@@ -22,9 +22,7 @@ function Staging(): JSX.Element {
   const { user, getAccessTokenSilently, logout } = useAuth0();
 
   // Fetch user data and set state
-  useEffect(() => {
-    setUser(user.email);
-  }, []);
+  useEffect(() => {setUser(user.email)}, []);
 
   return (
     <>

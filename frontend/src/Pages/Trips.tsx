@@ -48,10 +48,10 @@ function Trips(): JSX.Element {
   function getTrips() {
     (async function () {
       try {
-        const tokenHeader = await fetchHelpers.getTokenHeader(getAccessTokenSilently);
+        const token = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
         const res: Response = await fetch(`/user/trips`, {
           method: 'GET',
-          headers: tokenHeader,
+          headers: fetchHelpers.getTokenHeader(token),
         });
 
         if (res.ok) {

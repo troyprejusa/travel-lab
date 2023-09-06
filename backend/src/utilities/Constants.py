@@ -6,6 +6,7 @@ load_dotenv()
 AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
 AUTH0_AUDIENCE = os.getenv('AUTH0_AUDIENCE')
 AUTH0_ALGORITHM = [os.getenv('AUTH0_ALGORITHM')]
+AUTH0_CLAIM_NAMESPACE = os.getenv('AUTH0_CLAIM_NAMESPACE')
 
 # Database
 DB_HOST =  os.getenv('DB_HOST')

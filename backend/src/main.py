@@ -37,21 +37,23 @@ async def authenticate_user(request: Request, call_next):
     root_path = request.url.path.split('/')[1]
 
     if root_path in whitelist:
+        # Bypass JWT verification
         response = await call_next(request)
         return response
+    
     else:
-        # Authenticate by verifying JWT before proceeding with path operations
-        # Expecting "BEARER <token>"
         try:
+            # Authenticate by verifying JWT before proceeding with path operations
+            # Expecting "BEARER <token>"
             auth_header = request.headers['authorization'].split()
 
             if (auth_header[0].lower() != 'bearer'):
                 raise KeyError('No bearer header')
             
             # Decode the JWT and add it to the request state - no exception on decode means we're good to proceed
-            await auth_helpers.jwt_decode_w_retry(auth_header[1])
+            decoded_jwt = await auth_helpers.jwt_decode_w_retry(auth_header[1])
 
-            # Get users 
+            request.state.user = auth_helpers.establish_user_attendance(decoded_jwt[f'{Constants.AUTH0_CLAIM_NAMESPACE}/email'])
 
             response = await call_next(request)
             
@@ -85,7 +87,7 @@ app.mount('/sio', socketio_ASGI)
 
 # Default redirection to handle client-side fwd/back/refresh
 @app.get('{full_path:path}')
-async def redirect_nav(request: Request, full_path:str):
+async def redirect_nav(request: Request, full_path: str):
     print(f'Requested unkown route:\n{full_path}\nRedirecting to root...')
     return RedirectResponse('/')
 

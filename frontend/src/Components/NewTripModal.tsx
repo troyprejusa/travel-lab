@@ -3,6 +3,8 @@ import fetchHelpers from '../utilities/fetchHelpers';
 import { useDispatch } from 'react-redux';
 import { reduxSetTrip } from '../redux/TripSlice';
 import { useNavigate } from 'react-router-dom';
+import { TripModel } from '../utilities/Interfaces';
+import { useAuth0 } from '@auth0/auth0-react';
 import {
   Button,
   Modal,
@@ -20,7 +22,6 @@ import {
   Heading,
   Text,
 } from '@chakra-ui/react';
-import { TripModel } from '../utilities/Interfaces';
 
 interface NewTripModalProps {}
 
@@ -29,6 +30,7 @@ function NewTripModal() {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const tripForm = useRef<HTMLFormElement>(null);
+  const { getAccessTokenSilently } = useAuth0();
 
   return (
     <>
@@ -119,10 +121,11 @@ function NewTripModal() {
     }
 
     try {
+      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
       const res: Response = await fetch('/trip/', {
         method: 'POST',
         body: formData,
-        headers: fetchHelpers.getTokenHeader(),
+        headers: fetchHelpers.getTokenHeader(token),
       });
 
       if (res.ok) {
