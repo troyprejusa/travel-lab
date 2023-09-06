@@ -3,7 +3,7 @@ import { IconType } from 'react-icons';
 import { ReactText } from 'react';
 import { Link as RRDLink, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { signOutAfterTripSelect } from '../utilities/stateResets';
+import { resetAfterLeavingTrip, signOutAfterTripSelect } from '../utilities/stateResets';
 import { useDispatch } from 'react-redux';
 import { RootState } from '../redux/Store';
 import { UserModel } from '../utilities/Interfaces';
@@ -98,6 +98,7 @@ interface SidebarProps extends BoxProps {
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   const navigate = useNavigate();
   const user: UserModel = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
 
   return (
     <Box
@@ -131,6 +132,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   );
 
   function handleReturnToTrips(event: SyntheticEvent) {
+    resetAfterLeavingTrip(dispatch);
     navigate(`/user/${user.email}/trips`);
   }
 };

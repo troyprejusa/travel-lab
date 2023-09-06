@@ -27,7 +27,7 @@ class DatabaseHandler:
             self.connection = psycopg2.connect(host = host, port = port, user = user, password = password, database = database)
             print('DatabaseHandler.py: Connected to database')
         except Exception as error:
-            print(str(e))
+            print(error)
             raise Exception(f"DatabaseHandler.py: Unable to connect to database{settings['database']}")
 
     '''

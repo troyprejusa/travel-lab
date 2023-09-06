@@ -14,8 +14,9 @@ class MsgSocket(socketio.AsyncNamespace):
             trip_id = parse_trip_id(environ['QUERY_STRING'])
             self.enter_room(sid, trip_id)
 
-        except jwt.InvalidTokenError:
-            raise ConnectionRefusedError(f'{sid} authentication failed')
+        except jwt.exceptions.InvalidTokenError as token_error:
+            print('MsgSocket.on_connect: Invalid token\n', token_error)
+            raise ConnectionRefusedError('Unauthorized connection attempt to MsgSocket')
 
     def on_disconnect(self, sid):
         print(f'{sid} disconnected from message socket')
@@ -34,7 +35,7 @@ class MsgSocket(socketio.AsyncNamespace):
             await self.emit('backend_msg', data, room = data['trip_id'])
 
         except Exception as error:
-            print(str(e))
+            print(error)
             raise Exception('Unable to process message from frontend')
 
 
@@ -47,8 +48,9 @@ class PollSocket(socketio.AsyncNamespace):
             trip_id = parse_trip_id(environ['QUERY_STRING'])
             self.enter_room(sid, trip_id)
 
-        except jwt.InvalidTokenError:
-            raise ConnectionRefusedError(f'{sid} authentication failed')
+        except jwt.exceptions.InvalidTokenError as token_error:
+            print('PollSocket.on_connect: Invalid token\n', token_error)
+            raise ConnectionRefusedError('Unauthorized connection attempt to PollSocket')
 
     def on_disconnect(self, sid):
         print(f'{sid} disconnected from poll socket')
@@ -63,7 +65,7 @@ class PollSocket(socketio.AsyncNamespace):
             await self.emit('backend_vote', data, room = data['trip_id'])
 
         except Exception as error:
-            print(str(e))
+            print(error)
             raise Exception('Unable to vote on this poll')
 
 

@@ -16,7 +16,8 @@ export default defineConfig({
       '/dev': backend_server,
       '/auth': backend_server,
       '/user': backend_server,
-      '/trip': backend_server
+      '/trip': backend_server,
+      '/sio': backend_server
     }
   }
 })
