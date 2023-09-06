@@ -61,7 +61,7 @@ async def authenticate_user(request: Request, call_next):
         
         except jwt.exceptions.InvalidTokenError as token_error:
             # Invalid JWT
-            print('Invalid JWT:\n', token_error)
+            print('authenticate_user: Invalid JWT\n', token_error)
             return JSONResponse(
                 status_code=500,
                 content= {"message": "Access forbidden"}
@@ -88,16 +88,16 @@ app.mount('/sio', socketio_ASGI)
 # Default redirection to handle client-side fwd/back/refresh
 @app.get('{full_path:path}')
 async def redirect_nav(request: Request, full_path: str):
-    print(f'Requested unkown route:\n{full_path}\nRedirecting to root...')
+    print(f'redirect_nav: Requested unkown route:\n{full_path}\nRedirecting to root...')
     return RedirectResponse('/')
 
 
 # Global exception handler
 @app.exception_handler(Exception)
-async def general_exception_handler(request: Request, e: Exception) -> str:
+async def general_exception_handler(request: Request, error: Exception) -> str:
     # Same behavior as default exception handling, but returns
     # JSON instead of string
-    print(str(e))
+    print('general_exception_handler:\n', error)
     return JSONResponse(
         status_code=500,
         content = {

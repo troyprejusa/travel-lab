@@ -72,7 +72,7 @@ def establish_user_attendance(email: str) -> dict:
         return user_data
     
     except Exception as error:
-        print('Unable to assemble user data\n', str(error))
+        print('establish_user_attendance: Unable to gather trip data for user user\n', error)
         raise error
 
 
@@ -81,7 +81,7 @@ def verify_attendance(trip_id, trips) -> None:
         if trip['trip_id'] == trip_id:
             return
 
-    raise Exception('User not attending this trip')
+    raise Exception('verify_attendance: User not attending this trip')
 
 
 def verify_admin(trip_id, trips) -> None:
@@ -89,4 +89,4 @@ def verify_admin(trip_id, trips) -> None:
         if trip['trip_id'] == trip_id and trip['admin'] == True:
             return
         
-    raise Exception('User is not an admin on this trip')
+    raise Exception('verify_admin: User is not an admin on this trip')

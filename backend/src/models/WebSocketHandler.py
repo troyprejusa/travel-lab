@@ -33,7 +33,7 @@ class MsgSocket(socketio.AsyncNamespace):
             # If message was saved successfully, send to everyone else
             await self.emit('backend_msg', data, room = data['trip_id'])
 
-        except Exception as e:
+        except Exception as error:
             print(str(e))
             raise Exception('Unable to process message from frontend')
 
@@ -62,7 +62,7 @@ class PollSocket(socketio.AsyncNamespace):
             # If vote was successful, send to everyone else
             await self.emit('backend_vote', data, room = data['trip_id'])
 
-        except Exception as e:
+        except Exception as error:
             print(str(e))
             raise Exception('Unable to vote on this poll')
 

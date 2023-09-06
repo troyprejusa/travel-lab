@@ -22,8 +22,8 @@ async def upsert_user(email: str) -> Traveller | str:
 
         return user
     
-    except Exception as e:
-        print(str(e))
+    except Exception as error:
+        print(error)
         return JSONResponse(
             status_code=500,
             content = {
@@ -45,8 +45,8 @@ async def delete_user(request: Request) -> dict[str, str]:
             }
         )
     
-    except Exception as e:
-        print(str(e))
+    except Exception as error:
+        print('ERROR in delete_user:\n', error)
         return JSONResponse(
             status_code=500,
             content={
@@ -61,13 +61,13 @@ async def get_trips(request: Request) -> list[Trip] | dict[str, str]:
         data = db_handler.query("""
             SELECT * FROM trip
                 WHERE id IN 
-                (SELECT trip_id FROM traveller_trip WHERE traveller_id = %s AND confirmed = True);
-        """, (request.state.user['id'],))
+                (SELECT trip_id FROM traveller_trip WHERE traveller_id = (SELECT id from traveller where email=%s) AND confirmed = True);
+        """, (request.state.user['email'],))
         
         return data
     
-    except Exception as e:
-        print(str(e))
+    except Exception as error:
+        print(error)
         return JSONResponse(
             status_code=500,
             content = {
