@@ -62,7 +62,7 @@ export const reduxFetchUser = createAsyncThunk(
 
       if (res.ok) {
         const user: UserModel = await res.json();
-        console.log(user);
+        // console.log(user);
         return user;
       } else {
         // Send to rejected case

@@ -52,11 +52,11 @@ const messageSlice: Slice = createSlice({
 
 export const reduxFetchMessages = createAsyncThunk(
   'messages/reduxFetchMessages',
-  async (trip_id: string, thunkAPI) => {
+  async ({trip_id, token}, thunkAPI) => {
     try {
       const res: Response = await fetch(`/trip/${trip_id}/message`, {
         method: 'GET',
-        headers: fetchHelpers.getTokenHeader()
+        headers: fetchHelpers.getTokenHeader(token)
       });
 
       if (res.ok) {
