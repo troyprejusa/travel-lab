@@ -63,8 +63,12 @@ root.render(
         <Auth0Provider
           domain={Constants.AUTH0_DOMAIN}
           clientId={Constants.AUTH0_CLIENT}
+          
+          useRefreshTokens={true}
           authorizationParams={{
             redirect_uri: window.location.origin,
+            audience: Constants.AUTH0_AUDIENCE,
+            // scope: 'openid profile email offline_access',
           }}
         >
           <RouterProvider router={router} />
