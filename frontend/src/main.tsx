@@ -63,7 +63,6 @@ root.render(
         <Auth0Provider
           domain={Constants.AUTH0_DOMAIN}
           clientId={Constants.AUTH0_CLIENT}
-          
           useRefreshTokens={true}
           authorizationParams={{
             redirect_uri: window.location.origin,
