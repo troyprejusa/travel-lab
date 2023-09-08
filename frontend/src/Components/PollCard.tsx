@@ -30,6 +30,7 @@ import {
   Badge,
   Heading,
   ButtonGroup,
+  Text,
 } from '@chakra-ui/react';
 
 interface PollCardProps {
@@ -151,11 +152,10 @@ function PollCard(props: PollCardProps) {
                 />
               </Box>
             </VStack>
-            <Heading as="h1">{props.data.title}</Heading>
-            <Heading as="h2">Vote metadata</Heading>
-            <Heading as="h2">Description</Heading>
-            <h3>{props.data.description}</h3>
-            <Heading as="h3">Avatar group</Heading>
+            <Heading size={'lg'}>{props.data.title}</Heading>
+            <Heading size={'sm'}>{props.data.created_by}</Heading>
+            <Heading size={'md'}>Description:</Heading>
+            <Text>{props.data.description}</Text>
           </ModalBody>
 
           <ModalFooter>
@@ -211,7 +211,9 @@ function PollCard(props: PollCardProps) {
 
   async function handleDeleteButtonClick(poll_id: number) {
     try {
-      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
+      const token: string = await fetchHelpers.getAuth0Token(
+        getAccessTokenSilently
+      );
       const res: Response = await fetch(`/trip/${trip.id}/poll/${poll_id}`, {
         method: 'DELETE',
         headers: fetchHelpers.getTokenHeader(token),

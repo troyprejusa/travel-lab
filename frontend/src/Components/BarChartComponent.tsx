@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
   Cell,
+  Legend,
 } from 'recharts';
 import Constants from '../utilities/Constants';
 
@@ -48,6 +49,17 @@ function BarChartComponent(props: BarChartComponentProps) {
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Bar>
+        {/* <Legend
+          payload={props.dataPoints.map((datum, index) => ({
+            type: 'circle',
+            id: datum.option,
+            value: datum.option,
+            color: COLORS[index % COLORS.length],
+          }))}
+          align="right"
+          verticalAlign="top"
+          layout="vertical"
+        /> */}
       </BarChart>
     </ResponsiveContainer>
   );
