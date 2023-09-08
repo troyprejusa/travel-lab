@@ -13,7 +13,7 @@ import { Auth0Provider } from '@auth0/auth0-react';
 import Constants from './utilities/Constants';
 
 // Pages
-import Splash from './Pages/Splash';
+import Landing from './Pages/Landing';
 import Staging from './Pages/Staging';
 import Trips from './Pages/Trips';
 import UserSettings from './Pages/UserSettings';
@@ -27,13 +27,12 @@ import Travellers from './Pages/Travellers';
 import TripSettings from './Pages/TripSettings';
 import NotFound from './Pages/NotFound';
 
-
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route path="/" element={<Splash />} />
+      <Route path="/" element={<Landing />} />
 
-      <Route path="/user/:username" element={<Staging />}/>
+      <Route path="/user/:username" element={<Staging />} />
       <Route path="/user/:username/trips" element={<Trips />} />
       <Route path="/user/:username/settings" element={<UserSettings />} />
 

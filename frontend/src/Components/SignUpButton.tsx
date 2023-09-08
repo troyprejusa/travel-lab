@@ -9,7 +9,7 @@ import {
   AlertDescription,
 } from '@chakra-ui/react';
 
-function LoginButton() {
+function SignUpButton() {
   const { isLoading, error, loginWithRedirect } = useAuth0();
 
   if (isLoading) {
@@ -28,7 +28,7 @@ function LoginButton() {
     return (
       <Alert status="error">
         <AlertIcon />
-        <AlertTitle>Unable to log in:</AlertTitle>
+        <AlertTitle>Unable to sign up:</AlertTitle>
         <AlertDescription>
           {`It's not your fault, there's is an issue on our end :(`}
         </AlertDescription>
@@ -37,10 +37,19 @@ function LoginButton() {
   }
 
   return (
-    <Button colorScheme="orange" onClick={loginWithRedirect} cursor={'pointer'}>
-      Log in
+    <Button
+      onClick={() =>
+        loginWithRedirect({
+          authorizationParams: {
+            screen_hint: 'signup',
+          },
+        })
+      }
+      cursor={'pointer'}
+    >
+      Sign up
     </Button>
   );
 }
 
-export default LoginButton;
+export default SignUpButton;

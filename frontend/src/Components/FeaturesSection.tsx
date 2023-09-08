@@ -51,7 +51,7 @@ const features = [
 function FeaturesSection() {
   return (
     <Container maxW={'5xl'}>
-      <Stack spacing={4} as={Container} maxW={'3xl'} textAlign={'center'}>
+      {/* <Stack spacing={4} as={Container} maxW={'3xl'} textAlign={'center'}>
         <Stack
           textAlign={'center'}
           align={'center'}
@@ -73,7 +73,7 @@ function FeaturesSection() {
           Collaborate with your travel partners to organize the details of your
           trip.
         </Text>
-      </Stack>
+      </Stack> */}
 
       <SimpleGrid columns={{ base: 2 }} spacing={10} margin={{ base: 10 }}>
         {features.map((feature) => (

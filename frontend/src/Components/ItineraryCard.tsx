@@ -11,6 +11,7 @@ import {
   Text,
   CardFooter,
   ButtonGroup,
+  Box
 } from '@chakra-ui/react';
 
 interface ItineraryCardProps {
@@ -23,17 +24,39 @@ function ItineraryCard(props: ItineraryCardProps) {
 
   const { getAccessTokenSilently } = useAuth0();
 
+  const startDateTime: Date = new Date(props.itineraryData.start_time);
+  const endDateTime: Date = new Date(props.itineraryData.end_time);
+
   return (
     <Card variant={'outline'}>
       <CardHeader>
         <Heading size="md">{props.itineraryData.title}</Heading>
-        <Heading size="sm">{props.itineraryData.created_by}</Heading>
+        <Box marginTop={'10px'}>
+          <Text
+              color={'green.500'}
+              textTransform={'uppercase'}
+              fontWeight={800}
+              fontSize={'sm'}
+              letterSpacing={1.1}
+            >
+              {startDateTime.toDateString()} {startDateTime.toLocaleTimeString()}
+            </Text>
+            <Text
+              color={'green.500'}
+              textTransform={'uppercase'}
+              fontWeight={800}
+              fontSize={'sm'}
+              letterSpacing={1.1}
+            >
+              {endDateTime.toDateString()} {endDateTime.toLocaleTimeString()}
+            </Text>
+          <Heading size="xs">{props.itineraryData.created_by}</Heading>
+          </Box>
       </CardHeader>
       <CardBody>
+        <Heading size={'sm'}>Description:</Heading>
         <Text>{props.itineraryData.description}</Text>
-        <Text>{props.itineraryData.created_at}</Text>
-        <Text>{props.itineraryData.start_time}</Text>
-        <Text>{props.itineraryData.end_time}</Text>
+
       </CardBody>
       <CardFooter>
         <ButtonGroup>
