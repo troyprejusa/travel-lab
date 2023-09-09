@@ -1,12 +1,16 @@
 import React, { SyntheticEvent } from 'react';
-import { FiEdit, FiTrash, FiUserCheck, FiUserX } from 'react-icons/fi';
+import {
+  FiEdit,
+  FiTrash,
+  FiUserCheck,
+  FiUserX,
+  FiRotateCw,
+} from 'react-icons/fi';
 import { IconButton, IconButtonProps } from '@chakra-ui/react';
 import fetchHelpers from '../utilities/fetchHelpers';
-import { useDispatch, useSelector } from 'react-redux';
-import { useAuth0 } from '@auth0/auth0-react';
-import { TripModel } from '../utilities/Interfaces';
-import { RootState } from '../redux/Store';
 import { fetchAllTripData } from '../utilities/stateHandlers';
+import { Dispatch } from '@reduxjs/toolkit';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface TrashButtonProps extends IconButtonProps {
   deleteHandler: () => void;
@@ -84,26 +88,26 @@ export const EditButton = (props: EditButtonProps) => {
   );
 };
 
-export const RefreshButton = (props: any) => {
-  const dispatch: Dispatch = useDispatch();
-  const trip: TripModel = useSelector((state: RootState) => state.trip);
-  const { getAccessTokenSilently } = useAuth0();
+interface RefreshButtonProps extends IconButtonProps {
+  trip_id: string;
+  dispatch: Dispatch;
+}
 
+export const RefreshButton = (props: RefreshButtonProps) => {
+  const { trip_id, dispatch, ...rest } = props;
+  const { getAccessTokenSilently } = useAuth0();
   return (
     <IconButton
-      variant={'outline'}
-      colorScheme="cyan"
+      colorScheme="blue"
       fontSize={'20px'}
-      icon={<FiEdit />}
-      aria-label="refresh content"
-      onClick={refreshHandler}
+      icon={<FiRotateCw />}
+      onClick={async () => {
+        const token: string = await fetchHelpers.getAuth0Token(
+          getAccessTokenSilently
+        );
+        fetchAllTripData(trip_id, token, dispatch);
+      }}
+      {...rest}
     />
   );
-
-  async function refreshHandler(event: SyntheticEvent) {
-    const token: string = await fetchHelpers.getAuth0Token(
-      getAccessTokenSilently
-    );
-    fetchAllTripData(trip.id, token, dispatch);
-  }
 };

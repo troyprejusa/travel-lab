@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { resetAfterLeavingTrip, signOutAfterTripSelect } from '../utilities/stateHandlers';
 import { useDispatch } from 'react-redux';
 import { RootState } from '../redux/Store';
-import { UserModel } from '../utilities/Interfaces';
+import { TripModel, UserModel } from '../utilities/Interfaces';
 import { AvatarWrapper } from './AvatarWrapper';
 import {
   IconButton,
@@ -44,6 +44,7 @@ import {
   FiThumbsUp,
 } from 'react-icons/fi';
 import { useAuth0 } from '@auth0/auth0-react';
+import { RefreshButton } from './Buttons';
 
 interface LinkItemProps {
   name: string;
@@ -186,6 +187,7 @@ interface MobileProps extends FlexProps {
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   const navigate = useNavigate();
   const user: UserModel = useSelector((state: RootState) => state.user);
+  const trip: TripModel = useSelector((state: RootState) => state.trip);
   const dispatch = useDispatch();
   const { logout } = useAuth0();
 
@@ -221,6 +223,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       </Text>
 
       <HStack spacing={{ base: '0', md: '6' }}>
+        <RefreshButton trip_id={trip.id} dispatch={dispatch} aria-label='refresh content'/>
         <IconButton
           size="lg"
           variant="ghost"
