@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { signOutBeforeTripSelect } from '../utilities/stateResets';
+import { signOutBeforeTripSelect } from '../utilities/stateHandlers';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Flex, Text, Button } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';

@@ -8,7 +8,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 import {
   resetAfterLeavingTrip,
   resetAfterTripDelete,
-} from '../utilities/stateResets';
+} from '../utilities/stateHandlers';
 
 function TripSettings(): JSX.Element {
   const navigate = useNavigate();

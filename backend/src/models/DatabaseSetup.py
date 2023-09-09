@@ -316,19 +316,19 @@ class DatabaseSetup:
             INSERT INTO itinerary (trip_id, title, description, start_time, end_time, created_by)
             VALUES (
                 'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
-                'first',
-                'fake description',
-                '2023-08-02 14:32:00',
-                '2023-08-03 15:00:00',
+                'The Beach',
+                'First stop on the trip!!',
+                '2023-09-04 14:30:00',
+                '2023-09-04 18:00:00',
                 'troy@test.com'
             );
                             
             INSERT INTO itinerary (trip_id, title, start_time, end_time, created_by)
             VALUES (
                 'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
-                'second',
-                '2023-08-02 16:32:00',
-                '2023-08-03 17:32:00',
+                'Dinner Reservation',
+                '2023-09-06 19:00:00',
+                '2023-06-06 20:00:00',
                 'troy@test.com'
             );
         """)

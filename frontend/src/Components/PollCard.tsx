@@ -65,78 +65,76 @@ function PollCard(props: PollCardProps) {
 
   return (
     <>
-      <Flex p={'40px'} w="full" alignItems="center" justifyContent="center">
-        <Box
-          onClick={onOpen}
-          cursor={'pointer'}
-          bg={useColorModeValue('white', 'gray.800')}
-          maxW="sm"
-          borderWidth="1px"
-          rounded="lg"
-          shadow="lg"
-          position="relative"
+      <Box
+        onClick={onOpen}
+        cursor={'pointer'}
+        bg={useColorModeValue('white', 'gray.800')}
+        maxW="sm"
+        borderWidth="1px"
+        rounded="lg"
+        shadow="lg"
+        position="relative"
+      >
+        <Flex
+          width={'300px'}
+          height={'300px'}
+          justifyContent={'center'}
+          alignItems={'center'}
         >
-          <Flex
-            width={'300px'}
-            height={'300px'}
-            justifyContent={'center'}
-            alignItems={'center'}
-          >
-            {pollChartData.every(
-              (datum: PollChartDataPoint) => datum.count === 0
-            ) ? (
-              <VStack width={'100%'}>
-                <Heading as="h4" size="sm">
-                  No votes yet...
-                </Heading>
-                <AvatarRipple
-                  userData={
-                    travellers[
-                      travellers.findIndex(
-                        (traveller: UserModel) =>
-                          props.data.created_by === traveller.email
-                      )
-                    ]
-                  }
-                />
-              </VStack>
-            ) : (
-              <PieChartComponent data={pollChartData} />
-            )}
+          {pollChartData.every(
+            (datum: PollChartDataPoint) => datum.count === 0
+          ) ? (
+            <VStack width={'100%'}>
+              <Heading as="h4" size="sm">
+                No votes yet...
+              </Heading>
+              <AvatarRipple
+                userData={
+                  travellers[
+                    travellers.findIndex(
+                      (traveller: UserModel) =>
+                        props.data.created_by === traveller.email
+                    )
+                  ]
+                }
+              />
+            </VStack>
+          ) : (
+            <PieChartComponent data={pollChartData} />
+          )}
+        </Flex>
+        <Box p="6">
+          <Flex mt="1" justifyContent="space-between" alignContent="center">
+            <Box
+              fontSize="2xl"
+              fontWeight="semibold"
+              as="h4"
+              lineHeight="tight"
+              isTruncated
+            >
+              {props.data.title}
+            </Box>
           </Flex>
-          <Box p="6">
-            <Flex mt="1" justifyContent="space-between" alignContent="center">
-              <Box
-                fontSize="2xl"
-                fontWeight="semibold"
-                as="h4"
-                lineHeight="tight"
-                isTruncated
-              >
-                {props.data.title}
-              </Box>
-            </Flex>
-            {userVoted ? (
-              <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="green">
-                voted
-              </Badge>
-            ) : (
-              <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="red">
-                vote
-              </Badge>
-            )}
-            <h2>{props.data.created_by}</h2>
-            <h3>{`${props.data.created_at}`}</h3>
-          </Box>
+          {userVoted ? (
+            <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="green">
+              voted
+            </Badge>
+          ) : (
+            <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="red">
+              vote
+            </Badge>
+          )}
+          <h2>{props.data.created_by}</h2>
+          <h3>{`${props.data.created_at}`}</h3>
         </Box>
-      </Flex>
+      </Box>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent
-          width={'80vw'}
-          height={'80vh'}
-          maxW={'80vw'}
+          // width={'60vw'}
+          // height={'80vh'}
+          maxW={'60vw'}
           maxH={'80vh'}
         >
           <ModalHeader></ModalHeader>
@@ -154,8 +152,10 @@ function PollCard(props: PollCardProps) {
             </VStack>
             <Heading size={'lg'}>{props.data.title}</Heading>
             <Heading size={'sm'}>{props.data.created_by}</Heading>
-            <Heading size={'md'}>Description:</Heading>
-            <Text>{props.data.description}</Text>
+            <Box>
+              <Heading size={'md'}>Description:</Heading>
+              <Text>{props.data.description}</Text>
+            </Box>
           </ModalBody>
 
           <ModalFooter>

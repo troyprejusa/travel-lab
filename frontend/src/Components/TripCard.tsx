@@ -31,8 +31,7 @@ function TripCard(props: TripCardProps) {
   return (
     <Center py={6} onClick={handleViewClick} cursor={'pointer'}>
       <Box
-        maxW={'445px'}
-        w={'full'}
+        w={'md'}
         bg={useColorModeValue('white', 'gray.900')}
         boxShadow={'2xl'}
         rounded={'md'}

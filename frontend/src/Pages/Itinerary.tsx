@@ -7,6 +7,7 @@ import ItineraryCard from '../Components/ItineraryCard';
 import { reduxFetchItinerary } from '../redux/ItinerarySlice';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
 import { Flex, Stack, Box, Button, Text } from '@chakra-ui/react';
 import { useAuth0 } from '@auth0/auth0-react';
 import fetchHelpers from '../utilities/fetchHelpers';
@@ -27,11 +28,11 @@ function Itinerary(): JSX.Element {
           Itinerary
         </Text>
       </Flex>
-      <Flex flexWrap={'wrap'} justifyContent={'space-evenly'}>
+      <Flex flexWrap={'wrap'} justifyContent={'space-around'} gap={'40px'}>
         <Stack
           spacing="4"
           height={'80vh'}
-          minWidth={'35vw'}
+          w={'sm'}
           overflowY={'scroll'}
         >
           <NewItineraryModal getItineraryCallback={getItinerary} />
@@ -48,13 +49,24 @@ function Itinerary(): JSX.Element {
             ))
           )}
         </Stack>
-        <Box minWidth={'35vw'}>
+        <Box minWidth='lg' width='50vw'>
+          <style>{`.fc-scrollgrid {background-color: white;}`}</style>
           <FullCalendar
-            plugins={[dayGridPlugin]}
+            plugins={[dayGridPlugin, timeGridPlugin]} // <-- Add timeGridPlugin here
+            headerToolbar={{
+              left: 'prev,next today',
+              center: 'title',
+              right: 'dayGridMonth,timeGridWeek', // <-- Add buttons for month and week views
+            }}
             initialView="dayGridMonth"
-            events={itinerary.map((a) => {
-              return { title: 'hi', date: '2019-04-04' };
+            events={itinerary.map((stop: ItineraryModel) => {
+              return {
+                title: stop.title,
+                start: stop.start_time,
+                end: stop.end_time,
+              };
             })}
+            height={'80vh'}
           />
         </Box>
       </Flex>
@@ -62,8 +74,10 @@ function Itinerary(): JSX.Element {
   );
 
   async function getItinerary() {
-    const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
-    dispatch(reduxFetchItinerary({trip_id: trip.id, token: token}));
+    const token: string = await fetchHelpers.getAuth0Token(
+      getAccessTokenSilently
+    );
+    dispatch(reduxFetchItinerary({ trip_id: trip.id, token: token }));
   }
 }
 

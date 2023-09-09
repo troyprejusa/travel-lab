@@ -3,7 +3,7 @@ import { IconType } from 'react-icons';
 import { ReactText } from 'react';
 import { Link as RRDLink, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { resetAfterLeavingTrip, signOutAfterTripSelect } from '../utilities/stateResets';
+import { resetAfterLeavingTrip, signOutAfterTripSelect } from '../utilities/stateHandlers';
 import { useDispatch } from 'react-redux';
 import { RootState } from '../redux/Store';
 import { UserModel } from '../utilities/Interfaces';
@@ -214,6 +214,8 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         fontSize="2xl"
         fontFamily="monospace"
         fontWeight="bold"
+        cursor={'pointer'}
+        onClick={handleReturnToTrips}
       >
         Travel | Lab
       </Text>
@@ -270,6 +272,11 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       </HStack>
     </Flex>
   );
+
+  function handleReturnToTrips(event: SyntheticEvent) {
+    resetAfterLeavingTrip(dispatch);
+    navigate(`/user/${user.email}/trips`);
+  }
 
   function handleSignOut(event: SyntheticEvent) {
     signOutAfterTripSelect(dispatch);

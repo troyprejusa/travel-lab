@@ -5,7 +5,7 @@ import TripCard from '../Components/TripCard';
 import fetchHelpers from '../utilities/fetchHelpers';
 import TripActionCard from '../Components/TripActionCard';
 import { Wrap, Flex, Button, Heading } from '@chakra-ui/react';
-import { signOutBeforeTripSelect } from '../utilities/stateResets';
+import { signOutBeforeTripSelect } from '../utilities/stateHandlers';
 import { useAuth0 } from '@auth0/auth0-react';
 
 function Trips(): JSX.Element {

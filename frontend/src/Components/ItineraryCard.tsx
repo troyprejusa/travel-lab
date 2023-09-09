@@ -11,7 +11,7 @@ import {
   Text,
   CardFooter,
   ButtonGroup,
-  Box
+  Box,
 } from '@chakra-ui/react';
 
 interface ItineraryCardProps {
@@ -21,7 +21,6 @@ interface ItineraryCardProps {
 }
 
 function ItineraryCard(props: ItineraryCardProps) {
-
   const { getAccessTokenSilently } = useAuth0();
 
   const startDateTime: Date = new Date(props.itineraryData.start_time);
@@ -33,30 +32,31 @@ function ItineraryCard(props: ItineraryCardProps) {
         <Heading size="md">{props.itineraryData.title}</Heading>
         <Box marginTop={'10px'}>
           <Text
-              color={'green.500'}
-              textTransform={'uppercase'}
-              fontWeight={800}
-              fontSize={'sm'}
-              letterSpacing={1.1}
-            >
-              {startDateTime.toDateString()} {startDateTime.toLocaleTimeString()}
-            </Text>
-            <Text
-              color={'green.500'}
-              textTransform={'uppercase'}
-              fontWeight={800}
-              fontSize={'sm'}
-              letterSpacing={1.1}
-            >
-              {endDateTime.toDateString()} {endDateTime.toLocaleTimeString()}
-            </Text>
+            color={'green.500'}
+            textTransform={'uppercase'}
+            fontWeight={800}
+            fontSize={'sm'}
+            letterSpacing={1.1}
+          >
+            {startDateTime.toDateString()} {startDateTime.toLocaleTimeString()}
+          </Text>
+          <Text
+            color={'green.500'}
+            textTransform={'uppercase'}
+            fontWeight={800}
+            fontSize={'sm'}
+            letterSpacing={1.1}
+          >
+            {endDateTime.toDateString()} {endDateTime.toLocaleTimeString()}
+          </Text>
           <Heading size="xs">{props.itineraryData.created_by}</Heading>
-          </Box>
+        </Box>
       </CardHeader>
       <CardBody>
-        <Heading size={'sm'}>Description:</Heading>
-        <Text>{props.itineraryData.description}</Text>
-
+        <Box >
+          <Heading size={'sm'}>Description:</Heading>
+          <Text>{props.itineraryData.description}</Text>
+        </Box>
       </CardBody>
       <CardFooter>
         <ButtonGroup>
@@ -75,7 +75,9 @@ function ItineraryCard(props: ItineraryCardProps) {
 
   async function handleItineraryDelete(itinerary_id: number) {
     try {
-      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
+      const token: string = await fetchHelpers.getAuth0Token(
+        getAccessTokenSilently
+      );
       const res: Response = await fetch(
         `/trip/${props.tripData.id}/itinerary/${itinerary_id}`,
         {

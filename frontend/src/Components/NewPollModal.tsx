@@ -59,11 +59,9 @@ function NewPollModal(props: NewPollModalProps) {
 
   return (
     <>
-      <ButtonGroup>
-        <Button size="md" colorScheme="orange" onClick={onOpen}>
-          New poll
-        </Button>
-      </ButtonGroup>
+      <Button size="md" colorScheme="orange" onClick={onOpen} marginLeft={'40px'}>
+        New poll
+      </Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -146,7 +144,9 @@ function NewPollModal(props: NewPollModalProps) {
     }
 
     try {
-      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
+      const token: string = await fetchHelpers.getAuth0Token(
+        getAccessTokenSilently
+      );
       const res: Response = await fetch(`/trip/${trip.id}/poll`, {
         method: 'POST',
         body: JSON.stringify(pollData),

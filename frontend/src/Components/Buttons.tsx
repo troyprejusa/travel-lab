@@ -1,6 +1,12 @@
 import React, { SyntheticEvent } from 'react';
 import { FiEdit, FiTrash, FiUserCheck, FiUserX } from 'react-icons/fi';
 import { IconButton, IconButtonProps } from '@chakra-ui/react';
+import fetchHelpers from '../utilities/fetchHelpers';
+import { useDispatch, useSelector } from 'react-redux';
+import { useAuth0 } from '@auth0/auth0-react';
+import { TripModel } from '../utilities/Interfaces';
+import { RootState } from '../redux/Store';
+import { fetchAllTripData } from '../utilities/stateHandlers';
 
 interface TrashButtonProps extends IconButtonProps {
   deleteHandler: () => void;
@@ -76,4 +82,28 @@ export const EditButton = (props: EditButtonProps) => {
       {...rest}
     />
   );
+};
+
+export const RefreshButton = (props: any) => {
+  const dispatch: Dispatch = useDispatch();
+  const trip: TripModel = useSelector((state: RootState) => state.trip);
+  const { getAccessTokenSilently } = useAuth0();
+
+  return (
+    <IconButton
+      variant={'outline'}
+      colorScheme="cyan"
+      fontSize={'20px'}
+      icon={<FiEdit />}
+      aria-label="refresh content"
+      onClick={refreshHandler}
+    />
+  );
+
+  async function refreshHandler(event: SyntheticEvent) {
+    const token: string = await fetchHelpers.getAuth0Token(
+      getAccessTokenSilently
+    );
+    fetchAllTripData(trip.id, token, dispatch);
+  }
 };
