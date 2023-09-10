@@ -5,6 +5,7 @@ import fetchHelpers from '../utilities/fetchHelpers';
 import { RootState } from '../redux/Store';
 import { AvatarRipple } from './AvatarWrapper';
 import { useAuth0 } from '@auth0/auth0-react';
+import { TrashButton } from './Buttons';
 import {
   PollResponseModel,
   PollVoteModel,
@@ -150,6 +151,16 @@ function PollCard(props: PollCardProps) {
                 />
               </Box>
             </VStack>
+            <Flex justifyContent={'flex-end'}>
+              <ButtonGroup>
+                <TrashButton
+                  deleteHandler={() =>
+                    handleDeleteButtonClick(props.data.poll_id)
+                  }
+                  aria-label="delete poll"
+                />
+              </ButtonGroup>
+            </Flex>
             <Heading size={'lg'}>{props.data.title}</Heading>
             <Heading size={'sm'}>{props.data.created_by}</Heading>
             <Box>
@@ -163,15 +174,6 @@ function PollCard(props: PollCardProps) {
               <Button variant="ghost" onClick={onClose}>
                 Close
               </Button>
-              {props.data.created_by === user.email ? (
-                <Button
-                  colorScheme="red"
-                  size="md"
-                  onClick={() => handleDeleteButtonClick(props.data.poll_id)}
-                >
-                  Delete poll
-                </Button>
-              ) : null}
             </ButtonGroup>
           </ModalFooter>
         </ModalContent>

@@ -6,11 +6,12 @@ import {
   FiUserX,
   FiRotateCw,
 } from 'react-icons/fi';
-import { IconButton, IconButtonProps } from '@chakra-ui/react';
+import { IconButton, IconButtonProps, useDisclosure } from '@chakra-ui/react';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { fetchAllTripData } from '../utilities/stateHandlers';
 import { Dispatch } from '@reduxjs/toolkit';
 import { useAuth0 } from '@auth0/auth0-react';
+import ConfirmDeleteModal from './ConfirmDeleteModal';
 
 interface TrashButtonProps extends IconButtonProps {
   deleteHandler: () => void;
@@ -18,16 +19,24 @@ interface TrashButtonProps extends IconButtonProps {
 
 export const TrashButton = (props: TrashButtonProps) => {
   const { deleteHandler, ...rest } = props;
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <IconButton
-      icon={<FiTrash />}
-      onClick={(event: SyntheticEvent) => deleteHandler()}
-      fontSize={'20px'}
-      variant={'outline'}
-      colorScheme="red"
-      {...rest}
-    />
+    <>
+      <IconButton
+        icon={<FiTrash />}
+        onClick={onOpen}
+        fontSize={'20px'}
+        variant={'outline'}
+        colorScheme="red"
+        {...rest}
+      />
+      <ConfirmDeleteModal
+        isOpen={isOpen}
+        onClose={onClose}
+        deleteHandler={deleteHandler}
+      />
+    </>
   );
 };
 

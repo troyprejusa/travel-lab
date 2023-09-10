@@ -278,13 +278,13 @@ async def add_poll(request: Request, trip_id: str, poll_body: NewPollBody) -> di
 @trip_router.delete('/{trip_id}/poll/{poll_id}')
 async def delete_poll(request: Request, trip_id: str, poll_id: int) -> dict[str, str]:
     try:
-        verify_admin(trip_id, request.state.user['trips'])
+        verify_attendance(trip_id, request.state.user['trips'])
 
         # Even though we technically don't need the trip_id to delete, we
         # will also use it for improved robustness since we have it
         db_handler.query("""
             DELETE FROM poll WHERE trip_id=%s AND id=%s;
-        """, (trip_id, poll_id, request.state.user['email']))
+        """, (trip_id, poll_id))
 
         return JSONResponse(
             status_code=200,
@@ -511,7 +511,7 @@ async def accept_join_trip(request: Request, trip_id: str, requestor_id: str) ->
         )
 
 
-# Trip admin removes current or potential user from trip
+# Trip admin removes (possibly pending) user from trip
 @trip_router.delete('/{trip_id}/travellers/remove/{requestor_id}')
 async def deny_join_trip(request: Request, trip_id: str, requestor_id: str) -> dict[str, str]:
     try:
