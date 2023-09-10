@@ -1,4 +1,4 @@
-import React, { ReactNode, useRef } from 'react';
+import React, { useRef } from 'react';
 import {
   AlertDialog,
   AlertDialogBody,
@@ -6,7 +6,6 @@ import {
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
-  AlertDialogCloseButton,
   Button,
 } from '@chakra-ui/react';
 
@@ -18,7 +17,7 @@ interface ConfirmDeleteModalProps {
 
 function ConfirmDeleteModal(props: ConfirmDeleteModalProps) {
   const { isOpen, onClose, deleteHandler } = props;
-  const cancelRef: HTMLButtonElement = useRef();
+  const cancelRef = useRef<HTMLButtonElement>(null);
 
   return (
     <AlertDialog
