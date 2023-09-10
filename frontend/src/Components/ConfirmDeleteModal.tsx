@@ -10,8 +10,8 @@ import {
 } from '@chakra-ui/react';
 
 interface ConfirmDeleteModalProps {
-    isOpen: boolean;
-    onClose: () => void;
+  isOpen: boolean;
+  onClose: () => void;
   deleteHandler: () => void;
 }
 
