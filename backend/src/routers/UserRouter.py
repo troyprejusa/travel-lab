@@ -26,7 +26,7 @@ async def upsert_user(email: str) -> Traveller | str:
         return JSONResponse(
             status_code=500,
             content = {
-                "message": "ERROR: Unable to upsert user"
+                "message": f"ERROR: Unable to upsert user {email}"
             }
         )
 
