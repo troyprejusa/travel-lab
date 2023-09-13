@@ -1,7 +1,14 @@
 import React, { SyntheticEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Flex, Text, Divider, Box, Button } from '@chakra-ui/react';
-import { UserModel } from '../utilities/Interfaces';
+import {
+  Flex,
+  Text,
+  Divider,
+  Box,
+  Button,
+  useDisclosure,
+} from '@chakra-ui/react';
+import { TripModel, UserModel } from '../utilities/Interfaces';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
 import { Dispatch } from '@reduxjs/toolkit';
@@ -9,11 +16,26 @@ import {
   resetAfterLeavingTrip,
   resetAfterTripDelete,
 } from '../utilities/stateHandlers';
+import fetchHelpers from '../utilities/fetchHelpers';
+import { useAuth0 } from '@auth0/auth0-react';
+import ConfirmDeleteModal from '../Components/ConfirmDeleteModal';
 
 function TripSettings(): JSX.Element {
   const navigate = useNavigate();
   const dispatch: Dispatch = useDispatch();
   const user: UserModel = useSelector((state: RootState) => state.user);
+  const trip: TripModel = useSelector((state: RootState) => state.trip);
+  const { getAccessTokenSilently } = useAuth0();
+  const {
+    isOpen: leaveModalIsOpen,
+    onOpen: leaveModalOnOpen,
+    onClose: leaveModalOnClose,
+  } = useDisclosure();
+  const {
+    isOpen: deleteModalIsOpen,
+    onOpen: deleteModalOnOpen,
+    onClose: deleteModalOnClose,
+  } = useDisclosure();
 
   return (
     <>
@@ -24,7 +46,16 @@ function TripSettings(): JSX.Element {
       </Flex>
       <Box>
         <h2>Leave trip</h2>
-        <Button onClick={handleLeaveTrip}>Leave</Button>
+        <Button colorScheme="red" onClick={leaveModalOnOpen}>
+          Leave
+        </Button>
+        <ConfirmDeleteModal
+          isOpen={leaveModalIsOpen}
+          onClose={leaveModalOnClose}
+          deleteHandler={handleLeaveTrip}
+          header={'Leave trip'}
+          body={`Are you sure you want to leave trip to ${trip.destination}?`}
+        />
       </Box>
       <Divider />
       <h1>ADMIN ONLY</h1>
@@ -36,27 +67,56 @@ function TripSettings(): JSX.Element {
       </Box>
       <Box>
         <h2>Delete trip</h2>
-        <Button onClick={handleDeleteTrip}>Delete</Button>
+        <Button colorScheme="red" onClick={deleteModalOnOpen}>
+          Delete
+        </Button>
+        <ConfirmDeleteModal
+          isOpen={deleteModalIsOpen}
+          onClose={deleteModalOnClose}
+          deleteHandler={handleDeleteTrip}
+          header={'Delete trip'}
+          body={`Are you sure you want to delete trip to ${trip.destination}?`}
+        />
       </Box>
     </>
   );
 
-  async function handleLeaveTrip(event: SyntheticEvent) {
+  async function handleLeaveTrip() {
     try {
-      // TODO: Add logic here
-      resetAfterLeavingTrip(dispatch);
-      navigate(`/user/${user.email}/trips`);
+      const token = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
+      const res: Response = await fetch(`/user/trip/${trip.id}`, {
+        method: 'DELETE',
+        headers: fetchHelpers.getTokenHeader(token),
+      });
+
+      if (res.ok) {
+        resetAfterLeavingTrip(dispatch);
+        navigate(`/user/${user.email}/trips`);
+      } else {
+        const errorRes: any = await res.json();
+        throw new Error(errorRes);
+      }
     } catch (error: any) {
       console.error(error);
       alert('Unable to leave trip :(');
     }
   }
 
-  async function handleDeleteTrip(event: SyntheticEvent) {
+  async function handleDeleteTrip() {
     try {
-      // TODO: Add logic here
-      resetAfterTripDelete(dispatch);
-      navigate(`/user/${user.email}/trips`);
+      const token = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
+      const res: Response = await fetch(`/trip/${trip.id}`, {
+        method: 'DELETE',
+        headers: fetchHelpers.getTokenHeader(token),
+      });
+
+      if (res.ok) {
+        resetAfterTripDelete(dispatch);
+        navigate(`/user/${user.email}/trips`);
+      } else {
+        const errorRes: any = await res.json();
+        throw new Error(errorRes);
+      }
     } catch (error: any) {
       console.error(error);
       alert('Unable to delete trip :(');

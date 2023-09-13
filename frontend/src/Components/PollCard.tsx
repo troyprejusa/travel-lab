@@ -228,11 +228,12 @@ function PollCard(props: PollCardProps) {
         // Close the modal
         onClose();
       } else {
-        const message = await res.json();
-        throw new Error(message);
+        const errorRes = await res.json();
+        throw new Error(errorRes);
       }
     } catch (e: any) {
       console.error(JSON.stringify(e));
+      alert('Unable to delete poll :(')
     }
   }
 }

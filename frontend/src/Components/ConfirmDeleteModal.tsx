@@ -13,6 +13,8 @@ interface ConfirmDeleteModalProps {
   isOpen: boolean;
   onClose: () => void;
   deleteHandler: () => void;
+  header?: string;
+  body?: string;
 }
 
 function ConfirmDeleteModal(props: ConfirmDeleteModalProps) {
@@ -28,11 +30,11 @@ function ConfirmDeleteModal(props: ConfirmDeleteModalProps) {
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Delete
+            {props.header || 'Delete'}
           </AlertDialogHeader>
 
           <AlertDialogBody>
-            Are you sure you want to delete this item?
+            {props.body || 'Are you sure you want to delete this item?'}
           </AlertDialogBody>
 
           <AlertDialogFooter>

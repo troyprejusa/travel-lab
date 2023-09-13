@@ -142,7 +142,7 @@ async def add_itinerary_stop(
 @trip_router.delete('/{trip_id}/itinerary/{item_id}')
 async def remove_itinerary_stop(request: Request, trip_id: str, item_id: int) ->  dict[str, str]:
     try:
-        verify_attendance(trip_id, request.state.user['trips'])
+        verify_admin(trip_id, request.state.user['trips'])
 
         # Even though we technically only need the item id to delete, we
         # will also use the trip id for improved robustness since we have it
@@ -278,7 +278,7 @@ async def add_poll(request: Request, trip_id: str, poll_body: NewPollBody) -> di
 @trip_router.delete('/{trip_id}/poll/{poll_id}')
 async def delete_poll(request: Request, trip_id: str, poll_id: int) -> dict[str, str]:
     try:
-        verify_attendance(trip_id, request.state.user['trips'])
+        verify_admin(trip_id, request.state.user['trips'])
 
         # Even though we technically don't need the trip_id to delete, we
         # will also use it for improved robustness since we have it
@@ -360,7 +360,7 @@ async def add_packing_item(
 @trip_router.delete('/{trip_id}/packing/{item_id}')
 async def delete_packing_item(request: Request, trip_id: str, item_id: int) -> dict[str, str]:
     try:
-        verify_attendance(trip_id, request.state.user['trips'])
+        verify_admin(trip_id, request.state.user['trips'])
 
         # Even though we technically only need the item id to delete, we
         # will also use the trip id for improved robustness since we have it
@@ -536,30 +536,4 @@ async def deny_join_trip(request: Request, trip_id: str, requestor_id: str) -> d
                 "message": f"ERROR: Error while submitting rejection for user {requestor_id} from trip {trip_id}"
             }
         )
-
-
-# User leaves a trip
-@trip_router.delete('/{trip_id}/travellers/leave')
-async def leave_trip(request: Request, trip_id: str) -> dict[str, str]:
-    try:
-        verify_attendance(trip_id, request.state.user['trips'])
-
-        db_handler.query("""
-            DELETE FROM traveller_trip WHERE traveller_id = (SELECT id from traveller WHERE email=%s) AND trip_id=%s;
-        """, (request.state.user['email'], trip_id))
-        
-        return JSONResponse(
-            status_code=200,
-            content={
-                "message": f"SUCCESS: Removed user {request.state.user['email']} from trip {trip_id}"
-            }
-        )
     
-    except Exception as error:
-        print(error)
-        return JSONResponse(
-            status_code=500,
-            content = {
-                "message": f"ERROR: Unable to remove user {request.state.user['email']} from trip {trip_id}"
-            }
-        )
