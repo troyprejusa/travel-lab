@@ -22,6 +22,7 @@ export interface TripModel {
   end_date: string;
   created_at: string;
   created_by: string;
+  admin: boolean;
 }
 
 export interface ItineraryModel {

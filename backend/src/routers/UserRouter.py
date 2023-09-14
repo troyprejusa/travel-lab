@@ -55,12 +55,13 @@ async def delete_user(request: Request) -> dict[str, str]:
 
 # Get a user's trips
 @user_router.get('/trips')
-async def get_trips(request: Request) -> list[Trip] | dict[str, str]:
+async def get_trips(request: Request) -> list[Trip] | str:
     try:
         data = db_handler.query("""
-            SELECT * FROM trip
-                WHERE id IN 
-                (SELECT trip_id FROM traveller_trip WHERE traveller_id = (SELECT id from traveller where email=%s) AND confirmed = True);
+            SELECT trip.*, traveller_trip.admin
+            FROM trip
+            JOIN traveller_trip ON trip.id = traveller_trip.trip_id 
+            WHERE traveller_trip.traveller_id = (SELECT id from traveller where email=%s) AND traveller_trip.confirmed=True;
         """, (request.state.user['email'],))
         
         return data

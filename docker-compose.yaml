@@ -1,5 +1,30 @@
 version: "3"
 services:
+  api_dev:
+    image: python:3.10
+    container_name: fast_api_dev
+    command: /app/src/startup.sh
+    volumes:
+      - /Users/troyprejusa/Dev/apps/travel-lab/backend:/app
+    ports:
+      - "8000:8000"   # For the API
+      - "5678:5678"   # For VSCode debugger
+    depends_on:
+      - database
+      - s3mock
+
+  database:
+    image: postgres
+    container_name: sql_database
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=travel_lab
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
   s3mock:
     image: minio/minio
     container_name: minio_storage
@@ -12,18 +37,6 @@ services:
     volumes:
       - s3data:/data
     command: server /data --console-address ":9090"
-
-  api_dev:
-    image: python:3.10
-    container_name: fast_api_dev
-    command: /app/src/startup.sh
-    volumes:
-      - /Users/troyprejusa/Dev/apps/travel-lab/backend:/app
-    ports:
-      - "8000:8000"   # For the API
-      - "5678:5678"   # For VSCode debugger
-    depends_on:
-      - s3mock
 
 volumes:
   pgdata:

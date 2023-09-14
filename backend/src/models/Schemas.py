@@ -3,8 +3,6 @@ from uuid import UUID
 from datetime import date, datetime
 
 
-# DATABASE SCHEMAS
-# -----------------------------------
 class Traveller(BaseModel):
     id: UUID
     first_name: str | None = None
@@ -20,6 +18,7 @@ class Trip(BaseModel):
     end_date: date
     created_at: datetime
     created_by: str
+    admin: bool
 
 class Itinerary(BaseModel):
     id: int
@@ -48,8 +47,6 @@ class Packing(BaseModel):
     created_by: str
     packed_by: str | None = None
 
-# INCOMING MESSAGE BODY DEFINTIONS
-# -----------------------------------
 class NewPollBody(BaseModel):
     title: str
     anonymous: bool
@@ -57,8 +54,6 @@ class NewPollBody(BaseModel):
     options: list[str]
 
 
-# OUTGOING MESSAGE BODY DEFINTIONS
-# -----------------------------------
 class PollVoteBody(BaseModel):
     option_id: int
     option: str

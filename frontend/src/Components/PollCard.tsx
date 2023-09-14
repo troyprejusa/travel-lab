@@ -51,9 +51,6 @@ function PollCard(props: PollCardProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { getAccessTokenSilently } = useAuth0();
 
-  // Did this user make this poll?
-  let userMade: boolean = props.data.created_by === user.email ? true : false;
-
   // Did this user vote on this poll?
   let userVoted: boolean = false;
   props.data.options.forEach((optionItem: PollVoteModel) => {

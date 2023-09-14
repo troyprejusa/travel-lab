@@ -52,9 +52,7 @@ class DatabaseHandler:
                     if kwargs.get('row_count_only'):
                         # if row_count_only is specified and truthy,
                         # get the number of affected items
-                        data = cursor.rowcount
-
-                        return data
+                        return cursor.rowcount
                     
                     else:
                         # If the query returns a value, return it to the user
