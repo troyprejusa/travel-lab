@@ -94,6 +94,8 @@ function Packing(): JSX.Element {
                       <TrashButton
                         aria-label="delete packing item"
                         deleteHandler={() => handleDeleteButtonClick(thing.id)}
+                        disabled={!trip.admin}
+                        disabledMsg={'Only trip admins can delete packing items'}
                       />
                     </ButtonGroup>
                   </Td>

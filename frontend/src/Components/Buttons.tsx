@@ -6,7 +6,14 @@ import {
   FiUserX,
   FiRotateCw,
 } from 'react-icons/fi';
-import { IconButton, IconButtonProps, useDisclosure } from '@chakra-ui/react';
+import {
+  IconButton,
+  IconButtonProps,
+  useDisclosure,
+  Tooltip,
+  ButtonProps,
+  Button,
+} from '@chakra-ui/react';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { fetchAllTripData } from '../utilities/stateHandlers';
 import { Dispatch } from '@reduxjs/toolkit';
@@ -15,6 +22,8 @@ import ConfirmDeleteModal from './ConfirmDeleteModal';
 
 interface TrashButtonProps extends IconButtonProps {
   deleteHandler: () => void;
+  disabled?: boolean;
+  disabledMsg?: string;
 }
 
 export const TrashButton = (props: TrashButtonProps) => {
@@ -23,19 +32,26 @@ export const TrashButton = (props: TrashButtonProps) => {
 
   return (
     <>
-      <IconButton
-        icon={<FiTrash />}
-        onClick={onOpen}
-        fontSize={'20px'}
-        variant={'outline'}
-        colorScheme="red"
-        {...rest}
-      />
-      <ConfirmDeleteModal
-        isOpen={isOpen}
-        onClose={onClose}
-        deleteHandler={deleteHandler}
-      />
+      <Tooltip
+        label={props.disabled && props.disabledMsg ? props.disabledMsg : null}
+      >
+        <span>
+          <IconButton
+            icon={<FiTrash />}
+            onClick={onOpen}
+            fontSize={'20px'}
+            variant={'outline'}
+            colorScheme="red"
+            isDisabled={props.disabled || false}
+            {...rest}
+          />
+          <ConfirmDeleteModal
+            isOpen={isOpen}
+            onClose={onClose}
+            deleteHandler={deleteHandler}
+          />
+        </span>
+      </Tooltip>
     </>
   );
 };
@@ -118,5 +134,45 @@ export const RefreshButton = (props: RefreshButtonProps) => {
       }}
       {...rest}
     />
+  );
+};
+
+interface DeleteButtonProps extends ButtonProps {
+  deleteHandler: () => void;
+  disabled?: boolean;
+  disabledMsg?: string;
+  header?: string;
+  body?: string;
+}
+
+export const DeleteButton = (props: DeleteButtonProps) => {
+  const { deleteHandler, ...rest } = props;
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  return (
+    <>
+      <Tooltip
+        label={props.disabled && props.disabledMsg ? props.disabledMsg : null}
+      >
+        <span>
+          <Button
+            onClick={onOpen}
+            colorScheme="red"
+            size={'md'}
+            isDisabled={props.disabled || false}
+            {...rest}
+          >
+            Delete
+          </Button>
+          <ConfirmDeleteModal
+            isOpen={isOpen}
+            onClose={onClose}
+            deleteHandler={deleteHandler}
+            header={props.header}
+            body={props.body}
+          />
+        </span>
+      </Tooltip>
+    </>
   );
 };

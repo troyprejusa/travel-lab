@@ -67,6 +67,8 @@ function ItineraryCard(props: ItineraryCardProps) {
           <TrashButton
             aria-label="delete itinerary stop"
             deleteHandler={() => handleItineraryDelete(props.itineraryData.id)}
+            disabled={!props.tripData.admin}
+            disabledMsg='Only trip admins can delete itinerary stops'
           />
         </ButtonGroup>
       </CardFooter>

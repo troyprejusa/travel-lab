@@ -1,4 +1,4 @@
-import React, { SyntheticEvent } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Flex,
@@ -19,6 +19,7 @@ import {
 import fetchHelpers from '../utilities/fetchHelpers';
 import { useAuth0 } from '@auth0/auth0-react';
 import ConfirmDeleteModal from '../Components/ConfirmDeleteModal';
+import { DeleteButton } from '../Components/Buttons';
 
 function TripSettings(): JSX.Element {
   const navigate = useNavigate();
@@ -30,11 +31,6 @@ function TripSettings(): JSX.Element {
     isOpen: leaveModalIsOpen,
     onOpen: leaveModalOnOpen,
     onClose: leaveModalOnClose,
-  } = useDisclosure();
-  const {
-    isOpen: deleteModalIsOpen,
-    onOpen: deleteModalOnOpen,
-    onClose: deleteModalOnClose,
   } = useDisclosure();
 
   return (
@@ -67,15 +63,14 @@ function TripSettings(): JSX.Element {
       </Box>
       <Box>
         <h2>Delete trip</h2>
-        <Button colorScheme="red" onClick={deleteModalOnOpen}>
-          Delete
-        </Button>
-        <ConfirmDeleteModal
-          isOpen={deleteModalIsOpen}
-          onClose={deleteModalOnClose}
+        <DeleteButton
           deleteHandler={handleDeleteTrip}
+          disabled={!trip.admin}
+          disabledMsg={'Only trip admins can delete trip'}
           header={'Delete trip'}
-          body={`Are you sure you want to delete trip to ${trip.destination}?`}
+          body={
+            'Are you sure you want to delete this trip? This action is irreversible!'
+          }
         />
       </Box>
     </>

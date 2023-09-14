@@ -155,6 +155,8 @@ function PollCard(props: PollCardProps) {
                     handleDeleteButtonClick(props.data.poll_id)
                   }
                   aria-label="delete poll"
+                  disabled={!trip.admin}
+                  disabledMsg={'Only trip admins can delete polls'}
                 />
               </ButtonGroup>
             </Flex>
