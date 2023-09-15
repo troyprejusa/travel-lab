@@ -113,7 +113,7 @@ function PollCard(props: PollCardProps) {
               {props.data.title}
             </Box>
           </Flex>
-          {userVoted ? (
+          {props.data.user_voted ? (
             <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="green">
               voted
             </Badge>

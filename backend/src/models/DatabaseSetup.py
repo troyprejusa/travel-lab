@@ -105,6 +105,9 @@ class DatabaseSetup:
         votes, or vote options are not captured faithfully as to
         when people voted.
 
+        EDIT: The poll_id was added to poll_vote so that a join-able
+        relationship exists for all 3 tables
+
         To add your votes, simply send over the option you want, 
         which is a reference to the poll_option(id) field
         '''

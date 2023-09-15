@@ -72,6 +72,7 @@ export interface PollResponseModel {
   poll_id: number;
   title: string;
   anonymous: boolean;
+  user_voted: boolean;
   description: string | null;
   created_at: string;
   created_by: string;

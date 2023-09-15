@@ -63,6 +63,7 @@ class PollResponseBody(BaseModel):
     poll_id: int
     title: str
     anonymous: bool
+    user_voted: bool
     description: str | None = None
     created_at: datetime
     created_by: str
