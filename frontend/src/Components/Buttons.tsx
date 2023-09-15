@@ -27,13 +27,13 @@ interface TrashButtonProps extends IconButtonProps {
 }
 
 export const TrashButton = (props: TrashButtonProps) => {
-  const { deleteHandler, ...rest } = props;
+  const { deleteHandler, disabled, disabledMsg, ...rest } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
       <Tooltip
-        label={props.disabled && props.disabledMsg ? props.disabledMsg : null}
+        label={disabled && disabledMsg ? disabledMsg : null}
       >
         <span>
           <IconButton
@@ -42,7 +42,7 @@ export const TrashButton = (props: TrashButtonProps) => {
             fontSize={'20px'}
             variant={'outline'}
             colorScheme="red"
-            isDisabled={props.disabled || false}
+            isDisabled={disabled || false}
             {...rest}
           />
           <ConfirmDeleteModal
@@ -146,20 +146,20 @@ interface DeleteButtonProps extends ButtonProps {
 }
 
 export const DeleteButton = (props: DeleteButtonProps) => {
-  const { deleteHandler, ...rest } = props;
+  const { deleteHandler, disabled, disabledMsg, header, body, ...rest } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
       <Tooltip
-        label={props.disabled && props.disabledMsg ? props.disabledMsg : null}
+        label={disabled && disabledMsg ? disabledMsg : null}
       >
         <span>
           <Button
             onClick={onOpen}
             colorScheme="red"
             size={'md'}
-            isDisabled={props.disabled || false}
+            isDisabled={disabled || false}
             {...rest}
           >
             Delete
@@ -168,8 +168,8 @@ export const DeleteButton = (props: DeleteButtonProps) => {
             isOpen={isOpen}
             onClose={onClose}
             deleteHandler={deleteHandler}
-            header={props.header}
-            body={props.body}
+            header={header}
+            body={body}
           />
         </span>
       </Tooltip>

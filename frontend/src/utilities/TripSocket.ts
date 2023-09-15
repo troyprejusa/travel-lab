@@ -41,7 +41,7 @@ class TripSocket {
   }
 
   disconnectSocket() {
-    if (this.socket.connected) {
+    if (this.socket && this.socket.connected) {
       this.socket.disconnect();
     }
   }
@@ -81,8 +81,7 @@ class PollSocket extends TripSocket {
   }
 }
 
-const host: string = 'ws://localhost:8000';  // DEBUG
-// const host: string = `ws://${Constants.API_HOST}:${Constants.API_PORT}`;
+const host: string = `wss://${Constants.PROXY_HOST}:${Constants.PROXY_PORT}`;
 const apiPath: string = '/sio/socket.io';
 
 export const msgSocket = new MessageSocket(host, apiPath, '/message');

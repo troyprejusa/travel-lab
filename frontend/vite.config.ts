@@ -17,7 +17,10 @@ export default defineConfig({
       '/auth': backend_server,
       '/user': backend_server,
       '/trip': backend_server,
-      '/sio': backend_server
+      '/sio': {
+        target: backend_server,
+        ws: true
+      },
     }
   }
 })
