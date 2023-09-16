@@ -57,6 +57,7 @@ class NewPollBody(BaseModel):
 class PollVoteBody(BaseModel):
     option_id: int
     option: str
+    count: int
     votes: list[str]
 
 class PollResponseBody(BaseModel):

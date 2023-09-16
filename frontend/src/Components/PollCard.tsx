@@ -185,7 +185,7 @@ function PollCard(props: PollCardProps) {
   ): Array<PollChartDataPoint> {
     return pollData.options.map((optionData: PollVoteModel) => ({
       option: optionData.option,
-      count: optionData.votes.length,
+      count: optionData.count,
       voted_by: optionData.votes,
     }));
   }

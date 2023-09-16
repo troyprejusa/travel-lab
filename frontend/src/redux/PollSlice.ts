@@ -44,6 +44,8 @@ const pollSlice: Slice = createSlice({
 
       if (matchingOption === -1) return;
 
+      state[matchingPoll].user_voted = true;
+      state[matchingPoll].options[matchingOption].count++;
       state[matchingPoll].options[matchingOption].votes.push(
         action.payload.voted_by
       );

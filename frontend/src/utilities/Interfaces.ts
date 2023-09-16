@@ -65,6 +65,7 @@ export interface NewPollModel {
 export interface PollVoteModel {
   option_id: number;
   option: string;
+  count: number;
   votes: Array<string>;
 }
 

@@ -224,7 +224,7 @@ async def get_polls(request: Request, trip_id: str) -> list[PollResponseBody] | 
         # anonymous-ness of it all we will have to handle this on the
         # backend. Note that the below logic relies on the data being
         # SORTED by poll_id. This is basically a merge intervals problem
-        output = merge_polls(data)
+        output = merge_polls(data, request.state.user['email'])
 
         return output
     
