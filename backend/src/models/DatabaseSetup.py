@@ -338,10 +338,10 @@ class DatabaseSetup:
     def insert_messages(self):
         self.database.query("""
             INSERT INTO message (trip_id, content, created_by)
-            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'message from joe', 'joe@test.com');
+            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'Hey its joe. Are you guys are stoked or what?', 'joe@test.com');
                             
             INSERT INTO message (trip_id, content, created_by)
-            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'message from troy', 'troy@test.com');
+            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'Cant wait for the trip! - troy', 'troy@test.com');
         """)
 
     def insert_polls(self):
@@ -356,12 +356,12 @@ class DatabaseSetup:
             VALUES (
                 101,
                 'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
-                'test poll',
+                'More time in San Juan or Bio Bay?',
                 'troy@test.com'
             );
                             
-            INSERT INTO poll_option (id, poll_id, option) VALUES (201, 101, 'first');
-            INSERT INTO poll_option (id, poll_id, option) VALUES (202, 101, 'second');
+            INSERT INTO poll_option (id, poll_id, option) VALUES (201, 101, 'San Juan');
+            INSERT INTO poll_option (id, poll_id, option) VALUES (202, 101, 'Bio Bay');
                             
             INSERT INTO poll (
                 id,
@@ -373,14 +373,14 @@ class DatabaseSetup:
             VALUES (
                 102,
                 'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
-                'test poll 2',
-                'WAZZAP',
+                'First Night Dinner',
+                'What should we eat for dinner after the flight into town?',
                 'joe@test.com'
             );
                             
-            INSERT INTO poll_option (id, poll_id, option) VALUES (203, 102, 'option a');
-            INSERT INTO poll_option (id, poll_id, option) VALUES (204, 102, 'option b');
-            INSERT INTO poll_option (id, poll_id, option) VALUES (205, 102, 'option c');
+            INSERT INTO poll_option (id, poll_id, option) VALUES (203, 102, 'PR food');
+            INSERT INTO poll_option (id, poll_id, option) VALUES (204, 102, 'Seafood');
+            INSERT INTO poll_option (id, poll_id, option) VALUES (205, 102, 'appetizers');
                             
             INSERT INTO poll_vote (id, poll_id, vote, voted_by) VALUES (301, 102, 204, 'joe@test.com');
         """)
