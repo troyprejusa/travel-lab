@@ -113,7 +113,7 @@ function PollCard(props: PollCardProps) {
               {props.data.title}
             </Box>
           </Flex>
-          {props.data.user_voted ? (
+          {userVoted ? (
             <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="green">
               voted
             </Badge>
@@ -185,7 +185,7 @@ function PollCard(props: PollCardProps) {
   ): Array<PollChartDataPoint> {
     return pollData.options.map((optionData: PollVoteModel) => ({
       option: optionData.option,
-      count: optionData.count,
+      count: optionData.votes.length,
       voted_by: optionData.votes,
     }));
   }

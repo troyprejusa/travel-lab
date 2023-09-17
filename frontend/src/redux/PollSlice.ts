@@ -32,23 +32,17 @@ const pollSlice: Slice = createSlice({
 
     // polls/reduxAddVote
     reduxAddVote: (state, action: PayloadAction<PollVoteSendModel>) => {
-      const matchingPoll: number = state.findIndex(
-        (poll: PollResponseModel) => poll.poll_id === action.payload.poll_id
-      );
-
-      if (matchingPoll === -1) return;
-
-      const matchingOption: number = state[matchingPoll].options.findIndex(
-        (option: PollVoteModel) => option.option_id === action.payload.option_id
-      );
-
-      if (matchingOption === -1) return;
-
-      state[matchingPoll].user_voted = true;
-      state[matchingPoll].options[matchingOption].count++;
-      state[matchingPoll].options[matchingOption].votes.push(
-        action.payload.voted_by
-      );
+      state.forEach((poll: PollResponseModel) => {
+        // Find the matching poll id
+        if (poll.poll_id === action.payload.poll_id) {
+          poll.options.forEach((option: PollVoteModel) => {
+            // Find the matching option
+            if (option.option_id === action.payload.option_id) {
+              option.votes.push(action.payload.voted_by);
+            }
+          })
+        }
+      });
     },
 
     // polls/reduxResetPolls

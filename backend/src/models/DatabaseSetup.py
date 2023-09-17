@@ -116,7 +116,6 @@ class DatabaseSetup:
                 id BIGSERIAL PRIMARY KEY,
                 trip_id uuid NOT NULL references trip ON DELETE CASCADE,
                 title VARCHAR(40) NOT NULL,
-                anonymous BOOLEAN NOT NULL,
                 description VARCHAR(200),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 created_by VARCHAR(255) references traveller(email) ON DELETE SET NULL
@@ -352,14 +351,12 @@ class DatabaseSetup:
                 id,
                 trip_id,
                 title,
-                anonymous,
                 created_by
             )
             VALUES (
                 101,
                 'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
                 'test poll',
-                TRUE,
                 'troy@test.com'
             );
                             
@@ -370,7 +367,6 @@ class DatabaseSetup:
                 id,
                 trip_id,
                 title,
-                anonymous,
                 description,
                 created_by
             )
@@ -378,7 +374,6 @@ class DatabaseSetup:
                 102,
                 'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
                 'test poll 2',
-                FALSE,
                 'WAZZAP',
                 'joe@test.com'
             );

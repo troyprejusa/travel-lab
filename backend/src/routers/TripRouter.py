@@ -201,7 +201,6 @@ async def get_polls(request: Request, trip_id: str) -> list[PollResponseBody] | 
             SELECT 
                 poll.id AS poll_id,
                 poll.title,
-                poll.anonymous,
                 poll.description,
                 poll.created_at,
                 poll.created_by,
@@ -220,11 +219,11 @@ async def get_polls(request: Request, trip_id: str) -> list[PollResponseBody] | 
         """, (trip_id,))
 
         # With this table of data, we can either group it meaningfully
-        # on the backend or the frontend. However, to be true to the
-        # anonymous-ness of it all we will have to handle this on the
+        # on the backend or the frontend. However, in case we want to 
+        # implement anonymous polling, we will have to handle this on the
         # backend. Note that the below logic relies on the data being
         # SORTED by poll_id. This is basically a merge intervals problem
-        output = merge_polls(data, request.state.user['email'])
+        output = merge_polls(data)
 
         return output
     
@@ -245,10 +244,10 @@ async def add_poll(request: Request, trip_id: str, poll_body: NewPollBody) -> di
 
         res = db_handler.query("""
             INSERT INTO poll 
-                (trip_id, title, anonymous, description, created_by) 
-                VALUES (%s, %s, %s, %s, %s)
+                (trip_id, title, description, created_by) 
+                VALUES (%s, %s, %s, %s)
             RETURNING id;
-        """, (trip_id, poll_body.title, poll_body.anonymous, poll_body.description, request.state.user['email']))
+        """, (trip_id, poll_body.title, poll_body.description, request.state.user['email']))
         poll_id = res[0]['id']
 
         # This would seem like a good place for a psycopg "executemany", but 

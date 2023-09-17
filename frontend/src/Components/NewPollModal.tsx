@@ -75,10 +75,6 @@ function NewPollModal(props: NewPollModalProps) {
                 <FormLabel>Title</FormLabel>
                 <Input placeholder="title" name="title" />
               </FormControl>
-              <FormControl isRequired>
-                <FormLabel>Anonymous?</FormLabel>
-                <Radio placeholder="Description" name="anonymous" />
-              </FormControl>
               <FormControl>
                 <FormLabel>Description</FormLabel>
                 <Textarea placeholder="description" name="description" />
@@ -124,7 +120,6 @@ function NewPollModal(props: NewPollModalProps) {
     // form
     const pollData: NewPollModel = {
       title: '',
-      anonymous: false,
       description: null,
       options: [],
     };
@@ -132,8 +127,6 @@ function NewPollModal(props: NewPollModalProps) {
     for (const [key, val] of formData) {
       if (key === 'title') {
         pollData.title = val.toString();
-      } else if (key === 'anonymous') {
-        pollData.anonymous = true;
       } else if (key === 'description') {
         const descriptionEntry = formData.get('description');
         if (descriptionEntry !== '') pollData.description = descriptionEntry;
