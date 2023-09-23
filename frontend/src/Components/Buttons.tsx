@@ -139,6 +139,7 @@ export const RefreshButton = (props: RefreshButtonProps) => {
 
 interface DeleteButtonProps extends ButtonProps {
   deleteHandler: () => void;
+  buttonText?: string;
   disabled?: boolean;
   disabledMsg?: string;
   header?: string;
@@ -146,7 +147,7 @@ interface DeleteButtonProps extends ButtonProps {
 }
 
 export const DeleteButton = (props: DeleteButtonProps) => {
-  const { deleteHandler, disabled, disabledMsg, header, body, ...rest } = props;
+  const { deleteHandler, disabled, disabledMsg, header, body, buttonText, ...rest } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -162,7 +163,7 @@ export const DeleteButton = (props: DeleteButtonProps) => {
             isDisabled={disabled || false}
             {...rest}
           >
-            Delete
+            {buttonText || 'Delete'}
           </Button>
           <ConfirmDeleteModal
             isOpen={isOpen}
