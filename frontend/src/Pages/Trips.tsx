@@ -4,9 +4,10 @@ import { TripModel } from '../utilities/Interfaces';
 import TripCard from '../Components/TripCard';
 import fetchHelpers from '../utilities/fetchHelpers';
 import TripActionCard from '../Components/TripActionCard';
-import { Wrap, Flex, Button, Heading } from '@chakra-ui/react';
+import { Wrap, Flex, Button, Heading, Box } from '@chakra-ui/react';
 import { signOutBeforeTripSelect } from '../utilities/stateHandlers';
 import { useAuth0 } from '@auth0/auth0-react';
+import Constants from '../utilities/Constants';
 
 function Trips(): JSX.Element {
 
@@ -22,7 +23,7 @@ function Trips(): JSX.Element {
   useEffect(getTrips, [getAccessTokenSilently]);
 
   return (
-    <>
+    <Box background={Constants.BACKROUND_GRADIENT} height={'100%'} overflowY={'scroll'}>
       <Flex justifyContent={'flex-end'}>
         <Button
           margin="20px"
@@ -42,7 +43,7 @@ function Trips(): JSX.Element {
         ))}
         <TripActionCard />
       </Wrap>
-    </>
+    </Box>
   );
 
   function getTrips() {

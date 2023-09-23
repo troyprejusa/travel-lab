@@ -22,7 +22,7 @@ export default function ContactCard(props: ContactCardProps) {
       <Box
         maxW={'320px'}
         w={'full'}
-        bg={useColorModeValue('white', 'gray.900')}
+        background={'transparent'}
         boxShadow={'2xl'}
         rounded={'lg'}
         p={6}
@@ -61,7 +61,7 @@ export default function ContactCard(props: ContactCardProps) {
           <Badge
             px={2}
             py={1}  
-            bg={useColorModeValue('gray.50', 'gray.800')}
+            background={'transparent'}
             fontWeight={'400'}
           >
             {`Email: ${props.userData.email}`}
@@ -69,7 +69,7 @@ export default function ContactCard(props: ContactCardProps) {
           <Badge
             px={2}
             py={1}
-            bg={useColorModeValue('gray.50', 'gray.800')}
+            background={'transparent'}
             fontWeight={'400'}
           >
             {`Phone: ${props.userData.phone}`}

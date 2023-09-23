@@ -5,6 +5,8 @@ import { UserModel } from '../utilities/Interfaces';
 import ContactCard from '../Components/ContactCard';
 import { Wrap, Flex, Text } from '@chakra-ui/react';
 import NewTravellerModal from '../Components/NewTravellerModal';
+import TitleBar from '../Components/TitleBar';
+
 
 function Travellers(): JSX.Element {
   const travellers: Array<UserModel> = useSelector(
@@ -13,13 +15,9 @@ function Travellers(): JSX.Element {
 
   return (
     <>
-      <Flex justifyContent={'center'}>
-        <Text fontSize={'xl'} fontWeight={'bold'}>
-          Contact Info
-        </Text>
-      </Flex>
+      <TitleBar text='Contact Info' />
       <NewTravellerModal />
-      <Wrap spacing={'5%'}>
+      <Wrap spacing={'6'}>
         {travellers.map((user: UserModel, i: number) => (
           <ContactCard key={i} userData={user} />
         ))}

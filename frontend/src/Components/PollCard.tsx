@@ -33,6 +33,7 @@ import {
   ButtonGroup,
   Text,
 } from '@chakra-ui/react';
+import Constants from '../utilities/Constants';
 
 interface PollCardProps {
   data: PollResponseModel;
@@ -66,12 +67,13 @@ function PollCard(props: PollCardProps) {
       <Box
         onClick={onOpen}
         cursor={'pointer'}
-        bg={useColorModeValue('white', 'gray.800')}
+        background={Constants.BACKGROUND_TRANSPARENCY}
         maxW="sm"
         borderWidth="1px"
         rounded="lg"
         shadow="lg"
         position="relative"
+
       >
         <Flex
           width={'300px'}

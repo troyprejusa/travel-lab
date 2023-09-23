@@ -11,6 +11,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import { Flex, Stack, Box, Button, Text } from '@chakra-ui/react';
 import { useAuth0 } from '@auth0/auth0-react';
 import fetchHelpers from '../utilities/fetchHelpers';
+import TitleBar from '../Components/TitleBar';
 
 function Itinerary(): JSX.Element {
   const dispatch = useDispatch();
@@ -23,11 +24,7 @@ function Itinerary(): JSX.Element {
 
   return (
     <>
-      <Flex justifyContent={'center'}>
-        <Text fontSize={'xl'} fontWeight={'bold'}>
-          Itinerary
-        </Text>
-      </Flex>
+      <TitleBar text='Itinerary' />
       <Flex flexWrap={'wrap'} justifyContent={'space-around'} gap={'40px'}>
         <Stack
           spacing="4"

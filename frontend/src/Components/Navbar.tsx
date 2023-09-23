@@ -45,6 +45,7 @@ import {
 } from 'react-icons/fi';
 import { useAuth0 } from '@auth0/auth0-react';
 import { RefreshButton } from './Buttons';
+import Constants from '../utilities/Constants';
 
 interface LinkItemProps {
   name: string;
@@ -66,7 +67,7 @@ export default function Navbar({ children }: { children: ReactNode }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
+    <Box minH="100vh" background={Constants.BACKROUND_GRADIENT}>
       <SidebarContent
         onClose={() => onClose}
         display={{ base: 'none', md: 'block' }}

@@ -13,6 +13,7 @@ import {
   ButtonGroup,
   Box,
 } from '@chakra-ui/react';
+import Constants from '../utilities/Constants';
 
 interface ItineraryCardProps {
   itineraryData: ItineraryModel;
@@ -27,7 +28,7 @@ function ItineraryCard(props: ItineraryCardProps) {
   const endDateTime: Date = new Date(props.itineraryData.end_time);
 
   return (
-    <Card variant={'outline'}>
+    <Card variant={'outline'} background={Constants.BACKGROUND_TRANSPARENCY}>
       <CardHeader>
         <Heading size="md">{props.itineraryData.title}</Heading>
         <Box marginTop={'10px'}>

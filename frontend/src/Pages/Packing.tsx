@@ -21,6 +21,9 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { TrashButton, ClaimButton, UnclaimButton } from '../Components/Buttons';
+import Constants from '../utilities/Constants';
+import TitleBar from '../Components/TitleBar';
+
 
 function Packing(): JSX.Element {
   const dispatch = useDispatch();
@@ -33,13 +36,9 @@ function Packing(): JSX.Element {
 
   return (
     <>
-      <Flex justifyContent={'center'}>
-        <Text fontSize={'xl'} fontWeight={'bold'}>
-          Packing
-        </Text>
-      </Flex>
+      <TitleBar text='Packing' />
       <NewItemModal getItemsCallback={getItems} />
-      <TableContainer>
+      <TableContainer marginTop={6} borderRadius={'6px'}>
         <Table variant="striped" colorScheme="blackAlpha">
           <Thead>
             <Tr>

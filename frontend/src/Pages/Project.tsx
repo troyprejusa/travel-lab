@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from '../Components/Navbar';
-import { Box } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { TripModel } from '../utilities/Interfaces';
 import { RootState } from '../redux/Store';
@@ -22,9 +21,7 @@ function Project(): JSX.Element {
   return (
     <>
       <Navbar>
-        <Box>
-          <Outlet />
-        </Box>
+        <Outlet />
       </Navbar>
     </>
   );

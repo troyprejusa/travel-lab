@@ -10,6 +10,8 @@ import { reduxFetchPolls } from '../redux/PollSlice';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { Box, Text } from '@chakra-ui/react';
 import { useAuth0 } from '@auth0/auth0-react';
+import TitleBar from '../Components/TitleBar';
+
 
 function Poll(): JSX.Element {
   const dispatch = useDispatch();
@@ -21,11 +23,7 @@ function Poll(): JSX.Element {
 
   return (
     <>
-      <Flex justifyContent={'center'}>
-        <Text fontSize={'xl'} fontWeight={'bold'}>
-          Poll
-        </Text>
-      </Flex>
+      <TitleBar text='Poll' />
       <NewPollModal getPollsCallback={getPolls} />
       <Flex
         margin={'10%'}

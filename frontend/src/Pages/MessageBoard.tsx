@@ -5,6 +5,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
 import { ReceivedMessage, SentMessage } from '../Components/Messages';
 import { Flex, Box, Textarea, Button, HStack, Text } from '@chakra-ui/react';
+import TitleBar from '../Components/TitleBar';
+
 
 function MessageBoard(): JSX.Element {
   const user: UserModel = useSelector((state: RootState) => state.user);
@@ -23,11 +25,7 @@ function MessageBoard(): JSX.Element {
 
   return (
     <>
-      <Flex justifyContent={'center'}>
-        <Text fontSize={'xl'} fontWeight={'bold'}>
-          Messages
-        </Text>
-      </Flex>
+      <TitleBar text='Messages' />
       <Box height={'80vh'}>
         <Box height={'90%'} overflowY={'scroll'} margin="20px" ref={listDivRef}>
           {messages.length === 0 ? (
@@ -66,7 +64,7 @@ function MessageBoard(): JSX.Element {
 
     if (messageData === '') return;
 
-    const message: MessageModel = {
+    const message = {
       trip_id: trip.id,
       content: messageData,
       created_by: user.email,

@@ -20,6 +20,7 @@ import fetchHelpers from '../utilities/fetchHelpers';
 import { useAuth0 } from '@auth0/auth0-react';
 import ConfirmDeleteModal from '../Components/ConfirmDeleteModal';
 import { DeleteButton } from '../Components/Buttons';
+import TitleBar from '../Components/TitleBar';
 
 function TripSettings(): JSX.Element {
   const navigate = useNavigate();
@@ -35,11 +36,7 @@ function TripSettings(): JSX.Element {
 
   return (
     <>
-      <Flex justifyContent={'center'}>
-        <Text fontSize={'xl'} fontWeight={'bold'}>
-          Trip Settings
-        </Text>
-      </Flex>
+      <TitleBar text='Trip Settings' />
       <Box>
         <h2>Leave trip</h2>
         <Button colorScheme="red" onClick={leaveModalOnOpen}>
