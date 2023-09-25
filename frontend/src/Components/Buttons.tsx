@@ -32,9 +32,7 @@ export const TrashButton = (props: TrashButtonProps) => {
 
   return (
     <>
-      <Tooltip
-        label={disabled && disabledMsg ? disabledMsg : null}
-      >
+      <Tooltip label={disabled && disabledMsg ? disabledMsg : null}>
         <span>
           <IconButton
             icon={<FiTrash />}
@@ -96,20 +94,27 @@ export const UnclaimButton = (props: UnclaimButtonProps) => {
 
 interface EditButtonProps extends IconButtonProps {
   editHandler: () => void;
+  disabled?: boolean;
+  disabledMsg?: string;
 }
 
 export const EditButton = (props: EditButtonProps) => {
-  const { editHandler, ...rest } = props;
+  const { editHandler, disabled, disabledMsg, ...rest } = props;
 
   return (
-    <IconButton
-      variant={'outline'}
-      colorScheme="cyan"
-      fontSize={'20px'}
-      icon={<FiEdit />}
-      onClick={(event: SyntheticEvent) => editHandler()}
-      {...rest}
-    />
+    <Tooltip label={disabled && disabledMsg ? disabledMsg : null}>
+      <span>
+        <IconButton
+          variant={'outline'}
+          colorScheme="cyan"
+          fontSize={'20px'}
+          icon={<FiEdit />}
+          onClick={() => editHandler()}
+          isDisabled={disabled || false}
+          {...rest}
+        />
+      </span>
+    </Tooltip>
   );
 };
 
@@ -147,14 +152,20 @@ interface DeleteButtonProps extends ButtonProps {
 }
 
 export const DeleteButton = (props: DeleteButtonProps) => {
-  const { deleteHandler, disabled, disabledMsg, header, body, buttonText, ...rest } = props;
+  const {
+    deleteHandler,
+    disabled,
+    disabledMsg,
+    header,
+    body,
+    buttonText,
+    ...rest
+  } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
-      <Tooltip
-        label={disabled && disabledMsg ? disabledMsg : null}
-      >
+      <Tooltip label={disabled && disabledMsg ? disabledMsg : null}>
         <span>
           <Button
             onClick={onOpen}

@@ -12,6 +12,7 @@ import {
   CardFooter,
   ButtonGroup,
   Box,
+  Flex,
 } from '@chakra-ui/react';
 import Constants from '../utilities/Constants';
 
@@ -50,28 +51,37 @@ function ItineraryCard(props: ItineraryCardProps) {
           >
             {endDateTime.toDateString()} {endDateTime.toLocaleTimeString()}
           </Text>
-          <Heading size="xs">{props.itineraryData.created_by}</Heading>
         </Box>
       </CardHeader>
       <CardBody>
-        <Box >
+        <Box>
           <Heading size={'sm'}>Description:</Heading>
           <Text>{props.itineraryData.description}</Text>
         </Box>
       </CardBody>
       <CardFooter>
-        <ButtonGroup>
-          <EditButton
+        <Flex width="100%" justifyContent={'space-between'}>
+          <Box>
+            <Heading size="xs">Created by:</Heading>
+            <Text>{props.itineraryData.created_by}</Text>
+          </Box>
+          <ButtonGroup>
+            <EditButton
             aria-label="edit itinerary details"
+            disabled={true}
+            disabledMsg='Feature in work'
             editHandler={() => console.log('TODO')}
           />
-          <TrashButton
-            aria-label="delete itinerary stop"
-            deleteHandler={() => handleItineraryDelete(props.itineraryData.id)}
-            disabled={!props.tripData.admin}
-            disabledMsg='Only trip admins can delete itinerary stops'
-          />
-        </ButtonGroup>
+            <TrashButton
+              aria-label="delete itinerary stop"
+              deleteHandler={() =>
+                handleItineraryDelete(props.itineraryData.id)
+              }
+              disabled={!props.tripData.admin}
+              disabledMsg="Only trip admins can delete itinerary stops"
+            />
+          </ButtonGroup>
+        </Flex>
       </CardFooter>
     </Card>
   );

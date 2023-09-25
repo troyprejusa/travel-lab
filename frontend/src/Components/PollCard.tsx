@@ -5,7 +5,7 @@ import fetchHelpers from '../utilities/fetchHelpers';
 import { RootState } from '../redux/Store';
 import { AvatarRipple } from './AvatarWrapper';
 import { useAuth0 } from '@auth0/auth0-react';
-import { TrashButton } from './Buttons';
+import { EditButton, TrashButton } from './Buttons';
 import {
   PollResponseModel,
   PollVoteModel,
