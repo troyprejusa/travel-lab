@@ -8,6 +8,7 @@ import {
   AccordionPanel,
   AccordionIcon,
   Text,
+  ButtonGroup,
 } from '@chakra-ui/react';
 import { TripModel, UserModel } from '../utilities/Interfaces';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,7 +20,7 @@ import {
 } from '../utilities/stateHandlers';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { useAuth0 } from '@auth0/auth0-react';
-import { DeleteButton } from '../Components/Buttons';
+import { ClaimButton, DeleteButton, TrashButton, UnclaimButton } from '../Components/Buttons';
 import TitleBar from '../Components/TitleBar';
 
 function TripSettings(): JSX.Element {
@@ -56,20 +57,28 @@ function TripSettings(): JSX.Element {
             </AccordionButton>
           </h2>
           <AccordionPanel pb={4}>
-            <Text>insert text here</Text>
+            <Text>Accept or deny requests to join trip.</Text>
+            <ButtonGroup>
+              <ClaimButton />
+              <UnclaimButton />
+            </ButtonGroup>
           </AccordionPanel>
         </AccordionItem>
         <AccordionItem>
           <h2>
             <AccordionButton>
               <Box as="span" flex="1" textAlign="left">
-                Remove travellers
+                Traveller Roles
               </Box>
               <AccordionIcon />
             </AccordionButton>
           </h2>
           <AccordionPanel pb={4}>
-            <Text>insert text here</Text>
+            <Text>Promote travellers to administrators, or remove travellers from trip.</Text>
+            <ButtonGroup>
+              <ClaimButton />
+              <TrashButton />
+            </ButtonGroup>
           </AccordionPanel>
         </AccordionItem>
         <AccordionItem>
