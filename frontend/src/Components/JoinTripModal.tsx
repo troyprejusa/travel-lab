@@ -75,7 +75,7 @@ function JoinTripModal() {
     try {
       const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
       const res: Response = await fetch(
-        `/trip/${id_entry}/travellers/request`,
+        `/user/trips/${id_entry}`,
         {
           method: 'POST',
           headers: fetchHelpers.getTokenHeader(token),

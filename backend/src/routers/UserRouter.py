@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Form
 from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
 from models.Schemas import Traveller, Trip
-from utilities.auth_helpers import verify_attendance
+from utilities.auth_helpers import verify_attendance, verify_admin
 
 
 user_router = APIRouter(
@@ -75,8 +75,32 @@ async def get_trips(request: Request) -> list[Trip] | str:
             }
         )
 
+# User requests to join trip
+@user_router.post('/trips/{trip_id}')
+async def request_join_trip(request: Request, trip_id: str) -> dict[str, str]:
+    try:
+        db_handler.query("""
+            INSERT INTO traveller_trip VALUES ((SELECT id from traveller where email=%s), %s, False, False);
+        """, (request.state.user['email'], trip_id))
+        
+        return JSONResponse(
+            status_code=200,
+            content={
+                "message": f"SUCCESS: Submitted request for user {request.state.user['email']} to join {trip_id}"
+            }
+        )
+    
+    except Exception as error:
+        print(error)
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": f"ERROR: Unable for user {request.state.user['email']} to request joining trip {trip_id}"
+            }
+        )
+    
 # User leaves a trip
-@user_router.delete('/trip/{trip_id}')
+@user_router.delete('/trips/{trip_id}')
 async def leave_trip(request: Request, trip_id: str) -> str:
     try:
         verify_attendance(trip_id, request.state.user['trips'])
@@ -100,3 +124,56 @@ async def leave_trip(request: Request, trip_id: str) -> str:
                 "message": f"ERROR: Unable to remove user {request.state.user['email']} from trip {trip_id}"
             }
         )
+    
+# Trip admin accepts request to join trip
+@user_router.patch('/trips/{trip_id}/{requestor_id}')
+async def accept_join_trip(request: Request, trip_id: str, requestor_id: str) -> dict[str, str]:
+    try:
+        verify_admin(trip_id, request.state.user['trips'])
+
+        db_handler.query("""
+            UPDATE traveller_trip SET confirmed=TRUE WHERE traveller_id=%s AND trip_id=%s;
+        """, (requestor_id, trip_id))
+        
+        return JSONResponse(
+            status_code=200,
+            content={
+                "message": f"SUCCESS: Accepted user {requestor_id} into trip {trip_id}"
+            }
+        )
+    
+    except Exception as error:
+        print(error)
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": f"ERROR: Unable accept user {requestor_id} for trip {trip_id}"
+            }
+        )
+
+# Trip admin removes (possibly pending) user from trip
+@user_router.delete('/trips/{trip_id}/{requestor_id}')
+async def deny_join_trip(request: Request, trip_id: str, requestor_id: str) -> dict[str, str]:
+    try:
+        verify_admin(trip_id, request.state.user['trips'])
+
+        db_handler.query("""
+            DELETE FROM traveller_trip WHERE traveller_id=%s AND trip_id=%s;
+        """, (requestor_id, trip_id))
+        
+        return JSONResponse(
+            status_code=200,
+            content={
+                "message": f"SUCCESS: Denied request for user {requestor_id} to join trip {trip_id}"
+            }
+        )
+    
+    except Exception as error:
+        print(error)
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": f"ERROR: Error while submitting rejection for user {requestor_id} from trip {trip_id}"
+            }
+        )
+    

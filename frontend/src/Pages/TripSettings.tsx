@@ -87,7 +87,7 @@ function TripSettings(): JSX.Element {
   async function handleLeaveTrip() {
     try {
       const token = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
-      const res: Response = await fetch(`/user/trip/${trip.id}`, {
+      const res: Response = await fetch(`/user/trips/${trip.id}`, {
         method: 'DELETE',
         headers: fetchHelpers.getTokenHeader(token),
       });
