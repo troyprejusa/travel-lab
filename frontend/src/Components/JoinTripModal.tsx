@@ -21,7 +21,7 @@ interface JoinTripModalProps {}
 function JoinTripModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const joinForm = useRef<HTMLFormElement>(null);
-  const {getAccessTokenSilently} = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
 
   return (
     <>
@@ -73,18 +73,20 @@ function JoinTripModal() {
     }
 
     try {
-      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
-      const res: Response = await fetch(
-        `/user/trips/${id_entry}`,
-        {
-          method: 'POST',
-          headers: fetchHelpers.getTokenHeader(token),
-        }
+      const token: string = await fetchHelpers.getAuth0Token(
+        getAccessTokenSilently
       );
+      const res: Response = await fetch(`/user/trips/${id_entry}`, {
+        method: 'POST',
+        headers: fetchHelpers.getTokenHeader(token),
+      });
 
       if (res.ok) {
         // Close the modal
         onClose();
+        alert(
+          'Request submitted to join trip! Check back later to see this trip after an admin admits you :)'
+        );
       } else {
         const errorRes: any = await res.json();
         throw new Error(errorRes);
