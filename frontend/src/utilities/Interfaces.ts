@@ -12,6 +12,7 @@ export interface UserModel {
   last_name: string | null;
   email: string;
   phone: string | null;
+  confirmed: boolean;
 }
 
 export interface TripModel {
