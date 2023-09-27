@@ -5,7 +5,7 @@ import fetchHelpers from '../utilities/fetchHelpers';
 import { RootState } from '../redux/Store';
 import { AvatarRipple } from './AvatarWrapper';
 import { useAuth0 } from '@auth0/auth0-react';
-import { EditButton, TrashButton } from './Buttons';
+import { TrashButton } from './Buttons';
 import {
   PollResponseModel,
   PollVoteModel,
@@ -17,7 +17,6 @@ import {
 import {
   Flex,
   Box,
-  useColorModeValue,
   useDisclosure,
   Modal,
   ModalOverlay,
@@ -153,12 +152,12 @@ function PollCard(props: PollCardProps) {
             <Flex justifyContent={'flex-end'}>
               <ButtonGroup>
                 <TrashButton
-                  deleteHandler={() =>
+                  clickHandler={() =>
                     handleDeleteButtonClick(props.data.poll_id)
                   }
                   aria-label="delete poll"
+                  tooltipMsg={trip.admin ? '' : 'Only trip admins can delete polls'}
                   disabled={!trip.admin}
-                  disabledMsg={'Only trip admins can delete polls'}
                 />
               </ButtonGroup>
             </Flex>

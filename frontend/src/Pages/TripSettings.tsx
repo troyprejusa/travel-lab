@@ -20,7 +20,7 @@ import {
 } from '../utilities/stateHandlers';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { useAuth0 } from '@auth0/auth0-react';
-import { ClaimButton, DeleteButton, TrashButton, UnclaimButton } from '../Components/Buttons';
+import { AddUserButton, DeleteButton, RemoveUserButton, PromoteUserButton, DemoteUserButton } from '../Components/Buttons';
 import TitleBar from '../Components/TitleBar';
 
 function TripSettings(): JSX.Element {
@@ -59,8 +59,8 @@ function TripSettings(): JSX.Element {
           <AccordionPanel pb={4}>
             <Text>Accept or deny requests to join trip.</Text>
             <ButtonGroup>
-              <ClaimButton />
-              <UnclaimButton />
+              <AddUserButton />
+              <RemoveUserButton />
             </ButtonGroup>
           </AccordionPanel>
         </AccordionItem>
@@ -76,8 +76,9 @@ function TripSettings(): JSX.Element {
           <AccordionPanel pb={4}>
             <Text>Promote travellers to administrators, or remove travellers from trip.</Text>
             <ButtonGroup>
-              <ClaimButton />
-              <TrashButton />
+              <PromoteUserButton />
+              <DemoteUserButton />
+              <RemoveUserButton />
             </ButtonGroup>
           </AccordionPanel>
         </AccordionItem>
@@ -97,9 +98,9 @@ function TripSettings(): JSX.Element {
             </Text>
             <DeleteButton
               buttonText="Leave"
-              deleteHandler={handleLeaveTrip}
-              header={'Leave trip'}
-              body={`Are you sure you want to leave trip to ${trip.destination}?`}
+              clickHandler={handleLeaveTrip}
+              modalHeader={'Leave trip'}
+              modalBody={`Are you sure you want to leave trip to ${trip.destination}?`}
             />
           </AccordionPanel>
         </AccordionItem>
@@ -118,11 +119,11 @@ function TripSettings(): JSX.Element {
               and permanently delete all data associated with this trip.
             </Text>
             <DeleteButton
-              deleteHandler={handleDeleteTrip}
+              clickHandler={handleDeleteTrip}
+              tooltipMsg={trip.admin ? '' : 'Only trip admins can delete trip'}
               disabled={!trip.admin}
-              disabledMsg={'Only trip admins can delete trip'}
-              header={'Delete trip'}
-              body={
+              modalHeader={'Delete trip'}
+              modalBody={
                 'Are you sure you want to delete this trip? This action is irreversible!'
               }
             />

@@ -49,11 +49,11 @@ function Itinerary(): JSX.Element {
         <Box minWidth='lg' width='50vw'>
           <style>{`.fc-scrollgrid {background-color: white;}`}</style>
           <FullCalendar
-            plugins={[dayGridPlugin, timeGridPlugin]} // <-- Add timeGridPlugin here
+            plugins={[dayGridPlugin, timeGridPlugin]}
             headerToolbar={{
               left: 'prev,next today',
               center: 'title',
-              right: 'dayGridMonth,timeGridWeek', // <-- Add buttons for month and week views
+              right: 'dayGridMonth,timeGridWeek',
             }}
             initialView="dayGridMonth"
             events={itinerary.map((stop: ItineraryModel) => {

@@ -69,7 +69,7 @@ function Packing(): JSX.Element {
                             return (
                               <ClaimButton
                                 aria-label="claim packing item"
-                                claimHandler={() =>
+                                clickHandler={() =>
                                   handleClaimButtonClick(thing.id)
                                 }
                               />
@@ -79,7 +79,7 @@ function Packing(): JSX.Element {
                             return (
                               <UnclaimButton
                                 aria-label="unclaim packing item"
-                                unclaimHandler={() =>
+                                clickHandler={() =>
                                   handleUnclaimButtonClick(thing.id)
                                 }
                               />
@@ -92,9 +92,9 @@ function Packing(): JSX.Element {
                       }
                       <TrashButton
                         aria-label="delete packing item"
-                        deleteHandler={() => handleDeleteButtonClick(thing.id)}
+                        clickHandler={() => handleDeleteButtonClick(thing.id)}
+                        tooltipMsg={trip.admin ? '' : 'Only trip admins can delete packing items'}
                         disabled={!trip.admin}
-                        disabledMsg={'Only trip admins can delete packing items'}
                       />
                     </ButtonGroup>
                   </Td>

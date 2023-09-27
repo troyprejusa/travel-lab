@@ -1,10 +1,19 @@
-import React, { SyntheticEvent } from 'react';
+import React, { ReactElement } from 'react';
+import fetchHelpers from '../utilities/fetchHelpers';
+import { fetchAllTripData } from '../utilities/stateHandlers';
+import { Dispatch } from '@reduxjs/toolkit';
+import { useAuth0 } from '@auth0/auth0-react';
+import ConfirmDeleteModal from './ConfirmDeleteModal';
 import {
   FiEdit,
   FiTrash,
   FiUserCheck,
   FiUserX,
+  FiUserPlus,
+  FiUserMinus,
   FiRotateCw,
+  FiSunrise,
+  FiSunset,
 } from 'react-icons/fi';
 import {
   IconButton,
@@ -14,107 +23,156 @@ import {
   ButtonProps,
   Button,
 } from '@chakra-ui/react';
-import fetchHelpers from '../utilities/fetchHelpers';
-import { fetchAllTripData } from '../utilities/stateHandlers';
-import { Dispatch } from '@reduxjs/toolkit';
-import { useAuth0 } from '@auth0/auth0-react';
-import ConfirmDeleteModal from './ConfirmDeleteModal';
 
-interface TrashButtonProps extends IconButtonProps {
-  deleteHandler: () => void;
+// Should be able to receive and pass on all props for an IconButton
+interface ConfigurableIconButtonWrapperProps extends IconButtonProps {
+  clickHandler: () => void;
+  tooltipMsg?: string;
   disabled?: boolean;
-  disabledMsg?: string;
 }
 
-export const TrashButton = (props: TrashButtonProps) => {
-  const { deleteHandler, disabled, disabledMsg, ...rest } = props;
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  return (
-    <>
-      <Tooltip label={disabled && disabledMsg ? disabledMsg : null}>
-        <span>
-          <IconButton
-            icon={<FiTrash />}
-            onClick={onOpen}
-            fontSize={'20px'}
-            variant={'outline'}
-            colorScheme="red"
-            isDisabled={disabled || false}
-            {...rest}
-          />
-          <ConfirmDeleteModal
-            isOpen={isOpen}
-            onClose={onClose}
-            deleteHandler={deleteHandler}
-          />
-        </span>
-      </Tooltip>
-    </>
-  );
-};
-
-interface ClaimButtonProps extends IconButtonProps {
-  claimHandler: () => void;
+// Add in icon and colorScheme specification
+interface ConfigurableIconButtonProps
+  extends ConfigurableIconButtonWrapperProps {
+  icon: ReactElement;
+  colorScheme: string;
 }
 
-export const ClaimButton = (props: ClaimButtonProps) => {
-  const { claimHandler, ...rest } = props;
+const ConfigurableIconButton = (props: ConfigurableIconButtonProps) => {
+  const { clickHandler, tooltipMsg, disabled, icon, colorScheme, ...rest } =
+    props;
 
   return (
-    <IconButton
-      variant={'outline'}
-      colorScheme="teal"
-      fontSize={'20px'}
-      icon={<FiUserCheck />}
-      onClick={(event: SyntheticEvent) => claimHandler()}
-      {...rest}
-    />
-  );
-};
-
-interface UnclaimButtonProps extends IconButtonProps {
-  unclaimHandler: () => void;
-}
-
-export const UnclaimButton = (props: UnclaimButtonProps) => {
-  const { unclaimHandler, ...rest } = props;
-
-  return (
-    <IconButton
-      variant={'outline'}
-      colorScheme="yellow"
-      fontSize={'20px'}
-      icon={<FiUserX />}
-      onClick={(event: SyntheticEvent) => unclaimHandler()}
-      {...rest}
-    />
-  );
-};
-
-interface EditButtonProps extends IconButtonProps {
-  editHandler: () => void;
-  disabled?: boolean;
-  disabledMsg?: string;
-}
-
-export const EditButton = (props: EditButtonProps) => {
-  const { editHandler, disabled, disabledMsg, ...rest } = props;
-
-  return (
-    <Tooltip label={disabled && disabledMsg ? disabledMsg : null}>
+    <Tooltip label={tooltipMsg || null}>
       <span>
         <IconButton
           variant={'outline'}
-          colorScheme="cyan"
+          colorScheme={colorScheme}
           fontSize={'20px'}
-          icon={<FiEdit />}
-          onClick={() => editHandler()}
+          icon={icon}
+          onClick={clickHandler}
           isDisabled={disabled || false}
           {...rest}
         />
       </span>
     </Tooltip>
+  );
+};
+
+export const ClaimButton = (props: ConfigurableIconButtonWrapperProps) => (
+  <ConfigurableIconButton
+    {...props}
+    icon={<FiUserCheck />}
+    colorScheme="teal"
+  />
+);
+
+export const UnclaimButton = (props: ConfigurableIconButtonWrapperProps) => (
+  <ConfigurableIconButton {...props} icon={<FiUserX />} colorScheme="yellow" />
+);
+
+export const EditButton = (props: ConfigurableIconButtonWrapperProps) => (
+  <ConfigurableIconButton {...props} icon={<FiEdit />} colorScheme="cyan" />
+);
+
+export const AddUserButton = (props: ConfigurableIconButtonWrapperProps) => (
+  <ConfigurableIconButton
+    {...props}
+    icon={<FiUserPlus />}
+    colorScheme="green"
+  />
+);
+
+export const RemoveUserButton = (props: ConfigurableIconButtonWrapperProps) => (
+  <ConfigurableIconButton
+    {...props}
+    icon={<FiUserMinus />}
+    colorScheme="pink"
+  />
+);
+
+export const PromoteUserButton = (
+  props: ConfigurableIconButtonWrapperProps
+) => (
+  <ConfigurableIconButton
+    {...props}
+    icon={<FiSunrise />}
+    colorScheme="orange"
+  />
+);
+
+export const DemoteUserButton = (props: ConfigurableIconButtonWrapperProps) => (
+  <ConfigurableIconButton {...props} icon={<FiSunset />} colorScheme="purple" />
+);
+
+// IconButton + Modal
+export const TrashButton = (props: ConfigurableIconButtonWrapperProps) => {
+  const { clickHandler, ...rest } = props;
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  return (
+    <>
+      <ConfigurableIconButton
+        {...rest}
+        clickHandler={onOpen}
+        icon={<FiTrash />}
+        colorScheme="red"
+      />
+
+      <ConfirmDeleteModal
+        isOpen={isOpen}
+        onClose={onClose}
+        deleteHandler={clickHandler}
+      />
+    </>
+  );
+};
+
+interface DeleteButtonProps extends ButtonProps {
+  clickHandler: () => void;
+  buttonText?: string;
+  tooltipMsg?: string;
+  disabled?: boolean;
+  modalHeader?: string;
+  modalBody?: string;
+}
+
+// Button + Modal
+export const DeleteButton = (props: DeleteButtonProps) => {
+  const {
+    clickHandler,
+    buttonText,
+    tooltipMsg,
+    disabled,
+    modalHeader,
+    modalBody,
+    ...rest
+  } = props;
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  return (
+    <>
+      <Tooltip label={tooltipMsg || null}>
+        <span>
+          <Button
+            onClick={onOpen}
+            colorScheme="red"
+            size={'md'}
+            isDisabled={disabled || false}
+            {...rest}
+          >
+            {buttonText || 'Delete'}
+          </Button>
+          <ConfirmDeleteModal
+            isOpen={isOpen}
+            onClose={onClose}
+            deleteHandler={clickHandler}
+            header={modalHeader}
+            body={modalBody}
+          />
+        </span>
+      </Tooltip>
+    </>
   );
 };
 
@@ -139,52 +197,5 @@ export const RefreshButton = (props: RefreshButtonProps) => {
       }}
       {...rest}
     />
-  );
-};
-
-interface DeleteButtonProps extends ButtonProps {
-  deleteHandler: () => void;
-  buttonText?: string;
-  disabled?: boolean;
-  disabledMsg?: string;
-  header?: string;
-  body?: string;
-}
-
-export const DeleteButton = (props: DeleteButtonProps) => {
-  const {
-    deleteHandler,
-    disabled,
-    disabledMsg,
-    header,
-    body,
-    buttonText,
-    ...rest
-  } = props;
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  return (
-    <>
-      <Tooltip label={disabled && disabledMsg ? disabledMsg : null}>
-        <span>
-          <Button
-            onClick={onOpen}
-            colorScheme="red"
-            size={'md'}
-            isDisabled={disabled || false}
-            {...rest}
-          >
-            {buttonText || 'Delete'}
-          </Button>
-          <ConfirmDeleteModal
-            isOpen={isOpen}
-            onClose={onClose}
-            deleteHandler={deleteHandler}
-            header={header}
-            body={body}
-          />
-        </span>
-      </Tooltip>
-    </>
   );
 };

@@ -68,17 +68,16 @@ function ItineraryCard(props: ItineraryCardProps) {
           <ButtonGroup>
             <EditButton
             aria-label="edit itinerary details"
+            tooltipMsg='Feature in work'
             disabled={true}
-            disabledMsg='Feature in work'
-            editHandler={() => console.log('TODO')}
           />
             <TrashButton
               aria-label="delete itinerary stop"
-              deleteHandler={() =>
+              clickHandler={() =>
                 handleItineraryDelete(props.itineraryData.id)
               }
               disabled={!props.tripData.admin}
-              disabledMsg="Only trip admins can delete itinerary stops"
+              tooltipMsg={props.tripData.admin ? '' : "Only trip admins can delete itinerary stops"}
             />
           </ButtonGroup>
         </Flex>
