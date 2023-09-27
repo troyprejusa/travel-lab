@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
-from models.Schemas import Trip, Traveller, Itinerary, Message, NewPollBody, PollResponseBody, Packing
+from models.Schemas import TripResponse, TravellerResponse, Itinerary, Message, PollRequest, PollResponse, Packing
 from typing import Annotated
 from datetime import date, datetime
 from utilities.merge_polls import merge_polls
@@ -21,7 +21,7 @@ async def create_trip(
     description: Annotated[str, Form()],
     start_date: Annotated[date, Form()],
     end_date: Annotated[date, Form()]
-    ) -> Trip | dict[str, str]:
+    ) -> TripResponse | str:
 
     try:
         # This call must not only create the trip, but must add
@@ -140,7 +140,7 @@ async def add_itinerary_stop(
 
 # Remove itinerary item from this trip
 @trip_router.delete('/{trip_id}/itinerary/{item_id}')
-async def remove_itinerary_stop(request: Request, trip_id: str, item_id: int) ->  dict[str, str]:
+async def remove_itinerary_stop(request: Request, trip_id: str, item_id: int) ->  str:
     try:
         verify_admin(trip_id, request.state.user['trips'])
 
@@ -167,7 +167,7 @@ async def remove_itinerary_stop(request: Request, trip_id: str, item_id: int) ->
         )
 
 @trip_router.get('/{trip_id}/message')
-async def get_messages(request: Request, trip_id: str) -> list[Message] | dict[str, str]:
+async def get_messages(request: Request, trip_id: str) -> list[Message] | str:
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
@@ -188,7 +188,7 @@ async def get_messages(request: Request, trip_id: str) -> list[Message] | dict[s
 
     
 @trip_router.get('/{trip_id}/poll')
-async def get_polls(request: Request, trip_id: str) -> list[PollResponseBody] | dict[str, str]:
+async def get_polls(request: Request, trip_id: str) -> list[PollResponse] | str:
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
@@ -238,7 +238,7 @@ async def get_polls(request: Request, trip_id: str) -> list[PollResponseBody] | 
 
 
 @trip_router.post('/{trip_id}/poll')
-async def add_poll(request: Request, trip_id: str, poll_body: NewPollBody) -> dict[str, str]:
+async def add_poll(request: Request, trip_id: str, poll_body: PollRequest) -> dict[str, str]:
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
@@ -439,12 +439,16 @@ async def unclaim_packing_item(request: Request, trip_id: str, item_id: int) -> 
 
 # Get info for travellers on this trip
 @trip_router.get('/{trip_id}/travellers')
-async def get_travellers(request: Request, trip_id: str) ->  list[Traveller] | dict[str, str]:
+async def get_travellers(request: Request, trip_id: str) ->  list[TravellerResponse] | str:
     try:
         verify_attendance(trip_id, request.state.user['trips'])
         
         travellers = db_handler.query("""
-            SELECT * from traveller WHERE id in (SELECT traveller_id FROM traveller_trip WHERE trip_id=%s) ORDER BY last_name;
+            SELECT traveller.*, traveller_trip.confirmed 
+            FROM traveller 
+            JOIN traveller_trip ON traveller.id = traveller_trip.traveller_id
+            WHERE traveller_trip.trip_id = %s
+            ORDER BY last_name;
             """, (trip_id,))
         
         return travellers

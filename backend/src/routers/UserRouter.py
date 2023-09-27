@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
-from models.Schemas import Traveller, Trip
+from models.Schemas import TravellerResponse, TripResponse
 from utilities.auth_helpers import verify_attendance, verify_admin
 
 
@@ -11,12 +11,15 @@ user_router = APIRouter(
 
 # Upsert a user in database
 @user_router.post('/{email}')
-async def upsert_user(email: str) -> Traveller | str:
+async def upsert_user(email: str) -> TravellerResponse | str:
     try:
         user = db_handler.query("""
             INSERT INTO traveller (email) VALUES (%s) ON CONFLICT (email) DO NOTHING;
                          
-            SELECT * FROM traveller WHERE email=%s;
+            SELECT traveller.*, traveller_trip.confirmed 
+            FROM traveller
+            JOIN traveller_trip ON traveller.id = traveller_trip.traveller_id
+            WHERE email=%s;
         """, (email, email))[0]
 
         return user
@@ -55,7 +58,7 @@ async def delete_user(request: Request) -> dict[str, str]:
 
 # Get a user's trips
 @user_router.get('/trips')
-async def get_trips(request: Request) -> list[Trip] | str:
+async def get_trips(request: Request) -> list[TripResponse] | str:
     try:
         data = db_handler.query("""
             SELECT trip.*, traveller_trip.admin
@@ -127,7 +130,7 @@ async def leave_trip(request: Request, trip_id: str) -> str:
     
 # Trip admin accepts request to join trip
 @user_router.patch('/trips/{trip_id}/{requestor_id}')
-async def accept_join_trip(request: Request, trip_id: str, requestor_id: str) -> dict[str, str]:
+async def accept_join_trip(request: Request, trip_id: str, requestor_id: str) -> str:
     try:
         verify_admin(trip_id, request.state.user['trips'])
 
@@ -153,7 +156,7 @@ async def accept_join_trip(request: Request, trip_id: str, requestor_id: str) ->
 
 # Trip admin removes (possibly pending) user from trip
 @user_router.delete('/trips/{trip_id}/{requestor_id}')
-async def deny_join_trip(request: Request, trip_id: str, requestor_id: str) -> dict[str, str]:
+async def deny_join_trip(request: Request, trip_id: str, requestor_id: str) -> str:
     try:
         verify_admin(trip_id, request.state.user['trips'])
 

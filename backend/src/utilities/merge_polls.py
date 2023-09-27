@@ -1,7 +1,7 @@
-from models.Schemas import PollResponseBody, PollVoteBody
+from models.Schemas import PollResponse, PollVoteResponse
 
 
-def merge_polls(data: list[dict]) -> list[PollResponseBody]:
+def merge_polls(data: list[dict]) -> list[PollResponse]:
     # Note that the below logic relies on the data being sorted 
     # by poll_id from the query. After that, this is basically
     # the merge intervals problem
@@ -40,7 +40,7 @@ def merge_polls(data: list[dict]) -> list[PollResponseBody]:
     return output
 
 
-def create_new_poll(row: dict) -> PollResponseBody:
+def create_new_poll(row: dict) -> PollResponse:
     new_option = create_new_option(row)
 
     poll_body = {}
@@ -51,20 +51,20 @@ def create_new_poll(row: dict) -> PollResponseBody:
     poll_body['created_by'] = row['created_by']
     poll_body['options'] = [new_option]
 
-    new_poll = PollResponseBody.parse_obj(poll_body)
+    new_poll = PollResponse.parse_obj(poll_body)
 
     return new_poll
 
-def create_new_option(row: dict) -> PollVoteBody:
+def create_new_option(row: dict) -> PollVoteResponse:
     new_option = {}
     new_option['option_id'] = row['option_id']
     new_option['option'] = row['option']
     new_option['votes'] = []
 
-    return PollVoteBody.parse_obj(new_option)
+    return PollVoteResponse.parse_obj(new_option)
 
 
-def add_vote_to_poll(row: dict, poll_body: PollResponseBody) -> None:
+def add_vote_to_poll(row: dict, poll_body: PollResponse) -> None:
     # Check if this option already exists in the options
     for idx, option in enumerate(poll_body.options):
         if row['option_id'] == option.option_id:
@@ -78,7 +78,7 @@ def add_vote_to_poll(row: dict, poll_body: PollResponseBody) -> None:
     add_vote_to_option(len(poll_body.options) - 1, row['voted_by'], poll_body)
         
 
-def add_vote_to_option(idx: int, voter: str | None, poll_body: PollResponseBody) -> None:
+def add_vote_to_option(idx: int, voter: str | None, poll_body: PollResponse) -> None:
     if voter is None:
         return
     

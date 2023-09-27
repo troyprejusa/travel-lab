@@ -3,14 +3,15 @@ from uuid import UUID
 from datetime import date, datetime
 
 
-class Traveller(BaseModel):
+class TravellerResponse(BaseModel):
     id: UUID
     first_name: str | None = None
     last_name: str | None = None
     email: str
     phone: str | None = None
+    confirmed: bool
 
-class Trip(BaseModel):
+class TripResponse(BaseModel):
     id: UUID
     destination: str
     description: str
@@ -47,21 +48,21 @@ class Packing(BaseModel):
     created_by: str
     packed_by: str | None = None
 
-class NewPollBody(BaseModel):
+class PollRequest(BaseModel):
     title: str
     description: str | None = None
     options: list[str]
 
 
-class PollVoteBody(BaseModel):
+class PollVoteResponse(BaseModel):
     option_id: int
     option: str
     votes: list[str]
 
-class PollResponseBody(BaseModel):
+class PollResponse(BaseModel):
     poll_id: int
     title: str
     description: str | None = None
     created_at: datetime
     created_by: str
-    options: list[PollVoteBody]
+    options: list[PollVoteResponse]
