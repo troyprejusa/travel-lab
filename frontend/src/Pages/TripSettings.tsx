@@ -136,7 +136,7 @@ function TripSettings(): JSX.Element {
                           <Td>
                             <ButtonGroup>
                               <PromoteUserButton />
-                              <DemoteUserButton />
+                              {/* <DemoteUserButton /> */}
                               <RemoveUserButton />
                             </ButtonGroup>
                           </Td>
