@@ -1,8 +1,11 @@
 import React from 'react';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { useAuth0 } from '@auth0/auth0-react';
-import { ItineraryModel, TripModel } from '../utilities/Interfaces';
+import { ItineraryModel, TripModel, UserModel } from '../utilities/Interfaces';
 import { EditButton, TrashButton } from './Buttons';
+import Constants from '../utilities/Constants';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/Store';
 import {
   Card,
   CardHeader,
@@ -14,16 +17,17 @@ import {
   Box,
   Flex,
 } from '@chakra-ui/react';
-import Constants from '../utilities/Constants';
 
 interface ItineraryCardProps {
   itineraryData: ItineraryModel;
-  tripData: TripModel;
   getItineraryCallback: () => void;
 }
 
 function ItineraryCard(props: ItineraryCardProps) {
   const { getAccessTokenSilently } = useAuth0();
+
+  const trip: TripModel = useSelector((state: RootState) => state.trip);
+  const user: UserModel = useSelector((state: RootState) => state.user);
 
   const startDateTime: Date = new Date(props.itineraryData.start_time);
   const endDateTime: Date = new Date(props.itineraryData.end_time);
@@ -67,17 +71,17 @@ function ItineraryCard(props: ItineraryCardProps) {
           </Box>
           <ButtonGroup>
             <EditButton
-            aria-label="edit itinerary details"
-            tooltipMsg='Feature in work'
-            disabled={true}
-          />
+              aria-label="edit itinerary details"
+              tooltipMsg="Feature in work"
+              disabled={true}
+            />
             <TrashButton
               aria-label="delete itinerary stop"
-              clickHandler={() =>
-                handleItineraryDelete(props.itineraryData.id)
+              clickHandler={() => handleItineraryDelete(props.itineraryData.id)}
+              disabled={!user.admin}
+              tooltipMsg={
+                user.admin ? '' : 'Only trip admins can delete itinerary stops'
               }
-              disabled={!props.tripData.admin}
-              tooltipMsg={props.tripData.admin ? '' : "Only trip admins can delete itinerary stops"}
             />
           </ButtonGroup>
         </Flex>
@@ -91,7 +95,7 @@ function ItineraryCard(props: ItineraryCardProps) {
         getAccessTokenSilently
       );
       const res: Response = await fetch(
-        `/trip/${props.tripData.id}/itinerary/${itinerary_id}`,
+        `/trip/${trip.id}/itinerary/${itinerary_id}`,
         {
           method: 'DELETE',
           headers: fetchHelpers.getTokenHeader(token),

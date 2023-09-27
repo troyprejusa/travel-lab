@@ -16,7 +16,7 @@ async def upsert_user(email: str) -> TravellerResponse | str:
         user = db_handler.query("""
             INSERT INTO traveller (email) VALUES (%s) ON CONFLICT (email) DO NOTHING;
                          
-            SELECT traveller.*, traveller_trip.confirmed 
+            SELECT traveller.*, traveller_trip.confirmed, traveller_trip.admin
             FROM traveller
             JOIN traveller_trip ON traveller.id = traveller_trip.traveller_id
             WHERE email=%s;
@@ -61,10 +61,13 @@ async def delete_user(request: Request) -> dict[str, str]:
 async def get_trips(request: Request) -> list[TripResponse] | str:
     try:
         data = db_handler.query("""
-            SELECT trip.*, traveller_trip.admin
-            FROM trip
-            JOIN traveller_trip ON trip.id = traveller_trip.trip_id 
-            WHERE traveller_trip.traveller_id = (SELECT id from traveller where email=%s) AND traveller_trip.confirmed=True;
+            SELECT * FROM trip WHERE id in (
+                SELECT trip_id FROM traveller_trip WHERE 
+                    confirmed = TRUE AND 
+                    traveller_id = (
+                    SELECT id FROM traveller WHERE email = %s
+                )
+            );
         """, (request.state.user['email'],))
         
         return data
@@ -156,7 +159,7 @@ async def accept_join_trip(request: Request, trip_id: str, requestor_id: str) ->
 
 # Trip admin removes (possibly pending) user from trip
 @user_router.delete('/trips/{trip_id}/{requestor_id}')
-async def deny_join_trip(request: Request, trip_id: str, requestor_id: str) -> str:
+async def remove_from_trip(request: Request, trip_id: str, requestor_id: str) -> str:
     try:
         verify_admin(trip_id, request.state.user['trips'])
 

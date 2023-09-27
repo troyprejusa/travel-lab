@@ -444,7 +444,7 @@ async def get_travellers(request: Request, trip_id: str) ->  list[TravellerRespo
         verify_attendance(trip_id, request.state.user['trips'])
         
         travellers = db_handler.query("""
-            SELECT traveller.*, traveller_trip.confirmed 
+            SELECT traveller.*, traveller_trip.confirmed, traveller_trip.admin
             FROM traveller 
             JOIN traveller_trip ON traveller.id = traveller_trip.traveller_id
             WHERE traveller_trip.trip_id = %s

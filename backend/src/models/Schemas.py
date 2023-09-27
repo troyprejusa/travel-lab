@@ -10,6 +10,8 @@ class TravellerResponse(BaseModel):
     email: str
     phone: str | None = None
     confirmed: bool
+    admin: bool
+
 
 class TripResponse(BaseModel):
     id: UUID
@@ -19,7 +21,6 @@ class TripResponse(BaseModel):
     end_date: date
     created_at: datetime
     created_by: str
-    admin: bool
 
 class Itinerary(BaseModel):
     id: int

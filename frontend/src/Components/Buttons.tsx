@@ -87,7 +87,7 @@ export const RemoveUserButton = (props: ConfigurableIconButtonWrapperProps) => (
   <ConfigurableIconButton
     {...props}
     icon={<FiUserMinus />}
-    colorScheme="pink"
+    colorScheme="red"
   />
 );
 

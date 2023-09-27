@@ -123,7 +123,12 @@ function Home(): JSX.Element {
           >
             <StatsCard
               title="Travellers"
-              stat={travellers.length}
+              stat={travellers.filter((user: UserModel) => user.confirmed).length}
+              icon={<FiUser />}
+            />
+            <StatsCard
+              title="Pending travellers"
+              stat={travellers.filter((user: UserModel) => !user.confirmed).length}
               icon={<FiUser />}
             />
           </GridItem>
@@ -140,7 +145,7 @@ function Home(): JSX.Element {
             }}
           >
             <StatsCard
-              title="Packing"
+              title="Packing items"
               stat={packing.length}
               icon={<FiShoppingBag />}
             />

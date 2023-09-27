@@ -278,7 +278,10 @@ class DatabaseSetup:
         """)
 
     def add_users_to_trips(self):
-        # Add both users to both trips
+        '''
+        Add Troy to trip 1 (confirmed, admin), 2 (confirmed, admin), and 3 (need to request)
+        Add Joe to trip 1 (confirmed), 2 (not confirmed), and 3 (confirmed, admin)
+        '''
         self.database.query("""
             INSERT INTO traveller_trip 
             VALUES (
@@ -290,24 +293,33 @@ class DatabaseSetup:
 
             INSERT INTO traveller_trip 
                 VALUES (
+                (SELECT id FROM traveller WHERE first_name='troy'),
+                (SELECT id FROM trip WHERE destination='Cabo'),
+                TRUE,
+                TRUE
+            );
+                            
+            INSERT INTO traveller_trip 
+                VALUES (
                 (SELECT id FROM traveller WHERE first_name='joe'),
                 (SELECT id FROM trip WHERE destination='Puerto Vallarta'),
                 TRUE,
                 FALSE
             );
 
-            INSERT INTO traveller_trip 
-                VALUES (
-                (SELECT id FROM traveller WHERE first_name='troy'),
-                (SELECT id FROM trip WHERE destination='Cabo'),
-                TRUE,
-                FALSE
-            );
 
             INSERT INTO traveller_trip 
                 VALUES (
                 (SELECT id FROM traveller WHERE first_name='joe'),
                 (SELECT id FROM trip WHERE destination='Cabo'),
+                FALSE,
+                FALSE
+            );
+                            
+            INSERT INTO traveller_trip 
+                VALUES (
+                (SELECT id FROM traveller WHERE first_name='joe'),
+                (SELECT id FROM trip WHERE destination='Europe'),
                 TRUE,
                 TRUE
             );

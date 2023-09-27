@@ -9,6 +9,14 @@ import {
   AccordionIcon,
   Text,
   ButtonGroup,
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
 } from '@chakra-ui/react';
 import { TripModel, UserModel } from '../utilities/Interfaces';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,7 +28,13 @@ import {
 } from '../utilities/stateHandlers';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { useAuth0 } from '@auth0/auth0-react';
-import { AddUserButton, DeleteButton, RemoveUserButton, PromoteUserButton, DemoteUserButton } from '../Components/Buttons';
+import {
+  AddUserButton,
+  DeleteButton,
+  RemoveUserButton,
+  PromoteUserButton,
+  DemoteUserButton,
+} from '../Components/Buttons';
 import TitleBar from '../Components/TitleBar';
 
 function TripSettings(): JSX.Element {
@@ -28,6 +42,9 @@ function TripSettings(): JSX.Element {
   const dispatch: Dispatch = useDispatch();
   const user: UserModel = useSelector((state: RootState) => state.user);
   const trip: TripModel = useSelector((state: RootState) => state.trip);
+  const travellers: Array<UserModel> = useSelector(
+    (state: RootState) => state.travellers
+  );
   const { getAccessTokenSilently } = useAuth0();
 
   return (
@@ -58,10 +75,33 @@ function TripSettings(): JSX.Element {
           </h2>
           <AccordionPanel pb={4}>
             <Text>Accept or deny requests to join trip.</Text>
-            <ButtonGroup>
-              <AddUserButton />
-              <RemoveUserButton />
-            </ButtonGroup>
+            <TableContainer marginTop={6} borderRadius={'6px'}>
+              <Table variant="striped" colorScheme="blackAlpha">
+                <Thead>
+                  <Tr>
+                    <Th>Name</Th>
+                    <Th>Actions</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {travellers
+                    .filter((traveller: UserModel) => !traveller.confirmed)
+                    .map((traveller: UserModel, i: number) => {
+                      return (
+                        <Tr key={i}>
+                          <Td>{`${traveller.first_name} ${traveller.last_name}`}</Td>
+                          <Td>
+                            <ButtonGroup>
+                              <AddUserButton />
+                              <RemoveUserButton />
+                            </ButtonGroup>
+                          </Td>
+                        </Tr>
+                      );
+                    })}
+                </Tbody>
+              </Table>
+            </TableContainer>
           </AccordionPanel>
         </AccordionItem>
         <AccordionItem>
@@ -74,12 +114,38 @@ function TripSettings(): JSX.Element {
             </AccordionButton>
           </h2>
           <AccordionPanel pb={4}>
-            <Text>Promote travellers to administrators, or remove travellers from trip.</Text>
-            <ButtonGroup>
-              <PromoteUserButton />
-              <DemoteUserButton />
-              <RemoveUserButton />
-            </ButtonGroup>
+            <Text>
+              Promote travellers to administrators, or remove travellers from
+              trip.
+            </Text>
+            <TableContainer marginTop={6} borderRadius={'6px'}>
+              <Table variant="striped" colorScheme="blackAlpha">
+                <Thead>
+                  <Tr>
+                    <Th>Name</Th>
+                    <Th>Actions</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {travellers
+                    .filter((traveller: UserModel) => traveller.confirmed && traveller.id !== user.id)
+                    .map((traveller: UserModel, i: number) => {
+                      return (
+                        <Tr key={i}>
+                          <Td>{`${traveller.first_name} ${traveller.last_name}`}</Td>
+                          <Td>
+                            <ButtonGroup>
+                              <PromoteUserButton />
+                              <DemoteUserButton />
+                              <RemoveUserButton />
+                            </ButtonGroup>
+                          </Td>
+                        </Tr>
+                      );
+                    })}
+                </Tbody>
+              </Table>
+            </TableContainer>
           </AccordionPanel>
         </AccordionItem>
         <AccordionItem>
@@ -120,8 +186,8 @@ function TripSettings(): JSX.Element {
             </Text>
             <DeleteButton
               clickHandler={handleDeleteTrip}
-              tooltipMsg={trip.admin ? '' : 'Only trip admins can delete trip'}
-              disabled={!trip.admin}
+              tooltipMsg={user.admin ? '' : 'Only trip admins can delete trip'}
+              disabled={!user.admin}
               modalHeader={'Delete trip'}
               modalBody={
                 'Are you sure you want to delete this trip? This action is irreversible!'

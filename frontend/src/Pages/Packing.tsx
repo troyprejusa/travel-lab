@@ -7,8 +7,9 @@ import { PackingModel } from '../utilities/Interfaces';
 import { RootState } from '../redux/Store';
 import { reduxFetchPacking } from '../redux/PackingSlice';
 import { useAuth0 } from '@auth0/auth0-react';
+import { TrashButton, ClaimButton, UnclaimButton } from '../Components/Buttons';
+import TitleBar from '../Components/TitleBar';
 import {
-  Flex,
   Table,
   Thead,
   Tbody,
@@ -18,11 +19,7 @@ import {
   Td,
   TableContainer,
   ButtonGroup,
-  Text,
 } from '@chakra-ui/react';
-import { TrashButton, ClaimButton, UnclaimButton } from '../Components/Buttons';
-import Constants from '../utilities/Constants';
-import TitleBar from '../Components/TitleBar';
 
 
 function Packing(): JSX.Element {
@@ -62,7 +59,7 @@ function Packing(): JSX.Element {
                       {
                         // 3 options here:
                         // packed by no one
-                        // packed by me
+                        // packed by current user
                         // packed by someone else
                         (() => {
                           if (!thing.packed_by) {
@@ -93,8 +90,8 @@ function Packing(): JSX.Element {
                       <TrashButton
                         aria-label="delete packing item"
                         clickHandler={() => handleDeleteButtonClick(thing.id)}
-                        tooltipMsg={trip.admin ? '' : 'Only trip admins can delete packing items'}
-                        disabled={!trip.admin}
+                        tooltipMsg={user.admin ? '' : 'Only trip admins can delete packing items'}
+                        disabled={!user.admin}
                       />
                     </ButtonGroup>
                   </Td>

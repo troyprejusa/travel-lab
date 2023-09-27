@@ -13,6 +13,7 @@ export interface UserModel {
   email: string;
   phone: string | null;
   confirmed: boolean;
+  admin: boolean;
 }
 
 export interface TripModel {
@@ -23,7 +24,6 @@ export interface TripModel {
   end_date: string;
   created_at: string;
   created_by: string;
-  admin: boolean;
 }
 
 export interface ItineraryModel {

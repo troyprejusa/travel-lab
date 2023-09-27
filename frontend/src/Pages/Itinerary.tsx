@@ -40,7 +40,6 @@ function Itinerary(): JSX.Element {
               <ItineraryCard
                 key={index}
                 itineraryData={itin}
-                tripData={trip}
                 getItineraryCallback={getItinerary}
               />
             ))

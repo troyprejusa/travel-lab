@@ -3,10 +3,9 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
 import { UserModel } from '../utilities/Interfaces';
 import ContactCard from '../Components/ContactCard';
-import { Wrap, Flex, Text } from '@chakra-ui/react';
+import { Wrap } from '@chakra-ui/react';
 import NewTravellerModal from '../Components/NewTravellerModal';
 import TitleBar from '../Components/TitleBar';
-
 
 function Travellers(): JSX.Element {
   const travellers: Array<UserModel> = useSelector(
@@ -15,12 +14,14 @@ function Travellers(): JSX.Element {
 
   return (
     <>
-      <TitleBar text='Contact Info' />
+      <TitleBar text="Contact Info" />
       <NewTravellerModal />
       <Wrap spacing={'6'}>
-        {travellers.map((user: UserModel, i: number) => (
-          <ContactCard key={i} userData={user} />
-        ))}
+        {travellers
+          .filter((traveller: UserModel) => traveller.confirmed)
+          .map((traveller: UserModel, i: number) => (
+            <ContactCard key={i} userData={traveller} />
+          ))}
       </Wrap>
     </>
   );
