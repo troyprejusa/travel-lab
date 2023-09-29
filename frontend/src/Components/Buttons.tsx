@@ -75,7 +75,7 @@ export const EditButton = (props: ConfigurableIconButtonWrapperProps) => (
   <ConfigurableIconButton {...props} icon={<FiEdit />} colorScheme="cyan" />
 );
 
-export const AddUserButton = (props: ConfigurableIconButtonWrapperProps) => (
+export const AcceptUserButton = (props: ConfigurableIconButtonWrapperProps) => (
   <ConfigurableIconButton
     {...props}
     icon={<FiUserPlus />}
@@ -83,12 +83,8 @@ export const AddUserButton = (props: ConfigurableIconButtonWrapperProps) => (
   />
 );
 
-export const RemoveUserButton = (props: ConfigurableIconButtonWrapperProps) => (
-  <ConfigurableIconButton
-    {...props}
-    icon={<FiUserMinus />}
-    colorScheme="red"
-  />
+export const RejectUserButton = (props: ConfigurableIconButtonWrapperProps) => (
+  <ConfigurableIconButton {...props} icon={<FiUserMinus />} colorScheme="red" />
 );
 
 export const PromoteUserButton = (
@@ -105,9 +101,17 @@ export const DemoteUserButton = (props: ConfigurableIconButtonWrapperProps) => (
   <ConfigurableIconButton {...props} icon={<FiSunset />} colorScheme="purple" />
 );
 
-// IconButton + Modal
-export const TrashButton = (props: ConfigurableIconButtonWrapperProps) => {
-  const { clickHandler, ...rest } = props;
+// Add in modal features
+interface ConfigurableIconAndModalButtonProps
+  extends ConfigurableIconButtonProps {
+  modalHeader?: string;
+  modalBody?: string;
+}
+
+const ConfigurableIconAndModalButton = (
+  props: ConfigurableIconAndModalButtonProps
+) => {
+  const { clickHandler, modalHeader, modalBody, ...rest } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -115,18 +119,23 @@ export const TrashButton = (props: ConfigurableIconButtonWrapperProps) => {
       <ConfigurableIconButton
         {...rest}
         clickHandler={onOpen}
-        icon={<FiTrash />}
-        colorScheme="red"
       />
 
       <ConfirmDeleteModal
         isOpen={isOpen}
         onClose={onClose}
         deleteHandler={clickHandler}
+        header={modalHeader}
+        body={modalBody}
       />
     </>
   );
 };
+
+// IconButton + Modal
+export const TrashButton = (props: ConfigurableIconAndModalButtonProps) => (
+  <ConfigurableIconAndModalButton {...props} icon={FiTrash} colorScheme='red'/>
+);
 
 interface DeleteButtonProps extends ButtonProps {
   clickHandler: () => void;
