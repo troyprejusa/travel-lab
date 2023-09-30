@@ -29,11 +29,11 @@ import {
 import fetchHelpers from '../utilities/fetchHelpers';
 import { useAuth0 } from '@auth0/auth0-react';
 import {
-  AddUserButton,
-  DeleteButton,
-  RemoveUserButton,
+  AcceptUserButton,
+  RejectUserButton,
   PromoteUserButton,
-  DemoteUserButton,
+  TrashButton,
+  ConfigurableButtonAndModal,
 } from '../Components/Buttons';
 import TitleBar from '../Components/TitleBar';
 
@@ -92,8 +92,26 @@ function TripSettings(): JSX.Element {
                           <Td>{`${traveller.first_name} ${traveller.last_name}`}</Td>
                           <Td>
                             <ButtonGroup>
-                              <AddUserButton />
-                              <RemoveUserButton />
+                              <AcceptUserButton
+                                aria-label="Accept user request"
+                                onClick={handleAcceptUser}
+                                disabled={!user.admin}
+                                tooltipMsg={
+                                  user.admin
+                                    ? 'Accept request'
+                                    : 'Only admins can accept requests'
+                                }
+                              />
+                              <RejectUserButton
+                                aria-label="Reject user request"
+                                onClick={handleRejectUser}
+                                disabled={!user.admin}
+                                tooltipMsg={
+                                  user.admin
+                                    ? 'Reject request'
+                                    : 'Only admins can reject requests'
+                                }
+                              />
                             </ButtonGroup>
                           </Td>
                         </Tr>
@@ -128,7 +146,10 @@ function TripSettings(): JSX.Element {
                 </Thead>
                 <Tbody>
                   {travellers
-                    .filter((traveller: UserModel) => traveller.confirmed && traveller.id !== user.id)
+                    .filter(
+                      (traveller: UserModel) =>
+                        traveller.confirmed && traveller.id !== user.id
+                    )
                     .map((traveller: UserModel, i: number) => {
                       return (
                         <Tr key={i}>
@@ -137,7 +158,16 @@ function TripSettings(): JSX.Element {
                             <ButtonGroup>
                               <PromoteUserButton />
                               {/* <DemoteUserButton /> */}
-                              <RemoveUserButton />
+                              <TrashButton
+                                aria-label="Remove user"
+                                onClick={handleDeleteUser}
+                                disabled={!user.admin}
+                                tooltipMsg={
+                                  user.admin
+                                    ? 'Remove user from trip'
+                                    : 'Only admins can remove users from trip'
+                                }
+                              />
                             </ButtonGroup>
                           </Td>
                         </Tr>
@@ -162,12 +192,13 @@ function TripSettings(): JSX.Element {
               If you leave the trip, it will not affect any other members of the
               trip.
             </Text>
-            <DeleteButton
-              buttonText="Leave"
-              clickHandler={handleLeaveTrip}
+            <ConfigurableButtonAndModal
+              onClick={handleLeaveTrip}
               modalHeader={'Leave trip'}
               modalBody={`Are you sure you want to leave trip to ${trip.destination}?`}
-            />
+            >
+              Leave Trip
+            </ConfigurableButtonAndModal>
           </AccordionPanel>
         </AccordionItem>
         <AccordionItem>
@@ -184,20 +215,31 @@ function TripSettings(): JSX.Element {
               If you delete this trip, it will delete the trip for all users,
               and permanently delete all data associated with this trip.
             </Text>
-            <DeleteButton
-              clickHandler={handleDeleteTrip}
+            <ConfigurableButtonAndModal
+              onClick={handleDeleteTrip}
               tooltipMsg={user.admin ? '' : 'Only trip admins can delete trip'}
               disabled={!user.admin}
               modalHeader={'Delete trip'}
               modalBody={
                 'Are you sure you want to delete this trip? This action is irreversible!'
               }
-            />
+            >
+              Delete Trip
+            </ConfigurableButtonAndModal>
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
     </>
   );
+
+  async function handleAcceptUser() {}
+
+  async function handleRejectUser() {}
+
+  async function handleDeleteUser() {
+    // For now, there's no reason for this logic to be different
+    handleRejectUser();
+  }
 
   async function handleLeaveTrip() {
     try {

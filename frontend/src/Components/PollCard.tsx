@@ -152,7 +152,7 @@ function PollCard(props: PollCardProps) {
             <Flex justifyContent={'flex-end'}>
               <ButtonGroup>
                 <TrashButton
-                  clickHandler={() =>
+                  onClick={() =>
                     handleDeleteButtonClick(props.data.poll_id)
                   }
                   aria-label="delete poll"

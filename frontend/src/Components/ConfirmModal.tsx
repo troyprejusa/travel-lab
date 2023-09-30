@@ -9,16 +9,16 @@ import {
   Button,
 } from '@chakra-ui/react';
 
-interface ConfirmDeleteModalProps {
+interface ConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
-  deleteHandler: () => void;
+  clickHandler: any;
   header?: string;
   body?: string;
 }
 
-function ConfirmDeleteModal(props: ConfirmDeleteModalProps) {
-  const { isOpen, onClose, deleteHandler } = props;
+function ConfirmModal(props: ConfirmModalProps) {
+  const { isOpen, onClose, clickHandler } = props;
   const cancelRef = useRef<HTMLButtonElement>(null);
 
   return (
@@ -44,12 +44,12 @@ function ConfirmDeleteModal(props: ConfirmDeleteModalProps) {
             <Button
               colorScheme="red"
               onClick={() => {
-                deleteHandler();
+                clickHandler();
                 onClose();
               }}
               ml={3}
             >
-              Delete
+              Confirm
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -58,4 +58,4 @@ function ConfirmDeleteModal(props: ConfirmDeleteModalProps) {
   );
 }
 
-export default ConfirmDeleteModal;
+export default ConfirmModal;

@@ -3,7 +3,7 @@ import fetchHelpers from '../utilities/fetchHelpers';
 import { fetchAllTripData } from '../utilities/stateHandlers';
 import { Dispatch } from '@reduxjs/toolkit';
 import { useAuth0 } from '@auth0/auth0-react';
-import ConfirmDeleteModal from './ConfirmDeleteModal';
+import ConfirmModal from './ConfirmModal';
 import {
   FiEdit,
   FiTrash,
@@ -24,33 +24,78 @@ import {
   Button,
 } from '@chakra-ui/react';
 
-// Should be able to receive and pass on all props for an IconButton
-interface ConfigurableIconButtonWrapperProps extends IconButtonProps {
-  clickHandler: () => void;
+/* --------------------------- Buttons  ---------------------------*/
+
+interface ConfigurableButtonProps extends ButtonProps {
   tooltipMsg?: string;
   disabled?: boolean;
 }
 
-// Add in icon and colorScheme specification
-interface ConfigurableIconButtonProps
-  extends ConfigurableIconButtonWrapperProps {
-  icon: ReactElement;
-  colorScheme: string;
+// Button + Modal
+export const ConfigurableButton = (props: ConfigurableButtonProps) => {
+  const { tooltipMsg, disabled, ...rest } = props;
+
+  return (
+    <>
+      <Tooltip label={tooltipMsg || null}>
+        <span>
+          <Button
+            colorScheme="red"
+            size={'md'}
+            isDisabled={disabled || false}
+            {...rest}
+          />
+        </span>
+      </Tooltip>
+    </>
+  );
+};
+
+/* --------------------------- Buttons with Modal  ---------------------------*/
+
+interface ConfigurableButtonAndModalProps extends ConfigurableButtonProps {
+  modalHeader?: string;
+  modalBody?: string;
+}
+
+export const ConfigurableButtonAndModal = (
+  props: ConfigurableButtonAndModalProps
+) => {
+  // Need to route the onClick event to execute in the modal
+  const { onClick: clickHandler, modalHeader, modalBody, ...rest } = props;
+
+  // Manage modal state
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  return (
+    <>
+      <ConfigurableButton onClick={onOpen} {...rest} />
+      <ConfirmModal
+        isOpen={isOpen}
+        onClose={onClose}
+        clickHandler={clickHandler}
+        header={modalHeader}
+        body={modalBody}
+      />
+    </>
+  );
+};
+/* --------------------------- Icon Buttons  ---------------------------*/
+
+interface ConfigurableIconButtonProps extends IconButtonProps {
+  tooltipMsg?: string;
+  disabled?: boolean;
 }
 
 const ConfigurableIconButton = (props: ConfigurableIconButtonProps) => {
-  const { clickHandler, tooltipMsg, disabled, icon, colorScheme, ...rest } =
-    props;
+  const { tooltipMsg, disabled, ...rest } = props;
 
   return (
     <Tooltip label={tooltipMsg || null}>
       <span>
         <IconButton
           variant={'outline'}
-          colorScheme={colorScheme}
           fontSize={'20px'}
-          icon={icon}
-          onClick={clickHandler}
           isDisabled={disabled || false}
           {...rest}
         />
@@ -59,7 +104,7 @@ const ConfigurableIconButton = (props: ConfigurableIconButtonProps) => {
   );
 };
 
-export const ClaimButton = (props: ConfigurableIconButtonWrapperProps) => (
+export const ClaimButton = (props: ConfigurableIconButtonProps) => (
   <ConfigurableIconButton
     {...props}
     icon={<FiUserCheck />}
@@ -67,15 +112,15 @@ export const ClaimButton = (props: ConfigurableIconButtonWrapperProps) => (
   />
 );
 
-export const UnclaimButton = (props: ConfigurableIconButtonWrapperProps) => (
+export const UnclaimButton = (props: ConfigurableIconButtonProps) => (
   <ConfigurableIconButton {...props} icon={<FiUserX />} colorScheme="yellow" />
 );
 
-export const EditButton = (props: ConfigurableIconButtonWrapperProps) => (
+export const EditButton = (props: ConfigurableIconButtonProps) => (
   <ConfigurableIconButton {...props} icon={<FiEdit />} colorScheme="cyan" />
 );
 
-export const AcceptUserButton = (props: ConfigurableIconButtonWrapperProps) => (
+export const AcceptUserButton = (props: ConfigurableIconButtonProps) => (
   <ConfigurableIconButton
     {...props}
     icon={<FiUserPlus />}
@@ -83,13 +128,11 @@ export const AcceptUserButton = (props: ConfigurableIconButtonWrapperProps) => (
   />
 );
 
-export const RejectUserButton = (props: ConfigurableIconButtonWrapperProps) => (
+export const RejectUserButton = (props: ConfigurableIconButtonProps) => (
   <ConfigurableIconButton {...props} icon={<FiUserMinus />} colorScheme="red" />
 );
 
-export const PromoteUserButton = (
-  props: ConfigurableIconButtonWrapperProps
-) => (
+export const PromoteUserButton = (props: ConfigurableIconButtonProps) => (
   <ConfigurableIconButton
     {...props}
     icon={<FiSunrise />}
@@ -97,11 +140,13 @@ export const PromoteUserButton = (
   />
 );
 
-export const DemoteUserButton = (props: ConfigurableIconButtonWrapperProps) => (
+export const DemoteUserButton = (props: ConfigurableIconButtonProps) => (
   <ConfigurableIconButton {...props} icon={<FiSunset />} colorScheme="purple" />
 );
 
-// Add in modal features
+/* --------------------------- Icon Buttons with Modal ---------------------------*/
+
+// Combine Configurable icon button with configurable modal
 interface ConfigurableIconAndModalButtonProps
   extends ConfigurableIconButtonProps {
   modalHeader?: string;
@@ -111,20 +156,20 @@ interface ConfigurableIconAndModalButtonProps
 const ConfigurableIconAndModalButton = (
   props: ConfigurableIconAndModalButtonProps
 ) => {
-  const { clickHandler, modalHeader, modalBody, ...rest } = props;
+  // Need to route the onClick event to execute in the modal
+  const { onClick: clickHandler, modalHeader, modalBody, ...rest } = props;
+
+  // Manage modal state
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <>
-      <ConfigurableIconButton
-        {...rest}
-        clickHandler={onOpen}
-      />
+      <ConfigurableIconButton onClick={onOpen} {...rest} />
 
-      <ConfirmDeleteModal
+      <ConfirmModal
         isOpen={isOpen}
         onClose={onClose}
-        deleteHandler={clickHandler}
+        clickHandler={clickHandler}
         header={modalHeader}
         body={modalBody}
       />
@@ -132,58 +177,15 @@ const ConfigurableIconAndModalButton = (
   );
 };
 
-// IconButton + Modal
 export const TrashButton = (props: ConfigurableIconAndModalButtonProps) => (
-  <ConfigurableIconAndModalButton {...props} icon={FiTrash} colorScheme='red'/>
+  <ConfigurableIconAndModalButton
+    {...props}
+    icon={<FiTrash />}
+    colorScheme="red"
+  />
 );
 
-interface DeleteButtonProps extends ButtonProps {
-  clickHandler: () => void;
-  buttonText?: string;
-  tooltipMsg?: string;
-  disabled?: boolean;
-  modalHeader?: string;
-  modalBody?: string;
-}
-
-// Button + Modal
-export const DeleteButton = (props: DeleteButtonProps) => {
-  const {
-    clickHandler,
-    buttonText,
-    tooltipMsg,
-    disabled,
-    modalHeader,
-    modalBody,
-    ...rest
-  } = props;
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  return (
-    <>
-      <Tooltip label={tooltipMsg || null}>
-        <span>
-          <Button
-            onClick={onOpen}
-            colorScheme="red"
-            size={'md'}
-            isDisabled={disabled || false}
-            {...rest}
-          >
-            {buttonText || 'Delete'}
-          </Button>
-          <ConfirmDeleteModal
-            isOpen={isOpen}
-            onClose={onClose}
-            deleteHandler={clickHandler}
-            header={modalHeader}
-            body={modalBody}
-          />
-        </span>
-      </Tooltip>
-    </>
-  );
-};
+/* --------------------------- Other Buttons ---------------------------*/
 
 interface RefreshButtonProps extends IconButtonProps {
   trip_id: string;

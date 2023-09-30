@@ -8,10 +8,11 @@ import { reduxFetchItinerary } from '../redux/ItinerarySlice';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import { Flex, Stack, Box, Button, Text } from '@chakra-ui/react';
+import { Flex, Stack, Box, Text } from '@chakra-ui/react';
 import { useAuth0 } from '@auth0/auth0-react';
 import fetchHelpers from '../utilities/fetchHelpers';
 import TitleBar from '../Components/TitleBar';
+import Constants from '../utilities/Constants';
 
 function Itinerary(): JSX.Element {
   const dispatch = useDispatch();
@@ -46,7 +47,7 @@ function Itinerary(): JSX.Element {
           )}
         </Stack>
         <Box minWidth='lg' width='50vw'>
-          <style>{`.fc-scrollgrid {background-color: white;}`}</style>
+          <style>{`.fc-scrollgrid {background-color: ${Constants.BACKGROUND_TRANSPARENCY};}`}</style>
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin]}
             headerToolbar={{

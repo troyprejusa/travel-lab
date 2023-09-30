@@ -70,14 +70,14 @@ function ItineraryCard(props: ItineraryCardProps) {
             <Text>{props.itineraryData.created_by}</Text>
           </Box>
           <ButtonGroup>
-            <EditButton
+            {/* <EditButton
               aria-label="edit itinerary details"
               tooltipMsg="Feature in work"
               disabled={true}
-            />
+            /> */}
             <TrashButton
               aria-label="delete itinerary stop"
-              clickHandler={() => handleItineraryDelete(props.itineraryData.id)}
+              onClick={() => handleItineraryDelete(props.itineraryData.id)}
               disabled={!user.admin}
               tooltipMsg={
                 user.admin ? '' : 'Only trip admins can delete itinerary stops'
