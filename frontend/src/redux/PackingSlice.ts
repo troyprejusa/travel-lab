@@ -7,37 +7,34 @@ import {
   createAsyncThunk,
 } from '@reduxjs/toolkit';
 
-// For now, the creation of polls will not be real time.
-// Only the voting will be real time.
-
-const initialPackingState: Array<PackingModel> = [];
+export type PackingState = Array<PackingModel>;
 
 const packingSlice: Slice = createSlice({
   name: 'packing', // packing/<action_name>
-  initialState: initialPackingState,
+  initialState: [] as PackingState,
   reducers: {
     // packing/reduxResetPacking
-    reduxResetPacking: (state, action: PayloadAction<null>) => {
-      return initialPackingState;
+    reduxResetPacking: () => {
+      return [] as PackingState;
     },
   },
 
   extraReducers: (builder) => {
     builder
-      .addCase(reduxFetchPacking.pending, (state, action) => {
+      .addCase(reduxFetchPacking.pending, (state) => {
         // packing/reduxFetchPacking/pending
         return state; // Do nothing
       })
       .addCase(
         reduxFetchPacking.fulfilled,
-        (state, action: PayloadAction<Array<PackingModel>>) => {
+        (_state, action: PayloadAction<Array<PackingModel>>) => {
           // packing/reduxFetchPacking/fulfilled
           return action.payload;
         }
       )
       .addCase(reduxFetchPacking.rejected, (state, action) => {
         // packing/reduxFetchPacking/rejected
-        console.error('Unable to retrieve packing list :( \n', action.payload);
+        console.error('Unable to retrieve packing list :(\n', action.payload);
         return state; // Do nothing
       });
   },

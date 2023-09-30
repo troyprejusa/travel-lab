@@ -7,11 +7,11 @@ import {
 import { MessageModel } from '../utilities/Interfaces';
 import fetchHelpers from '../utilities/fetchHelpers';
 
-const initialMessageState: Array<MessageModel> = [];
+export type MessageState = Array<MessageModel>;
 
 const messageSlice: Slice = createSlice({
   name: 'messages', // messages/<action_name>
-  initialState: initialMessageState,
+  initialState: [] as MessageState,
   reducers: {
     // messages/reduxSetMessages
     // reduxSetMessages: (state, action: PayloadAction<Array<MessageModel>>) => {
@@ -24,20 +24,20 @@ const messageSlice: Slice = createSlice({
     },
 
     // messages/reduxResetMessages
-    reduxResetMessages: (state, action: PayloadAction<null>) => {
-      return initialMessageState;
+    reduxResetMessages: () => {
+      return [] as MessageState;
     },
   },
 
   extraReducers: (builder) => {
     builder
-      .addCase(reduxFetchMessages.pending, (state, action) => {
+      .addCase(reduxFetchMessages.pending, (state) => {
         // messages/reduxFetchMessages/pending
         return state; // Do nothing
       })
       .addCase(
         reduxFetchMessages.fulfilled,
-        (state, action: PayloadAction<Array<MessageModel>>) => {
+        (_state, action: PayloadAction<Array<MessageModel>>) => {
           // messages/reduxFetchMessages/fulfilled
           return action.payload;
         }

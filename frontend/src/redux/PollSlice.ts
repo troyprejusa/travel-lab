@@ -14,11 +14,11 @@ import {
 // For now, the creation of polls will not be real time.
 // Only the voting will be real time.
 
-const initialPollState: Array<PollResponseModel> = [];
+export type PollState = Array<PollResponseModel>;
 
 const pollSlice: Slice = createSlice({
   name: 'polls', // polls/<action_name>
-  initialState: initialPollState,
+  initialState: [] as PollState,
   reducers: {
     // polls/reduxSetPolls
     // reduxSetPolls: (state, action: PayloadAction<Array<PollResponseModel>>) => {
@@ -46,27 +46,27 @@ const pollSlice: Slice = createSlice({
     },
 
     // polls/reduxResetPolls
-    reduxResetPolls: (state, action: PayloadAction<null>) => {
-      return initialPollState;
+    reduxResetPolls: () => {
+      return [] as PollState;
     },
   },
 
   extraReducers: (builder) => {
     builder
-      .addCase(reduxFetchPolls.pending, (state, action) => {
+      .addCase(reduxFetchPolls.pending, (state) => {
         // polls/reduxFetchPolls/pending
         return state; // Do nothing
       })
       .addCase(
         reduxFetchPolls.fulfilled,
-        (state, action: PayloadAction<Array<PollResponseModel>>) => {
+        (_state, action: PayloadAction<Array<PollResponseModel>>) => {
           // polls/reduxFetchPolls/fulfilled
           return action.payload;
         }
       )
       .addCase(reduxFetchPolls.rejected, (state, action) => {
         // polls/reduxFetchPolls/rejected
-        console.error('Unable to retrieve polls :( \n', action.payload);
+        console.error('Unable to retrieve polls :(\n', action.payload);
         return state; // Do nothing
       });
   },

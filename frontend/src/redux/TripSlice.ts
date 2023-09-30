@@ -17,13 +17,13 @@ const tripSlice: Slice = createSlice({
   name: 'trip', // trip/<action_name>
   initialState: initialTripState,
   reducers: {
-    // trip/reduxSetTrip
-    reduxSetTrip: (state, action: PayloadAction<TripModel>) => {
+    reduxSetTrip: (_state, action: PayloadAction<TripModel>) => {
+      // trip/reduxSetTrip
       return action.payload;
     },
 
-    // trip/reduxResetTrip
-    reduxResetTrip: (state, action: PayloadAction<null>) => {
+    reduxResetTrip: () => {
+      // trip/reduxResetTrip
       return emptyTrip;
     },
   },

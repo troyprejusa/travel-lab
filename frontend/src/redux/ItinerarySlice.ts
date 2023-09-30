@@ -7,34 +7,34 @@ import {
   createAsyncThunk,
 } from '@reduxjs/toolkit';
 
-const initialItineraryState: Array<ItineraryModel> = [];
+export type ItineraryState = Array<ItineraryModel>;
 
 const itinerarySlice: Slice = createSlice({
   name: 'itinerary', // itinerary/<action_name>
-  initialState: initialItineraryState,
+  initialState: [] as ItineraryState,
   reducers: {
     // itinerary/reduxResetItinerary
-    reduxResetItinerary: (state, action: PayloadAction<null>) => {
-      return initialItineraryState;
+    reduxResetItinerary: () => {
+      return [] as ItineraryState;
     },
   },
 
   extraReducers: (builder) => {
     builder
-      .addCase(reduxFetchItinerary.pending, (state, action) => {
+      .addCase(reduxFetchItinerary.pending, (state) => {
         // messages/reduxFetchItinerary/pending
         return state; // Do nothing
       })
       .addCase(
         reduxFetchItinerary.fulfilled,
-        (state, action: PayloadAction<Array<ItineraryModel>>) => {
+        (_state, action: PayloadAction<Array<ItineraryModel>>) => {
           // messages/reduxFetchItinerary/fulfilled
           return action.payload;
         }
       )
       .addCase(reduxFetchItinerary.rejected, (state, action) => {
         // messages/reduxFetchItinerary/rejected
-        console.error('Unable to retrieve itinerary :( \n', action.payload);
+        console.error('Unable to retrieve itinerary :(\n', action.payload);
         return state; // Do nothing
       });
   },

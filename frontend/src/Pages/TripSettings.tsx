@@ -36,6 +36,7 @@ import {
   ConfigurableButtonAndModal,
 } from '../Components/Buttons';
 import TitleBar from '../Components/TitleBar';
+import { reduxAcceptTraveller, reduxRemoveTraveller } from '../redux/TravellersSlice';
 
 function TripSettings(): JSX.Element {
   const navigate = useNavigate();
@@ -94,7 +95,7 @@ function TripSettings(): JSX.Element {
                             <ButtonGroup>
                               <AcceptUserButton
                                 aria-label="Accept user request"
-                                onClick={handleAcceptUser}
+                                onClick={() => handleAcceptUser(traveller.id)}
                                 disabled={!user.admin}
                                 tooltipMsg={
                                   user.admin
@@ -104,7 +105,7 @@ function TripSettings(): JSX.Element {
                               />
                               <RejectUserButton
                                 aria-label="Reject user request"
-                                onClick={handleRejectUser}
+                                onClick={() => handleRejectUser(traveller.id)}
                                 disabled={!user.admin}
                                 tooltipMsg={
                                   user.admin
@@ -156,11 +157,10 @@ function TripSettings(): JSX.Element {
                           <Td>{`${traveller.first_name} ${traveller.last_name}`}</Td>
                           <Td>
                             <ButtonGroup>
-                              <PromoteUserButton />
-                              {/* <DemoteUserButton /> */}
+                              {/* <PromoteUserButton /> */}
                               <TrashButton
                                 aria-label="Remove user"
-                                onClick={handleDeleteUser}
+                                onClick={() => handleDeleteUser(traveller.id)}
                                 disabled={!user.admin}
                                 tooltipMsg={
                                   user.admin
@@ -232,18 +232,35 @@ function TripSettings(): JSX.Element {
     </>
   );
 
-  async function handleAcceptUser() {}
+  async function handleAcceptUser(id: string) {
+    let token: string;
+    try {
+      token = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
+    } catch (error: any) {
+      console.error(error);
+    }
+    reduxAcceptTraveller({token: token, trip_id: trip.id, user_id: id });
+  }
 
-  async function handleRejectUser() {}
-
-  async function handleDeleteUser() {
+  async function handleRejectUser(id: string) {
     // For now, there's no reason for this logic to be different
-    handleRejectUser();
+    handleDeleteUser(id);
+
+  }
+
+  async function handleDeleteUser(id: string) {
+    let token: string;
+    try {
+      token = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
+    } catch (error: any) {
+      console.error(error);
+    }
+    reduxRemoveTraveller({token: token, trip_id: trip.id, user_id: id });
   }
 
   async function handleLeaveTrip() {
     try {
-      const token = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
+      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
       const res: Response = await fetch(`/user/trips/${trip.id}`, {
         method: 'DELETE',
         headers: fetchHelpers.getTokenHeader(token),

@@ -7,45 +7,66 @@ import {
 import { UserModel } from '../utilities/Interfaces';
 import fetchHelpers from '../utilities/fetchHelpers';
 
-// For now, the creation of polls will not be real time.
-// Only the voting will be real time.
-
-const initialTravellersState: Array<UserModel> = [];
+export type TravellerState = Array<UserModel>;
 
 const travellersSlice: Slice = createSlice({
   name: 'travellers', // travellers/<action_name>
-  initialState: initialTravellersState,
+  initialState: [] as TravellerState,
   reducers: {
     // travellers/reduxResetTravellers
-    reduxResetTravellers: (state, action: PayloadAction<null>) => {
-      return initialTravellersState;
+    reduxResetTravellers: () => {
+      return [] as TravellerState;
     },
   },
 
   extraReducers: (builder) => {
     builder
-      .addCase(reduxFetchTravellers.pending, (state, action) => {
+      .addCase(reduxFetchTravellers.pending, (state) => {
         // polls/reduxFetchTravellers/pending
         return state; // Do nothing
       })
       .addCase(
         reduxFetchTravellers.fulfilled,
-        (state, action: PayloadAction<Array<UserModel>>) => {
+        (_state, action: PayloadAction<Array<UserModel>>) => {
           // polls/reduxFetchTravellers/fulfilled
           return action.payload;
         }
       )
       .addCase(reduxFetchTravellers.rejected, (state, action) => {
         // polls/reduxFetchTravellers/rejected
-        console.error('Unable to retrieve travellers :( \n', action.payload);
+        console.error('Unable to retrieve travellers :(\n', action.payload);
         return state; // Do nothing
-      });
+      })
+      .addCase(reduxAcceptTraveller.pending, (state: TravellerState) => {
+        return state;
+      })
+      .addCase(reduxAcceptTraveller.fulfilled, (state: TravellerState, action: PayloadAction<string>) => {
+        state.forEach((traveller: UserModel) => {
+          if (traveller.id === action.payload) {
+            traveller.confirmed = true;
+          }
+        })
+      })
+      .addCase(reduxAcceptTraveller.rejected, (state: TravellerState, action) => {
+        console.error('Unable to accept traveller :(\n', action.payload);
+        return state;
+      })
+      .addCase(reduxRemoveTraveller.pending, (state: TravellerState) => {
+        return state;
+      })
+      .addCase(reduxRemoveTraveller.fulfilled, (state: TravellerState, action: PayloadAction<string>) => {
+        return state.filter((traveller: UserModel) => traveller.id !== action.payload);
+      })
+      .addCase(reduxRemoveTraveller.rejected, (state: TravellerState, action) => {
+        console.error('Unable to reject traveller :(\n', action.payload);
+        return state;
+      })
   },
 });
 
 export const reduxFetchTravellers = createAsyncThunk(
   'messages/reduxFetchTravellers',
-  async ({trip_id, token}, thunkAPI) => {
+  async ({ trip_id, token }, thunkAPI) => {
     try {
       const res: Response = await fetch(`/trip/${trip_id}/travellers`, {
         method: 'GET',
@@ -56,6 +77,52 @@ export const reduxFetchTravellers = createAsyncThunk(
         const travellers: Array<UserModel> = await res.json();
         // console.log(travellers)
         return travellers;
+      } else {
+        // Send to rejected case
+        const errorRes = await res.json();
+        return thunkAPI.rejectWithValue(errorRes);
+      }
+    } catch (error: any) {
+      // Send to rejected case
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const reduxAcceptTraveller = createAsyncThunk(
+  'messages/reduxAcceptTraveller',
+  async ({ token, trip_id, user_id }, thunkAPI) => {
+    try {
+      const res: Response = await fetch(`/user/trips/${trip_id}/${user_id}`, {
+        method: 'PATCH',
+        headers: fetchHelpers.getTokenHeader(token),
+      });
+
+      if (res.ok) {
+        return user_id;
+      } else {
+        // Send to rejected case
+        const errorRes = await res.json();
+        return thunkAPI.rejectWithValue(errorRes);
+      }
+    } catch (error: any) {
+      // Send to rejected case
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const reduxRemoveTraveller = createAsyncThunk(
+  'messages/reduxRemoveTraveller',
+  async ({ token, trip_id, user_id }, thunkAPI) => {
+    try {
+      const res: Response = await fetch(`/user/trips/${trip_id}/${user_id}`, {
+        method: 'DELETE',
+        headers: fetchHelpers.getTokenHeader(token),
+      });
+
+      if (res.ok) {
+        return user_id;
       } else {
         // Send to rejected case
         const errorRes = await res.json();

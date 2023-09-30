@@ -13,39 +13,36 @@ const emptyUser: UserModel = {
   last_name: '',
   email: '',
   phone: '',
+  confirmed: false,
+  admin: false,
 };
 
 const userSlice: Slice = createSlice({
   name: 'user', // user/<action_name>
   initialState: emptyUser,
   reducers: {
-    // user/reduxUserLogin
-    // reduxUserLogin: (state, action: PayloadAction<UserModel>) => {
-    //   state.id = action.payload.id;
-    //   state.first_name = action.payload.first_name;
-    //   state.last_name = action.payload.last_name;
-    //   state.email = action.payload.email;
-    //   state.phone = action.payload.phone;
-    // },
-
-    // user/reduxUserLogout
-    reduxUserLogout: (state, action: PayloadAction<null>) => {
+    reduxUserLogout: () => {
+      // user/reduxUserLogout
       return emptyUser;
-    }
+    },
   },
 
   extraReducers: (builder) => {
     builder
-      .addCase(reduxFetchUser.pending, (state, action) => {
+      .addCase(reduxFetchUser.pending, (state) => {
         // user/reduxFetchUser/pending
-        return state;   // Do nothing
+        return state; // Do nothing
       })
-      .addCase(reduxFetchUser.fulfilled, (state, action: PayloadAction<UserModel>) => {
-        // user/reduxFetchUser/fulfilled
-        return action.payload;
-      })
+      .addCase(
+        reduxFetchUser.fulfilled,
+        (_state, action: PayloadAction<UserModel>) => {
+          // user/reduxFetchUser/fulfilled
+          return action.payload;
+        }
+      )
       .addCase(reduxFetchUser.rejected, (state, action) => {
         // user/reduxFetchUser/rejected
+        console.error('Unable to retrieve user data :(\n', action.payload);
         return state; // Do nothing
       });
   },
@@ -53,7 +50,7 @@ const userSlice: Slice = createSlice({
 
 export const reduxFetchUser = createAsyncThunk(
   'user/reduxFetchUser',
-  async ({email, token}, thunkAPI) => {
+  async ({ email, token }, thunkAPI) => {
     try {
       const res: Response = await fetch(`/user/${email}`, {
         method: 'POST',
