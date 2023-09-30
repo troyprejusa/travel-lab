@@ -1,6 +1,6 @@
 import React, { SyntheticEvent } from 'react';
 import { pollSocket } from '../utilities/TripSocket';
-import { PollChartDataPoint, PollVoteSendModel } from '../utilities/Interfaces';
+import { PollChartDataPoint, PollVoteWS } from '../utilities/Interfaces';
 import {
   ResponsiveContainer,
   BarChart,
@@ -17,7 +17,7 @@ const COLORS = Constants.COLORS;
 interface BarChartComponentProps {
   userVoted: boolean;
   dataPoints: Array<PollChartDataPoint>;
-  constructVoteCallback: (chosenOption: string) => PollVoteSendModel | null;
+  constructVoteCallback: (chosenOption: string) => PollVoteWS | null;
 }
 
 function BarChartComponent(props: BarChartComponentProps) {
@@ -74,11 +74,11 @@ function BarChartComponent(props: BarChartComponentProps) {
       const chosenOption: string = data['activeLabel'];
 
       // console.log('Sending vote', chosenOption);
-      const poll_vote: PollVoteSendModel | null =
+      const poll_vote: PollVoteWS | null =
         props.constructVoteCallback(chosenOption);
 
       if (poll_vote) {
-        pollSocket.socket.emit('frontend_vote', poll_vote);
+        pollSocket.sendVote(poll_vote);
       }
     } catch (e: TypeError) {
       // Do nothing

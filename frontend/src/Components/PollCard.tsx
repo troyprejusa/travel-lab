@@ -12,7 +12,7 @@ import {
   PollChartDataPoint,
   TripModel,
   UserModel,
-  PollVoteSendModel,
+  PollVoteWS,
 } from '../utilities/Interfaces';
 import {
   Flex,
@@ -191,7 +191,7 @@ function PollCard(props: PollCardProps) {
     }));
   }
 
-  function constructVote(chosenOption: string): PollVoteSendModel | null {
+  function constructVote(chosenOption: string): PollVoteWS | null {
     // Look through the various options to find the option_id
     const matchingIndex: number = props.data.options.findIndex(
       (item: PollVoteModel) => item.option === chosenOption
@@ -201,7 +201,7 @@ function PollCard(props: PollCardProps) {
 
     const optionId: number = props.data.options[matchingIndex].option_id;
 
-    const data: PollVoteSendModel = {
+    const data: PollVoteWS = {
       trip_id: trip.id,
       poll_id: props.data.poll_id,
       option_id: optionId,

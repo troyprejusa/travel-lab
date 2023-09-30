@@ -3,6 +3,7 @@ from uuid import UUID
 from datetime import date, datetime
 
 # --------------- DATABASE TYPES --------------- #
+# These match the SQL tables 1-1
 
 class TripModel(BaseModel):
     id: UUID
@@ -41,6 +42,7 @@ class MessageModel(BaseModel):
     created_by: str
 
 # --------------- COMPOSITE DATABASE TYPES --------------- #
+# These types are a result of JOINs on SQL tables
 
 class TravellerResponse(BaseModel):
     id: UUID
@@ -51,12 +53,8 @@ class TravellerResponse(BaseModel):
     confirmed: bool
     admin: bool
 
-# --------------- CUSTOM TYPES --------------- #
-
-class PollRequest(BaseModel):
-    title: str
-    description: str | None = None
-    options: list[str]
+# --------------- FASTAPI I/O TYPES --------------- #
+# These types are used in I/O of FastAPI calls
 
 class PollVoteResponse(BaseModel):
     option_id: int
@@ -70,3 +68,24 @@ class PollResponse(BaseModel):
     created_at: datetime
     created_by: str
     options: list[PollVoteResponse]
+
+# --------------- WEBSOCKET TYPES --------------- #
+# These types are used in websocket functionality, and
+# SHOULD be used to verify validity before handling on 
+# the backend
+
+class PollRequestWS(BaseModel):
+    title: str
+    description: str | None = None
+    options: list[str]
+
+class PollVoteWS(BaseModel):
+    trip_id: str
+    poll_id: int
+    option_id: int
+    voted_by: str
+
+class MessageWS(BaseModel):
+    trip_id: str
+    content: str
+    created_by: str

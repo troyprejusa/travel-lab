@@ -2,15 +2,15 @@ import io, { Socket } from 'socket.io-client';
 import { reduxAddMessage } from '../redux/MessageSlice';
 import { reduxAddVote } from '../redux/PollSlice';
 import { Dispatch } from '@reduxjs/toolkit';
-import { MessageModel, PollVoteSendModel } from './Interfaces';
+import { MessageWS, MessageModel, PollVoteWS } from './Interfaces';
 import Constants from './Constants';
 
 class TripSocket {
-  host: string;
-  apiPath: string;
-  namespace: string;
-  socket: Socket;
-  dispatch: Dispatch;
+  protected host: string;
+  protected apiPath: string;
+  protected namespace: string;
+  protected socket: Socket | undefined;
+  protected dispatch: Dispatch | undefined;
 
   constructor(host: string, apiPath: string, namespace: string) {
     this.host = host;
@@ -21,12 +21,9 @@ class TripSocket {
   establishSocket(token: string, trip_id: string, dispatcher: Dispatch) {
     this.dispatch = dispatcher;
 
-    if (this.socket !== undefined) {
-      // If we already have a connection, let's disconnect since we
-      // are potentially switching trips when we get to here
-
-      this.socket.disconnect();
-    }
+    // If we already have a connection, let's disconnect since we
+    // are potentially switching trips when we get to here
+    this.socket?.disconnect();
 
     this.socket = io(this.host + this.namespace, {
       reconnectionDelayMax: 5000,
@@ -57,14 +54,18 @@ class MessageSocket extends TripSocket {
     super.establishSocket(token, trip_id, dispatcher);
 
     // Create event handlers for this
-    this.socket.on('backend_msg', (data: MessageModel) => {
-      this.dispatch(reduxAddMessage(data));
+    this.socket!.on('backend_msg', (data: MessageModel) => {
+      this.dispatch!(reduxAddMessage(data));
     });
 
     // Create event handlers for this
-    this.socket.on('backend_msg_error', (data: any) => {
+    this.socket!.on('backend_msg_error', (data: any) => {
       console.error('MessageSocket: Unable to post message :(');
     });
+  }
+
+  sendMessage(message: MessageWS) {
+    this.socket!.emit('frontend_msg', message);
   }
 }
 
@@ -77,14 +78,17 @@ class PollSocket extends TripSocket {
     // Make a connection to the socket using the parent method
     super.establishSocket(token, trip_id, dispatcher);
 
-    this.socket.on('backend_vote', (data: PollVoteSendModel) => {
-      this.dispatch(reduxAddVote(data));
+    this.socket!.on('backend_vote', (data: PollVoteWS) => {
+      this.dispatch!(reduxAddVote(data));
     });
 
-    this.socket.on('backend_vote_error', (data: any) => {
+    this.socket!.on('backend_vote_error', (data: any) => {
       console.error('PollSocket: Unable to post vote :(');
     });
+  }
 
+  sendVote(vote: PollVoteWS) {
+    this.socket!.emit('frontend_vote', vote);
   }
 }
 
@@ -97,7 +101,7 @@ class ItinerarySocket extends TripSocket {
     // Make a connection to the socket using the parent method
     super.establishSocket(token, trip_id, dispatcher);
 
-    // this.socket.on('backend_vote', (data: PollVoteSendModel) => {
+    // this.socket.on('backend_vote', (data: PollVoteWS) => {
     //   this.dispatch(reduxAddVote(data));
     // });
   }
@@ -112,7 +116,7 @@ class PackingSocket extends TripSocket {
     // Make a connection to the socket using the parent method
     super.establishSocket(token, trip_id, dispatcher);
 
-    // this.socket.on('backend_vote', (data: PollVoteSendModel) => {
+    // this.socket.on('backend_vote', (data: PollVoteWS) => {
     //   this.dispatch(reduxAddVote(data));
     // });
   }

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
-from models.Schemas import TripModel, TravellerResponse, ItineraryModel, MessageModel, PollRequest, PollResponse, PackingModel
+from models.Schemas import TripModel, TravellerResponse, ItineraryModel, MessageModel, PollRequestWS, PollResponse, PackingModel
 from typing import Annotated
 from datetime import date, datetime
 from utilities.merge_polls import merge_polls
@@ -284,7 +284,7 @@ async def remove_itinerary_stop(request: Request, trip_id: str, item_id: int) ->
 # @DEPRECATED: Moved to websockets
 # Create poll
 @trip_router.post('/{trip_id}/poll')
-async def add_poll(request: Request, trip_id: str, poll_body: PollRequest) -> dict[str, str]:
+async def add_poll(request: Request, trip_id: str, poll_body: PollRequestWS) -> dict[str, str]:
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 

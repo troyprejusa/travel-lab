@@ -3,6 +3,7 @@ import jwt
 from utilities import Constants
 from models.DatabaseHandler import db_handler
 from utilities import auth_helpers
+from models.Schemas import PollVoteWS, MessageWS
 import datetime
 
 
@@ -65,15 +66,16 @@ class PollSocket(socketio.AsyncNamespace):
         pass
 
     async def on_frontend_vote(self, sid, data) -> None:
-        # Because the poll data is managed in such a composite fashion,
-        # we will not be returning the SQL result to the listeners in 
-        # this case
+        # Because the poll data is handled in such a composite fashion,
+        # we will not be returning the SQL result to the listeners
         try:
+            poll_vote = PollVoteWS.parse_obj(data)  # Verify data
+
             db_handler.query("""
                 INSERT INTO poll_vote (poll_id, vote, voted_by) VALUES (%s, %s, %s);
-            """, (data['poll_id'], data['option_id'], data['voted_by']))
+            """, (poll_vote.poll_id, poll_vote.option_id, poll_vote.voted_by))
 
-            await self.emit('backend_vote', data, room = data['trip_id'])
+            await self.emit('backend_vote', poll_vote.dict(), room = data['trip_id'])
 
         except Exception as error:
             print(error)
@@ -125,6 +127,8 @@ class MsgSocket(socketio.AsyncNamespace):
 
     async def on_frontend_msg(self, sid, data):
         try:
+            msg = MessageWS.parse_obj(data)     # Verify data
+
             db_msg = db_handler.query("""
                 INSERT INTO message (
                 trip_id, content, created_by          
@@ -132,7 +136,7 @@ class MsgSocket(socketio.AsyncNamespace):
                     %s, %s, %s    
                 )
                 RETURNING *;
-            """, (data['trip_id'], data['content'], data['created_by']))[0]
+            """, (msg.trip_id, msg.content, msg.created_by))[0]
 
             date_to_string_flat(db_msg)
 

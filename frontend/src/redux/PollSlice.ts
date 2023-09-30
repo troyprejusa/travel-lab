@@ -8,7 +8,7 @@ import {
 import {
   PollResponseModel,
   PollVoteModel,
-  PollVoteSendModel,
+  PollVoteWS,
 } from '../utilities/Interfaces';
 
 // For now, the creation of polls will not be real time.
@@ -31,7 +31,7 @@ const pollSlice: Slice = createSlice({
     // },
 
     // polls/reduxAddVote
-    reduxAddVote: (state, action: PayloadAction<PollVoteSendModel>) => {
+    reduxAddVote: (state, action: PayloadAction<PollVoteWS>) => {
       state.forEach((poll: PollResponseModel) => {
         // Find the matching poll id
         if (poll.poll_id === action.payload.poll_id) {

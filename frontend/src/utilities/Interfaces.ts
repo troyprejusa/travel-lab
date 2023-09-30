@@ -1,12 +1,8 @@
-/* Note:
-Some of the types here will not be 1-1 with 
-the actual SQL or Python types, because 
-non-serializable types (like Date/datetime) 
-cannot be sent, nor are they usable in 
-the Redux store
-*/
-
 // # --------------- DATABASE TYPES --------------- #
+/* These match the SQL types nearly 1-1, with the exception
+of non-serializable types (like Date/datetime) that cannot 
+be sent, nor are they usable in the Redux store
+*/
 
 export interface TripModel {
   id: string;
@@ -49,6 +45,7 @@ export interface MessageModel {
 }
 
 // # --------------- COMPOSITE DATABASE TYPES --------------- #
+// These types are a result of JOINs on SQL tables
 
 export interface UserModel {
   id: string;
@@ -60,13 +57,8 @@ export interface UserModel {
   admin: boolean;
 }
 
-// # --------------- CUSTOM TYPES --------------- #
-
-export interface NewPollModel {
-  title: string;
-  description: string | null;
-  options: Array<string>;
-}
+// # --------------- FASTAPI I/O TYPES --------------- #
+// These types are used in I/O of FastAPI calls
 
 export interface PollVoteModel {
   option_id: number;
@@ -83,17 +75,33 @@ export interface PollResponseModel {
   options: Array<PollVoteModel>;
 }
 
-export interface PollChartDataPoint {
-  option: string;
-  count: number;
-  voted_by: Array<string>;
+// # --------------- WEBSOCKET TYPES --------------- #
+// These types are used in websocket functionality
+
+export interface NewPollModel {
+  title: string;
+  description: string | null;
+  options: Array<string>;
 }
 
-export interface PollVoteSendModel {
-  // Data needed to save a poll vote and be distributed
-  // out to other listeners on the websocket
+export interface PollVoteWS {
   trip_id: string;
   poll_id: number;
   option_id: number;
   voted_by: string;
+}
+
+export interface MessageWS {
+  trip_id: string;
+  content: string,
+  created_by: string,
+}
+
+
+// # --------------- FRONTEND TYPES --------------- #
+// These are only used by the frontend
+export interface PollChartDataPoint {
+  option: string;
+  count: number;
+  voted_by: Array<string>;
 }

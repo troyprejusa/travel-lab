@@ -1,10 +1,10 @@
 import React, { useRef, useEffect } from 'react';
 import { msgSocket } from '../utilities/TripSocket';
-import { UserModel, TripModel, MessageModel } from '../utilities/Interfaces';
+import { UserModel, TripModel, MessageModel, MessageWS } from '../utilities/Interfaces';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
 import { ReceivedMessage, SentMessage } from '../Components/Messages';
-import { Flex, Box, Textarea, Button, HStack, Text } from '@chakra-ui/react';
+import { Box, Textarea, Button, HStack } from '@chakra-ui/react';
 import TitleBar from '../Components/TitleBar';
 
 
@@ -64,14 +64,13 @@ function MessageBoard(): JSX.Element {
 
     if (messageData === '') return;
 
-    const message = {
+    const message: MessageWS = {
       trip_id: trip.id,
       content: messageData,
       created_by: user.email,
     };
 
-    // console.log('Sending message:', message)
-    msgSocket.socket.emit('frontend_msg', message);
+    msgSocket.sendMessage(message);
 
     // Reset input field
     msgRef.current.value = '';
