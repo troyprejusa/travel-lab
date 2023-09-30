@@ -36,7 +36,10 @@ import {
   ConfigurableButtonAndModal,
 } from '../Components/Buttons';
 import TitleBar from '../Components/TitleBar';
-import { reduxAcceptTraveller, reduxRemoveTraveller } from '../redux/TravellersSlice';
+import {
+  reduxAcceptTraveller,
+  reduxRemoveTraveller,
+} from '../redux/TravellersSlice';
 
 function TripSettings(): JSX.Element {
   const navigate = useNavigate();
@@ -239,13 +242,12 @@ function TripSettings(): JSX.Element {
     } catch (error: any) {
       console.error(error);
     }
-    reduxAcceptTraveller({token: token, trip_id: trip.id, user_id: id });
+    dispatch(reduxAcceptTraveller({ token: token, trip_id: trip.id, user_id: id }));
   }
 
   async function handleRejectUser(id: string) {
     // For now, there's no reason for this logic to be different
     handleDeleteUser(id);
-
   }
 
   async function handleDeleteUser(id: string) {
@@ -255,12 +257,14 @@ function TripSettings(): JSX.Element {
     } catch (error: any) {
       console.error(error);
     }
-    reduxRemoveTraveller({token: token, trip_id: trip.id, user_id: id });
+    dispatch(reduxRemoveTraveller({ token: token, trip_id: trip.id, user_id: id }));
   }
 
   async function handleLeaveTrip() {
     try {
-      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
+      const token: string = await fetchHelpers.getAuth0Token(
+        getAccessTokenSilently
+      );
       const res: Response = await fetch(`/user/trips/${trip.id}`, {
         method: 'DELETE',
         headers: fetchHelpers.getTokenHeader(token),
