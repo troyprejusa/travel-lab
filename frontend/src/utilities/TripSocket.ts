@@ -64,8 +64,6 @@ class MessageSocket extends TripSocket {
 }
 
 class PollSocket extends TripSocket {
-  // The construction of polls will be synchronous, but the act
-  // of voting will be real-time
 
   constructor(host: string, apiPath: string, namespace: string) {
     super(host, apiPath, namespace);
@@ -81,9 +79,43 @@ class PollSocket extends TripSocket {
   }
 }
 
+class ItinerarySocket extends TripSocket {
+
+  constructor(host: string, apiPath: string, namespace: string) {
+    super(host, apiPath, namespace);
+  }
+
+  establishSocket(token: string, trip_id: string, dispatcher: Dispatch) {
+    // Make a connection to the socket using the parent method
+    super.establishSocket(token, trip_id, dispatcher);
+
+    // this.socket.on('backend_vote', (data: PollVoteSendModel) => {
+    //   this.dispatch(reduxAddVote(data));
+    // });
+  }
+}
+
+class PackingSocket extends TripSocket {
+
+  constructor(host: string, apiPath: string, namespace: string) {
+    super(host, apiPath, namespace);
+  }
+
+  establishSocket(token: string, trip_id: string, dispatcher: Dispatch) {
+    // Make a connection to the socket using the parent method
+    super.establishSocket(token, trip_id, dispatcher);
+
+    // this.socket.on('backend_vote', (data: PollVoteSendModel) => {
+    //   this.dispatch(reduxAddVote(data));
+    // });
+  }
+}
+
 const host: string = `wss://${Constants.PROXY_HOST}:${Constants.PROXY_PORT}`;
 const apiPath: string = '/sio/socket.io';
 
 export const msgSocket = new MessageSocket(host, apiPath, '/message');
-
 export const pollSocket = new PollSocket(host, apiPath, '/poll');
+export const itinerarySocket = new ItinerarySocket(host, apiPath, '/itinerary');
+export const packingSocket = new PackingSocket(host, apiPath, '/packing');
+

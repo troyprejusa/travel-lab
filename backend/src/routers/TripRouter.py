@@ -101,71 +101,6 @@ async def get_itinerary_info(request: Request, trip_id: str) -> list[Itinerary] 
             }
         )
 
-
-# Add itinerary item for this trip
-@trip_router.post('/{trip_id}/itinerary')
-async def add_itinerary_stop(
-    request: Request,
-    trip_id: str,
-    title: Annotated[str, Form()],
-    start_time: Annotated[datetime, Form()],
-    end_time: Annotated[datetime, Form()],
-    description: Annotated[str | None, Form()] = None
-    ) ->  dict[str, str]:
-
-    try:
-        verify_attendance(trip_id, request.state.user['trips'])
-
-        db_handler.query("""
-        INSERT INTO itinerary (trip_id, title, description, start_time, end_time, created_by)
-        VALUES (%s, %s, %s, %s, %s, %s);
-        """, (trip_id, title, description, start_time, end_time, request.state.user['email']))
-     
-        return JSONResponse(
-            status_code=200,
-            content= {
-                "message": "SUCCESS: Created itinerary stop"
-            }
-        )
-    
-    except Exception as error:
-        print(error)
-        return JSONResponse(
-            status_code=500,
-            content = {
-                "message": f"ERROR: Unable to submit itinerary stop for trip id {trip_id}"
-            }
-        )
-
-
-# Remove itinerary item from this trip
-@trip_router.delete('/{trip_id}/itinerary/{item_id}')
-async def remove_itinerary_stop(request: Request, trip_id: str, item_id: int) ->  str:
-    try:
-        verify_admin(trip_id, request.state.user['trips'])
-
-        # Even though we technically only need the item id to delete, we
-        # will also use the trip id for improved robustness since we have it
-        db_handler.query("""
-            DELETE FROM itinerary WHERE trip_id=%s AND id=%s;
-        """, (trip_id, item_id))
-     
-        return JSONResponse(
-            status_code=200,
-            content= {
-                "message": f"SUCCESS: Deleted itinerary stop from trip id {trip_id}"
-            }
-        )
-    
-    except Exception as error:
-        print(error)
-        return JSONResponse(
-            status_code=500,
-            content = {
-                "message": f"ERROR: Unable to delete itinerary stop for trip id {trip_id}"
-            }
-        )
-
 @trip_router.get('/{trip_id}/message')
 async def get_messages(request: Request, trip_id: str) -> list[Message] | str:
     try:
@@ -185,7 +120,6 @@ async def get_messages(request: Request, trip_id: str) -> list[Message] | str:
                 "message": f'ERROR: Unable to retrieve messages for trip id {trip_id}'
             }
         )
-
     
 @trip_router.get('/{trip_id}/poll')
 async def get_polls(request: Request, trip_id: str) -> list[PollResponse] | str:
@@ -236,7 +170,119 @@ async def get_polls(request: Request, trip_id: str) -> list[PollResponse] | str:
             }
         )
 
+@trip_router.get('/{trip_id}/packing')
+async def get_packing_items(request: Request, trip_id: str) -> list[Packing] | dict[str, str]:
+    try:
+        verify_attendance(trip_id, request.state.user['trips'])
 
+        data = db_handler.query("""
+            SELECT * FROM packing WHERE trip_id=%s ORDER BY id;
+        """, (trip_id,))
+
+        return data
+
+    except Exception as error:
+        return JSONResponse(
+            status_code=500,
+            content= {
+                "message": f'Unable to retrieve itms for trip {trip_id}'
+            }
+        )
+    
+# Get info for travellers on this trip
+@trip_router.get('/{trip_id}/travellers')
+async def get_travellers(request: Request, trip_id: str) ->  list[TravellerResponse] | str:
+    try:
+        verify_attendance(trip_id, request.state.user['trips'])
+        
+        travellers = db_handler.query("""
+            SELECT traveller.*, traveller_trip.confirmed, traveller_trip.admin
+            FROM traveller 
+            JOIN traveller_trip ON traveller.id = traveller_trip.traveller_id
+            WHERE traveller_trip.trip_id = %s
+            ORDER BY last_name;
+            """, (trip_id,))
+        
+        return travellers
+
+    except Exception as error:
+        print(error)
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": f"ERROR: Unable to find travellers for trip id {trip_id}"
+            }
+        )
+
+# ---------------------- DEPRECATED REST CALLS ---------------------- #
+
+# @DEPRECATED: Moved to websockets
+# Add itinerary stop
+@trip_router.post('/{trip_id}/itinerary')
+async def add_itinerary_stop(
+    request: Request,
+    trip_id: str,
+    title: Annotated[str, Form()],
+    start_time: Annotated[datetime, Form()],
+    end_time: Annotated[datetime, Form()],
+    description: Annotated[str | None, Form()] = None
+    ) ->  dict[str, str]:
+
+    try:
+        verify_attendance(trip_id, request.state.user['trips'])
+
+        db_handler.query("""
+        INSERT INTO itinerary (trip_id, title, description, start_time, end_time, created_by)
+        VALUES (%s, %s, %s, %s, %s, %s);
+        """, (trip_id, title, description, start_time, end_time, request.state.user['email']))
+     
+        return JSONResponse(
+            status_code=200,
+            content= {
+                "message": "SUCCESS: Created itinerary stop"
+            }
+        )
+    
+    except Exception as error:
+        print(error)
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": f"ERROR: Unable to submit itinerary stop for trip id {trip_id}"
+            }
+        )
+
+# @DEPRECATED: Moved to websockets
+# Remove itinerary stop
+@trip_router.delete('/{trip_id}/itinerary/{item_id}')
+async def remove_itinerary_stop(request: Request, trip_id: str, item_id: int) ->  str:
+    try:
+        verify_admin(trip_id, request.state.user['trips'])
+
+        # Even though we technically only need the item id to delete, we
+        # will also use the trip id for improved robustness since we have it
+        db_handler.query("""
+            DELETE FROM itinerary WHERE trip_id=%s AND id=%s;
+        """, (trip_id, item_id))
+     
+        return JSONResponse(
+            status_code=200,
+            content= {
+                "message": f"SUCCESS: Deleted itinerary stop from trip id {trip_id}"
+            }
+        )
+    
+    except Exception as error:
+        print(error)
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": f"ERROR: Unable to delete itinerary stop for trip id {trip_id}"
+            }
+        )
+
+# @DEPRECATED: Moved to websockets
+# Create poll
 @trip_router.post('/{trip_id}/poll')
 async def add_poll(request: Request, trip_id: str, poll_body: PollRequest) -> dict[str, str]:
     try:
@@ -273,7 +319,8 @@ async def add_poll(request: Request, trip_id: str, poll_body: PollRequest) -> di
             }
         )
 
-
+# @DEPRECATED: Moved to websockets
+# Delete poll
 @trip_router.delete('/{trip_id}/poll/{poll_id}')
 async def delete_poll(request: Request, trip_id: str, poll_id: int) -> dict[str, str]:
     try:
@@ -299,29 +346,10 @@ async def delete_poll(request: Request, trip_id: str, poll_id: int) -> dict[str,
             content= {
                 "message": f'ERROR: Unable to delete poll id {poll_id}'
             }
-        ) 
-
-
-@trip_router.get('/{trip_id}/packing')
-async def get_packing_items(request: Request, trip_id: str) -> list[Packing] | dict[str, str]:
-    try:
-        verify_attendance(trip_id, request.state.user['trips'])
-
-        data = db_handler.query("""
-            SELECT * FROM packing WHERE trip_id=%s ORDER BY id;
-        """, (trip_id,))
-
-        return data
-
-    except Exception as error:
-        return JSONResponse(
-            status_code=500,
-            content= {
-                "message": f'Unable to retrieve itms for trip {trip_id}'
-            }
         )
-    
 
+# @DEPRECATED: Moved to websockets
+# Add packing item
 @trip_router.post('/{trip_id}/packing')
 async def add_packing_item(
     request: Request,
@@ -355,7 +383,8 @@ async def add_packing_item(
             }
         )
 
-
+# @DEPRECATED: Moved to websockets
+# Delete packing item
 @trip_router.delete('/{trip_id}/packing/{item_id}')
 async def delete_packing_item(request: Request, trip_id: str, item_id: int) -> dict[str, str]:
     try:
@@ -383,7 +412,8 @@ async def delete_packing_item(request: Request, trip_id: str, item_id: int) -> d
             }
         )
 
-
+# @DEPRECATED: Moved to websockets
+# Claim packing item
 @trip_router.patch('/{trip_id}/packing/claim/{item_id}')
 async def claim_packing_item(request: Request, trip_id: str, item_id: int) -> dict[str, str]:
     try:
@@ -410,7 +440,8 @@ async def claim_packing_item(request: Request, trip_id: str, item_id: int) -> di
             }
         )
 
-
+# @DEPRECATED: Moved to websockets
+# Unclaim packing item
 @trip_router.patch('/{trip_id}/packing/unclaim/{item_id}')
 async def unclaim_packing_item(request: Request, trip_id: str, item_id: int) -> dict[str, str]:
     try:
@@ -435,29 +466,4 @@ async def unclaim_packing_item(request: Request, trip_id: str, item_id: int) -> 
                 "message": f'Unable to unclaim item_id {item_id}'
             }
         )
-    
 
-# Get info for travellers on this trip
-@trip_router.get('/{trip_id}/travellers')
-async def get_travellers(request: Request, trip_id: str) ->  list[TravellerResponse] | str:
-    try:
-        verify_attendance(trip_id, request.state.user['trips'])
-        
-        travellers = db_handler.query("""
-            SELECT traveller.*, traveller_trip.confirmed, traveller_trip.admin
-            FROM traveller 
-            JOIN traveller_trip ON traveller.id = traveller_trip.traveller_id
-            WHERE traveller_trip.trip_id = %s
-            ORDER BY last_name;
-            """, (trip_id,))
-        
-        return travellers
-
-    except Exception as error:
-        print(error)
-        return JSONResponse(
-            status_code=500,
-            content = {
-                "message": f"ERROR: Unable to find travellers for trip id {trip_id}"
-            }
-        )

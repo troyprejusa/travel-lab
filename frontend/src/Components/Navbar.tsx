@@ -56,9 +56,9 @@ interface LinkItemProps {
 const LinkItems: Array<LinkItemProps> = [
   { name: 'Home', icon: FiHome, path: 'home' },
   { name: 'Itinerary', icon: FiCalendar, path: 'itinerary' },
-  { name: 'Message Board', icon: FiMessageSquare, path: 'message' },
   { name: 'Poll', icon: FiThumbsUp, path: 'poll' },
   { name: 'Packing', icon: FiBriefcase, path: 'packing' },
+  { name: 'Message Board', icon: FiMessageSquare, path: 'message' },
   { name: 'Travellers', icon: FiUsers, path: 'travellers' },
   { name: 'Trip Settings', icon: FiSettings, path: 'settings' },
 ];
