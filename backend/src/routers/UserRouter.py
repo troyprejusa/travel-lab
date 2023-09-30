@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
-from models.Schemas import TravellerResponse, TripResponse
+from models.Schemas import TravellerResponse, TripModel
 from utilities.auth_helpers import verify_attendance, verify_admin
 
 
@@ -58,7 +58,7 @@ async def delete_user(request: Request) -> dict[str, str]:
 
 # Get a user's trips
 @user_router.get('/trips')
-async def get_trips(request: Request) -> list[TripResponse] | str:
+async def get_trips(request: Request) -> list[TripModel] | str:
     try:
         data = db_handler.query("""
             SELECT * FROM trip WHERE id in (

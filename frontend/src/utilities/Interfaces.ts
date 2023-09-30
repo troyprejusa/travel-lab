@@ -1,20 +1,12 @@
-// Using snake_case to align with Python convention and
-// match case-insensitivity with SQL
+/* Note:
+Some of the types here will not be 1-1 with 
+the actual SQL or Python types, because 
+non-serializable types (like Date/datetime) 
+cannot be sent, nor are they usable in 
+the Redux store
+*/
 
-// All interface types will be string,
-// as the data from the backend will come
-// in as a string, and non-serializable
-// types like Date cause issues in redux store
-
-export interface UserModel {
-  id: string;
-  first_name: string | null;
-  last_name: string | null;
-  email: string;
-  phone: string | null;
-  confirmed: boolean;
-  admin: boolean;
-}
+// # --------------- DATABASE TYPES --------------- #
 
 export interface TripModel {
   id: string;
@@ -37,14 +29,6 @@ export interface ItineraryModel {
   created_by: string;
 }
 
-export interface MessageModel {
-  id: number;
-  trip_id: string;
-  content: string;
-  created_at: string;
-  created_by: string;
-}
-
 export interface PackingModel {
   id: number;
   trip_id: string;
@@ -55,6 +39,28 @@ export interface PackingModel {
   created_by: string;
   packed_by: string | null;
 }
+
+export interface MessageModel {
+  id: number;
+  trip_id: string;
+  content: string;
+  created_at: string;
+  created_by: string;
+}
+
+// # --------------- COMPOSITE DATABASE TYPES --------------- #
+
+export interface UserModel {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  email: string;
+  phone: string | null;
+  confirmed: boolean;
+  admin: boolean;
+}
+
+// # --------------- CUSTOM TYPES --------------- #
 
 export interface NewPollModel {
   title: string;

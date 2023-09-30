@@ -60,11 +60,15 @@ class MessageSocket extends TripSocket {
     this.socket.on('backend_msg', (data: MessageModel) => {
       this.dispatch(reduxAddMessage(data));
     });
+
+    // Create event handlers for this
+    this.socket.on('backend_msg_error', (data: any) => {
+      console.error('MessageSocket: Unable to post message :(');
+    });
   }
 }
 
 class PollSocket extends TripSocket {
-
   constructor(host: string, apiPath: string, namespace: string) {
     super(host, apiPath, namespace);
   }
@@ -76,11 +80,15 @@ class PollSocket extends TripSocket {
     this.socket.on('backend_vote', (data: PollVoteSendModel) => {
       this.dispatch(reduxAddVote(data));
     });
+
+    this.socket.on('backend_vote_error', (data: any) => {
+      console.error('PollSocket: Unable to post vote :(');
+    });
+
   }
 }
 
 class ItinerarySocket extends TripSocket {
-
   constructor(host: string, apiPath: string, namespace: string) {
     super(host, apiPath, namespace);
   }
@@ -96,7 +104,6 @@ class ItinerarySocket extends TripSocket {
 }
 
 class PackingSocket extends TripSocket {
-
   constructor(host: string, apiPath: string, namespace: string) {
     super(host, apiPath, namespace);
   }
@@ -118,4 +125,3 @@ export const msgSocket = new MessageSocket(host, apiPath, '/message');
 export const pollSocket = new PollSocket(host, apiPath, '/poll');
 export const itinerarySocket = new ItinerarySocket(host, apiPath, '/itinerary');
 export const packingSocket = new PackingSocket(host, apiPath, '/packing');
-

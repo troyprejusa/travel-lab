@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
-from models.Schemas import TripResponse, TravellerResponse, Itinerary, Message, PollRequest, PollResponse, Packing
+from models.Schemas import TripModel, TravellerResponse, ItineraryModel, MessageModel, PollRequest, PollResponse, PackingModel
 from typing import Annotated
 from datetime import date, datetime
 from utilities.merge_polls import merge_polls
@@ -21,7 +21,7 @@ async def create_trip(
     description: Annotated[str, Form()],
     start_date: Annotated[date, Form()],
     end_date: Annotated[date, Form()]
-    ) -> TripResponse | str:
+    ) -> TripModel | str:
 
     try:
         # This call must not only create the trip, but must add
@@ -82,7 +82,7 @@ async def delete_trip(request: Request, trip_id: str) -> dict[str, str]:
 
 # Get itinerary entries for this trip
 @trip_router.get('/{trip_id}/itinerary')
-async def get_itinerary_info(request: Request, trip_id: str) -> list[Itinerary] | dict[str, str]:
+async def get_itinerary_info(request: Request, trip_id: str) -> list[ItineraryModel] | str:
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
@@ -102,7 +102,7 @@ async def get_itinerary_info(request: Request, trip_id: str) -> list[Itinerary] 
         )
 
 @trip_router.get('/{trip_id}/message')
-async def get_messages(request: Request, trip_id: str) -> list[Message] | str:
+async def get_messages(request: Request, trip_id: str) -> list[MessageModel] | str:
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
@@ -171,7 +171,7 @@ async def get_polls(request: Request, trip_id: str) -> list[PollResponse] | str:
         )
 
 @trip_router.get('/{trip_id}/packing')
-async def get_packing_items(request: Request, trip_id: str) -> list[Packing] | dict[str, str]:
+async def get_packing_items(request: Request, trip_id: str) -> list[PackingModel] | dict[str, str]:
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 

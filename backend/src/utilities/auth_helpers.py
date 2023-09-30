@@ -1,5 +1,4 @@
 
-from fastapi.responses import JSONResponse
 from utilities import Constants
 from models.DatabaseHandler import db_handler
 import jwt

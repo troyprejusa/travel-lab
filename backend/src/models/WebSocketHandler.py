@@ -3,6 +3,7 @@ import jwt
 from utilities import Constants
 from models.DatabaseHandler import db_handler
 from utilities import auth_helpers
+import datetime
 
 
 def parse_trip_id(query: str) -> str:
@@ -13,6 +14,11 @@ def parse_trip_id(query: str) -> str:
             return val
         
     return None
+
+def date_to_string_flat(obj: dict) -> None:
+    for key, val in obj.items():
+        if type(val) is datetime.datetime:
+            obj[key] = val.isoformat()
 
 class ItinerarySocket(socketio.AsyncNamespace):
     async def on_connect(self, sid, environ, auth):
@@ -59,17 +65,19 @@ class PollSocket(socketio.AsyncNamespace):
         pass
 
     async def on_frontend_vote(self, sid, data) -> None:
+        # Because the poll data is managed in such a composite fashion,
+        # we will not be returning the SQL result to the listeners in 
+        # this case
         try:
             db_handler.query("""
                 INSERT INTO poll_vote (poll_id, vote, voted_by) VALUES (%s, %s, %s);
             """, (data['poll_id'], data['option_id'], data['voted_by']))
 
-            # If vote was successful, send to everyone else
             await self.emit('backend_vote', data, room = data['trip_id'])
 
         except Exception as error:
             print(error)
-            raise Exception('Unable to vote on this poll')
+            await self.emit('backend_vote_error', {"message": "Unable to submit vote"} , room = data['trip_id'])
         
 class PackingSocket(socketio.AsyncNamespace):
     async def on_connect(self, sid, environ, auth):
@@ -126,14 +134,13 @@ class MsgSocket(socketio.AsyncNamespace):
                 RETURNING *;
             """, (data['trip_id'], data['content'], data['created_by']))[0]
 
-            # FIXME: DATETIME NOT SERIALIZABLE, WHAT TO DO???
-            
-            # If message was saved successfully, send to everyone else
+            date_to_string_flat(db_msg)
+
             await self.emit('backend_msg', db_msg, room = data['trip_id'])
 
         except Exception as error:
             print(error)
-            raise Exception('Unable to process message from frontend')
+            await self.emit('backend_msg_error', {"message": "Unable to submit message"} , room = data['trip_id'])
 
 # Setup websocket server - Socket.io
 sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins="*")
