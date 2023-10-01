@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
-from models.Schemas import TripModel, TravellerResponse, ItineraryModel, MessageModel, PollRequestWS, PollResponse, PackingModel
+from models.Schemas import TripModel, TravellerResponse, ItineraryModel, MessageModel, NewPollWS, PollResponse, PackingModel
 from typing import Annotated
 from datetime import date, datetime
 from utilities.auth_helpers import verify_attendance, verify_admin
@@ -157,7 +157,7 @@ async def get_polls(request: Request, trip_id: str) -> list[PollResponse] | str:
     
 
 @trip_router.post('/{trip_id}/poll')
-async def create_poll(request: Request, trip_id: str, poll_body: PollRequestWS) -> dict[str, str]:
+async def create_poll(request: Request, trip_id: str, poll_body: NewPollWS) -> dict[str, str]:
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 

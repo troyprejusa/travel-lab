@@ -1,5 +1,5 @@
 import React from 'react';
-import { ItineraryModel, UserModel } from '../utilities/Interfaces';
+import { ItineraryModel, TripModel, UserModel } from '../utilities/Interfaces';
 import { EditButton, TrashButton } from './Buttons';
 import Constants from '../utilities/Constants';
 import { useSelector } from 'react-redux';
@@ -22,7 +22,7 @@ interface ItineraryCardProps {
 }
 
 function ItineraryCard(props: ItineraryCardProps) {
-
+  const trip: TripModel = useSelector((state: RootState) => state.trip);
   const user: UserModel = useSelector((state: RootState) => state.user);
 
   const startDateTime: Date = new Date(props.itineraryData.start_time);
@@ -73,7 +73,12 @@ function ItineraryCard(props: ItineraryCardProps) {
             /> */}
             <TrashButton
               aria-label="delete itinerary stop"
-              onClick={() => itinerarySocket.deleteItinerary(props.itineraryData.id)}
+              onClick={() =>
+                itinerarySocket.deleteItinerary({
+                  trip_id: trip.id,
+                  itinerary_id: props.itineraryData.id,
+                })
+              }
               disabled={!user.admin}
               tooltipMsg={
                 user.admin ? '' : 'Only trip admins can delete itinerary stops'

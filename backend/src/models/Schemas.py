@@ -74,7 +74,19 @@ class PollResponse(BaseModel):
 # SHOULD be used to verify validity before handling on 
 # the backend
 
-class PollRequestWS(BaseModel):
+class NewItineraryWS(BaseModel):
+    trip_id: str
+    created_by: str
+    title: str
+    description: str | None = None
+    start_time: str
+    end_time: str
+
+class ItineraryDeleteWS(BaseModel):
+    trip_id: str
+    itinerary_id: int
+
+class NewPollWS(BaseModel):
     trip_id: str
     created_by: str
     title: str

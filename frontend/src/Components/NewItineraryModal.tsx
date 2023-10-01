@@ -2,8 +2,12 @@ import { useRef, SyntheticEvent } from 'react';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
-import { TripModel, ItineraryModel } from '../utilities/Interfaces';
-import { useAuth0 } from '@auth0/auth0-react';
+import {
+  TripModel,
+  ItineraryModel,
+  NewItineraryModel,
+  UserModel,
+} from '../utilities/Interfaces';
 import {
   Button,
   ButtonGroup,
@@ -25,9 +29,9 @@ interface NewItineraryModalProps {}
 
 function NewItineraryModal(props: NewItineraryModalProps) {
   const trip: TripModel = useSelector((state: RootState) => state.trip);
+  const user: UserModel = useSelector((state: RootState) => state.user);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const itineraryForm = useRef<HTMLFormElement>(null);
-  const { getAccessTokenSilently } = useAuth0();
 
   return (
     <>
@@ -117,7 +121,15 @@ function NewItineraryModal(props: NewItineraryModalProps) {
       return;
     }
 
-    itinerarySocket.sendItinerary(formData);
+    const new_itinerary: NewItineraryModel = {
+      trip_id: trip.id,
+      created_by: user.email,
+      ...Object.fromEntries(formData.entries()),
+    };
+
+    if (new_itinerary.description === '') new_itinerary.description = null;
+    
+    itinerarySocket.sendItinerary(new_itinerary);
 
     // Close the modal
     onClose();

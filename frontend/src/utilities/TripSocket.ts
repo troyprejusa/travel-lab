@@ -1,8 +1,9 @@
 import io, { Socket } from 'socket.io-client';
-import { reduxAddMessage } from '../redux/MessageSlice';
+import { reduxAddItinerary, reduxDeleteItinerary } from '../redux/ItinerarySlice';
 import { reduxAddPoll, reduxAddVote, reduxDeletePoll } from '../redux/PollSlice';
+import { reduxAddMessage } from '../redux/MessageSlice';
 import { Dispatch } from '@reduxjs/toolkit';
-import { MessageWS, MessageModel, PollVoteWS, PollDeleteWS, NewPollModel, PollResponseModel } from './Interfaces';
+import { MessageWS, MessageModel, PollVoteWS, PollDeleteWS, PollResponseModel, ItineraryDeleteWS } from './Interfaces';
 import Constants from './Constants';
 
 class TripSocket {
@@ -125,7 +126,7 @@ class ItinerarySocket extends TripSocket {
     // Make a connection to the socket using the parent method
     super.establishSocket(token, trip_id, dispatcher);
 
-    this.socket!.on('backend_itinerary_create', (data: any) => {
+    this.socket!.on('backend_itinerary_create', (data: ItineraryModel) => {
       this.dispatch!(reduxAddItinerary(data));
     });
 
@@ -146,8 +147,8 @@ class ItinerarySocket extends TripSocket {
     this.socket!.emit('frontend_itinerary_create', itinerary);
   }
 
-  deleteItinerary(itinerary_id: number) {
-    this.socket!.emit('frontend_itinerary_delete', itinerary_id);
+  deleteItinerary(itinerary_data: ItineraryDeleteWS) {
+    this.socket!.emit('frontend_itinerary_delete', itinerary_data);
   }
 }
 

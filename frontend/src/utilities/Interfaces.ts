@@ -78,6 +78,20 @@ export interface PollResponseModel {
 // # --------------- WEBSOCKET TYPES --------------- #
 // These types are used in websocket functionality
 
+export interface NewItineraryModel {
+  trip_id: string;
+  created_by: string;
+  title: string;
+  description: string | null;
+  start_time: string;
+  end_time: string;
+}
+
+export interface ItineraryDeleteWS {
+  trip_id: string;
+  itinerary_id: number;
+}
+
 export interface NewPollModel {
   trip_id: string;
   created_by: string;
@@ -100,10 +114,9 @@ export interface PollDeleteWS {
 
 export interface MessageWS {
   trip_id: string;
-  content: string,
-  created_by: string,
+  content: string;
+  created_by: string;
 }
-
 
 // # --------------- FRONTEND TYPES --------------- #
 // These are only used by the frontend

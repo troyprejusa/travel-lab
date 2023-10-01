@@ -168,15 +168,16 @@ class DatabaseHandler:
 
         return itinerary
     
-    def create_itinerary(self, trip_id: str, title: str, description: str | None, start_time: datetime, end_time: datetime, email: str) -> dict:
+    def create_itinerary(self, trip_id: str, title: str, description: str | None, start_time: str, end_time: str, email: str) -> dict:
         new_stop = self.query("""
             INSERT INTO itinerary (trip_id, title, description, start_time, end_time, created_by)
-            VALUES (%s, %s, %s, %s, %s, %s);
+            VALUES (%s, %s, %s, %s, %s, %s)
+            RETURNING *;
         """, (trip_id, title, description, start_time, end_time, email))[0]
 
         return new_stop
 
-    def delete_itinerary(self, stop_id: str) -> None:
+    def delete_itinerary(self, stop_id: int) -> None:
         self.query("""
             DELETE FROM itinerary WHERE id=%s;
         """, (stop_id,))
@@ -219,9 +220,11 @@ class DatabaseHandler:
         backend. Note that the below logic relies on the data being
         SORTED by poll_id. This is basically a merge intervals problem
         '''
-        polls = merge_polls(polls_and_votes)
-    
-        return polls
+        polls = merge_polls(polls_and_votes)    # This is an array of classes
+
+        output = list(map(lambda poll: poll.dict(), polls))
+        
+        return output
     
     def get_poll(self, poll_id: int) -> dict:
         poll_and_votes = self.query("""
@@ -245,7 +248,7 @@ class DatabaseHandler:
             ORDER BY poll.id, poll_option.id;
         """, (poll_id,))
 
-        poll = merge_polls(poll_and_votes)[0]
+        poll = merge_polls(poll_and_votes)[0].dict()
     
         return poll
     

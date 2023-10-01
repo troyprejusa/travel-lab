@@ -13,6 +13,16 @@ const itinerarySlice: Slice = createSlice({
   name: 'itinerary', // itinerary/<action_name>
   initialState: [] as ItineraryState,
   reducers: {
+    // itinerary/reduxAddItinerary
+    reduxAddItinerary: (state, action: PayloadAction<ItineraryModel>) => {
+      state.push(action.payload);
+    },
+
+    // itinerary/reduxDeleteItinerary
+    reduxDeleteItinerary: (state, action: PayloadAction<number>) => {
+      return state.filter((itin: ItineraryModel) => itin.id !== action.payload);
+    },
+
     // itinerary/reduxResetItinerary
     reduxResetItinerary: () => {
       return [] as ItineraryState;
@@ -42,7 +52,7 @@ const itinerarySlice: Slice = createSlice({
 
 export const reduxFetchItinerary = createAsyncThunk(
   'messages/reduxFetchItinerary',
-  async ({trip_id, token}, thunkAPI) => {
+  async ({ trip_id, token }, thunkAPI) => {
     try {
       const res: Response = await fetch(`/trip/${trip_id}/itinerary`, {
         method: 'GET',
@@ -65,6 +75,7 @@ export const reduxFetchItinerary = createAsyncThunk(
   }
 );
 
-export const { reduxResetItinerary } = itinerarySlice.actions;
+export const { reduxAddItinerary, reduxDeleteItinerary, reduxResetItinerary } =
+  itinerarySlice.actions;
 
 export default itinerarySlice.reducer;

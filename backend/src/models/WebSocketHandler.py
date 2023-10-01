@@ -3,7 +3,7 @@ import jwt
 from utilities import Constants
 from models.DatabaseHandler import db_handler
 from utilities import auth_helpers
-from models.Schemas import PollRequestWS, PollVoteWS, PollDeleteWS, MessageWS
+from models.Schemas import NewItineraryWS, ItineraryDeleteWS, NewPollWS, PollVoteWS, PollDeleteWS, MessageWS
 import datetime
 
 
@@ -37,21 +37,26 @@ class ItinerarySocket(socketio.AsyncNamespace):
     def on_disconnect(self, sid):
         print(f'{sid} disconnected from ItinerarySocket')
 
-    async def on_create_itinerary(self, sid, data) -> None:
-        # FIXME:
+    async def on_frontend_itinerary_create(self, sid, data) -> None:
         try:
-            pass
-        except Exception as error:
-            print(error)
-            await self.emit('_error', {"message": 'Unable to create poll'}, room = data['trip_id'])
+            itinerary_data = NewItineraryWS.parse_obj(data)     # Verify data
+            itinerary_db = db_handler.create_itinerary(itinerary_data.trip_id, itinerary_data.title, itinerary_data.description, itinerary_data.start_time, itinerary_data.end_time, itinerary_data.created_by)
+            date_to_string_flat(itinerary_db)
+            await self.emit('backend_itinerary_create', itinerary_db, room = itinerary_data.trip_id)
 
-    async def on_delete_itinerary(self, sid, data) -> None:
-        # FIXME:
-        try:
-            pass
         except Exception as error:
             print(error)
-            await self.emit('_error', {"message": 'Unable to create poll'}, room = data['trip_id'])
+            await self.emit('backend_itinerary_create_error', {"message": 'Unable to create itinerary stop'}, room = data['trip_id'])
+
+    async def on_frontend_itinerary_delete(self, sid, data) -> None:
+        try:
+            itinerary_delete = ItineraryDeleteWS.parse_obj(data)    # Verify data
+            db_handler.delete_itinerary(itinerary_delete.itinerary_id)
+            await self.emit('backend_itinerary_delete', itinerary_delete.itinerary_id, room = itinerary_delete.trip_id)
+        
+        except Exception as error:
+            print(error)
+            await self.emit('backend_itinerary_delete_error', {"message": 'Unable to delete itinerary stop'}, room = data['trip_id'])
 
 class PollSocket(socketio.AsyncNamespace):
     async def on_connect(self, sid, environ, auth):
@@ -71,10 +76,10 @@ class PollSocket(socketio.AsyncNamespace):
 
     async def on_frontend_poll_create(self, sid, data) -> None:
         try:
-            new_poll = PollRequestWS.parse_obj(data)    # Verify data
+            new_poll = NewPollWS.parse_obj(data)    # Verify data
             poll_id = db_handler.create_poll(new_poll.trip_id, new_poll.title, new_poll.description, new_poll.created_by)
             db_handler.create_poll_options(poll_id, new_poll.options)
-            new_poll_db = db_handler.get_poll(poll_id).dict()
+            new_poll_db = db_handler.get_poll(poll_id)
             date_to_string_flat(new_poll_db)
 
             await self.emit('backend_poll_create', new_poll_db, room = new_poll.trip_id)

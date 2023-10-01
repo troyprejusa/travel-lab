@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { reduxSetTrip } from '../redux/TripSlice';
 import { TripModel, UserModel } from '../utilities/Interfaces';
 import TripPhoto from '../assets/tripphoto.jpg';
-import { msgSocket, pollSocket } from '../utilities/TripSocket';
+import { itinerarySocket, msgSocket, packingSocket, pollSocket } from '../utilities/TripSocket';
 import { AvatarWrapper } from './AvatarWrapper';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -92,8 +92,10 @@ function TripCard(props: TripCardProps) {
 
       if (token) {
         // Establish a websocket connection for these rooms
-        msgSocket.establishSocket(token, props.tripData.id, dispatch);
+        itinerarySocket.establishSocket(token, props.tripData.id, dispatch);
         pollSocket.establishSocket(token, props.tripData.id, dispatch);
+        packingSocket.establishSocket(token, props.tripData.id, dispatch);
+        msgSocket.establishSocket(token, props.tripData.id, dispatch);
 
         // Set this trip as the current trip in state
         dispatch(reduxSetTrip(props.tripData));
