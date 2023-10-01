@@ -176,7 +176,7 @@ class DatabaseHandler:
         return new_stop
 
     def delete_itinerary(self, stop_id: str) -> None:
-        db_handler.query("""
+        self.query("""
             DELETE FROM itinerary WHERE id=%s;
         """, (stop_id,))
 
@@ -220,7 +220,7 @@ class DatabaseHandler:
         # This would seem like a good place for a psycopg "executemany", but 
         # the docs say it's not faster than just calling execute on a loop
         for option in options:
-            db_handler.query("""
+            self.query("""
                 INSERT INTO poll_option (poll_id, option) VALUES (%s, %s);
             """, (poll_id, option))
 
@@ -232,7 +232,7 @@ class DatabaseHandler:
     # --------------- PACKING OPERATIONS --------------- #
 
     def get_packing_items(self, trip_id: str) -> list[dict]:
-        items = db_handler.query("""
+        items = self.query("""
             SELECT * FROM packing WHERE trip_id=%s ORDER BY id;
         """, (trip_id,))
 
@@ -256,7 +256,7 @@ class DatabaseHandler:
         return claimed_item
         
     def unclaim_packing_item(self, item_id: int) -> dict:
-        unclaimed_item = db_handler.query("""
+        unclaimed_item = self.query("""
             UPDATE packing SET packed_by = NULL WHERE packed_by IS NOT NULL AND id = %s
             RETURNING *;
         """, (item_id,))[0]
@@ -264,7 +264,7 @@ class DatabaseHandler:
         return unclaimed_item
 
     def delete_packing_item(self, item_id: int) -> dict:
-        deleted_item = db_handler.query("""
+        deleted_item = self.query("""
             DELETE FROM packing WHERE id=%s RETURNING *;
         """, (item_id,))[0]
 
