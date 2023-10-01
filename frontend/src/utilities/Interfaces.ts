@@ -79,6 +79,8 @@ export interface PollResponseModel {
 // These types are used in websocket functionality
 
 export interface NewPollModel {
+  trip_id: string;
+  created_by: string;
   title: string;
   description: string | null;
   options: Array<string>;
@@ -89,6 +91,11 @@ export interface PollVoteWS {
   poll_id: number;
   option_id: number;
   voted_by: string;
+}
+
+export interface PollDeleteWS {
+  trip_id: string;
+  poll_id: number;
 }
 
 export interface MessageWS {

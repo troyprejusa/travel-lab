@@ -20,15 +20,10 @@ const pollSlice: Slice = createSlice({
   name: 'polls', // polls/<action_name>
   initialState: [] as PollState,
   reducers: {
-    // polls/reduxSetPolls
-    // reduxSetPolls: (state, action: PayloadAction<Array<PollResponseModel>>) => {
-    //     return action.payload;
-    // },
-
     // polls/reduxAddPoll
-    // reduxAddPoll: (state, action: PayloadAction<PollResponseModel>) => {
-    //     state.push(action.payload)
-    // },
+    reduxAddPoll: (state, action: PayloadAction<PollResponseModel>) => {
+      state.push(action.payload);
+    },
 
     // polls/reduxAddVote
     reduxAddVote: (state, action: PayloadAction<PollVoteWS>) => {
@@ -40,9 +35,16 @@ const pollSlice: Slice = createSlice({
             if (option.option_id === action.payload.option_id) {
               option.votes.push(action.payload.voted_by);
             }
-          })
+          });
         }
       });
+    },
+
+    // polls/reduxDeletePoll
+    reduxDeletePoll: (state, action: PayloadAction<number>) => {
+      return state.filter(
+        (poll: PollResponseModel) => poll.poll_id !== action.payload
+      );
     },
 
     // polls/reduxResetPolls
@@ -74,7 +76,7 @@ const pollSlice: Slice = createSlice({
 
 export const reduxFetchPolls = createAsyncThunk(
   'polls/reduxFetchPolls',
-  async ({trip_id, token}, thunkAPI) => {
+  async ({ trip_id, token }, thunkAPI) => {
     try {
       const res: Response = await fetch(`/trip/${trip_id}/poll`, {
         method: 'GET',
@@ -97,6 +99,7 @@ export const reduxFetchPolls = createAsyncThunk(
   }
 );
 
-export const { reduxAddVote, reduxResetPolls } = pollSlice.actions;
+export const { reduxAddPoll, reduxAddVote, reduxDeletePoll, reduxResetPolls } =
+  pollSlice.actions;
 
 export default pollSlice.reducer;

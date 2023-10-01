@@ -1,5 +1,5 @@
 import { useState, useRef, SyntheticEvent, ReactElement } from 'react';
-import { NewPollModel } from '../utilities/Interfaces';
+import { NewPollModel, TripModel, UserModel } from '../utilities/Interfaces';
 import { pollSocket } from '../utilities/TripSocket';
 import {
   Button,
@@ -20,10 +20,14 @@ import {
   Textarea,
   ButtonGroup,
 } from '@chakra-ui/react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/Store';
 
 interface NewPollModalProps {}
 
 function NewPollModal(props: NewPollModalProps) {
+  const trip: TripModel = useSelector((state: RootState) => state.trip);
+  const user: UserModel = useSelector((state: RootState) => state.user);
   const [pollOptionCount, setPollOptionCount] = useState(0);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -116,6 +120,8 @@ function NewPollModal(props: NewPollModalProps) {
     // options, we're going to use JSON instead of the actual
     // form
     const pollData: NewPollModel = {
+      trip_id: trip.id,
+      created_by: user.email,
       title: '',
       description: null,
       options: [],

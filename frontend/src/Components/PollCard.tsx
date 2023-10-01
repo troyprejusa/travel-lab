@@ -211,7 +211,7 @@ function PollCard(props: PollCardProps) {
   }
 
   async function handleDeleteButtonClick(poll_id: number) {
-    pollSocket.deletePoll(poll_id);
+    pollSocket.deletePoll({"trip_id": trip.id, "poll_id": poll_id});
 
     // Close the modal
     onClose();

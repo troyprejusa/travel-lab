@@ -4,7 +4,6 @@ from models.DatabaseHandler import db_handler
 from models.Schemas import TripModel, TravellerResponse, ItineraryModel, MessageModel, PollRequestWS, PollResponse, PackingModel
 from typing import Annotated
 from datetime import date, datetime
-from utilities.merge_polls import merge_polls
 from utilities.auth_helpers import verify_attendance, verify_admin
 from models.S3Handler import minio_client
 
@@ -143,25 +142,9 @@ async def get_polls(request: Request, trip_id: str) -> list[PollResponse] | str:
     try:
         verify_attendance(trip_id, request.state.user['trips'])
         
-        '''
-        The results for one poll on this trip will have the following number
-        of rows:
-        M options * N people who voted this option, M >= 1 & N >= 1
-        Repeat this for P polls. It's kind of a mess to sort through, 
-        but at least we get everything we need out of 1 query.
-        '''
         polls = db_handler.get_polls(trip_id)
 
-        '''
-        With this table of data, we can either group it meaningfully
-        on the backend or the frontend. However, in case we want to 
-        implement anonymous polling, we will have to handle this on the
-        backend. Note that the below logic relies on the data being
-        SORTED by poll_id. This is basically a merge intervals problem
-        '''
-        merged_polls = merge_polls(polls)
-
-        return merged_polls
+        return polls
     
     except Exception as error:
         print(error)

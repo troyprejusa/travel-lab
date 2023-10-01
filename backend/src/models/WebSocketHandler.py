@@ -3,7 +3,7 @@ import jwt
 from utilities import Constants
 from models.DatabaseHandler import db_handler
 from utilities import auth_helpers
-from models.Schemas import PollVoteWS, MessageWS
+from models.Schemas import PollRequestWS, PollVoteWS, PollDeleteWS, MessageWS
 import datetime
 
 
@@ -38,10 +38,20 @@ class ItinerarySocket(socketio.AsyncNamespace):
         print(f'{sid} disconnected from ItinerarySocket')
 
     async def on_create_itinerary(self, sid, data) -> None:
-        pass
-    
+        # FIXME:
+        try:
+            pass
+        except Exception as error:
+            print(error)
+            await self.emit('_error', {"message": 'Unable to create poll'}, room = data['trip_id'])
+
     async def on_delete_itinerary(self, sid, data) -> None:
-        pass
+        # FIXME:
+        try:
+            pass
+        except Exception as error:
+            print(error)
+            await self.emit('_error', {"message": 'Unable to create poll'}, room = data['trip_id'])
 
 class PollSocket(socketio.AsyncNamespace):
     async def on_connect(self, sid, environ, auth):
@@ -59,27 +69,41 @@ class PollSocket(socketio.AsyncNamespace):
     def on_disconnect(self, sid):
         print(f'{sid} disconnected from PollSocket')
 
-    async def on_create_poll(self, sid, data) -> None:
-        pass
+    async def on_frontend_poll_create(self, sid, data) -> None:
+        try:
+            new_poll = PollRequestWS.parse_obj(data)    # Verify data
+            poll_id = db_handler.create_poll(new_poll.trip_id, new_poll.title, new_poll.description, new_poll.created_by)
+            db_handler.create_poll_options(poll_id, new_poll.options)
+            new_poll_db = db_handler.get_poll(poll_id).dict()
+            date_to_string_flat(new_poll_db)
 
-    async def on_delete_poll(self, sid, data) -> None:
-        pass
+            await self.emit('backend_poll_create', new_poll_db, room = new_poll.trip_id)
+        
+        except Exception as error:
+            print(error)
+            await self.emit('backend_poll_create_error', {"message": 'Unable to create poll'}, room = data['trip_id'])
 
     async def on_frontend_vote(self, sid, data) -> None:
         # Because the poll data is handled in such a composite fashion,
         # we will not be returning the SQL result to the listeners
         try:
             poll_vote = PollVoteWS.parse_obj(data)  # Verify data
-
-            db_handler.query("""
-                INSERT INTO poll_vote (poll_id, vote, voted_by) VALUES (%s, %s, %s);
-            """, (poll_vote.poll_id, poll_vote.option_id, poll_vote.voted_by))
-
-            await self.emit('backend_vote', poll_vote.dict(), room = data['trip_id'])
+            db_handler.submit_vote(poll_vote.poll_id, poll_vote.option_id, poll_vote.voted_by)
+            await self.emit('backend_vote', poll_vote.dict(), room = poll_vote.trip_id)
 
         except Exception as error:
             print(error)
             await self.emit('backend_vote_error', {"message": "Unable to submit vote"} , room = data['trip_id'])
+
+    async def on_frontend_poll_delete(self, sid, data) -> None:
+        try:
+            poll_delete = PollDeleteWS.parse_obj(data)
+            db_handler.delete_poll(poll_delete.poll_id)
+            await self.emit('backend_poll_delete', poll_delete.poll_id, room = poll_delete.trip_id)
+
+        except Exception as error:
+            print(error)
+            await self.emit('backend_poll_delete_error', {"message": 'Unable to delete poll'}, room = data['trip_id'])
         
 class PackingSocket(socketio.AsyncNamespace):
     async def on_connect(self, sid, environ, auth):
@@ -98,17 +122,36 @@ class PackingSocket(socketio.AsyncNamespace):
         print(f'{sid} disconnected from PackingSocket')
     
     async def on_create_packing_item(self, sid, data) -> None:
-        pass
+        # FIXME:
+        try:
+            pass
+        except Exception as error:
+            print(error)
+            await self.emit('_error', {"message": 'Unable to create poll'}, room = data['trip_id'])
 
     async def on_delete_packing_item(self, sid, data) -> None:
-        pass
+        # FIXME:
+        try:
+            pass
+        except Exception as error:
+            print(error)
+            await self.emit('_error', {"message": 'Unable to create poll'}, room = data['trip_id'])
 
     async def on_claim_packing_item(self, sid, data) -> None:
-        pass
+        # FIXME:
+        try:
+            pass
+        except Exception as error:
+            print(error)
+            await self.emit('_error', {"message": 'Unable to create poll'}, room = data['trip_id'])
 
     async def on_unclaim_packing_item(self, sid, data) -> None:
-        pass
-
+        # FIXME:
+        try:
+            pass
+        except Exception as error:
+            print(error)
+            await self.emit('_error', {"message": 'Unable to create poll'}, room = data['trip_id'])
 class MsgSocket(socketio.AsyncNamespace):
     async def on_connect(self, sid, environ, auth):
         try:
@@ -128,19 +171,9 @@ class MsgSocket(socketio.AsyncNamespace):
     async def on_frontend_msg(self, sid, data):
         try:
             msg = MessageWS.parse_obj(data)     # Verify data
-
-            db_msg = db_handler.query("""
-                INSERT INTO message (
-                trip_id, content, created_by          
-                ) VALUES (
-                    %s, %s, %s    
-                )
-                RETURNING *;
-            """, (msg.trip_id, msg.content, msg.created_by))[0]
-
+            db_msg = db_handler.create_msg(msg.trip_id, msg.content, msg.created_by)
             date_to_string_flat(db_msg)
-
-            await self.emit('backend_msg', db_msg, room = data['trip_id'])
+            await self.emit('backend_msg', db_msg, room = msg.trip_id)
 
         except Exception as error:
             print(error)

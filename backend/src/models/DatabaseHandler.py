@@ -1,6 +1,7 @@
 import psycopg2
 import psycopg2.extras
 from utilities import Constants
+from utilities.merge_polls import merge_polls
 from datetime import date, datetime
 
 settings = {
@@ -183,7 +184,14 @@ class DatabaseHandler:
     # --------------- POLL OPERATIONS --------------- #
 
     def get_polls(self, trip_id: str) -> list[dict]:
-        polls = self.query("""
+        '''
+        The results for one poll on this trip will have the following number
+        of rows:
+        M options * N people who voted this option, M >= 1 & N >= 1
+        Repeat this for P polls. It's kind of a mess to sort through, 
+        but at least we get everything we need out of 1 query.
+        '''
+        polls_and_votes = self.query("""
             SELECT 
                 poll.id AS poll_id,
                 poll.title,
@@ -203,16 +211,51 @@ class DatabaseHandler:
                 poll.trip_id = %s
             ORDER BY poll.id, poll_option.id;
         """, (trip_id,))
+
+        '''
+        With this table of data, we can either group it meaningfully
+        on the backend or the frontend. However, in case we want to 
+        implement anonymous polling, we will have to handle this on the
+        backend. Note that the below logic relies on the data being
+        SORTED by poll_id. This is basically a merge intervals problem
+        '''
+        polls = merge_polls(polls_and_votes)
     
         return polls
     
-    def create_poll(self, trip_id, title, description: str | None, email: str) -> int:
+    def get_poll(self, poll_id: int) -> dict:
+        poll_and_votes = self.query("""
+            SELECT 
+                poll.id AS poll_id,
+                poll.title,
+                poll.description,
+                poll.created_at,
+                poll.created_by,
+                poll_option.id AS option_id,
+                poll_option.option,
+                poll_vote.voted_by
+            FROM 
+                poll
+            JOIN
+                poll_option ON poll.id = poll_option.poll_id
+            LEFT JOIN
+                poll_vote ON poll_option.id = poll_vote.vote
+            WHERE 
+                poll.id = %s
+            ORDER BY poll.id, poll_option.id;
+        """, (poll_id,))
+
+        poll = merge_polls(poll_and_votes)[0]
+    
+        return poll
+    
+    def create_poll(self, trip_id, title, description: str | None, creator_email: str) -> int:
         poll_id = self.query("""
             INSERT INTO poll 
                 (trip_id, title, description, created_by) 
                 VALUES (%s, %s, %s, %s)
             RETURNING id;
-        """, (trip_id, title, description, email))[0]['id']
+        """, (trip_id, title, description, creator_email))[0]['id']
 
         return poll_id
     
@@ -224,9 +267,14 @@ class DatabaseHandler:
                 INSERT INTO poll_option (poll_id, option) VALUES (%s, %s);
             """, (poll_id, option))
 
+    def submit_vote(self, poll_id: int, poll_option_id: int, voter_email: str) -> None:
+        self.query("""
+                INSERT INTO poll_vote (poll_id, vote, voted_by) VALUES (%s, %s, %s);
+            """, (poll_id, poll_option_id, voter_email))
+
     def delete_poll(self, poll_id: int) -> None:
         self.query("""
-            DELETE FROM poll WHERE AND id=%s RETURNING *;
+            DELETE FROM poll WHERE id=%s;
         """, (poll_id,))
 
     # --------------- PACKING OPERATIONS --------------- #
@@ -278,6 +326,18 @@ class DatabaseHandler:
         """, (trip_id,))
 
         return msgs
+    
+    def create_msg(self, trip_id: str, content: str, created_by: str) -> dict:
+        db_msg = db_handler.query("""
+            INSERT INTO message (
+            trip_id, content, created_by          
+            ) VALUES (
+                %s, %s, %s    
+            )
+            RETURNING *;
+            """, (trip_id, content, created_by))[0]
+        
+        return db_msg
     
     # --------------- TRAVELLER OPERATIONS --------------- #
 

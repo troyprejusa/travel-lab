@@ -1,8 +1,8 @@
 import io, { Socket } from 'socket.io-client';
 import { reduxAddMessage } from '../redux/MessageSlice';
-import { reduxAddVote } from '../redux/PollSlice';
+import { reduxAddPoll, reduxAddVote, reduxDeletePoll } from '../redux/PollSlice';
 import { Dispatch } from '@reduxjs/toolkit';
-import { MessageWS, MessageModel, PollVoteWS } from './Interfaces';
+import { MessageWS, MessageModel, PollVoteWS, PollDeleteWS, NewPollModel, PollResponseModel } from './Interfaces';
 import Constants from './Constants';
 
 class TripSocket {
@@ -78,7 +78,7 @@ class PollSocket extends TripSocket {
     // Make a connection to the socket using the parent method
     super.establishSocket(token, trip_id, dispatcher);
 
-    this.socket!.on('backend_poll_create', (data: any) => {
+    this.socket!.on('backend_poll_create', (data: PollResponseModel) => {
       this.dispatch!(reduxAddPoll(data));
     });
 
@@ -86,12 +86,12 @@ class PollSocket extends TripSocket {
       console.error('PollSocket: Unable to create poll :(');
     });
 
-    this.socket!.on('backend_poll_delete', (data: any) => {
+    this.socket!.on('backend_poll_delete', (data: number) => {
       this.dispatch!(reduxDeletePoll(data));
     });
 
     this.socket!.on('backend_poll_delete_error', (data) => {
-      console.error('PollSocket: Unable to create poll :(');
+      console.error('PollSocket: Unable to delete poll :(');
     });
 
     this.socket!.on('backend_vote', (data: PollVoteWS) => {
@@ -107,8 +107,8 @@ class PollSocket extends TripSocket {
     this.socket!.emit('frontend_poll_create', poll);
   }
 
-  deletePoll(poll_id: number) {
-    this.socket!.emit('frontend_poll_delete', poll_id);
+  deletePoll(poll_data: PollDeleteWS) {
+    this.socket!.emit('frontend_poll_delete', poll_data);
   }
 
   sendVote(vote: PollVoteWS) {

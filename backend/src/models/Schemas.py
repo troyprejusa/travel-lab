@@ -75,6 +75,8 @@ class PollResponse(BaseModel):
 # the backend
 
 class PollRequestWS(BaseModel):
+    trip_id: str
+    created_by: str
     title: str
     description: str | None = None
     options: list[str]
@@ -84,6 +86,10 @@ class PollVoteWS(BaseModel):
     poll_id: int
     option_id: int
     voted_by: str
+
+class PollDeleteWS(BaseModel):
+    trip_id: str
+    poll_id: int
 
 class MessageWS(BaseModel):
     trip_id: str
