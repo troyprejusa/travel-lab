@@ -144,14 +144,18 @@ class DatabaseHandler:
         return new_trip_id
 
     def get_trip_data(self, trip_id: str) -> dict:
-        self.query("""
+        trip = self.query("""
             SELECT * FROM trip WHERE id=%s ORDER BY start_date;
         """, (trip_id,))[0]
 
-    def delete_trip(self, trip_id: str) -> None:
-        self.query("""
-            DELETE FROM trip WHERE id = %s;
-        """, (trip_id,))
+        return trip
+
+    def delete_trip(self, trip_id: str) -> dict:
+        deleted_trip = self.query("""
+            DELETE FROM trip WHERE id = %s RETURNING *;
+        """, (trip_id,))[0]
+        
+        return deleted_trip
 
     def get_itinerary(self, trip_id: str) -> list[dict]:
         itinerary = self.query("""
@@ -160,11 +164,13 @@ class DatabaseHandler:
 
         return itinerary
     
-    def create_itinerary(self, trip_id: str, title: str, description: str | None, start_time: datetime, end_time: datetime, email: str) -> None:
-        self.query("""
+    def create_itinerary(self, trip_id: str, title: str, description: str | None, start_time: datetime, end_time: datetime, email: str) -> dict:
+        new_stop = self.query("""
             INSERT INTO itinerary (trip_id, title, description, start_time, end_time, created_by)
             VALUES (%s, %s, %s, %s, %s, %s);
-        """, (trip_id, title, description, start_time, end_time, email))
+        """, (trip_id, title, description, start_time, end_time, email))[0]
+
+        return new_stop
 
     def delete_itinerary(self, stop_id: str) -> None:
         db_handler.query("""
@@ -210,8 +216,70 @@ class DatabaseHandler:
         # the docs say it's not faster than just calling execute on a loop
         for option in options:
             db_handler.query("""
-            INSERT INTO poll_option (poll_id, option) VALUES (%s, %s);
+                INSERT INTO poll_option (poll_id, option) VALUES (%s, %s);
             """, (poll_id, option))
+
+    def delete_poll(self, poll_id: int) -> None:
+        self.query("""
+            DELETE FROM poll WHERE AND id=%s RETURNING *;
+        """, (poll_id,))
+
+    def get_packing_items(self, trip_id: str) -> list[dict]:
+        items = db_handler.query("""
+            SELECT * FROM packing WHERE trip_id=%s ORDER BY id;
+        """, (trip_id,))
+
+        return items
+    
+    def create_packing_item(self, trip_id: str, item: str, quantity: int, description: str | None, email: str) -> dict:
+        new_item = self.query("""
+            INSERT INTO packing (trip_id, item, quantity, description, created_by) 
+            VALUES (%s, %s, %s, %s, %s)
+        """, (trip_id, item, quantity, description, email))[0]
+
+        return new_item
+
+    def claim_packing_item(self, email: str, item_id: int) -> dict:
+        # Allow a user to claim this item as long as it is not currently claimed
+        claimed_item = self.query("""
+            UPDATE packing SET packed_by = %s WHERE packed_by IS NULL AND id = %s
+            RETURNING *;
+        """, (email, item_id))[0]
+        
+        return claimed_item
+        
+    def unclaim_packing_item(self, item_id: int) -> dict:
+        unclaimed_item = db_handler.query("""
+            UPDATE packing SET packed_by = NULL WHERE packed_by IS NOT NULL AND id = %s
+            RETURNING *;
+        """, (item_id,))[0]
+
+        return unclaimed_item
+
+    def delete_packing_item(self, item_id: int) -> dict:
+        deleted_item = db_handler.query("""
+            DELETE FROM packing WHERE id=%s RETURNING *;
+        """, (item_id,))[0]
+
+        return deleted_item
+
+    def get_messages(self, trip_id: str) -> list[dict]:
+        msgs = self.query("""
+            SELECT * FROM message WHERE trip_id = %s ORDER BY id;
+        """, (trip_id,))
+
+        return msgs
+    
+    def get_travellers(self, trip_id: str) -> list[dict]:
+        travellers = self.query("""
+            SELECT traveller.*, traveller_trip.confirmed, traveller_trip.admin
+            FROM traveller 
+            JOIN traveller_trip ON traveller.id = traveller_trip.traveller_id
+            WHERE traveller_trip.trip_id = %s
+            ORDER BY last_name;
+            """, (trip_id,))
+        
+        return travellers
 
 # CREATE DATABASE HANDLER
 db_handler = DatabaseHandler(**settings)

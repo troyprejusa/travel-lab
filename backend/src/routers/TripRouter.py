@@ -202,11 +202,7 @@ async def delete_poll(request: Request, trip_id: str, poll_id: int) -> dict[str,
     try:
         verify_admin(trip_id, request.state.user['trips'])
 
-        # Even though we technically don't need the trip_id to delete, we
-        # will also use it for improved robustness since we have it
-        db_handler.query("""
-            DELETE FROM poll WHERE trip_id=%s AND id=%s;
-        """, (trip_id, poll_id))
+        db_handler.delete_poll(poll_id)
 
         return JSONResponse(
             status_code=200,
@@ -231,11 +227,9 @@ async def get_packing_items(request: Request, trip_id: str) -> list[PackingModel
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
-        data = db_handler.query("""
-            SELECT * FROM packing WHERE trip_id=%s ORDER BY id;
-        """, (trip_id,))
+        items = db_handler.get_packing_items(trip_id)
 
-        return data
+        return items
 
     except Exception as error:
         return JSONResponse(
@@ -257,10 +251,7 @@ async def add_packing_item(
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
-        db_handler.query("""
-            INSERT INTO packing (trip_id, item, quantity, description, created_by) 
-            VALUES (%s, %s, %s, %s, %s)
-        """, (trip_id, item, quantity, description, request.state.user['email']))
+        db_handler.create_packing_item(trip_id, item, quantity, description, request.state.user['email'])
 
         return JSONResponse(
             status_code=200,
@@ -279,14 +270,11 @@ async def add_packing_item(
         )
 
 @trip_router.patch('/{trip_id}/packing/claim/{item_id}')
-async def claim_packing_item(request: Request, trip_id: str, item_id: int) -> dict[str, str]:
+async def claim_packing_item(request: Request, trip_id: str, item_id: int) -> str:
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
-        # Allow a user to claim this item as long as it is not currently claimed
-        db_handler.query("""
-            UPDATE packing SET packed_by = %s WHERE packed_by IS NULL AND id = %s;
-        """, (request.state.user['email'], item_id))
+        db_handler.claim_packing_item(request.state.user['email'], item_id)
 
         return JSONResponse(
             status_code=200,
@@ -309,9 +297,7 @@ async def unclaim_packing_item(request: Request, trip_id: str, item_id: int) -> 
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
-        db_handler.query("""
-            UPDATE packing SET packed_by = NULL WHERE packed_by IS NOT NULL AND id = %s;
-        """, (item_id,))
+        db_handler.unclaim_packing_item(item_id)
 
         return JSONResponse(
             status_code=200,
@@ -334,11 +320,7 @@ async def delete_packing_item(request: Request, trip_id: str, item_id: int) -> d
     try:
         verify_admin(trip_id, request.state.user['trips'])
 
-        # Even though we technically only need the item id to delete, we
-        # will also use the trip id for improved robustness since we have it
-        db_handler.query("""
-            DELETE FROM packing WHERE trip_id=%s AND id=%s;
-        """, (trip_id, item_id))
+        db_handler.delete_packing_item(item_id)
 
         return JSONResponse(
             status_code=200,
@@ -363,11 +345,9 @@ async def get_messages(request: Request, trip_id: str) -> list[MessageModel] | s
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
-        data = db_handler.query("""
-            SELECT * FROM message WHERE trip_id = %s ORDER BY id;
-        """, (trip_id,))
+        msgs = db_handler.get_messages(trip_id)
 
-        return data
+        return msgs
     
     except Exception as error:
         print(error)
@@ -385,13 +365,7 @@ async def get_travellers(request: Request, trip_id: str) ->  list[TravellerRespo
     try:
         verify_attendance(trip_id, request.state.user['trips'])
         
-        travellers = db_handler.query("""
-            SELECT traveller.*, traveller_trip.confirmed, traveller_trip.admin
-            FROM traveller 
-            JOIN traveller_trip ON traveller.id = traveller_trip.traveller_id
-            WHERE traveller_trip.trip_id = %s
-            ORDER BY last_name;
-            """, (trip_id,))
+        travellers = db_handler.get_travellers(trip_id)
         
         return travellers
 
