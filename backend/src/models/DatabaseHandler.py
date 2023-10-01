@@ -1,6 +1,7 @@
 import psycopg2
 import psycopg2.extras
 from utilities import Constants
+from datetime import date, datetime
 
 settings = {
     'host': Constants.DB_HOST,
@@ -75,7 +76,142 @@ class DatabaseHandler:
                     # print(f'QUERY FAILURE!')
                     print(f'QUERY FAILURE:\n\t{cursor.query}')
                     raise pg_error
+                
+    # ------------------- USER ROUTER ------------------- #
+                
+    def upsert_user(self, email: str) -> dict:
+        user = self.query("""
+            INSERT INTO traveller (email) VALUES (%s) ON CONFLICT (email) DO NOTHING;
+                         
+            SELECT traveller.*, traveller_trip.confirmed, traveller_trip.admin
+            FROM traveller
+            JOIN traveller_trip ON traveller.id = traveller_trip.traveller_id
+            WHERE email=%s;
+        """, (email, email))[0]
+
+        return user
     
+    def delete_user(self, email: str) -> None:
+        self.query("DELETE FROM traveller WHERE email=%s;", (email,))
+
+    def get_trips(self, email: str) -> list[dict]:
+        data = self.query("""
+            SELECT * FROM trip WHERE id in (
+                SELECT trip_id FROM traveller_trip WHERE 
+                    confirmed = TRUE AND 
+                    traveller_id = (
+                    SELECT id FROM traveller WHERE email = %s
+                )
+            );
+        """, (email,))
+
+        return data
+    
+    def leave_trip(self, email: str, trip_id: str) -> None:
+        self.query("""
+            DELETE FROM traveller_trip WHERE traveller_id = (SELECT id from traveller WHERE email=%s) AND trip_id=%s;
+        """, (email, trip_id))
+    
+    def request_trip(self, email: str, trip_id: str) -> None:
+        self.query("""
+            INSERT INTO traveller_trip VALUES ((SELECT id from traveller where email=%s), %s, False, False);
+        """, (email, trip_id))
+
+    def accept_request(self, requestor_id, trip_id) -> None:
+        self.query("""
+            UPDATE traveller_trip SET confirmed=TRUE WHERE traveller_id=%s AND trip_id=%s;
+        """, (requestor_id, trip_id))
+
+    def remove_traveller(self, traveller_id: str, trip_id: str) -> None:
+        self.query("""
+            DELETE FROM traveller_trip WHERE traveller_id=%s AND trip_id=%s;
+        """, (traveller_id, trip_id))
+
+    # ------------------- TRIP ROUTER ------------------- #
+    def create_trip(self, destination: str, description: str, start_date: date, end_date: date, email: str) -> str:
+        # This call must not only create the trip, but must add
+        # this user to the trip in the same transaction so there
+        # are no dangling trips
+        new_trip_id = self.query("""
+            WITH temp_table as (
+                INSERT INTO trip 
+                (destination, description, start_date, end_date, created_by)
+                VALUES (%s, %s, %s, %s, %s)
+                RETURNING id
+            ) INSERT INTO traveller_trip VALUES ((SELECT id FROM traveller WHERE email=%s), (SELECT id from temp_table), TRUE, TRUE) RETURNING trip_id;
+        """, (destination, description, start_date, end_date, email, email))[0]['trip_id']
+
+        return new_trip_id
+
+    def get_trip_data(self, trip_id: str) -> dict:
+        self.query("""
+            SELECT * FROM trip WHERE id=%s ORDER BY start_date;
+        """, (trip_id,))[0]
+
+    def delete_trip(self, trip_id: str) -> None:
+        self.query("""
+            DELETE FROM trip WHERE id = %s;
+        """, (trip_id,))
+
+    def get_itinerary(self, trip_id: str) -> list[dict]:
+        itinerary = self.query("""
+            SELECT * FROM itinerary WHERE trip_id = %s ORDER BY start_time;
+        """, (trip_id,))
+
+        return itinerary
+    
+    def create_itinerary(self, trip_id: str, title: str, description: str | None, start_time: datetime, end_time: datetime, email: str) -> None:
+        self.query("""
+            INSERT INTO itinerary (trip_id, title, description, start_time, end_time, created_by)
+            VALUES (%s, %s, %s, %s, %s, %s);
+        """, (trip_id, title, description, start_time, end_time, email))
+
+    def delete_itinerary(self, stop_id: str) -> None:
+        db_handler.query("""
+            DELETE FROM itinerary WHERE id=%s;
+        """, (stop_id,))
+
+    def get_polls(self, trip_id: str) -> list[dict]:
+        polls = self.query("""
+            SELECT 
+                poll.id AS poll_id,
+                poll.title,
+                poll.description,
+                poll.created_at,
+                poll.created_by,
+                poll_option.id AS option_id,
+                poll_option.option,
+                poll_vote.voted_by
+            FROM 
+                poll
+            JOIN
+                poll_option ON poll.id = poll_option.poll_id
+            LEFT JOIN
+                poll_vote ON poll_option.id = poll_vote.vote
+            WHERE 
+                poll.trip_id = %s
+            ORDER BY poll.id, poll_option.id;
+        """, (trip_id,))
+    
+        return polls
+    
+    def create_poll(self, trip_id, title, description: str | None, email: str) -> int:
+        poll_id = self.query("""
+            INSERT INTO poll 
+                (trip_id, title, description, created_by) 
+                VALUES (%s, %s, %s, %s)
+            RETURNING id;
+        """, (trip_id, title, description, email))[0]['id']
+
+        return poll_id
+    
+    def create_poll_options(self, poll_id: int, options: list[str]) -> None:
+        # This would seem like a good place for a psycopg "executemany", but 
+        # the docs say it's not faster than just calling execute on a loop
+        for option in options:
+            db_handler.query("""
+            INSERT INTO poll_option (poll_id, option) VALUES (%s, %s);
+            """, (poll_id, option))
 
 # CREATE DATABASE HANDLER
 db_handler = DatabaseHandler(**settings)
