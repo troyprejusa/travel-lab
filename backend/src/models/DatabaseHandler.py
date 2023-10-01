@@ -77,7 +77,7 @@ class DatabaseHandler:
                     print(f'QUERY FAILURE:\n\t{cursor.query}')
                     raise pg_error
                 
-    # ------------------- USER ROUTER ------------------- #
+    # ------------------- USER OPERATIONS ------------------- #
                 
     def upsert_user(self, email: str) -> dict:
         user = self.query("""
@@ -127,7 +127,8 @@ class DatabaseHandler:
             DELETE FROM traveller_trip WHERE traveller_id=%s AND trip_id=%s;
         """, (traveller_id, trip_id))
 
-    # ------------------- TRIP ROUTER ------------------- #
+    # --------------- TRIP OPERATIONS --------------- #
+    
     def create_trip(self, destination: str, description: str, start_date: date, end_date: date, email: str) -> str:
         # This call must not only create the trip, but must add
         # this user to the trip in the same transaction so there
@@ -156,6 +157,8 @@ class DatabaseHandler:
         """, (trip_id,))[0]
         
         return deleted_trip
+    
+    # --------------- ITINERARY OPERATIONS --------------- #
 
     def get_itinerary(self, trip_id: str) -> list[dict]:
         itinerary = self.query("""
@@ -176,6 +179,8 @@ class DatabaseHandler:
         db_handler.query("""
             DELETE FROM itinerary WHERE id=%s;
         """, (stop_id,))
+
+    # --------------- POLL OPERATIONS --------------- #
 
     def get_polls(self, trip_id: str) -> list[dict]:
         polls = self.query("""
@@ -224,6 +229,8 @@ class DatabaseHandler:
             DELETE FROM poll WHERE AND id=%s RETURNING *;
         """, (poll_id,))
 
+    # --------------- PACKING OPERATIONS --------------- #
+
     def get_packing_items(self, trip_id: str) -> list[dict]:
         items = db_handler.query("""
             SELECT * FROM packing WHERE trip_id=%s ORDER BY id;
@@ -262,6 +269,8 @@ class DatabaseHandler:
         """, (item_id,))[0]
 
         return deleted_item
+    
+    # --------------- MESSAGE OPERATIONS --------------- #
 
     def get_messages(self, trip_id: str) -> list[dict]:
         msgs = self.query("""
@@ -270,6 +279,8 @@ class DatabaseHandler:
 
         return msgs
     
+    # --------------- TRAVELLER OPERATIONS --------------- #
+
     def get_travellers(self, trip_id: str) -> list[dict]:
         travellers = self.query("""
             SELECT traveller.*, traveller_trip.confirmed, traveller_trip.admin
