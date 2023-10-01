@@ -1,7 +1,5 @@
 import React from 'react';
-import fetchHelpers from '../utilities/fetchHelpers';
-import { useAuth0 } from '@auth0/auth0-react';
-import { ItineraryModel, TripModel, UserModel } from '../utilities/Interfaces';
+import { ItineraryModel, UserModel } from '../utilities/Interfaces';
 import { EditButton, TrashButton } from './Buttons';
 import Constants from '../utilities/Constants';
 import { useSelector } from 'react-redux';
@@ -24,9 +22,7 @@ interface ItineraryCardProps {
 }
 
 function ItineraryCard(props: ItineraryCardProps) {
-  const { getAccessTokenSilently } = useAuth0();
 
-  const trip: TripModel = useSelector((state: RootState) => state.trip);
   const user: UserModel = useSelector((state: RootState) => state.user);
 
   const startDateTime: Date = new Date(props.itineraryData.start_time);
