@@ -19,10 +19,9 @@ import {
   FormLabel,
   Input,
 } from '@chakra-ui/react';
+import { itinerarySocket } from '../utilities/TripSocket';
 
-interface NewItineraryModalProps {
-  getItineraryCallback: () => void;
-}
+interface NewItineraryModalProps {}
 
 function NewItineraryModal(props: NewItineraryModalProps) {
   const trip: TripModel = useSelector((state: RootState) => state.trip);
@@ -118,25 +117,10 @@ function NewItineraryModal(props: NewItineraryModalProps) {
       return;
     }
 
-    try {
-      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
-      const res: Response = await fetch(`/trip/${trip.id}/itinerary`, {
-        method: 'POST',
-        body: formData,
-        headers: fetchHelpers.getTokenHeader(token),
-      });
+    itinerarySocket.sendItinerary(formData);
 
-      if (res.ok) {
-        props.getItineraryCallback();
-        onClose();
-      } else {
-        const json: any = await res.json();
-        throw new Error(json.message);
-      }
-    } catch (e: any) {
-      console.error(e);
-      alert('Unable to add stop :(');
-    }
+    // Close the modal
+    onClose();
   }
 }
 

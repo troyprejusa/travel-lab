@@ -17,10 +17,10 @@ import {
   Box,
   Flex,
 } from '@chakra-ui/react';
+import { itinerarySocket } from '../utilities/TripSocket';
 
 interface ItineraryCardProps {
   itineraryData: ItineraryModel;
-  getItineraryCallback: () => void;
 }
 
 function ItineraryCard(props: ItineraryCardProps) {
@@ -77,7 +77,7 @@ function ItineraryCard(props: ItineraryCardProps) {
             /> */}
             <TrashButton
               aria-label="delete itinerary stop"
-              onClick={() => handleItineraryDelete(props.itineraryData.id)}
+              onClick={() => itinerarySocket.deleteItinerary(props.itineraryData.id)}
               disabled={!user.admin}
               tooltipMsg={
                 user.admin ? '' : 'Only trip admins can delete itinerary stops'
@@ -88,32 +88,6 @@ function ItineraryCard(props: ItineraryCardProps) {
       </CardFooter>
     </Card>
   );
-
-  async function handleItineraryDelete(itinerary_id: number) {
-    try {
-      const token: string = await fetchHelpers.getAuth0Token(
-        getAccessTokenSilently
-      );
-      const res: Response = await fetch(
-        `/trip/${trip.id}/itinerary/${itinerary_id}`,
-        {
-          method: 'DELETE',
-          headers: fetchHelpers.getTokenHeader(token),
-        }
-      );
-
-      if (res.ok) {
-        // Refresh table data
-        props.getItineraryCallback();
-      } else {
-        const errorRes: any = await res.json();
-        throw new Error(errorRes);
-      }
-    } catch (e: any) {
-      console.error(e);
-      alert('Unable to itinerary stop :(');
-    }
-  }
 }
 
 export default ItineraryCard;

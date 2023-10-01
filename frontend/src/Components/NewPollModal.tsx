@@ -1,9 +1,6 @@
 import { useState, useRef, SyntheticEvent, ReactElement } from 'react';
-import fetchHelpers from '../utilities/fetchHelpers';
-import { TripModel, NewPollModel } from '../utilities/Interfaces';
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/Store';
-import { useAuth0 } from '@auth0/auth0-react';
+import { NewPollModel } from '../utilities/Interfaces';
+import { pollSocket } from '../utilities/TripSocket';
 import {
   Button,
   Modal,
@@ -24,14 +21,9 @@ import {
   ButtonGroup,
 } from '@chakra-ui/react';
 
-interface NewPollModalProps {
-  getPollsCallback: () => void;
-}
+interface NewPollModalProps {}
 
 function NewPollModal(props: NewPollModalProps) {
-  const { getAccessTokenSilently } = useAuth0();
-  const trip: TripModel = useSelector((state: RootState) => state.trip);
-
   const [pollOptionCount, setPollOptionCount] = useState(0);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -59,7 +51,12 @@ function NewPollModal(props: NewPollModalProps) {
 
   return (
     <>
-      <Button size="md" colorScheme="orange" onClick={onOpen} marginLeft={'40px'}>
+      <Button
+        size="md"
+        colorScheme="orange"
+        onClick={onOpen}
+        marginLeft={'40px'}
+      >
         New poll
       </Button>
 
@@ -136,30 +133,10 @@ function NewPollModal(props: NewPollModalProps) {
       }
     }
 
-    try {
-      const token: string = await fetchHelpers.getAuth0Token(
-        getAccessTokenSilently
-      );
-      const res: Response = await fetch(`/trip/${trip.id}/poll`, {
-        method: 'POST',
-        body: JSON.stringify(pollData),
-        headers: fetchHelpers.getTokenJSONHeader(token),
-      });
+    pollSocket.sendPoll(pollData);
 
-      if (res.ok) {
-        // Call state update on the parent (the polls page)
-        props.getPollsCallback();
-
-        // Close the modal
-        onClose();
-      } else {
-        const message: any = await res.json();
-        throw new Error(JSON.stringify(message));
-      }
-    } catch (e: any) {
-      console.error(e);
-      alert('Unable to create poll :(');
-    }
+    // Close the modal
+    onClose();
   }
 }
 

@@ -33,10 +33,10 @@ import {
   Text,
 } from '@chakra-ui/react';
 import Constants from '../utilities/Constants';
+import { pollSocket } from '../utilities/TripSocket';
 
 interface PollCardProps {
   data: PollResponseModel;
-  getPollsCallback: () => void;
 }
 
 function PollCard(props: PollCardProps) {
@@ -72,7 +72,6 @@ function PollCard(props: PollCardProps) {
         rounded="lg"
         shadow="lg"
         position="relative"
-
       >
         <Flex
           width={'300px'}
@@ -152,11 +151,11 @@ function PollCard(props: PollCardProps) {
             <Flex justifyContent={'flex-end'}>
               <ButtonGroup>
                 <TrashButton
-                  onClick={() =>
-                    handleDeleteButtonClick(props.data.poll_id)
-                  }
+                  onClick={() => handleDeleteButtonClick(props.data.poll_id)}
                   aria-label="delete poll"
-                  tooltipMsg={user.admin ? '' : 'Only trip admins can delete polls'}
+                  tooltipMsg={
+                    user.admin ? '' : 'Only trip admins can delete polls'
+                  }
                   disabled={!user.admin}
                 />
               </ButtonGroup>
@@ -212,29 +211,10 @@ function PollCard(props: PollCardProps) {
   }
 
   async function handleDeleteButtonClick(poll_id: number) {
-    try {
-      const token: string = await fetchHelpers.getAuth0Token(
-        getAccessTokenSilently
-      );
-      const res: Response = await fetch(`/trip/${trip.id}/poll/${poll_id}`, {
-        method: 'DELETE',
-        headers: fetchHelpers.getTokenHeader(token),
-      });
+    pollSocket.deletePoll(poll_id);
 
-      if (res.ok) {
-        // Refetch poll data
-        props.getPollsCallback();
-
-        // Close the modal
-        onClose();
-      } else {
-        const errorRes = await res.json();
-        throw new Error(errorRes);
-      }
-    } catch (e: any) {
-      console.error(JSON.stringify(e));
-      alert('Unable to delete poll :(')
-    }
+    // Close the modal
+    onClose();
   }
 }
 

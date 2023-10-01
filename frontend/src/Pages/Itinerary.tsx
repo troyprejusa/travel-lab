@@ -1,27 +1,20 @@
 import React from 'react';
-import { TripModel, ItineraryModel } from '../utilities/Interfaces';
+import { ItineraryModel } from '../utilities/Interfaces';
 import { RootState } from '../redux/Store';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import NewItineraryModal from '../Components/NewItineraryModal';
 import ItineraryCard from '../Components/ItineraryCard';
-import { reduxFetchItinerary } from '../redux/ItinerarySlice';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { Flex, Stack, Box, Text } from '@chakra-ui/react';
-import { useAuth0 } from '@auth0/auth0-react';
-import fetchHelpers from '../utilities/fetchHelpers';
 import TitleBar from '../Components/TitleBar';
 import Constants from '../utilities/Constants';
 
 function Itinerary(): JSX.Element {
-  const dispatch = useDispatch();
-  const trip: TripModel = useSelector((state: RootState) => state.trip);
   const itinerary: Array<ItineraryModel> = useSelector(
     (state: RootState) => state.itinerary
   );
-
-  const { getAccessTokenSilently } = useAuth0();
 
   return (
     <>
@@ -33,7 +26,7 @@ function Itinerary(): JSX.Element {
           w={'sm'}
           overflowY={'scroll'}
         >
-          <NewItineraryModal getItineraryCallback={getItinerary} />
+          <NewItineraryModal />
           {itinerary.length === 0 ? (
             <Text>Nothing planned...</Text>
           ) : (
@@ -41,7 +34,6 @@ function Itinerary(): JSX.Element {
               <ItineraryCard
                 key={index}
                 itineraryData={itin}
-                getItineraryCallback={getItinerary}
               />
             ))
           )}
@@ -69,13 +61,6 @@ function Itinerary(): JSX.Element {
       </Flex>
     </>
   );
-
-  async function getItinerary() {
-    const token: string = await fetchHelpers.getAuth0Token(
-      getAccessTokenSilently
-    );
-    dispatch(reduxFetchItinerary({ trip_id: trip.id, token: token }));
-  }
 }
 
 export default Itinerary;

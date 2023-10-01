@@ -1,12 +1,9 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { TripModel, UserModel } from '../utilities/Interfaces';
+import { useSelector } from 'react-redux';
+import { UserModel } from '../utilities/Interfaces';
 import NewItemModal from '../Components/NewPackingItemModal';
-import fetchHelpers from '../utilities/fetchHelpers';
 import { PackingModel } from '../utilities/Interfaces';
 import { RootState } from '../redux/Store';
-import { reduxFetchPacking } from '../redux/PackingSlice';
-import { useAuth0 } from '@auth0/auth0-react';
 import { TrashButton, ClaimButton, UnclaimButton } from '../Components/Buttons';
 import TitleBar from '../Components/TitleBar';
 import {
@@ -20,21 +17,18 @@ import {
   TableContainer,
   ButtonGroup,
 } from '@chakra-ui/react';
-
+import { packingSocket } from '../utilities/TripSocket';
 
 function Packing(): JSX.Element {
-  const dispatch = useDispatch();
   const user: UserModel = useSelector((state: RootState) => state.user);
-  const trip: TripModel = useSelector((state: RootState) => state.trip);
   const packingList: Array<PackingModel> = useSelector(
     (state: RootState) => state.packing
   );
-  const { getAccessTokenSilently } = useAuth0();
 
   return (
     <>
-      <TitleBar text='Packing' />
-      <NewItemModal getItemsCallback={getItems} />
+      <TitleBar text="Packing" />
+      <NewItemModal />
       <TableContainer marginTop={6} borderRadius={'6px'}>
         <Table variant="striped" colorScheme="blackAlpha">
           <Thead>
@@ -67,7 +61,7 @@ function Packing(): JSX.Element {
                               <ClaimButton
                                 aria-label="claim packing item"
                                 onClick={() =>
-                                  handleClaimButtonClick(thing.id)
+                                  packingSocket.claimItem(thing.id)
                                 }
                               />
                             );
@@ -77,7 +71,7 @@ function Packing(): JSX.Element {
                               <UnclaimButton
                                 aria-label="unclaim packing item"
                                 onClick={() =>
-                                  handleUnclaimButtonClick(thing.id)
+                                  packingSocket.unclaimItem(thing.id)
                                 }
                               />
                             );
@@ -89,8 +83,12 @@ function Packing(): JSX.Element {
                       }
                       <TrashButton
                         aria-label="delete packing item"
-                        onClick={() => handleDeleteButtonClick(thing.id)}
-                        tooltipMsg={user.admin ? '' : 'Only trip admins can delete packing items'}
+                        onClick={() => packingSocket.deleteItem(thing.id)}
+                        tooltipMsg={
+                          user.admin
+                            ? ''
+                            : 'Only trip admins can delete packing items'
+                        }
                         disabled={!user.admin}
                       />
                     </ButtonGroup>
@@ -103,82 +101,6 @@ function Packing(): JSX.Element {
       </TableContainer>
     </>
   );
-
-  function getItems() {
-    (async function() {
-      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
-      dispatch(reduxFetchPacking({trip_id: trip.id, token: token}));
-    })()
-  }
-
-  async function handleClaimButtonClick(item_id: number) {
-    try {
-      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
-      const res: Response = await fetch(
-        `/trip/${trip.id}/packing/claim/${item_id}`,
-        {
-          method: 'PATCH',
-          headers: fetchHelpers.getTokenHeader(token),
-        }
-      );
-
-      if (res.ok) {
-        // Refresh table data
-        getItems();
-      } else {
-        const errorRes: any = await res.json();
-        throw new Error(errorRes);
-      }
-    } catch (e: any) {
-      console.error(e);
-      alert('Unable to claim packing item :(');
-    }
-  }
-
-  async function handleUnclaimButtonClick(item_id: number) {
-    try {
-      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
-      const res: Response = await fetch(
-        `/trip/${trip.id}/packing/unclaim/${item_id}`,
-        {
-          method: 'PATCH',
-          headers: fetchHelpers.getTokenHeader(token),
-        }
-      );
-
-      if (res.ok) {
-        // Refresh table data
-        getItems();
-      } else {
-        const message: any = await res.json();
-        throw new Error(JSON.stringify(message));
-      }
-    } catch (e: any) {
-      console.error(e);
-      alert('Unable to unclaim packing item :(');
-    }
-  }
-
-  async function handleDeleteButtonClick(item_id: number) {
-    try {
-      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
-      const res: Response = await fetch(`/trip/${trip.id}/packing/${item_id}`, {
-        method: 'DELETE',
-        headers: fetchHelpers.getTokenHeader(token),
-      });
-
-      if (res.ok) {
-        // Refresh table data
-        getItems();
-      } else {
-        const message: any = await res.json();
-        throw new Error(JSON.stringify(message));
-      }
-    } catch (e: any) {
-      console.error(e);
-      alert('Unable to delete packing item :(');
-    }
-  }
 }
 
 export default Packing;

@@ -78,6 +78,22 @@ class PollSocket extends TripSocket {
     // Make a connection to the socket using the parent method
     super.establishSocket(token, trip_id, dispatcher);
 
+    this.socket!.on('backend_poll_create', (data: any) => {
+      this.dispatch!(reduxAddPoll(data));
+    });
+
+    this.socket!.on('backend_poll_create_error', (data) => {
+      console.error('PollSocket: Unable to create poll :(');
+    });
+
+    this.socket!.on('backend_poll_delete', (data: any) => {
+      this.dispatch!(reduxDeletePoll(data));
+    });
+
+    this.socket!.on('backend_poll_delete_error', (data) => {
+      console.error('PollSocket: Unable to create poll :(');
+    });
+
     this.socket!.on('backend_vote', (data: PollVoteWS) => {
       this.dispatch!(reduxAddVote(data));
     });
@@ -85,6 +101,14 @@ class PollSocket extends TripSocket {
     this.socket!.on('backend_vote_error', (data: any) => {
       console.error('PollSocket: Unable to post vote :(');
     });
+  }
+
+  sendPoll(poll: any) {
+    this.socket!.emit('frontend_poll_create', poll);
+  }
+
+  deletePoll(poll_id: number) {
+    this.socket!.emit('frontend_poll_delete', poll_id);
   }
 
   sendVote(vote: PollVoteWS) {
@@ -101,9 +125,29 @@ class ItinerarySocket extends TripSocket {
     // Make a connection to the socket using the parent method
     super.establishSocket(token, trip_id, dispatcher);
 
-    // this.socket.on('backend_vote', (data: PollVoteWS) => {
-    //   this.dispatch(reduxAddVote(data));
-    // });
+    this.socket!.on('backend_itinerary_create', (data: any) => {
+      this.dispatch!(reduxAddItinerary(data));
+    });
+
+    this.socket!.on('backend_itinerary_create_error', (data: any) => {
+      console.error('ItinerarySocket: Unable to add stop :(');
+    });
+
+    this.socket!.on('backend_itinerary_delete', (data: any) => {
+      this.dispatch!(reduxDeleteItinerary(data));
+    });
+
+    this.socket!.on('backend_itinerary_delete_error', (data: any) => {
+      console.error('ItinerarySocket: Unable to delete stop :(');
+    });
+  }
+
+  sendItinerary(itinerary: any) {
+    this.socket!.emit('frontend_itinerary_create', itinerary);
+  }
+
+  deleteItinerary(itinerary_id: number) {
+    this.socket!.emit('frontend_itinerary_delete', itinerary_id);
   }
 }
 
@@ -116,9 +160,53 @@ class PackingSocket extends TripSocket {
     // Make a connection to the socket using the parent method
     super.establishSocket(token, trip_id, dispatcher);
 
-    // this.socket.on('backend_vote', (data: PollVoteWS) => {
-    //   this.dispatch(reduxAddVote(data));
-    // });
+    this.socket!.on('backend_packing_create', (data: any) => {
+      this.dispatch!(reduxAddItem(data));
+    });
+
+    this.socket!.on('backend_packing_create_error', (data: any) => {
+      console.error('PackingSocket: Unable to do something :(');
+    });
+
+    this.socket!.on('backend_packing_claim', (data: any) => {
+      this.dispatch!(reduxClaimItem(data));
+    });
+
+    this.socket!.on('backend_packing_claim_error', (data: any) => {
+      console.error('PackingSocket: Unable to do something :(');
+    });
+
+    this.socket!.on('backend_packing_unclaim', (data: any) => {
+      this.dispatch!(reduxUnclaimItem(data));
+    });
+
+    this.socket!.on('backend_packing_unclaim_error', (data: any) => {
+      console.error('PackingSocket: Unable to do something :(');
+    });
+
+    this.socket!.on('backend_packing_delete', (data: any) => {
+      this.dispatch!(reduxDeleteItem(data));
+    });
+
+    this.socket!.on('backend_packing_delete_error', (data: any) => {
+      console.error('PackingSocket: Unable to do something :(');
+    });
+  }
+
+  sendItem(item_id: number) {
+    this.socket!.emit('frontend_packing_create', item_id);
+  }
+
+  claimItem(item_id: number) {
+    this.socket!.emit('frontend_packing_claim', item_id);
+  }
+
+  unclaimItem(item_id: number) {
+    this.socket!.emit('frontend_packing_unclaim', item_id);
+  }
+
+  deleteItem(item_id: number) {
+    this.socket!.emit('frontend_packing_delete', item_id);
   }
 }
 

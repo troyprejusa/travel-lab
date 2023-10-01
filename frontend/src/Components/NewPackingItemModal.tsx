@@ -1,9 +1,5 @@
 import { useRef, SyntheticEvent } from 'react';
-import fetchHelpers from '../utilities/fetchHelpers';
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/Store';
-import { TripModel } from '../utilities/Interfaces';
-import { useAuth0 } from '@auth0/auth0-react';
+import { packingSocket } from '../utilities/TripSocket';
 import {
   Button,
   ButtonGroup,
@@ -21,15 +17,11 @@ import {
   Textarea,
 } from '@chakra-ui/react';
 
-interface NewItemModalProps {
-  getItemsCallback: () => void;
-}
+interface NewItemModalProps {}
 
 function NewItemModal(props: NewItemModalProps) {
-  const trip: TripModel = useSelector((state: RootState) => state.trip);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const itemForm = useRef<HTMLFormElement>(null);
-  const { getAccessTokenSilently } = useAuth0();
 
   return (
     <>
@@ -96,28 +88,10 @@ function NewItemModal(props: NewItemModalProps) {
       return;
     }
 
-    try {
-      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
-      const res: Response = await fetch(`/trip/${trip.id}/packing`, {
-        method: 'POST',
-        body: formData,
-        headers: fetchHelpers.getTokenHeader(token),
-      });
+    packingSocket.sendItem(formData);
 
-      if (res.ok) {
-        // Get trigger state update on the parent table
-        props.getItemsCallback();
-
-        // Close the modal
-        onClose();
-      } else {
-        const message: any = await res.json();
-        throw new Error(JSON.stringify(message));
-      }
-    } catch (e: any) {
-      console.error(e);
-      alert('Unable to submit item :(');
-    }
+    // Close the modal
+    onClose();
   }
 }
 
