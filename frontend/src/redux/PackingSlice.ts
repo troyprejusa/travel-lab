@@ -1,4 +1,9 @@
-import { PackingModel } from '../utilities/Interfaces';
+import {
+  NewPackingWS,
+  PackingClaimWS,
+  PackingDeleteWS,
+  PackingModel,
+} from '../utilities/Interfaces';
 import fetchHelpers from '../utilities/fetchHelpers';
 import {
   Slice,
@@ -13,6 +18,30 @@ const packingSlice: Slice = createSlice({
   name: 'packing', // packing/<action_name>
   initialState: [] as PackingState,
   reducers: {
+    // packing/reduxAddPackingItem
+    reduxAddPackingItem: (state, action: PayloadAction<PackingModel>) => {
+      state.push(action.payload);
+    },
+    // packing/reduxClaimItem
+    reduxClaimItem: (state, action: PayloadAction<PackingClaimWS>) => {
+      state.forEach((item: PackingModel) => {
+        if (item.id === action.payload.item_id) {
+          item.packed_by = action.payload.email;
+        }
+      });
+    },
+    // packing/reduxUnclaimItem
+    reduxUnclaimItem: (state, action: PayloadAction<PackingDeleteWS>) => {
+      state.forEach((item: PackingModel) => {
+        if (item.id === action.payload.item_id) {
+          item.packed_by = null;
+        }
+      });
+    },
+    // packing/reduxDeleteItem
+    reduxDeleteItem: (state, action: PayloadAction<number>) => {
+      state.filter((item: PackingModel) => item.id !== action.payload);
+    },
     // packing/reduxResetPacking
     reduxResetPacking: () => {
       return [] as PackingState;
@@ -42,7 +71,7 @@ const packingSlice: Slice = createSlice({
 
 export const reduxFetchPacking = createAsyncThunk(
   'messages/reduxFetchPacking',
-  async ({trip_id, token}, thunkAPI) => {
+  async ({ trip_id, token }, thunkAPI) => {
     try {
       const res: Response = await fetch(`/trip/${trip_id}/packing`, {
         method: 'GET',
@@ -63,6 +92,12 @@ export const reduxFetchPacking = createAsyncThunk(
   }
 );
 
-export const { reduxResetPacking } = packingSlice.actions;
+export const {
+  reduxAddPackingItem,
+  reduxClaimItem,
+  reduxUnclaimItem,
+  reduxDeleteItem,
+  reduxResetPacking,
+} = packingSlice.actions;
 
 export default packingSlice.reducer;

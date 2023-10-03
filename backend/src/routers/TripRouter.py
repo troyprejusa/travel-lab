@@ -276,7 +276,7 @@ async def claim_packing_item(request: Request, trip_id: str, item_id: int) -> st
         )
     
 @trip_router.patch('/{trip_id}/packing/unclaim/{item_id}')
-async def unclaim_packing_item(request: Request, trip_id: str, item_id: int) -> dict[str, str]:
+async def unclaim_packing_item(request: Request, trip_id: str, item_id: int) -> str:
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
@@ -299,7 +299,7 @@ async def unclaim_packing_item(request: Request, trip_id: str, item_id: int) -> 
         )
     
 @trip_router.delete('/{trip_id}/packing/{item_id}')
-async def delete_packing_item(request: Request, trip_id: str, item_id: int) -> dict[str, str]:
+async def delete_packing_item(request: Request, trip_id: str, item_id: int) -> str:
     try:
         verify_admin(trip_id, request.state.user['trips'])
 

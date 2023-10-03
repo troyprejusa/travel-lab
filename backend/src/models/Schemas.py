@@ -103,6 +103,26 @@ class PollDeleteWS(BaseModel):
     trip_id: str
     poll_id: int
 
+class NewPackingWS(BaseModel):
+    trip_id: str
+    item: str
+    quantity: int
+    description: str | None = None
+    created_by: str
+
+class PackingClaimWS(BaseModel):
+    trip_id: str
+    item_id: int
+    email: str
+
+class PackingUnclaimWS(BaseModel):
+  trip_id: str
+  item_id: int
+
+class PackingDeleteWS(BaseModel):
+  trip_id: str
+  item_id: int
+
 class MessageWS(BaseModel):
     trip_id: str
     content: str

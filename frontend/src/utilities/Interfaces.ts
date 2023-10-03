@@ -76,7 +76,9 @@ export interface PollResponseModel {
 }
 
 // # --------------- WEBSOCKET TYPES --------------- #
-// These types are used in websocket functionality
+/* These types are used in websocket functionality
+Notice how you always need the trip_id so its clear
+to which room you need to rebroadcast the data */
 
 export interface NewItineraryModel {
   trip_id: string;
@@ -94,10 +96,10 @@ export interface ItineraryDeleteWS {
 
 export interface NewPollModel {
   trip_id: string;
-  created_by: string;
   title: string;
   description: string | null;
   options: Array<string>;
+  created_by: string;
 }
 
 export interface PollVoteWS {
@@ -110,6 +112,30 @@ export interface PollVoteWS {
 export interface PollDeleteWS {
   trip_id: string;
   poll_id: number;
+}
+
+export interface NewPackingWS {
+  trip_id: string;
+  item: string;
+  quantity: number;
+  description: string | null;
+  created_by: string;
+}
+
+export interface PackingClaimWS {
+  trip_id: string;
+  item_id: number;
+  email: string;
+}
+
+export interface PackingUnclaimWS {
+  trip_id: string;
+  item_id: number;
+}
+
+export interface PackingDeleteWS {
+  trip_id: string;
+  item_id: number;
 }
 
 export interface MessageWS {

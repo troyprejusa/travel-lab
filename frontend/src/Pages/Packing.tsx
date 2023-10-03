@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { UserModel } from '../utilities/Interfaces';
+import { TripModel, UserModel } from '../utilities/Interfaces';
 import NewItemModal from '../Components/NewPackingItemModal';
 import { PackingModel } from '../utilities/Interfaces';
 import { RootState } from '../redux/Store';
@@ -21,6 +21,7 @@ import { packingSocket } from '../utilities/TripSocket';
 
 function Packing(): JSX.Element {
   const user: UserModel = useSelector((state: RootState) => state.user);
+  const trip: TripModel = useSelector((state: RootState) => state.trip);
   const packingList: Array<PackingModel> = useSelector(
     (state: RootState) => state.packing
   );
@@ -61,7 +62,11 @@ function Packing(): JSX.Element {
                               <ClaimButton
                                 aria-label="claim packing item"
                                 onClick={() =>
-                                  packingSocket.claimItem(thing.id)
+                                  packingSocket.claimItem({
+                                    trip_id: trip.id,
+                                    item_id: thing.id,
+                                    email: user.email,
+                                  })
                                 }
                               />
                             );
@@ -71,7 +76,10 @@ function Packing(): JSX.Element {
                               <UnclaimButton
                                 aria-label="unclaim packing item"
                                 onClick={() =>
-                                  packingSocket.unclaimItem(thing.id)
+                                  packingSocket.unclaimItem({
+                                    trip_id: trip.id,
+                                    item_id: thing.id,
+                                  })
                                 }
                               />
                             );
@@ -83,7 +91,12 @@ function Packing(): JSX.Element {
                       }
                       <TrashButton
                         aria-label="delete packing item"
-                        onClick={() => packingSocket.deleteItem(thing.id)}
+                        onClick={() =>
+                          packingSocket.deleteItem({
+                            trip_id: trip.id,
+                            item_id: thing.id,
+                          })
+                        }
                         tooltipMsg={
                           user.admin
                             ? ''

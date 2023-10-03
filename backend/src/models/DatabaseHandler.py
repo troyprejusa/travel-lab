@@ -293,33 +293,26 @@ class DatabaseHandler:
         new_item = self.query("""
             INSERT INTO packing (trip_id, item, quantity, description, created_by) 
             VALUES (%s, %s, %s, %s, %s)
+            RETURNING *;
         """, (trip_id, item, quantity, description, email))[0]
 
         return new_item
 
-    def claim_packing_item(self, email: str, item_id: int) -> dict:
+    def claim_packing_item(self, email: str, item_id: int) -> None:
         # Allow a user to claim this item as long as it is not currently claimed
-        claimed_item = self.query("""
-            UPDATE packing SET packed_by = %s WHERE packed_by IS NULL AND id = %s
-            RETURNING *;
-        """, (email, item_id))[0]
-        
-        return claimed_item
-        
-    def unclaim_packing_item(self, item_id: int) -> dict:
-        unclaimed_item = self.query("""
-            UPDATE packing SET packed_by = NULL WHERE packed_by IS NOT NULL AND id = %s
-            RETURNING *;
-        """, (item_id,))[0]
+        self.query("""
+            UPDATE packing SET packed_by = %s WHERE packed_by IS NULL AND id = %s;
+        """, (email, item_id))
+                
+    def unclaim_packing_item(self, item_id: int) -> None:
+        self.query("""
+            UPDATE packing SET packed_by = NULL WHERE packed_by IS NOT NULL AND id = %s;
+        """, (item_id,))
 
-        return unclaimed_item
-
-    def delete_packing_item(self, item_id: int) -> dict:
-        deleted_item = self.query("""
+    def delete_packing_item(self, item_id: int) -> None:
+        self.query("""
             DELETE FROM packing WHERE id=%s RETURNING *;
-        """, (item_id,))[0]
-
-        return deleted_item
+        """, (item_id,))
     
     # --------------- MESSAGE OPERATIONS --------------- #
 

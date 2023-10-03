@@ -1,9 +1,36 @@
 import io, { Socket } from 'socket.io-client';
-import { reduxAddItinerary, reduxDeleteItinerary } from '../redux/ItinerarySlice';
-import { reduxAddPoll, reduxAddVote, reduxDeletePoll } from '../redux/PollSlice';
+import {
+  reduxAddItinerary,
+  reduxDeleteItinerary,
+} from '../redux/ItinerarySlice';
+import {
+  reduxAddPoll,
+  reduxAddVote,
+  reduxDeletePoll,
+} from '../redux/PollSlice';
 import { reduxAddMessage } from '../redux/MessageSlice';
+import {
+  reduxAddPackingItem,
+  reduxClaimItem,
+  reduxUnclaimItem,
+  reduxDeleteItem,
+} from '../redux/PackingSlice';
 import { Dispatch } from '@reduxjs/toolkit';
-import { MessageWS, MessageModel, PollVoteWS, PollDeleteWS, PollResponseModel, ItineraryDeleteWS } from './Interfaces';
+import {
+  MessageWS,
+  MessageModel,
+  PollVoteWS,
+  PollDeleteWS,
+  PollResponseModel,
+  ItineraryDeleteWS,
+  ItineraryModel,
+  NewItineraryModel,
+  NewPackingWS,
+  PackingClaimWS,
+  PackingUnclaimWS,
+  PackingModel,
+  PackingDeleteWS,
+} from './Interfaces';
 import Constants from './Constants';
 
 class TripSocket {
@@ -134,7 +161,7 @@ class ItinerarySocket extends TripSocket {
       console.error('ItinerarySocket: Unable to add stop :(');
     });
 
-    this.socket!.on('backend_itinerary_delete', (data: any) => {
+    this.socket!.on('backend_itinerary_delete', (data: number) => {
       this.dispatch!(reduxDeleteItinerary(data));
     });
 
@@ -143,7 +170,7 @@ class ItinerarySocket extends TripSocket {
     });
   }
 
-  sendItinerary(itinerary: any) {
+  sendItinerary(itinerary: NewItineraryModel) {
     this.socket!.emit('frontend_itinerary_create', itinerary);
   }
 
@@ -161,15 +188,15 @@ class PackingSocket extends TripSocket {
     // Make a connection to the socket using the parent method
     super.establishSocket(token, trip_id, dispatcher);
 
-    this.socket!.on('backend_packing_create', (data: any) => {
-      this.dispatch!(reduxAddItem(data));
+    this.socket!.on('backend_packing_create', (data: PackingModel) => {
+      this.dispatch!(reduxAddPackingItem(data));
     });
 
     this.socket!.on('backend_packing_create_error', (data: any) => {
       console.error('PackingSocket: Unable to do something :(');
     });
 
-    this.socket!.on('backend_packing_claim', (data: any) => {
+    this.socket!.on('backend_packing_claim', (data: PackingClaimWS) => {
       this.dispatch!(reduxClaimItem(data));
     });
 
@@ -177,7 +204,7 @@ class PackingSocket extends TripSocket {
       console.error('PackingSocket: Unable to do something :(');
     });
 
-    this.socket!.on('backend_packing_unclaim', (data: any) => {
+    this.socket!.on('backend_packing_unclaim', (data: PackingUnclaimWS) => {
       this.dispatch!(reduxUnclaimItem(data));
     });
 
@@ -185,7 +212,7 @@ class PackingSocket extends TripSocket {
       console.error('PackingSocket: Unable to do something :(');
     });
 
-    this.socket!.on('backend_packing_delete', (data: any) => {
+    this.socket!.on('backend_packing_delete', (data: number) => {
       this.dispatch!(reduxDeleteItem(data));
     });
 
@@ -194,19 +221,19 @@ class PackingSocket extends TripSocket {
     });
   }
 
-  sendItem(item_id: number) {
+  sendItem(item_id: NewPackingWS) {
     this.socket!.emit('frontend_packing_create', item_id);
   }
 
-  claimItem(item_id: number) {
+  claimItem(item_id: PackingClaimWS) {
     this.socket!.emit('frontend_packing_claim', item_id);
   }
 
-  unclaimItem(item_id: number) {
+  unclaimItem(item_id: PackingUnclaimWS) {
     this.socket!.emit('frontend_packing_unclaim', item_id);
   }
 
-  deleteItem(item_id: number) {
+  deleteItem(item_id: PackingDeleteWS) {
     this.socket!.emit('frontend_packing_delete', item_id);
   }
 }

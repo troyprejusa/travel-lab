@@ -16,10 +16,15 @@ import {
   Input,
   Textarea,
 } from '@chakra-ui/react';
+import { NewPackingWS, TripModel, UserModel } from '../utilities/Interfaces';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/Store';
 
 interface NewItemModalProps {}
 
 function NewItemModal(props: NewItemModalProps) {
+  const user: UserModel = useSelector((state: RootState) => state.user);
+  const trip: TripModel = useSelector((state: RootState) => state.trip);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const itemForm = useRef<HTMLFormElement>(null);
 
@@ -88,7 +93,15 @@ function NewItemModal(props: NewItemModalProps) {
       return;
     }
 
-    packingSocket.sendItem(formData);
+    const new_packing: NewPackingWS = {
+      trip_id: trip.id,
+      created_by: user.id,
+      ...Object.fromEntries(formData.entries()),
+    };
+
+    if (new_packing.description === '') new_packing.description = null;
+
+    packingSocket.sendItem(new_packing);
 
     // Close the modal
     onClose();
