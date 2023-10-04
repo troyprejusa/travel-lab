@@ -19,11 +19,11 @@ function Itinerary(): JSX.Element {
   return (
     <>
       <TitleBar text='Itinerary' />
-      <Flex flexWrap={'wrap'} justifyContent={'space-around'} gap={'40px'}>
+      <Flex flexWrap={'wrap'} justifyContent={'space-around'} gap={'20px'}>
         <Stack
           spacing="4"
           height={'80vh'}
-          w={'sm'}
+          w={'xs'}
           overflowY={'scroll'}
         >
           <NewItineraryModal />

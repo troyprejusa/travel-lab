@@ -20,6 +20,7 @@ const itinerarySlice: Slice = createSlice({
 
     // itinerary/reduxDeleteItinerary
     reduxDeleteItinerary: (state, action: PayloadAction<number>) => {
+      // Filter creates a new array, which must be returned
       return state.filter((itin: ItineraryModel) => itin.id !== action.payload);
     },
 

@@ -123,7 +123,7 @@ function PollCard(props: PollCardProps) {
             </Badge>
           )}
           <h2>{props.data.created_by}</h2>
-          <h3>{`${props.data.created_at}`}</h3>
+          <h3>{`${new Date(props.data.created_at).toDateString()}`}</h3>
         </Box>
       </Box>
 

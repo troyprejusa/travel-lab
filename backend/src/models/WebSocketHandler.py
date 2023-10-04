@@ -17,8 +17,9 @@ def parse_trip_id(query: str) -> str:
     for key, val in query_elements:
         if key == 'trip_id':
             return val
-        
-    return None
+    
+    # Because this function is essential to this module, thow if none is provided
+    raise KeyError('Trip id not found in query parameters')
 
 def date_to_string_flat(obj: dict) -> None:
     for key, val in obj.items():
@@ -26,7 +27,8 @@ def date_to_string_flat(obj: dict) -> None:
             obj[key] = val.isoformat()
 
 
-class ItinerarySocket(socketio.AsyncNamespace):
+class WebSocketHandler(socketio.AsyncNamespace):
+
     async def on_connect(self, sid, environ, auth):
         try:
             await auth_helpers.jwt_decode_w_retry(auth.get('token'))
@@ -36,11 +38,21 @@ class ItinerarySocket(socketio.AsyncNamespace):
             self.enter_room(sid, trip_id)
 
         except jwt.exceptions.InvalidTokenError as token_error:
-            print('ItinerarySocket.on_connect: Invalid token\n', token_error)
-            raise ConnectionRefusedError('Unauthorized connection attempt to ItininerarySocket')
+            print(f'{self.__class__.__name__}.on_connect: Invalid token\n', token_error)
+            raise ConnectionRefusedError(f'Unauthorized connection attempt to {self.__class__.__name__}')
+        
+        except Exception as error:
+            print(f'{self.__class__.__name__}.on_connect:\n', error)
+            raise ConnectionRefusedError(f'Error during connection attempt to {self.__class__.__name__}')
 
     def on_disconnect(self, sid):
-        print(f'{sid} disconnected from ItinerarySocket')
+        print(f'{sid} disconnected from {self.__class__.__name__}')
+
+    async def reply_error(self, sid, event: str, msg: str):
+        await self.emit(event, {"message": msg}, to=sid)
+
+
+class ItinerarySocket(WebSocketHandler):
 
     async def on_frontend_itinerary_create(self, sid, data) -> None:
         try:
@@ -51,7 +63,7 @@ class ItinerarySocket(socketio.AsyncNamespace):
 
         except Exception as error:
             print(error)
-            await self.emit('backend_itinerary_create_error', {"message": 'Unable to create itinerary stop'}, room = data.get('trip_id'))
+            await self.reply_error(sid, 'backend_itinerary_create_error', 'Unable to create itinerary stop')
 
     async def on_frontend_itinerary_delete(self, sid, data) -> None:
         try:
@@ -61,24 +73,10 @@ class ItinerarySocket(socketio.AsyncNamespace):
         
         except Exception as error:
             print(error)
-            await self.emit('backend_itinerary_delete_error', {"message": 'Unable to delete itinerary stop'}, room = data.get('trip_id'))
+            await self.reply_error(sid, 'backend_itinerary_delete_error', 'Unable to delete itinerary stop')
 
 
-class PollSocket(socketio.AsyncNamespace):
-    async def on_connect(self, sid, environ, auth):
-        try:
-            await auth_helpers.jwt_decode_w_retry(auth.get('token'))
-
-            # Enter the correct room for this trip
-            trip_id = parse_trip_id(environ['QUERY_STRING'])
-            self.enter_room(sid, trip_id)
-
-        except jwt.exceptions.InvalidTokenError as token_error:
-            print('PollSocket.on_connect: Invalid token\n', token_error)
-            raise ConnectionRefusedError('Unauthorized connection attempt to PollSocket')
-
-    def on_disconnect(self, sid):
-        print(f'{sid} disconnected from PollSocket')
+class PollSocket(WebSocketHandler):
 
     async def on_frontend_poll_create(self, sid, data) -> None:
         try:
@@ -92,7 +90,7 @@ class PollSocket(socketio.AsyncNamespace):
         
         except Exception as error:
             print(error)
-            await self.emit('backend_poll_create_error', {"message": 'Unable to create poll'}, room = data.get('trip_id'))
+            await self.reply_error(sid, 'backend_poll_create_error', 'Unable to create poll')
 
     async def on_frontend_vote(self, sid, data) -> None:
         # Because the poll data is handled in such a composite fashion,
@@ -104,92 +102,64 @@ class PollSocket(socketio.AsyncNamespace):
 
         except Exception as error:
             print(error)
-            await self.emit('backend_vote_error', {"message": "Unable to submit vote"} , room = data.get('trip_id'))
+            await self.reply_error(sid, 'backend_vote_error', 'Unable to submit vote')
 
     async def on_frontend_poll_delete(self, sid, data) -> None:
         try:
-            poll_delete = PollDeleteWS.parse_obj(data)
+            poll_delete = PollDeleteWS.parse_obj(data)  # Verify data
             db_handler.delete_poll(poll_delete.poll_id)
             await self.emit('backend_poll_delete', poll_delete.poll_id, room = poll_delete.trip_id)
 
         except Exception as error:
             print(error)
-            await self.emit('backend_poll_delete_error', {"message": 'Unable to delete poll'}, room = data.get('trip_id'))
+            await self.reply_error(sid, 'backend_poll_delete_error', 'Unable to delete poll')
 
 
-class PackingSocket(socketio.AsyncNamespace):
-    async def on_connect(self, sid, environ, auth):
-        try:
-            await auth_helpers.jwt_decode_w_retry(auth.get('token'))
-
-            # Enter the correct room for this trip
-            trip_id = parse_trip_id(environ['QUERY_STRING'])
-            self.enter_room(sid, trip_id)
-
-        except jwt.exceptions.InvalidTokenError as token_error:
-            print('PackingSocket.on_connect: Invalid token\n', token_error)
-            raise ConnectionRefusedError('Unauthorized connection attempt to PackingSocket')
-
-    def on_disconnect(self, sid):
-        print(f'{sid} disconnected from PackingSocket')
+class PackingSocket(WebSocketHandler):
     
     async def on_frontend_packing_create(self, sid, data) -> None:
         try:
-            new_item = NewPackingWS.parse_obj(data)
+            new_item = NewPackingWS.parse_obj(data)     # Verify data
             item_db = db_handler.create_packing_item(new_item.trip_id, new_item.item, new_item.quantity, new_item.description, new_item.created_by)
             date_to_string_flat(item_db)
             await self.emit('backend_packing_create', item_db, room = new_item.trip_id)
 
         except Exception as error:
             print(error)
-            await self.emit('backend_packing_create_error', {"message": 'Unable to create packing item'}, room = data.get('trip_id'))
+            await self.reply_error(sid, 'backend_packing_create_error', 'Unable to create packing item')
 
-    async def on_claim_packing_item(self, sid, data) -> None:
+    async def on_frontend_packing_claim(self, sid, data) -> None:
         try:
-            claim_data = PackingClaimWS.parse_obj(data)
+            claim_data = PackingClaimWS.parse_obj(data)     # Verify data
             db_handler.claim_packing_item(claim_data.email, claim_data.item_id)
             await self.emit('backend_packing_claim', claim_data.dict(), room = claim_data.trip_id)
 
         except Exception as error:
             print(error)
-            await self.emit('backend_packing_claim_error', {"message": 'Unable to claim item'}, room = data.get('trip_id'))
+            await self.reply_error(sid, 'backend_packing_claim_error', 'Unable to claim item')
 
-    async def on_unclaim_packing_item(self, sid, data) -> None:
+    async def on_frontend_packing_unclaim(self, sid, data) -> None:
         try:
-            unclaim_data = PackingUnclaimWS.parse_obj(data)
+            unclaim_data = PackingUnclaimWS.parse_obj(data)     # Verify data
             db_handler.unclaim_packing_item(unclaim_data.item_id)
             await self.emit('backend_packing_claim', unclaim_data.dict(), room = unclaim_data.trip_id)
 
         except Exception as error:
             print(error)
-            await self.emit('backend_packing_unclaim_error', {"message": 'Unable to unclaim item'}, room = data.get('trip_id'))
+            await self.reply_error(sid, 'backend_packing_unclaim_error', 'Unable to unclaim item')
 
-    async def on_delete_packing_item(self, sid, data) -> None:
+    async def on_frontend_packing_delete(self, sid, data) -> None:
         try:
-            item_delete = PackingDeleteWS.parse_obj(data)
+            item_delete = PackingDeleteWS.parse_obj(data)   # Verify data
             db_handler.delete_packing_item(item_delete.item_id)
             await self.emit('backend_packing_delete', item_delete.item_id, room = item_delete.trip_id)
 
         except Exception as error:
             print(error)
-            await self.emit('backend_packing_delete_error', {"message": 'Unable to delete item'}, room = data.get('trip_id'))
+            await self.reply_error(sid, 'backend_packing_delete_error', 'Unable to delete item')
 
 
-class MsgSocket(socketio.AsyncNamespace):
-    async def on_connect(self, sid, environ, auth):
-        try:
-            await auth_helpers.jwt_decode_w_retry(auth.get('token'))
-
-            # Enter the correct room for this trip
-            trip_id = parse_trip_id(environ['QUERY_STRING'])
-            self.enter_room(sid, trip_id)
-
-        except jwt.exceptions.InvalidTokenError as token_error:
-            print('MsgSocket.on_connect: Invalid token\n', token_error)
-            raise ConnectionRefusedError('Unauthorized connection attempt to MsgSocket')
-
-    def on_disconnect(self, sid):
-        print(f'{sid} disconnected from MsgSocket')
+class MsgSocket(WebSocketHandler):
 
     async def on_frontend_msg(self, sid, data):
         try:
@@ -200,7 +170,8 @@ class MsgSocket(socketio.AsyncNamespace):
 
         except Exception as error:
             print(error)
-            await self.emit('backend_msg_error', {"message": "Unable to submit message"} , room = data.get('trip_id'))
+            await self.reply_error(sid, 'backend_msg_error', 'Unable to submit message')
+
 
 # Setup websocket server - Socket.io
 sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins="*")

@@ -4,6 +4,14 @@ of non-serializable types (like Date/datetime) that cannot
 be sent, nor are they usable in the Redux store
 */
 
+export interface DbUserModel {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  email: string;
+  phone: string | null;
+}
+
 export interface TripModel {
   id: string;
   destination: string;

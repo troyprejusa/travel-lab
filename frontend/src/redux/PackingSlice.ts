@@ -40,7 +40,8 @@ const packingSlice: Slice = createSlice({
     },
     // packing/reduxDeleteItem
     reduxDeleteItem: (state, action: PayloadAction<number>) => {
-      state.filter((item: PackingModel) => item.id !== action.payload);
+      // Filter creates a new array, which must be returned
+      return state.filter((item: PackingModel) => item.id !== action.payload);
     },
     // packing/reduxResetPacking
     reduxResetPacking: () => {

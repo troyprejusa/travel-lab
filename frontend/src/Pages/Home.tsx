@@ -71,6 +71,11 @@ function Home(): JSX.Element {
                 <Heading size={'sm'}>Created by:</Heading>
                 <Text color={'gray.500'}>{trip.created_by}</Text>
               </Box>
+              <Box>
+                <Heading size={'sm'}>Details:</Heading>
+                <Text color={'gray.500'}>{`Trip id: ${trip.id}`}</Text>
+                <Text color={'gray.500'}>{`Created: ${new Date(trip.created_at).toDateString()}`}</Text>
+              </Box>
             </Flex>
           </GridItem>
           <GridItem

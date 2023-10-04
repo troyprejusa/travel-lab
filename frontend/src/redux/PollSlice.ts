@@ -42,6 +42,7 @@ const pollSlice: Slice = createSlice({
 
     // polls/reduxDeletePoll
     reduxDeletePoll: (state, action: PayloadAction<number>) => {
+      // Filter creates a new array, which must be returned
       return state.filter(
         (poll: PollResponseModel) => poll.poll_id !== action.payload
       );

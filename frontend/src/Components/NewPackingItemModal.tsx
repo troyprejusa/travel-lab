@@ -95,7 +95,7 @@ function NewItemModal(props: NewItemModalProps) {
 
     const new_packing: NewPackingWS = {
       trip_id: trip.id,
-      created_by: user.id,
+      created_by: user.email,
       ...Object.fromEntries(formData.entries()),
     };
 

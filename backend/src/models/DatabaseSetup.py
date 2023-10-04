@@ -1,7 +1,8 @@
-from models.DatabaseHandler import DatabaseHandler
+from models.DatabaseHandler import PsycopgDatabaseHandler
+
 
 class DatabaseSetup:
-    def __init__(self, database: DatabaseHandler) -> None:
+    def __init__(self, database: PsycopgDatabaseHandler) -> None:
         self.database = database;
     
     # UUID Extension
@@ -254,7 +255,7 @@ class DatabaseSetup:
                 'Getaway trip 2',
                 '2020-07-10',
                 '2020-07-11',
-                'joe@test.com'
+                'troy@test.com'
             );
                             
             INSERT INTO trip 

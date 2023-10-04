@@ -113,7 +113,7 @@ async def add_itinerary_stop(
         )
     
 @trip_router.delete('/{trip_id}/itinerary/{item_id}')
-async def remove_itinerary_stop(request: Request, trip_id: str, item_id: int) ->  str:
+async def delete_itinerary_stop(request: Request, trip_id: str, item_id: int) ->  str:
     try:
         verify_admin(trip_id, request.state.user['trips'])
 

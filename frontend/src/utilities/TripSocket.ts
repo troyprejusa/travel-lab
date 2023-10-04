@@ -221,20 +221,20 @@ class PackingSocket extends TripSocket {
     });
   }
 
-  sendItem(item_id: NewPackingWS) {
-    this.socket!.emit('frontend_packing_create', item_id);
+  sendItem(item_data: NewPackingWS) {
+    this.socket!.emit('frontend_packing_create', item_data);
   }
 
-  claimItem(item_id: PackingClaimWS) {
-    this.socket!.emit('frontend_packing_claim', item_id);
+  claimItem(item_data: PackingClaimWS) {
+    this.socket!.emit('frontend_packing_claim', item_data);
   }
 
-  unclaimItem(item_id: PackingUnclaimWS) {
-    this.socket!.emit('frontend_packing_unclaim', item_id);
+  unclaimItem(item_data: PackingUnclaimWS) {
+    this.socket!.emit('frontend_packing_unclaim', item_data);
   }
 
-  deleteItem(item_id: PackingDeleteWS) {
-    this.socket!.emit('frontend_packing_delete', item_id);
+  deleteItem(item_data: PackingDeleteWS) {
+    this.socket!.emit('frontend_packing_delete', item_data);
   }
 }
 
