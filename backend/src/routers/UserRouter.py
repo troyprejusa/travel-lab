@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
-from models.Schemas import TravellerResponse, TripModel
+from models.Schemas import UserModel, TripModel
 from utilities.auth_helpers import verify_attendance, verify_admin
 
 
@@ -11,7 +11,7 @@ user_router = APIRouter(
 
 # Upsert a user in database
 @user_router.post('/{email}')
-async def upsert_user(email: str) -> TravellerResponse | str:
+async def upsert_user(email: str) -> UserModel | str:
     try:
         user = db_handler.upsert_user(email)
         return user

@@ -33,7 +33,7 @@ function Staging(): JSX.Element {
           margin="20px"
           size="md"
           colorScheme="red"
-          onClick={handleSignOut}
+          onClick={() => handleSignOut()}
         >
           Sign Out
         </Button>
@@ -46,7 +46,7 @@ function Staging(): JSX.Element {
     </>
   );
 
-  async function setUser(user: object | undefined) {
+  async function setUser(user: any) {
     if (user && user.email) {
       try {
         const token: string = await fetchHelpers.getAuth0Token(
@@ -60,7 +60,7 @@ function Staging(): JSX.Element {
     }
   }
 
-  function handleSignOut(event: SyntheticEvent) {
+  function handleSignOut() {
     signOutBeforeTripSelect(dispatch);
     logout({
       logoutParams: {

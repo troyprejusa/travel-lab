@@ -5,16 +5,17 @@ import { reduxFetchPacking, reduxResetPacking } from "../redux/PackingSlice";
 import { reduxResetTrip } from "../redux/TripSlice";
 import { reduxFetchItinerary, reduxResetItinerary } from "../redux/ItinerarySlice";
 import { reduxFetchTravellers, reduxResetTravellers } from "../redux/TravellersSlice";
-import { reduxUserLogout } from "../redux/UserSlice";
+import { reduxFetchTripPermissions, reduxUserLogout } from "../redux/UserSlice";
 import { msgSocket } from "./TripSocket";
 import { pollSocket } from "./TripSocket";
 
 export const fetchAllTripData = (trip_id: string, token: string, dispatch: Dispatch) => {
-    dispatch(reduxFetchTravellers({ trip_id: trip_id, token: token }));
+    dispatch(reduxFetchTripPermissions({ trip_id: trip_id, token: token }));
     dispatch(reduxFetchItinerary({ trip_id: trip_id, token: token }));
-    dispatch(reduxFetchMessages({ trip_id: trip_id, token: token }));
     dispatch(reduxFetchPolls({ trip_id: trip_id, token: token }));
     dispatch(reduxFetchPacking({ trip_id: trip_id, token: token }));
+    dispatch(reduxFetchMessages({ trip_id: trip_id, token: token }));
+    dispatch(reduxFetchTravellers({ trip_id: trip_id, token: token }));
 }
 
 export const signOutBeforeTripSelect = (dispatch: Dispatch) => {

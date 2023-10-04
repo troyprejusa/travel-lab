@@ -16,20 +16,18 @@ import {
   Stack,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { RootState } from '../redux/Store';
 
 interface TripCardProps {
   tripData: TripModel;
 }
 
 function TripCard(props: TripCardProps) {
-  const user: UserModel = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { getAccessTokenSilently } = useAuth0();
 
   return (
-    <Center py={6} onClick={handleViewClick} cursor={'pointer'}>
+    <Center py={6} onClick={() => handleViewClick()} cursor={'pointer'}>
       <Box
         w={'md'}
         bg={useColorModeValue('white', 'gray.900')}
@@ -86,7 +84,7 @@ function TripCard(props: TripCardProps) {
     </Center>
   );
 
-  async function handleViewClick(event: SyntheticEvent) {
+  async function handleViewClick() {
     try {
       const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
 

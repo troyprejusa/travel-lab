@@ -37,6 +37,24 @@ async def create_trip(
                 "message": f"ERROR: Unable to create trip to {destination}"
             }
         )
+    
+@trip_router.get('/{trip_id}/permissions')
+async def get_trip_permissions(request: Request, trip_id: str) -> dict | str:
+    try:
+        verify_attendance(trip_id, request.state.user['trips'])
+        permissions = db_handler.get_trip_permissions(trip_id, request.state.user['email'])
+        
+        return permissions
+    
+    except Exception as error:
+        print(error)
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": f"ERROR: Unable to get permissions for {request.state.user['email']}"
+            }
+        )
+
 
 @trip_router.delete('/{trip_id}')
 async def delete_trip(request: Request, trip_id: str) -> dict[str, str]:

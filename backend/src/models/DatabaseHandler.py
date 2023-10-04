@@ -47,6 +47,10 @@ class AbstractDatabaseHandler(ABC):
         pass
 
     @abstractmethod
+    def get_trip_permissions(self, trip_id: str, email: str) -> dict:        
+        pass
+
+    @abstractmethod
     def delete_trip(self, trip_id: str) -> dict:
         pass
 
@@ -193,15 +197,9 @@ class PsycopgDatabaseHandler(AbstractDatabaseHandler):
     # ------------------- USER OPERATIONS ------------------- #
                 
     def upsert_user(self, email: str) -> dict:
-        # FIXME: THIS IS WRONG. THIS IS PROBABLY AN ARRAY AND WE ARE GETTING THE FIRST 
-        # VALUE OF THE JOIN WHICH MAY OR MAY NOT BE ADMIN
         user = self.query("""
             INSERT INTO traveller (email) VALUES (%s) ON CONFLICT (email) DO NOTHING;
-                         
-            SELECT traveller.*, traveller_trip.confirmed, traveller_trip.admin
-            FROM traveller
-            JOIN traveller_trip ON traveller.id = traveller_trip.traveller_id
-            WHERE email=%s;
+            SELECT * FROM traveller WHERE email=%s;
         """, (email, email))[0]
 
         return user
@@ -265,6 +263,16 @@ class PsycopgDatabaseHandler(AbstractDatabaseHandler):
         """, (trip_id,))[0]
 
         return trip
+    
+    def get_trip_permissions(self, trip_id: str, email: str) -> dict:
+        permissions = self.query("""
+            SELECT confirmed, admin 
+            FROM traveller_trip 
+            WHERE trip_id=%s AND 
+            traveller_id=(SELECT id FROM traveller WHERE email=%s);
+        """, (trip_id, email))[0]
+
+        return permissions
 
     def delete_trip(self, trip_id: str) -> dict:
         deleted_trip = self.query("""
