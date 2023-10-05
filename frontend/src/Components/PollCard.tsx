@@ -1,10 +1,8 @@
 import BarChartComponent from './BarChartComponent';
 import PieChartComponent from './PieChartComponent';
 import { useSelector } from 'react-redux';
-import fetchHelpers from '../utilities/fetchHelpers';
 import { RootState } from '../redux/Store';
 import { AvatarRipple } from './AvatarWrapper';
-import { useAuth0 } from '@auth0/auth0-react';
 import { TrashButton } from './Buttons';
 import {
   PollResponseModel,
@@ -49,7 +47,6 @@ function PollCard(props: PollCardProps) {
   );
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { getAccessTokenSilently } = useAuth0();
 
   // Did this user vote on this poll?
   let userVoted: boolean = false;

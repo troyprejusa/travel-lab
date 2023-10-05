@@ -7,6 +7,7 @@ import PollCard from '../Components/PollCard';
 import { PollResponseModel } from '../utilities/Interfaces';
 import { Box } from '@chakra-ui/react';
 import TitleBar from '../Components/TitleBar';
+import PulseDot from '../Components/PulseDot';
 
 function Poll(): JSX.Element {
   const polls: Array<PollResponseModel> = useSelector(
@@ -15,7 +16,9 @@ function Poll(): JSX.Element {
 
   return (
     <>
-      <TitleBar text="Poll" />
+      <TitleBar text="Poll">
+        <PulseDot />
+      </TitleBar>
       <NewPollModal />
       <Flex
         margin={'10%'}

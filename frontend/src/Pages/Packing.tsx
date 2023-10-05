@@ -6,6 +6,7 @@ import { PackingModel } from '../utilities/Interfaces';
 import { RootState } from '../redux/Store';
 import { TrashButton, ClaimButton, UnclaimButton } from '../Components/Buttons';
 import TitleBar from '../Components/TitleBar';
+import PulseDot from '../Components/PulseDot';
 import {
   Table,
   Thead,
@@ -28,7 +29,9 @@ function Packing(): JSX.Element {
 
   return (
     <>
-      <TitleBar text="Packing" />
+      <TitleBar text="Packing">
+        <PulseDot />
+      </TitleBar>
       <NewItemModal />
       <TableContainer marginTop={6} borderRadius={'6px'}>
         <Table variant="striped" colorScheme="blackAlpha">

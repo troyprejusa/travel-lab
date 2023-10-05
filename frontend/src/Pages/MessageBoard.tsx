@@ -6,6 +6,7 @@ import { RootState } from '../redux/Store';
 import { ReceivedMessage, SentMessage } from '../Components/Messages';
 import { Box, Textarea, Button, HStack } from '@chakra-ui/react';
 import TitleBar from '../Components/TitleBar';
+import PulseDot from '../Components/PulseDot';
 
 
 function MessageBoard(): JSX.Element {
@@ -25,7 +26,9 @@ function MessageBoard(): JSX.Element {
 
   return (
     <>
-      <TitleBar text='Messages' />
+      <TitleBar text='Messages'>
+        <PulseDot />
+      </TitleBar>
       <Box height={'80vh'}>
         <Box height={'90%'} overflowY={'scroll'} margin="20px" ref={listDivRef}>
           {messages.length === 0 ? (

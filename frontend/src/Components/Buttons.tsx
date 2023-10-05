@@ -196,17 +196,19 @@ export const RefreshButton = (props: RefreshButtonProps) => {
   const { trip_id, dispatch, ...rest } = props;
   const { getAccessTokenSilently } = useAuth0();
   return (
-    <IconButton
-      colorScheme="blue"
-      fontSize={'20px'}
-      icon={<FiRotateCw />}
-      onClick={async () => {
-        const token: string = await fetchHelpers.getAuth0Token(
-          getAccessTokenSilently
-        );
-        fetchAllTripData(trip_id, token, dispatch);
-      }}
-      {...rest}
-    />
+    <Tooltip label="Refresh trip data">
+      <IconButton
+        colorScheme="blue"
+        fontSize={'20px'}
+        icon={<FiRotateCw />}
+        onClick={async () => {
+          const token: string = await fetchHelpers.getAuth0Token(
+            getAccessTokenSilently
+          );
+          fetchAllTripData(trip_id, token, dispatch);
+        }}
+        {...rest}
+      />
+    </Tooltip>
   );
 };

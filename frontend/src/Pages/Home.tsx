@@ -4,20 +4,32 @@ import TripPhoto from '../assets/tripphoto.jpg';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
 import Constants from '../utilities/Constants';
+import { useNavigate, NavigateFunction } from 'react-router-dom';
+import StatsCard from '../Components/StatsCard';
+import {
+  FiMapPin,
+  FiUser,
+  FiShoppingBag,
+  FiMap,
+  FiUsers,
+  FiCheckCircle,
+} from 'react-icons/fi';
+import TitleBar from '../Components/TitleBar';
 import {
   ItineraryModel,
   PackingModel,
   TripModel,
   UserModel,
+  PollResponseModel,
+  PollVoteModel,
 } from '../utilities/Interfaces';
-import { useNavigate } from 'react-router-dom';
-import StatsCard from '../Components/StatsCard';
-import { FiMapPin, FiTerminal, FiUser, FiShoppingBag } from 'react-icons/fi';
-import TitleBar from '../Components/TitleBar';
+
+const ICON_SIZE: string = '24px';
 
 function Home(): JSX.Element {
-  const navigate: Navigate = useNavigate();
+  const navigate: NavigateFunction = useNavigate();
   const trip: TripModel = useSelector((state: RootState) => state.trip);
+  const user: UserModel = useSelector((state: RootState) => state.user);
   const itinerary: Array<ItineraryModel> = useSelector(
     (state: RootState) => state.itinerary
   );
@@ -30,9 +42,22 @@ function Home(): JSX.Element {
   const packing: Array<PackingModel> = useSelector(
     (state: RootState) => state.packing
   );
+
+  // Calculate how many polls this user voted on
+  let userVotes: number = 0;
+  polls.forEach((poll: PollResponseModel) => {
+    poll.options.forEach((option: PollVoteModel) => {
+      option.votes.forEach((voter: string) => {
+        if (voter === user.email) {
+          userVotes += 1;
+        }
+      });
+    });
+  });
+
   return (
     <>
-      <TitleBar text='Home'/>
+      <TitleBar text="Home" />
 
       <Flex justifyContent={'center'} overflow={'scroll'}>
         <Grid
@@ -72,9 +97,8 @@ function Home(): JSX.Element {
                 <Text color={'gray.500'}>{trip.created_by}</Text>
               </Box>
               <Box>
-                <Heading size={'sm'}>Details:</Heading>
-                <Text color={'gray.500'}>{`Trip id: ${trip.id}`}</Text>
-                <Text color={'gray.500'}>{`Created: ${new Date(trip.created_at).toDateString()}`}</Text>
+                <Heading size={'sm'}>Trip id:</Heading>
+                <Text color={'gray.500'}>{trip.id}</Text>
               </Box>
             </Flex>
           </GridItem>
@@ -108,11 +132,21 @@ function Home(): JSX.Element {
               navigate('../itinerary');
             }}
           >
-            <StatsCard
-              title="Itinerary Stops"
-              stat={itinerary.length}
-              icon={<FiMapPin />}
-            />
+            <Flex flexDirection={'column'} height={'100%'}>
+              <StatsCard
+                title="Itinerary stops"
+                stat={itinerary.length}
+                icon={<FiMap fontSize={ICON_SIZE} />}
+              />
+              <StatsCard
+                title="Stops you created"
+                stat={
+                  itinerary.filter((stop) => stop.created_by === user.email)
+                    .length
+                }
+                icon={<FiMapPin fontSize={ICON_SIZE} />}
+              />
+            </Flex>
           </GridItem>
           <GridItem
             rowSpan={2}
@@ -126,16 +160,22 @@ function Home(): JSX.Element {
               navigate('../travellers');
             }}
           >
-            <StatsCard
-              title="Travellers"
-              stat={travellers.filter((user: UserModel) => user.confirmed).length}
-              icon={<FiUser />}
-            />
-            <StatsCard
-              title="Pending travellers"
-              stat={travellers.filter((user: UserModel) => !user.confirmed).length}
-              icon={<FiUser />}
-            />
+            <Flex flexDirection={'column'} height={'100%'}>
+              <StatsCard
+                title="Confirmed travellers"
+                stat={
+                  travellers.filter((user: UserModel) => user.confirmed).length
+                }
+                icon={<FiUsers fontSize={ICON_SIZE} />}
+              />
+              <StatsCard
+                title="Pending travellers"
+                stat={
+                  travellers.filter((user: UserModel) => !user.confirmed).length
+                }
+                icon={<FiUser fontSize={ICON_SIZE} />}
+              />
+            </Flex>
           </GridItem>
           <GridItem
             rowSpan={1}
@@ -150,9 +190,11 @@ function Home(): JSX.Element {
             }}
           >
             <StatsCard
-              title="Packing items"
-              stat={packing.length}
-              icon={<FiShoppingBag />}
+              title="Total packing items claimed"
+              stat={`${
+                packing.filter((item: PackingModel) => item.packed_by).length
+              } | ${packing.length}`}
+              icon={<FiShoppingBag fontSize={ICON_SIZE} />}
             />
           </GridItem>
           <GridItem
@@ -168,9 +210,9 @@ function Home(): JSX.Element {
             }}
           >
             <StatsCard
-              title="Polls"
-              stat={polls.length}
-              icon={<FiTerminal />}
+              title="Polls you've responded to"
+              stat={`${userVotes} | ${polls.length}`}
+              icon={<FiCheckCircle fontSize={ICON_SIZE} />}
             />
           </GridItem>
         </Grid>

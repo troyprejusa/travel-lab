@@ -10,6 +10,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import { Flex, Stack, Box, Text } from '@chakra-ui/react';
 import TitleBar from '../Components/TitleBar';
 import Constants from '../utilities/Constants';
+import PulseDot from '../Components/PulseDot';
 
 function Itinerary(): JSX.Element {
   const itinerary: Array<ItineraryModel> = useSelector(
@@ -18,7 +19,9 @@ function Itinerary(): JSX.Element {
 
   return (
     <>
-      <TitleBar text='Itinerary' />
+      <TitleBar text='Itinerary'>
+        <PulseDot />
+      </TitleBar>
       <Flex flexWrap={'wrap'} justifyContent={'space-around'} gap={'20px'}>
         <Stack
           spacing="4"

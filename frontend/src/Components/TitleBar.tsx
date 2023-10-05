@@ -1,8 +1,9 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Flex, Heading } from "@chakra-ui/react";
 
 interface TitleBarProps {
-    text: string
+    text: string;
+    children?: ReactNode;
 }
 
 function TitleBar(props: TitleBarProps) {
@@ -11,6 +12,7 @@ function TitleBar(props: TitleBarProps) {
         <Heading size={'md'}>
           {props.text}
         </Heading>
+        {props.children}
       </Flex>
     )
 }
