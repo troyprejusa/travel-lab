@@ -359,6 +359,29 @@ async def get_messages(request: Request, trip_id: str) -> list[MessageModel] | s
             }
         )
     
+@trip_router.delete('/{trip_id}/message')
+async def delete_messages(request: Request, trip_id: str) -> str:
+    try:
+        verify_admin(trip_id, request.state.user['trips'])
+
+        db_handler.delete_messages(trip_id)
+
+        return JSONResponse(
+            status_code=200,
+            content= {
+                "message": f'Successfully deleted all messages from from trip {trip_id}'
+            }
+        )
+    
+    except Exception as error:
+        print(error)
+        return JSONResponse(
+            status_code=500,
+            content= {
+                "message": f'ERROR: Unable to delete messages for trip id {trip_id}'
+            }
+        )
+    
 # --------------- TRAVELLER OPERATIONS --------------- #
 
 @trip_router.get('/{trip_id}/travellers')

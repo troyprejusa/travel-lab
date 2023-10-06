@@ -457,6 +457,11 @@ class PsycopgDatabaseHandler(AbstractDatabaseHandler):
         
         return db_msg
     
+    def delete_messages(self, trip_id: str) -> None:
+        self.query("""
+            DELETE FROM message WHERE trip_id = %s;
+        """, (trip_id,))
+    
     # --------------- TRAVELLER OPERATIONS --------------- #
 
     def get_travellers(self, trip_id: str) -> list[dict]:
