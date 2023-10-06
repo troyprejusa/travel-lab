@@ -5,7 +5,7 @@ from models.Schemas import TripModel, TravellerResponse, ItineraryModel, Message
 from typing import Annotated
 from datetime import date, datetime
 from utilities.auth_helpers import verify_attendance, verify_admin
-from models.S3Handler import minio_client
+# from models.S3Handler import minio_client
 
 
 trip_router = APIRouter(

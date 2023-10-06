@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { fetchAllTripData } from '../utilities/stateHandlers';
 import { Dispatch } from '@reduxjs/toolkit';
