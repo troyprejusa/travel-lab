@@ -1,6 +1,5 @@
 import { Slice, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TripModel } from '../utilities/Interfaces';
-import { useToast } from '@chakra-ui/react'
 
 const emptyTrip: TripModel = {
   id: '',
@@ -18,13 +17,13 @@ const tripSlice: Slice = createSlice({
   name: 'trip', // trip/<action_name>
   initialState: initialTripState,
   reducers: {
+    // trip/reduxSetTrip
     reduxSetTrip: (_state, action: PayloadAction<TripModel>) => {
-      // trip/reduxSetTrip
       return action.payload;
     },
 
+    // trip/reduxResetTrip
     reduxResetTrip: () => {
-      // trip/reduxResetTrip
       return emptyTrip;
     },
   },

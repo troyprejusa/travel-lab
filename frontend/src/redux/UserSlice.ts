@@ -6,6 +6,9 @@ import {
 } from '@reduxjs/toolkit';
 import { DbUserModel, UserModel } from '../utilities/Interfaces';
 import fetchHelpers from '../utilities/fetchHelpers';
+import { createStandaloneToast } from '@chakra-ui/react';
+
+const { toast } = createStandaloneToast();
 
 const emptyUser: UserModel = {
   id: '',
@@ -48,7 +51,15 @@ const userSlice: Slice = createSlice({
       )
       .addCase(reduxFetchUser.rejected, (state, action) => {
         // user/reduxFetchUser/rejected
-        console.error('Unable to retrieve user data :(\n', action.payload);
+        console.error(action.payload);
+        toast({
+          position: 'top',
+          title: 'Unable to retrieve user data :(',
+          description: 'Something went wrong...',
+          status: 'error',
+          duration: 4000,
+          isClosable: true,
+        });
         return state; // Do nothing
       })
       .addCase(reduxFetchTripPermissions.pending, (state) => {
@@ -65,7 +76,15 @@ const userSlice: Slice = createSlice({
       )
       .addCase(reduxFetchTripPermissions.rejected, (state, action) => {
         // user/reduxFetchTripPermissions/rejected
-        console.error('Unable to retrieve user permissions :(\n', action.payload);
+        console.error(action.payload);
+        toast({
+          position: 'top',
+          title: 'Unable to retrieve user permissions for this trip :(',
+          description: 'Something went wrong...',
+          status: 'error',
+          duration: 4000,
+          isClosable: true,
+        });
         return state; // Do nothing
       });
   },
