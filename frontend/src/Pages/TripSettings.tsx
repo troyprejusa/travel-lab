@@ -1,5 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { TripModel, UserModel } from '../utilities/Interfaces';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/Store';
+import { Dispatch } from '@reduxjs/toolkit';
 import {
   Box,
   Accordion,
@@ -17,11 +21,8 @@ import {
   Th,
   Td,
   TableContainer,
+  useToast,
 } from '@chakra-ui/react';
-import { TripModel, UserModel } from '../utilities/Interfaces';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../redux/Store';
-import { Dispatch } from '@reduxjs/toolkit';
 import {
   resetAfterLeavingTrip,
   resetAfterTripDelete,
@@ -50,6 +51,7 @@ function TripSettings(): JSX.Element {
     (state: RootState) => state.travellers
   );
   const { getAccessTokenSilently } = useAuth0();
+  const toast = useToast();
 
   return (
     <>
@@ -236,13 +238,23 @@ function TripSettings(): JSX.Element {
   );
 
   async function handleAcceptUser(id: string) {
-    let token: string;
     try {
-      token = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
+      const token: string = await fetchHelpers.getAuth0Token(
+        getAccessTokenSilently
+      );
+      dispatch(
+        reduxAcceptTraveller({ token: token, trip_id: trip.id, user_id: id })
+      );
     } catch (error: any) {
       console.error(error);
+      toast({
+        title: 'Unable to accept user :(',
+        description: 'Something went wrong...',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
     }
-    dispatch(reduxAcceptTraveller({ token: token, trip_id: trip.id, user_id: id }));
   }
 
   async function handleRejectUser(id: string) {
@@ -251,13 +263,23 @@ function TripSettings(): JSX.Element {
   }
 
   async function handleDeleteUser(id: string) {
-    let token: string;
     try {
-      token = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
+      const token: string = await fetchHelpers.getAuth0Token(
+        getAccessTokenSilently
+      );
+      dispatch(
+        reduxRemoveTraveller({ token: token, trip_id: trip.id, user_id: id })
+      );
     } catch (error: any) {
       console.error(error);
+      toast({
+        title: 'Unable to reject user :(',
+        description: 'Something went wrong...',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
     }
-    dispatch(reduxRemoveTraveller({ token: token, trip_id: trip.id, user_id: id }));
   }
 
   async function handleLeaveTrip() {
@@ -279,7 +301,13 @@ function TripSettings(): JSX.Element {
       }
     } catch (error: any) {
       console.error(error);
-      alert('Unable to leave trip :(');
+      toast({
+        title: 'Unable to leave trip :(',
+        description: 'Something went wrong...',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
     }
   }
 
@@ -300,7 +328,13 @@ function TripSettings(): JSX.Element {
       }
     } catch (error: any) {
       console.error(error);
-      alert('Unable to delete trip :(');
+      toast({
+        title: 'Unable to delete trip :(',
+        description: 'Something went wrong...',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
     }
   }
 }

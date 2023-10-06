@@ -1,4 +1,4 @@
-import React, { SyntheticEvent } from 'react';
+import React from 'react';
 import { pollSocket } from '../utilities/TripSocket';
 import { PollChartDataPoint, PollVoteWS } from '../utilities/Interfaces';
 import {
@@ -8,7 +8,6 @@ import {
   XAxis,
   YAxis,
   Cell,
-  Legend,
 } from 'recharts';
 import Constants from '../utilities/Constants';
 
@@ -49,29 +48,18 @@ function BarChartComponent(props: BarChartComponentProps) {
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Bar>
-        {/* <Legend
-          payload={props.dataPoints.map((datum, index) => ({
-            type: 'circle',
-            id: datum.option,
-            value: datum.option,
-            color: COLORS[index % COLORS.length],
-          }))}
-          align="right"
-          verticalAlign="top"
-          layout="vertical"
-        /> */}
       </BarChart>
     </ResponsiveContainer>
   );
 
-  function handleBarClick(data: object) {
+  function handleBarClick(data: any) {
     // We are putting the handle click on the BarChart so that
     // users can click on bars for which there are currently
     // no votes. However, that means that there are areas of
     // the graph where it is on the component, but not on a
     // bar option. Add a try/catch for this.
     try {
-      const chosenOption: string = data['activeLabel'];
+      const chosenOption: string = data.activeLabel;
 
       // console.log('Sending vote', chosenOption);
       const poll_vote: PollVoteWS | null =
@@ -80,8 +68,10 @@ function BarChartComponent(props: BarChartComponentProps) {
       if (poll_vote) {
         pollSocket.sendVote(poll_vote);
       }
-    } catch (e: TypeError) {
-      // Do nothing
+    } catch (typeError: TypeError) {
+      // Do nothing on purpose to handle 
+      // clicks on the graph surface not 
+      // related to voting
     }
   }
 }

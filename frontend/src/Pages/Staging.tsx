@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { signOutBeforeTripSelect } from '../utilities/stateHandlers';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Flex, Text, Button } from '@chakra-ui/react';
+import { Flex, Text, Button, useToast } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
 import { reduxFetchUser } from '../redux/UserSlice';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +25,8 @@ function Staging(): JSX.Element {
   useEffect(() => {
     setUser(user);
   }, [user]);
+
+  const toast = useToast();
 
   return (
     <>
@@ -55,7 +57,14 @@ function Staging(): JSX.Element {
         dispatch(reduxFetchUser({ email: user.email, token: token }));
         navigate(`user/${user.email}/trips`);
       } catch (error: any) {
-        console.error('Unable to retrieve user data:\n', error);
+        console.error(error);
+        toast({
+          title: 'Unable to get user data :(',
+          description: 'Something went wrong...',
+          status: 'error',
+          duration: 4000,
+          isClosable: true,
+        });
       }
     }
   }

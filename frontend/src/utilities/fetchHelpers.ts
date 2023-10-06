@@ -23,7 +23,7 @@ const fetchHelpers = {
       });
     } catch (error: any) {
       console.error(error);
-      throw new Error('Unable to retrieve token');
+      throw new Error('Unable to retrieve access token');
     }
   },
 };

@@ -14,6 +14,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  useToast,
 } from '@chakra-ui/react';
 
 interface JoinTripModalProps {}
@@ -22,6 +23,7 @@ function JoinTripModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const joinForm = useRef<HTMLFormElement>(null);
   const { getAccessTokenSilently } = useAuth0();
+  const toast = useToast();
 
   return (
     <>
@@ -84,16 +86,26 @@ function JoinTripModal() {
       if (res.ok) {
         // Close the modal
         onClose();
-        alert(
-          'Request submitted to join trip! Check back later to see this trip after an admin admits you :)'
-        );
+        toast({
+          title: 'Request sent :)',
+          description: 'Check back later to see if a trip admin admits you!',
+          status: 'success',
+          duration: 10000,
+          isClosable: true,
+        });
       } else {
         const errorRes: any = await res.json();
         throw new Error(errorRes);
       }
-    } catch (e: any) {
-      console.error(e);
-      alert('Request to join trip was unsuccessful :(');
+    } catch (error: any) {
+      console.error(error);
+      toast({
+        title: 'Unable to request to join this trip :(',
+        description: 'Something went wrong...',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
     }
   }
 }

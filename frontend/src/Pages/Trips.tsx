@@ -4,7 +4,7 @@ import { TripModel } from '../utilities/Interfaces';
 import TripCard from '../Components/TripCard';
 import fetchHelpers from '../utilities/fetchHelpers';
 import TripActionCard from '../Components/TripActionCard';
-import { Wrap, Flex, Button, Heading, Box } from '@chakra-ui/react';
+import { Wrap, Flex, Button, Heading, Box, useToast } from '@chakra-ui/react';
 import { signOutBeforeTripSelect } from '../utilities/stateHandlers';
 import { useAuth0 } from '@auth0/auth0-react';
 import Constants from '../utilities/Constants';
@@ -21,6 +21,8 @@ function Trips(): JSX.Element {
   const { getAccessTokenSilently, logout } = useAuth0();
 
   useEffect(getTrips, [getAccessTokenSilently]);
+
+  const toast = useToast();
 
   return (
     <Box background={Constants.BACKROUND_GRADIENT} height={'100%'} overflowY={'scroll'}>
@@ -62,8 +64,15 @@ function Trips(): JSX.Element {
           const message: any = await res.json();
           throw new Error(JSON.stringify(message));
         }
-      } catch (e: any) {
-        console.error(e);
+      } catch (error: any) {
+        console.error(error);
+        toast({
+          title: 'Unable to get user trips :(',
+          description: 'Something went wrong...',
+          status: 'error',
+          duration: 4000,
+          isClosable: true,
+        });
       }
     })();
   }

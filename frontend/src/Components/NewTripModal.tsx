@@ -21,6 +21,7 @@ import {
   Box,
   Heading,
   Text,
+  useToast,
 } from '@chakra-ui/react';
 
 interface NewTripModalProps {}
@@ -31,6 +32,7 @@ function NewTripModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const tripForm = useRef<HTMLFormElement>(null);
   const { getAccessTokenSilently } = useAuth0();
+  const toast = useToast();
 
   return (
     <>
@@ -143,9 +145,15 @@ function NewTripModal() {
         const message: any = await res.json();
         throw new Error(JSON.stringify(message));
       }
-    } catch (e: any) {
-      console.error(e);
-      alert('Unable to create trip :(');
+    } catch (error: any) {
+      console.error(error);
+      toast({
+        title: 'Unable to create trip :(',
+        description: 'Something went wrong...',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
     }
   }
 }
