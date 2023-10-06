@@ -122,6 +122,10 @@ class AbstractDatabaseHandler(ABC):
     def create_msg(self, trip_id: str, content: str, created_by: str) -> dict:
         pass
 
+    @abstractmethod
+    def delete_messages(self, trip_id: str) -> None:
+        pass
+
     # --------------- TRAVELLER OPERATIONS --------------- #
     @abstractmethod
     def get_travellers(self, trip_id: str) -> list[dict]:
