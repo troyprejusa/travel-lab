@@ -67,6 +67,7 @@ function Trips(): JSX.Element {
       } catch (error: any) {
         console.error(error);
         toast({
+          position: 'top',
           title: 'Unable to get user trips :(',
           description: 'Something went wrong...',
           status: 'error',

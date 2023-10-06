@@ -248,6 +248,7 @@ function TripSettings(): JSX.Element {
     } catch (error: any) {
       console.error(error);
       toast({
+        position: 'top',
         title: 'Unable to accept user :(',
         description: 'Something went wrong...',
         status: 'error',
@@ -273,6 +274,7 @@ function TripSettings(): JSX.Element {
     } catch (error: any) {
       console.error(error);
       toast({
+        position: 'top',
         title: 'Unable to reject user :(',
         description: 'Something went wrong...',
         status: 'error',
@@ -302,6 +304,7 @@ function TripSettings(): JSX.Element {
     } catch (error: any) {
       console.error(error);
       toast({
+        position: 'top',
         title: 'Unable to leave trip :(',
         description: 'Something went wrong...',
         status: 'error',
@@ -329,6 +332,7 @@ function TripSettings(): JSX.Element {
     } catch (error: any) {
       console.error(error);
       toast({
+        position: 'top',
         title: 'Unable to delete trip :(',
         description: 'Something went wrong...',
         status: 'error',

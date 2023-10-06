@@ -87,6 +87,7 @@ function JoinTripModal() {
         // Close the modal
         onClose();
         toast({
+          position: 'top',
           title: 'Request sent :)',
           description: 'Check back later to see if a trip admin admits you!',
           status: 'success',
@@ -100,6 +101,7 @@ function JoinTripModal() {
     } catch (error: any) {
       console.error(error);
       toast({
+        position: 'top',
         title: 'Unable to request to join this trip :(',
         description: 'Something went wrong...',
         status: 'error',

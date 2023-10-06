@@ -148,6 +148,7 @@ function NewTripModal() {
     } catch (error: any) {
       console.error(error);
       toast({
+        position: 'top',
         title: 'Unable to create trip :(',
         description: 'Something went wrong...',
         status: 'error',

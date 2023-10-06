@@ -109,6 +109,7 @@ function TripCard(props: TripCardProps) {
     } catch (error: any) {
       console.error(error);
       toast({
+        position: 'top',
         title: 'Unable to view trip :(',
         description: 'Something went wrong...',
         status: 'error',

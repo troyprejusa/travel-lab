@@ -59,6 +59,7 @@ function Staging(): JSX.Element {
       } catch (error: any) {
         console.error(error);
         toast({
+          position: 'top',
           title: 'Unable to get user data :(',
           description: 'Something went wrong...',
           status: 'error',
