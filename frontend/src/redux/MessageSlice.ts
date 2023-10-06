@@ -1,11 +1,15 @@
+import { MessageModel } from '../utilities/Interfaces';
+import fetchHelpers from '../utilities/fetchHelpers';
+import { createStandaloneToast } from '@chakra-ui/react';
+
 import {
   Slice,
   createSlice,
   PayloadAction,
   createAsyncThunk,
 } from '@reduxjs/toolkit';
-import { MessageModel } from '../utilities/Interfaces';
-import fetchHelpers from '../utilities/fetchHelpers';
+
+const { toast } = createStandaloneToast();
 
 export type MessageState = Array<MessageModel>;
 
@@ -44,7 +48,15 @@ const messageSlice: Slice = createSlice({
       )
       .addCase(reduxFetchMessages.rejected, (state, action) => {
         // messages/reduxFetchMessages/rejected
-        console.error('Unable to retrieve messages :( \n', action.payload);
+        console.error(action.payload);
+        toast({
+          position: 'top',
+          title: 'Unable to retrieve messages :(',
+          description: 'Something went wrong...',
+          status: 'error',
+          duration: 4000,
+          isClosable: true,
+        });
         return state; // Do nothing
       });
   },

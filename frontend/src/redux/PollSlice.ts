@@ -10,9 +10,9 @@ import {
   PollVoteModel,
   PollVoteWS,
 } from '../utilities/Interfaces';
+import { createStandaloneToast } from '@chakra-ui/react';
 
-// For now, the creation of polls will not be real time.
-// Only the voting will be real time.
+const { toast } = createStandaloneToast();
 
 export type PollState = Array<PollResponseModel>;
 
@@ -69,7 +69,15 @@ const pollSlice: Slice = createSlice({
       )
       .addCase(reduxFetchPolls.rejected, (state, action) => {
         // polls/reduxFetchPolls/rejected
-        console.error('Unable to retrieve polls :(\n', action.payload);
+        console.error(action.payload);
+        toast({
+          position: 'top',
+          title: 'Unable to retrieve polls :(',
+          description: 'Something went wrong...',
+          status: 'error',
+          duration: 4000,
+          isClosable: true,
+        });
         return state; // Do nothing
       });
   },

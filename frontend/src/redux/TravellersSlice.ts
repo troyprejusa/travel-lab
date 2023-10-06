@@ -6,6 +6,9 @@ import {
 } from '@reduxjs/toolkit';
 import { UserModel } from '../utilities/Interfaces';
 import fetchHelpers from '../utilities/fetchHelpers';
+import { createStandaloneToast } from '@chakra-ui/react';
+
+const { toast } = createStandaloneToast();
 
 export type TravellerState = Array<UserModel>;
 
@@ -34,33 +37,71 @@ const travellersSlice: Slice = createSlice({
       )
       .addCase(reduxFetchTravellers.rejected, (state, action) => {
         // polls/reduxFetchTravellers/rejected
-        console.error('Unable to retrieve travellers :(\n', action.payload);
+        console.error(action.payload);
+        toast({
+          position: 'top',
+          title: 'Unable to retrieve travellers :(',
+          description: 'Something went wrong...',
+          status: 'error',
+          duration: 4000,
+          isClosable: true,
+        });
         return state; // Do nothing
       })
       .addCase(reduxAcceptTraveller.pending, (state: TravellerState) => {
         return state;
       })
-      .addCase(reduxAcceptTraveller.fulfilled, (state: TravellerState, action: PayloadAction<string>) => {
-        state.forEach((traveller: UserModel) => {
-          if (traveller.id === action.payload) {
-            traveller.confirmed = true;
-          }
-        })
-      })
-      .addCase(reduxAcceptTraveller.rejected, (state: TravellerState, action) => {
-        console.error('Unable to accept traveller :(\n', action.payload);
-        return state;
-      })
+      .addCase(
+        reduxAcceptTraveller.fulfilled,
+        (state: TravellerState, action: PayloadAction<string>) => {
+          state.forEach((traveller: UserModel) => {
+            if (traveller.id === action.payload) {
+              traveller.confirmed = true;
+            }
+          });
+        }
+      )
+      .addCase(
+        reduxAcceptTraveller.rejected,
+        (state: TravellerState, action) => {
+          console.error(action.payload);
+          toast({
+            position: 'top',
+            title: 'Unable to accept traveller :(',
+            description: 'Something went wrong...',
+            status: 'error',
+            duration: 4000,
+            isClosable: true,
+          });
+          return state;
+        }
+      )
       .addCase(reduxRemoveTraveller.pending, (state: TravellerState) => {
         return state;
       })
-      .addCase(reduxRemoveTraveller.fulfilled, (state: TravellerState, action: PayloadAction<string>) => {
-        return state.filter((traveller: UserModel) => traveller.id !== action.payload);
-      })
-      .addCase(reduxRemoveTraveller.rejected, (state: TravellerState, action) => {
-        console.error('Unable to reject traveller :(\n', action.payload);
-        return state;
-      })
+      .addCase(
+        reduxRemoveTraveller.fulfilled,
+        (state: TravellerState, action: PayloadAction<string>) => {
+          return state.filter(
+            (traveller: UserModel) => traveller.id !== action.payload
+          );
+        }
+      )
+      .addCase(
+        reduxRemoveTraveller.rejected,
+        (state: TravellerState, action) => {
+          console.error(action.payload);
+          toast({
+            position: 'top',
+            title: 'Unable to reject traveller :(',
+            description: 'Something went wrong...',
+            status: 'error',
+            duration: 4000,
+            isClosable: true,
+          });
+          return state;
+        }
+      );
   },
 });
 

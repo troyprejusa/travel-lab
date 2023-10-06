@@ -1,16 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { ChakraProvider } from '@chakra-ui/react';
+import { Provider as ReduxProvider } from 'react-redux';
+import reduxStore from './redux/Store';
+import { Auth0Provider } from '@auth0/auth0-react';
+import Constants from './utilities/Constants';
 import {
   createBrowserRouter,
   createRoutesFromElements,
   Route,
   RouterProvider,
 } from 'react-router-dom';
-import { ChakraProvider } from '@chakra-ui/react';
-import { Provider as ReduxProvider } from 'react-redux';
-import reduxStore from './redux/Store';
-import { Auth0Provider } from '@auth0/auth0-react';
-import Constants from './utilities/Constants';
 
 // Pages
 import Landing from './Pages/Landing';

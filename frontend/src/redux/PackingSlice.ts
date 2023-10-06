@@ -1,5 +1,4 @@
 import {
-  NewPackingWS,
   PackingClaimWS,
   PackingDeleteWS,
   PackingModel,
@@ -11,6 +10,9 @@ import {
   PayloadAction,
   createAsyncThunk,
 } from '@reduxjs/toolkit';
+import { createStandaloneToast } from '@chakra-ui/react';
+
+const { toast } = createStandaloneToast();
 
 export type PackingState = Array<PackingModel>;
 
@@ -64,7 +66,15 @@ const packingSlice: Slice = createSlice({
       )
       .addCase(reduxFetchPacking.rejected, (state, action) => {
         // packing/reduxFetchPacking/rejected
-        console.error('Unable to retrieve packing list :(\n', action.payload);
+        console.error(action.payload);
+        toast({
+          position: 'top',
+          title: 'Unable to retrieve packing list :(',
+          description: 'Something went wrong...',
+          status: 'error',
+          duration: 4000,
+          isClosable: true,
+        });
         return state; // Do nothing
       });
   },
