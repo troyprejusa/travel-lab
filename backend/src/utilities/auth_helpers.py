@@ -75,7 +75,7 @@ def establish_user_attendance(email: str) -> dict:
         raise error
 
 
-def verify_attendance(trip_id, trips) -> None:
+def verify_attendance(trip_id: str, trips) -> None:
     for trip in trips:
         if trip['trip_id'] == trip_id:
             return
@@ -83,7 +83,7 @@ def verify_attendance(trip_id, trips) -> None:
     raise Exception('verify_attendance: User not attending this trip')
 
 
-def verify_admin(trip_id, trips) -> None:
+def verify_admin(trip_id: str, trips) -> None:
     for trip in trips:
         if trip['trip_id'] == trip_id and trip['admin'] == True:
             return

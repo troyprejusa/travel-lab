@@ -21,7 +21,11 @@ import {
   Th,
   Td,
   TableContainer,
+  Alert,
+  AlertIcon,
+  AlertTitle,
   useToast,
+  Badge,
 } from '@chakra-ui/react';
 import {
   resetAfterLeavingTrip,
@@ -67,14 +71,27 @@ function TripSettings(): JSX.Element {
             </AccordionButton>
           </h2>
           <AccordionPanel pb={4}>
-            <Text>insert text here</Text>
+            <Alert status="info">
+              <AlertIcon />
+              <AlertTitle>Photo upload feature in work</AlertTitle>
+            </Alert>
           </AccordionPanel>
         </AccordionItem>
         <AccordionItem>
           <h2>
             <AccordionButton>
               <Box as="span" flex="1" textAlign="left">
-                Join requests
+                Join requests{' '}
+                <span>
+                  <Badge
+                    rounded="full"
+                    px="2"
+                    fontSize="0.8em"
+                    colorScheme={user.admin ? 'green' : 'red'}
+                  >
+                    admin
+                  </Badge>
+                </span>
               </Box>
               <AccordionIcon />
             </AccordionButton>
@@ -132,7 +149,17 @@ function TripSettings(): JSX.Element {
           <h2>
             <AccordionButton>
               <Box as="span" flex="1" textAlign="left">
-                Traveller Roles
+                Traveller Roles{' '}
+                <span>
+                  <Badge
+                    rounded="full"
+                    px="2"
+                    fontSize="0.8em"
+                    colorScheme={user.admin ? 'green' : 'red'}
+                  >
+                    admin
+                  </Badge>
+                </span>
               </Box>
               <AccordionIcon />
             </AccordionButton>
@@ -210,7 +237,17 @@ function TripSettings(): JSX.Element {
           <h2>
             <AccordionButton>
               <Box as="span" flex="1" textAlign="left">
-                Delete trip
+                Delete trip{' '}
+                <span>
+                  <Badge
+                    rounded="full"
+                    px="2"
+                    fontSize="0.8em"
+                    colorScheme={user.admin ? 'green' : 'red'}
+                  >
+                    admin
+                  </Badge>
+                </span>
               </Box>
               <AccordionIcon />
             </AccordionButton>

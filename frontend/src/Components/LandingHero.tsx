@@ -47,6 +47,14 @@ export default function LandingHero() {
     <Container maxW={'5xl'} py={12}>
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10}>
         <Stack spacing={4}>
+        <Heading
+          fontFamily="monospace"
+          fontSize={'60px'}
+          userSelect={'none'}
+          cursor={'default'}
+        >
+          Travel | Lab
+        </Heading>
           <Text
             textTransform={'uppercase'}
             color={'blue.400'}
@@ -57,7 +65,7 @@ export default function LandingHero() {
             alignSelf={'flex-start'}
             rounded={'md'}
           >
-            {'<insert Travel Lab logo here>'}
+            {'<alpha release 0.0.1>'}
           </Text>
           <Heading>
             Planning a group trip{' '}

@@ -58,6 +58,8 @@ export default function WithSubnavigation() {
             textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
             fontFamily={'heading'}
             color={useColorModeValue('gray.800', 'white')}
+            userSelect={'none'}
+            cursor={'default'}
           >
             Travel | Lab
           </Text>

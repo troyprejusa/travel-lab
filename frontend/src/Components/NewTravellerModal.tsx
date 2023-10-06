@@ -45,7 +45,7 @@ function NewTravellerModal() {
           {/* <ModalCloseButton /> */}
 
           <ModalBody>
-            <Alert status="warning">
+            <Alert status="info">
               <AlertIcon />
               <AlertTitle>Traveller invite feature in work</AlertTitle>
             </Alert>

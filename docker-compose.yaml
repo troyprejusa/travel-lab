@@ -9,21 +9,21 @@ services:
     ports:
       - "8000:8000"   # For the API
       - "5678:5678"   # For VSCode debugger
-    # depends_on:
-    #   - database
+    depends_on:
+      - database_dev
     #   - s3mock
 
-  # database:
-  #   image: postgres
-  #   container_name: sql_database
-  #   environment:
-  #     - POSTGRES_USER=docker
-  #     - POSTGRES_PASSWORD=docker
-  #     - POSTGRES_DB=travel_lab
-  #   ports:
-  #     - "5432:5432"
-  #   volumes:
-  #     - pgdata:/var/lib/postgresql/data
+  database_dev:
+    image: postgres
+    container_name: sql_database
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=travel_lab
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   # s3mock:
   #   image: minio/minio
@@ -38,6 +38,6 @@ services:
   #     - s3data:/data
   #   command: server /data --console-address ":9090"
 
-# volumes:
-#   pgdata:
+volumes:
+  pgdata:
 #   s3data:

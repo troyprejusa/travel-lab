@@ -119,6 +119,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           fontFamily="monospace"
           fontWeight="bold"
           cursor="pointer"
+          userSelect={'none'}
           onClick={handleReturnToTrips}
         >
           Travel | Lab
@@ -218,6 +219,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         fontFamily="monospace"
         fontWeight="bold"
         cursor={'pointer'}
+        userSelect={'none'}
         onClick={handleReturnToTrips}
       >
         Travel | Lab

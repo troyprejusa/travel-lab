@@ -52,8 +52,10 @@ async def authenticate_user(request: Request, call_next):
             
             # Decode the JWT and add it to the request state - no exception on decode means we're good to proceed
             decoded_jwt = await auth_helpers.jwt_decode_w_retry(auth_header[1])
+            user_email = decoded_jwt[f'{Constants.AUTH0_CLAIM_NAMESPACE}/email']
 
-            request.state.user = auth_helpers.establish_user_attendance(decoded_jwt[f'{Constants.AUTH0_CLAIM_NAMESPACE}/email'])
+            # Get the user's real-time trip attendance and permissions
+            request.state.user = auth_helpers.establish_user_attendance(user_email)
 
             response = await call_next(request)
             
