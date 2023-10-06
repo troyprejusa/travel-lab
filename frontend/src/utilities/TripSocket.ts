@@ -32,6 +32,9 @@ import {
   PackingDeleteWS,
 } from './Interfaces';
 import Constants from './Constants';
+import { createStandaloneToast } from '@chakra-ui/react';
+
+const { toast } = createStandaloneToast();
 
 class TripSocket {
   protected host: string;
@@ -88,7 +91,15 @@ class MessageSocket extends TripSocket {
 
     // Create event handlers for this
     this.socket!.on('backend_msg_error', (data: any) => {
-      console.error('MessageSocket: Unable to post message :(');
+      console.error(data);
+      toast({
+        position: 'top',
+        title: 'Unable to send message :(',
+        description: 'Something went wrong...',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
     });
   }
 
@@ -111,7 +122,15 @@ class PollSocket extends TripSocket {
     });
 
     this.socket!.on('backend_poll_create_error', (data) => {
-      console.error('PollSocket: Unable to create poll :(');
+      console.error(data);
+      toast({
+        position: 'top',
+        title: 'Unable to create poll :(',
+        description: 'Something went wrong...',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
     });
 
     this.socket!.on('backend_poll_delete', (data: number) => {
@@ -119,7 +138,15 @@ class PollSocket extends TripSocket {
     });
 
     this.socket!.on('backend_poll_delete_error', (data) => {
-      console.error('PollSocket: Unable to delete poll :(');
+      console.error(data);
+      toast({
+        position: 'top',
+        title: 'Unable to delete poll :(',
+        description: 'Something went wrong...',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
     });
 
     this.socket!.on('backend_vote', (data: PollVoteWS) => {
@@ -127,7 +154,15 @@ class PollSocket extends TripSocket {
     });
 
     this.socket!.on('backend_vote_error', (data: any) => {
-      console.error('PollSocket: Unable to post vote :(');
+      console.error(data);
+      toast({
+        position: 'top',
+        title: 'Unable to vote on this poll :(',
+        description: 'Something went wrong...',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
     });
   }
 
@@ -158,7 +193,15 @@ class ItinerarySocket extends TripSocket {
     });
 
     this.socket!.on('backend_itinerary_create_error', (data: any) => {
-      console.error('ItinerarySocket: Unable to add stop :(');
+      console.error(data);
+      toast({
+        position: 'top',
+        title: 'Unable to create itinerary stop :(',
+        description: 'Something went wrong...',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
     });
 
     this.socket!.on('backend_itinerary_delete', (data: number) => {
@@ -166,7 +209,15 @@ class ItinerarySocket extends TripSocket {
     });
 
     this.socket!.on('backend_itinerary_delete_error', (data: any) => {
-      console.error('ItinerarySocket: Unable to delete stop :(');
+      console.error(data);
+      toast({
+        position: 'top',
+        title: 'Unable to remove itinerary stop :(',
+        description: 'Something went wrong...',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
     });
   }
 
@@ -193,7 +244,15 @@ class PackingSocket extends TripSocket {
     });
 
     this.socket!.on('backend_packing_create_error', (data: any) => {
-      console.error('PackingSocket: Unable to do something :(');
+      console.error(data);
+      toast({
+        position: 'top',
+        title: 'Unable to add item to packing list :(',
+        description: 'Something went wrong...',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
     });
 
     this.socket!.on('backend_packing_claim', (data: PackingClaimWS) => {
@@ -201,7 +260,15 @@ class PackingSocket extends TripSocket {
     });
 
     this.socket!.on('backend_packing_claim_error', (data: any) => {
-      console.error('PackingSocket: Unable to do something :(');
+      console.error(data);
+      toast({
+        position: 'top',
+        title: 'Unable to add claim item from packing list :(',
+        description: 'Something went wrong...',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
     });
 
     this.socket!.on('backend_packing_unclaim', (data: PackingUnclaimWS) => {
@@ -209,7 +276,15 @@ class PackingSocket extends TripSocket {
     });
 
     this.socket!.on('backend_packing_unclaim_error', (data: any) => {
-      console.error('PackingSocket: Unable to do something :(');
+      console.error(data);
+      toast({
+        position: 'top',
+        title: 'Unable to unclaim item from packing list :(',
+        description: 'Something went wrong...',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
     });
 
     this.socket!.on('backend_packing_delete', (data: number) => {
@@ -217,7 +292,15 @@ class PackingSocket extends TripSocket {
     });
 
     this.socket!.on('backend_packing_delete_error', (data: any) => {
-      console.error('PackingSocket: Unable to do something :(');
+      console.error(data);
+      toast({
+        position: 'top',
+        title: 'Unable to remove item from packing list :(',
+        description: 'Something went wrong...',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
     });
   }
 
