@@ -9,7 +9,14 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
 import { ReceivedMessage, SentMessage } from '../Components/Messages';
-import { Box, Textarea, Button, HStack, useToast } from '@chakra-ui/react';
+import {
+  Box,
+  Textarea,
+  Button,
+  HStack,
+  useToast,
+  Flex,
+} from '@chakra-ui/react';
 import TitleBar from '../Components/TitleBar';
 import PulseDot from '../Components/PulseDot';
 import { ConfigurableButtonAndModal } from '../Components/Buttons';
@@ -40,32 +47,34 @@ function MessageBoard(): JSX.Element {
 
   return (
     <>
-      <TitleBarOverlay>
-        <ConfigurableButtonAndModal
-          variant={'outline'}
-          disabled={!user.admin}
-          tooltipMsg={
-            !user.admin ? 'Only trip admins can delete messages' : undefined
-          }
-          modalHeader="Delete messages"
-          modalBody="Are you sure you want to delete all messages? This action cannot be undone"
-          onClick={() => handleDeleteMessages()}
-          position={'absolute'}
-        >
-          Delete messages
-        </ConfigurableButtonAndModal>
-      </TitleBarOverlay>
-      <Box height={`calc(100vh - ${Constants.NAVBAR_TOP_PANE_HEIGHT})`}>
-        <TitleBar text="Messages">
-          <PulseDot />
-        </TitleBar>
-        <Box height={'65%'}>
-          <Box
-            height={'90%'}
-            overflowY={'scroll'}
-            margin="20px"
-            ref={listDivRef}
-          >
+      <Flex
+        id="message-page"
+        flexDirection={'column'}
+        justifyContent={'space-between'}
+        height={`calc(100vh - ${Constants.NAVBAR_TOP_PANE_HEIGHT} - 2 * ${Constants.OUTLET_PADDING})`}
+      >
+        
+        {/* header and message data */}
+        <Box outline={'1px solid blue'}>
+          <TitleBarOverlay>
+            <ConfigurableButtonAndModal
+              variant={'outline'}
+              disabled={!user.admin}
+              tooltipMsg={
+                !user.admin ? 'Only trip admins can delete messages' : undefined
+              }
+              modalHeader="Delete messages"
+              modalBody="Are you sure you want to delete all messages? This action cannot be undone"
+              onClick={() => handleDeleteMessages()}
+              position={'absolute'}
+            >
+              Delete all
+            </ConfigurableButtonAndModal>
+          </TitleBarOverlay>
+          <TitleBar text="Messages">
+            <PulseDot />
+          </TitleBar>
+          <Box overflowY={'scroll'} margin="20px" ref={listDivRef}>
             {messages.length === 0 ? (
               <Box>No messages yet...</Box>
             ) : (
@@ -78,7 +87,11 @@ function MessageBoard(): JSX.Element {
               })
             )}
           </Box>
-          <HStack height={'20%'}>
+        </Box>
+
+        {/* message entry */}
+        <Box outline={'1px solid red'} height={'10%'}>
+          <HStack>
             <Textarea
               placeholder="New message"
               size="sm"
@@ -92,7 +105,8 @@ function MessageBoard(): JSX.Element {
             </Button>
           </HStack>
         </Box>
-      </Box>
+
+      </Flex>
     </>
   );
 

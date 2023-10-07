@@ -7,6 +7,8 @@ import { RootState } from '../redux/Store';
 import { useAuth0 } from '@auth0/auth0-react';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { fetchAllTripData } from '../utilities/stateHandlers';
+import { Box } from '@chakra-ui/react';
+import Constants from '../utilities/Constants';
 
 function Project(): JSX.Element {
   const dispatch = useDispatch();
@@ -21,7 +23,14 @@ function Project(): JSX.Element {
   return (
     <>
       <Navbar>
-        <Outlet />
+        <Box
+          id='trip-outlet'
+          padding={Constants.OUTLET_PADDING}
+          minWidth={`calc(100vw - ${Constants.NAVBAR_LEFT_PANE_WIDTH})`}
+          minHeight={`calc(100vh - ${Constants.NAVBAR_TOP_PANE_HEIGHT})`}
+        >
+          <Outlet />
+        </Box>
       </Navbar>
     </>
   );
@@ -30,7 +39,7 @@ function Project(): JSX.Element {
     const token: string = await fetchHelpers.getAuth0Token(
       getAccessTokenSilently
     );
-    fetchAllTripData(trip.id, token, dispatch)
+    fetchAllTripData(trip.id, token, dispatch);
   }
 }
 

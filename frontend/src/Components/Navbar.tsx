@@ -3,7 +3,10 @@ import { IconType } from 'react-icons';
 import { ReactText } from 'react';
 import { Link as RRDLink, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { resetAfterLeavingTrip, signOutAfterTripSelect } from '../utilities/stateHandlers';
+import {
+  resetAfterLeavingTrip,
+  signOutAfterTripSelect,
+} from '../utilities/stateHandlers';
 import { useDispatch } from 'react-redux';
 import { RootState } from '../redux/Store';
 import { TripModel, UserModel } from '../utilities/Interfaces';
@@ -29,6 +32,7 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  Tooltip,
 } from '@chakra-ui/react';
 
 import {
@@ -85,7 +89,7 @@ export default function Navbar({ children }: { children: ReactNode }) {
         </DrawerContent>
       </Drawer>
       <MobileNav onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 60 }} p="4">
+      <Box ml={{ base: 0, md: Constants.NAVBAR_LEFT_PANE_WIDTH }}>
         {children}
       </Box>
     </Box>
@@ -107,33 +111,40 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       bg={useColorModeValue('white', 'gray.900')}
       borderRight="1px"
       borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-      w={{ base: 'full', md: 60 }}
+      w={{ base: 'full', md: Constants.NAVBAR_LEFT_PANE_WIDTH }}
       pos="fixed"
       h="full"
       {...rest}
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text
-          fontSize="2xl"
-          fontFamily="monospace"
-          fontWeight="bold"
-          cursor="pointer"
-          userSelect={'none'}
-          onClick={() => handleReturnToTrips()}
-        >
-          Travel | Lab
-        </Text>
+        <Tooltip label="select trip">
+          <Text
+            fontSize="2xl"
+            fontFamily="monospace"
+            fontWeight="bold"
+            cursor="pointer"
+            userSelect={'none'}
+            onClick={() => handleReturnToTrips()}
+          >
+            Travel | Lab
+          </Text>
+        </Tooltip>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon} path={link.path}>
+        <NavItem
+          key={link.name}
+          icon={link.icon}
+          path={link.path}
+          onClick={onClose}
+        >
           {link.name}
         </NavItem>
       ))}
     </Box>
   );
 
-  function handleReturnToTrips(event: SyntheticEvent) {
+  function handleReturnToTrips() {
     resetAfterLeavingTrip(dispatch);
     navigate(`/user/${user.email}/trips`);
   }
@@ -142,7 +153,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 interface NavItemProps extends FlexProps {
   icon: IconType;
   path: string;
-  children: ReactText;
+  children: ReactNode;
 }
 const NavItem = ({ icon, path, children, ...rest }: NavItemProps) => {
   return (
@@ -194,7 +205,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 
   return (
     <Flex
-      ml={{ base: 0, md: 60 }}
+      ml={{ base: 0, md: Constants.NAVBAR_LEFT_PANE_WIDTH }}
       px={{ base: 4, md: 4 }}
       height={Constants.NAVBAR_TOP_PANE_HEIGHT}
       alignItems="center"
@@ -211,6 +222,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         aria-label="open menu"
         icon={<FiMenu />}
       />
+      <Tooltip label='select trip'>
 
       <Text
         display={{ base: 'flex', md: 'none' }}
@@ -223,9 +235,14 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       >
         Travel | Lab
       </Text>
+      </Tooltip>
 
       <HStack spacing={{ base: '4', md: '6' }}>
-        <RefreshButton trip_id={trip.id} dispatch={dispatch} aria-label='refresh content'/>
+        <RefreshButton
+          trip_id={trip.id}
+          dispatch={dispatch}
+          aria-label="refresh content"
+        />
         <Flex alignItems={'center'}>
           <Menu>
             <MenuButton
@@ -242,9 +259,6 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                   ml="2"
                 >
                   <Text fontSize="sm">{`${user.first_name} ${user.last_name}`}</Text>
-                  {/* <Text fontSize="xs" color="gray.600">
-                    Admin
-                  </Text> */}
                 </VStack>
                 <Box display={{ base: 'none', md: 'flex' }}>
                   <FiChevronDown />
@@ -256,9 +270,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
               borderColor={useColorModeValue('gray.200', 'gray.700')}
             >
               <MenuItem
-                onClick={(event: SyntheticEvent) =>
-                  navigate(`/user/${user.email}/settings`)
-                }
+                onClick={() => navigate(`/user/${user.email}/settings`)}
               >
                 Profile
               </MenuItem>
@@ -281,8 +293,8 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
     signOutAfterTripSelect(dispatch);
     logout({
       logoutParams: {
-        returnTo: window.location.origin
-      }
+        returnTo: window.location.origin,
+      },
     });
   }
 };

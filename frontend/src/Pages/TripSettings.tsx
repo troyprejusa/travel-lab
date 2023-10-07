@@ -196,8 +196,8 @@ function TripSettings(): JSX.Element {
                                 disabled={!user.admin}
                                 tooltipMsg={
                                   user.admin
-                                    ? 'Remove user from trip'
-                                    : 'Only admins can remove users from trip'
+                                    ? 'remove user from trip'
+                                    : 'only admins can remove users from trip'
                                 }
                               />
                             </ButtonGroup>

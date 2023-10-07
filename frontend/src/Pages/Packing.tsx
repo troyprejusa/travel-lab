@@ -67,6 +67,7 @@ function Packing(): JSX.Element {
                             return (
                               <ClaimButton
                                 aria-label="claim packing item"
+                                tooltipMsg='claim item'
                                 onClick={() =>
                                   packingSocket.claimItem({
                                     trip_id: trip.id,
@@ -81,6 +82,7 @@ function Packing(): JSX.Element {
                             return (
                               <UnclaimButton
                                 aria-label="unclaim packing item"
+                                tooltipMsg='unclaim item'
                                 onClick={() =>
                                   packingSocket.unclaimItem({
                                     trip_id: trip.id,
@@ -105,8 +107,8 @@ function Packing(): JSX.Element {
                         }
                         tooltipMsg={
                           user.admin
-                            ? ''
-                            : 'Only trip admins can delete packing items'
+                            ? 'delete item'
+                            : 'only trip admins can delete packing items'
                         }
                         disabled={!user.admin}
                       />
