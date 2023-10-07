@@ -1,35 +1,43 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { signOutBeforeTripSelect } from '../utilities/stateHandlers';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Flex, Text, Button, useToast } from '@chakra-ui/react';
-import { useDispatch } from 'react-redux';
+import { Flex, Box, Button, useToast } from '@chakra-ui/react';
+import { useDispatch, useSelector } from 'react-redux';
 import { reduxFetchUser } from '../redux/UserSlice';
 import { useNavigate } from 'react-router-dom';
 import fetchHelpers from '../utilities/fetchHelpers';
+import { UserModel } from '../utilities/Interfaces';
+import { RootState } from '../redux/Store';
+import NewUserForm from '../Components/NewUserForm';
+import Constants from '../utilities/Constants';
 
 function Staging(): JSX.Element {
   /* The purpose of this page is to get the needed user data
-    before proceeding to have the user select a trip. If you cannot
-    get the user data, we need to show an error page */
+    before proceeding to have the user select a trip */
 
-  // React
   const navigate = useNavigate();
-
-  // Redux
   const dispatch = useDispatch();
-
-  // Auth
+  const userRedux: UserModel = useSelector((state: RootState) => state.user);
   const { user, getAccessTokenSilently, logout } = useAuth0();
+  const toast = useToast();
 
-  // Fetch user data and set state
+  // Check user data and set state. Auth0 user may be fetched from
+  // remote server, so it is asynchronous
   useEffect(() => {
     setUser(user);
   }, [user]);
 
-  const toast = useToast();
+  // If the redux user data changes...
+  useEffect(() => {
+    if (userRedux.first_name) {
+      // If the user has already set their data, 
+      // we can navigate onwards
+      navigate(`/user/${userRedux.email}/trips`);
+    }
+  }, [userRedux]);
 
   return (
-    <>
+    <Box background={Constants.BACKROUND_GRADIENT} height={'100vh'}>
       <Flex justifyContent={'flex-end'}>
         <Button
           margin="20px"
@@ -41,11 +49,9 @@ function Staging(): JSX.Element {
         </Button>
       </Flex>
       <Flex justifyContent={'center'}>
-        <Text fontSize={'xl'} fontWeight={'bold'}>
-          Loading...
-        </Text>
+        {!userRedux.first_name && <NewUserForm />}
       </Flex>
-    </>
+    </Box>
   );
 
   async function setUser(user: any) {
@@ -55,7 +61,6 @@ function Staging(): JSX.Element {
           getAccessTokenSilently
         );
         dispatch(reduxFetchUser({ email: user.email, token: token }));
-        navigate(`user/${user.email}/trips`);
       } catch (error: any) {
         console.error(error);
         toast({

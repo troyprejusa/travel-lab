@@ -62,6 +62,30 @@ const userSlice: Slice = createSlice({
         });
         return state; // Do nothing
       })
+      .addCase(reduxUpdateUserData.pending, (state) => {
+        // user/reduxUpdateUserData/pending
+        return state; // Do nothing
+      })
+      .addCase(
+        reduxUpdateUserData.fulfilled,
+        (_state, action: PayloadAction<UserModel>) => {
+          // user/reduxUpdateUserData/fulfilled
+          return action.payload;
+        }
+      )
+      .addCase(reduxUpdateUserData.rejected, (state, action) => {
+        // user/reduxUpdateUserData/rejected
+        console.error(action.payload);
+        toast({
+          position: 'top',
+          title: 'Unable to update user data :(',
+          description: 'Something went wrong...',
+          status: 'error',
+          duration: 4000,
+          isClosable: true,
+        });
+        return state; // Do nothing
+      })
       .addCase(reduxFetchTripPermissions.pending, (state) => {
         // user/reduxFetchTripPermissions/pending
         return state; // Do nothing
@@ -124,6 +148,32 @@ export const reduxFetchUser = createAsyncThunk(
   }
 );
 
+export const reduxUpdateUserData = createAsyncThunk(
+  'user/reduxPostUserData',
+  async ({ email, formData, token }, thunkAPI) => {
+    try {
+      const res: Response = await fetch(`/user/${email}`, {
+        method: 'PATCH',
+        body: formData,
+        headers: fetchHelpers.getTokenHeader(token),
+      });
+
+      if (res.ok) {
+        const updatedUser: UserModel = await res.json();
+        console.log(updatedUser);
+        return updatedUser;
+      } else {
+        // Send to rejected case
+        const errorRes = await res.json();
+        return thunkAPI.rejectWithValue(errorRes);
+      }
+    } catch (error: any) {
+      // Send to rejected case
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const reduxFetchTripPermissions = createAsyncThunk(
   'user/reduxFetchTripPermissions',
   async ({ trip_id, token }, thunkAPI) => {
@@ -136,7 +186,7 @@ export const reduxFetchTripPermissions = createAsyncThunk(
       if (res.ok) {
         const userPermissions = await res.json();
         // console.log(userPermissions);
-        
+
         return userPermissions;
       } else {
         // Send to rejected case

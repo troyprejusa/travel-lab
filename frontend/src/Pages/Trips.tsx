@@ -25,7 +25,7 @@ function Trips(): JSX.Element {
   const toast = useToast();
 
   return (
-    <Box background={Constants.BACKROUND_GRADIENT} height={'100%'} overflowY={'scroll'}>
+    <Box background={Constants.BACKROUND_GRADIENT} height={'100vh'} overflowY={'scroll'}>
       <Flex justifyContent={'flex-end'}>
         <Button
           margin="20px"

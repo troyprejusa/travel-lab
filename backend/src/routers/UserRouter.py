@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Form
+from typing import Annotated
 from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
 from models.Schemas import UserModel, TripModel
@@ -25,16 +26,38 @@ async def upsert_user(email: str) -> UserModel | str:
             }
         )
 
-# Delete current user from database
-@user_router.delete('/')
-async def delete_user(request: Request) -> str:
+# Update a user's first name, last name, and phone
+@user_router.patch('/{email}')
+async def put_user_info(
+        email: str,
+        first_name: Annotated[str, Form()],
+        last_name: Annotated[str, Form()],
+        phone: Annotated[str, Form()],
+    ) -> UserModel | str:
     try:
-        db_handler.delete_user(request.state.user['email'])
+        updated_user = db_handler.put_user_info(first_name, last_name, phone, email)
+
+        return updated_user
+      
+    except Exception as error:
+        print(error)
+        return JSONResponse(
+            status_code=500,
+            content = {
+                "message": f"ERROR: Unable to upsert user {email}"
+            }
+        )
+    
+# Delete current user from database
+@user_router.delete('/{email}')
+async def delete_user(email: str) -> str:
+    try:
+        db_handler.delete_user(email)
 
         return JSONResponse(
             status_code=200,
             content={
-                "message": f"SUCCESS: Deleted user {request.state.user['email']}"
+                "message": f"SUCCESS: Deleted user {email}"
             }
         )
     
