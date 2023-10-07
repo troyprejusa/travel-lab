@@ -53,9 +53,8 @@ function MessageBoard(): JSX.Element {
         justifyContent={'space-between'}
         height={`calc(100vh - ${Constants.NAVBAR_TOP_PANE_HEIGHT} - 2 * ${Constants.OUTLET_PADDING})`}
       >
-        
         {/* header and message data */}
-        <Box outline={'1px solid blue'}>
+        <Flex direction="column" flex="1 1 auto" overflow="hidden">
           <TitleBarOverlay>
             <ConfigurableButtonAndModal
               variant={'outline'}
@@ -74,7 +73,12 @@ function MessageBoard(): JSX.Element {
           <TitleBar text="Messages">
             <PulseDot />
           </TitleBar>
-          <Box overflowY={'scroll'} margin="20px" ref={listDivRef}>
+          <Box
+            flex="1 1 auto"
+            overflowY={'scroll'}
+            margin="20px"
+            ref={listDivRef}
+          >
             {messages.length === 0 ? (
               <Box>No messages yet...</Box>
             ) : (
@@ -87,25 +91,22 @@ function MessageBoard(): JSX.Element {
               })
             )}
           </Box>
-        </Box>
+        </Flex>
 
         {/* message entry */}
-        <Box outline={'1px solid red'} height={'10%'}>
-          <HStack>
-            <Textarea
-              placeholder="New message"
-              size="sm"
-              resize={'none'}
-              bg={'white'}
-              borderRadius={'8px'}
-              ref={msgRef}
-            />
-            <Button size="md" colorScheme="blue" onClick={() => sendMessage()}>
-              Send
-            </Button>
-          </HStack>
-        </Box>
-
+        <HStack flex="0 0 auto">
+          <Textarea
+            placeholder="New message"
+            size="sm"
+            resize={'none'}
+            bg={'white'}
+            borderRadius={'8px'}
+            ref={msgRef}
+          />
+          <Button size="md" colorScheme="blue" onClick={() => sendMessage()}>
+            Send
+          </Button>
+        </HStack>
       </Flex>
     </>
   );
