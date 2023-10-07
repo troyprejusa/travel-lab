@@ -11,6 +11,7 @@ import { Flex, Stack, Box, Text } from '@chakra-ui/react';
 import TitleBar from '../Components/TitleBar';
 import Constants from '../utilities/Constants';
 import PulseDot from '../Components/PulseDot';
+import TitleBarOverlay from '../Components/TitleBarOverlay';
 
 function Itinerary(): JSX.Element {
   const itinerary: Array<ItineraryModel> = useSelector(
@@ -19,29 +20,24 @@ function Itinerary(): JSX.Element {
 
   return (
     <>
-      <TitleBar text='Itinerary'>
+      <TitleBarOverlay>
+        <NewItineraryModal />
+      </TitleBarOverlay>
+
+      <TitleBar text="Itinerary">
         <PulseDot />
       </TitleBar>
       <Flex flexWrap={'wrap'} justifyContent={'space-around'} gap={'20px'}>
-        <Stack
-          spacing="4"
-          height={'80vh'}
-          w={'xs'}
-          overflowY={'scroll'}
-        >
-          <NewItineraryModal />
+        <Stack spacing="4" height={'80vh'} w={'xs'} overflowY={'scroll'}>
           {itinerary.length === 0 ? (
             <Text>Nothing planned...</Text>
           ) : (
             itinerary.map((itin: ItineraryModel, index: number) => (
-              <ItineraryCard
-                key={index}
-                itineraryData={itin}
-              />
+              <ItineraryCard key={index} itineraryData={itin} />
             ))
           )}
         </Stack>
-        <Box minWidth='lg' width='50vw'>
+        <Box minWidth="lg" width="50vw">
           <style>{`.fc-scrollgrid {background-color: ${Constants.BACKGROUND_TRANSPARENCY};}`}</style>
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin]}

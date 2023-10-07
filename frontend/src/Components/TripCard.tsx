@@ -1,8 +1,8 @@
-import { SyntheticEvent } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { reduxSetTrip } from '../redux/TripSlice';
-import { TripModel, UserModel } from '../utilities/Interfaces';
+import { TripModel } from '../utilities/Interfaces';
 import TripPhoto from '../assets/tripphoto.jpg';
 import {
   itinerarySocket,

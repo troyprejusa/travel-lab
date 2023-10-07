@@ -11,11 +11,7 @@ import {
   Icon,
   useColorModeValue,
 } from '@chakra-ui/react';
-import {
-    FiCalendar,
-    FiBriefcase,
-    FiMessageSquare,
-} from 'react-icons/fi';
+import { FiCalendar, FiBriefcase, FiMessageSquare } from 'react-icons/fi';
 import { ReactElement } from 'react';
 
 interface FeatureProps {
@@ -47,27 +43,15 @@ export default function LandingHero() {
     <Container maxW={'5xl'} py={12}>
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10}>
         <Stack spacing={4}>
-        <Heading
-          fontFamily="monospace"
-          fontSize={'60px'}
-          userSelect={'none'}
-          cursor={'default'}
-        >
-          Travel | Lab
-        </Heading>
-          <Text
-            textTransform={'uppercase'}
-            color={'blue.400'}
-            fontWeight={600}
-            fontSize={'sm'}
-            bg={useColorModeValue('blue.50', 'blue.900')}
-            p={2}
-            alignSelf={'flex-start'}
-            rounded={'md'}
+          <Heading
+            fontFamily="monospace"
+            fontSize={'60px'}
+            userSelect={'none'}
+            cursor={'default'}
           >
-            {'<alpha release 0.0.1>'}
-          </Text>
-          <Heading>
+            Travel | Lab
+          </Heading>
+          <Heading fontSize={'35px'}>
             Planning a group trip{' '}
             <Text as={'span'} color={'orange.400'}>
               simplified
@@ -86,9 +70,7 @@ export default function LandingHero() {
             }
           >
             <Feature
-              icon={
-                <Icon as={FiCalendar} color={'yellow.500'} w={5} h={5} />
-              }
+              icon={<Icon as={FiCalendar} color={'yellow.500'} w={5} h={5} />}
               iconBg={useColorModeValue('yellow.100', 'yellow.900')}
               text={'Itinerary Planning'}
             />
@@ -110,9 +92,7 @@ export default function LandingHero() {
           <Image
             rounded={'md'}
             alt={'feature image'}
-            src={
-              splashphotoHero
-            }
+            src={splashphotoHero}
             objectFit={'cover'}
           />
         </Flex>

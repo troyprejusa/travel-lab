@@ -19,6 +19,7 @@ import {
   ButtonGroup,
 } from '@chakra-ui/react';
 import { packingSocket } from '../utilities/TripSocket';
+import TitleBarOverlay from '../Components/TitleBarOverlay';
 
 function Packing(): JSX.Element {
   const user: UserModel = useSelector((state: RootState) => state.user);
@@ -29,10 +30,12 @@ function Packing(): JSX.Element {
 
   return (
     <>
+      <TitleBarOverlay>
+        <NewItemModal />
+      </TitleBarOverlay>
       <TitleBar text="Packing">
         <PulseDot />
       </TitleBar>
-      <NewItemModal />
       <TableContainer marginTop={6} borderRadius={'6px'}>
         <Table variant="striped" colorScheme="blackAlpha">
           <Thead>

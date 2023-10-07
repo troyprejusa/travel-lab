@@ -59,7 +59,6 @@ function NewPollModal(props: NewPollModalProps) {
         size="md"
         colorScheme="orange"
         onClick={onOpen}
-        marginLeft={'40px'}
       >
         New poll
       </Button>

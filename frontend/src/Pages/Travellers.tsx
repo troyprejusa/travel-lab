@@ -6,6 +6,7 @@ import ContactCard from '../Components/ContactCard';
 import { Wrap } from '@chakra-ui/react';
 import NewTravellerModal from '../Components/NewTravellerModal';
 import TitleBar from '../Components/TitleBar';
+import TitleBarOverlay from '../Components/TitleBarOverlay';
 
 function Travellers(): JSX.Element {
   const travellers: Array<UserModel> = useSelector(
@@ -14,8 +15,10 @@ function Travellers(): JSX.Element {
 
   return (
     <>
+      <TitleBarOverlay>
+        <NewTravellerModal />
+      </TitleBarOverlay>
       <TitleBar text="Contact Info" />
-      <NewTravellerModal />
       <Wrap spacing={'6'}>
         {travellers
           .filter((traveller: UserModel) => traveller.confirmed)

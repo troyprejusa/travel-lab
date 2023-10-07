@@ -22,6 +22,7 @@ import {
 } from '@chakra-ui/icons';
 import LoginButton from './LoginButton';
 import SignUpButton from './SignUpButton';
+import VersionLabel from './VersionLabel';
 
 export default function WithSubnavigation() {
   const { isOpen, onToggle } = useDisclosure();
@@ -56,7 +57,7 @@ export default function WithSubnavigation() {
         <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
           <Text
             textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
-            fontFamily={'heading'}
+            fontFamily="monospace"
             color={useColorModeValue('gray.800', 'white')}
             userSelect={'none'}
             cursor={'default'}
@@ -75,6 +76,7 @@ export default function WithSubnavigation() {
           direction={'row'}
           spacing={6}
         >
+          <VersionLabel />
           <SignUpButton />
           <LoginButton />
         </Stack>

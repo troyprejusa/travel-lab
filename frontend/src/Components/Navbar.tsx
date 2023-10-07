@@ -38,7 +38,6 @@ import {
   FiBriefcase,
   FiMessageSquare,
   FiMenu,
-  FiBell,
   FiChevronDown,
   FiUsers,
   FiThumbsUp,
@@ -120,7 +119,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           fontWeight="bold"
           cursor="pointer"
           userSelect={'none'}
-          onClick={handleReturnToTrips}
+          onClick={() => handleReturnToTrips()}
         >
           Travel | Lab
         </Text>
@@ -197,7 +196,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
     <Flex
       ml={{ base: 0, md: 60 }}
       px={{ base: 4, md: 4 }}
-      height="5rem"
+      height={Constants.NAVBAR_TOP_PANE_HEIGHT}
       alignItems="center"
       bg={useColorModeValue('white', 'gray.900')}
       borderBottomWidth="1px"
@@ -220,19 +219,13 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         fontWeight="bold"
         cursor={'pointer'}
         userSelect={'none'}
-        onClick={handleReturnToTrips}
+        onClick={() => handleReturnToTrips()}
       >
         Travel | Lab
       </Text>
 
-      <HStack spacing={{ base: '0', md: '6' }}>
+      <HStack spacing={{ base: '4', md: '6' }}>
         <RefreshButton trip_id={trip.id} dispatch={dispatch} aria-label='refresh content'/>
-        <IconButton
-          size="lg"
-          variant="ghost"
-          aria-label="open menu"
-          icon={<FiBell />}
-        />
         <Flex alignItems={'center'}>
           <Menu>
             <MenuButton
@@ -279,12 +272,12 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
     </Flex>
   );
 
-  function handleReturnToTrips(event: SyntheticEvent) {
+  function handleReturnToTrips() {
     resetAfterLeavingTrip(dispatch);
     navigate(`/user/${user.email}/trips`);
   }
 
-  function handleSignOut(event: SyntheticEvent) {
+  function handleSignOut() {
     signOutAfterTripSelect(dispatch);
     logout({
       logoutParams: {

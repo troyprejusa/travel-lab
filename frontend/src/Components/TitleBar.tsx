@@ -8,7 +8,7 @@ interface TitleBarProps {
 
 function TitleBar(props: TitleBarProps) {
     return (
-    <Flex justifyContent={'center'} margin={6}>
+    <Flex justifyContent={'center'} marginTop={6} marginBottom={6}>
         <Heading size={'md'}>
           {props.text}
         </Heading>
