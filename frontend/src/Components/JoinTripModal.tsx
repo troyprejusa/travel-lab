@@ -38,7 +38,7 @@ function JoinTripModal() {
           {/* <ModalCloseButton /> */}
 
           <ModalBody>
-            <form onSubmit={handleSubmit} ref={joinForm}>
+            <form ref={joinForm}>
               <FormControl isRequired>
                 <FormLabel>Trip id</FormLabel>
                 <Input name="trip_id" />
@@ -47,7 +47,7 @@ function JoinTripModal() {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleSubmit}>
+            <Button colorScheme="blue" mr={3} onClick={() => handleSubmit()}>
               Create
             </Button>
             <Button variant="ghost" onClick={onClose}>
@@ -59,9 +59,7 @@ function JoinTripModal() {
     </>
   );
 
-  async function handleSubmit(event: SyntheticEvent) {
-    event.preventDefault();
-
+  async function handleSubmit() {
     if (joinForm.current === null) return;
 
     const formData = new FormData(joinForm.current);

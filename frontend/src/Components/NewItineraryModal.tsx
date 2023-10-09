@@ -47,7 +47,7 @@ function NewItineraryModal(props: NewItineraryModalProps) {
           <ModalHeader>New itinerary stop</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <form onSubmit={handleSubmit} ref={itineraryForm}>
+            <form ref={itineraryForm}>
               <FormControl isRequired>
                 <FormLabel>Title</FormLabel>
                 <Input placeholder="Title" name="title" />
@@ -76,7 +76,7 @@ function NewItineraryModal(props: NewItineraryModalProps) {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleSubmit}>
+            <Button colorScheme="blue" mr={3} onClick={() => handleSubmit()}>
               Create
             </Button>
             <Button variant="ghost" onClick={onClose}>
@@ -88,9 +88,7 @@ function NewItineraryModal(props: NewItineraryModalProps) {
     </>
   );
 
-  async function handleSubmit(event: SyntheticEvent) {
-    event.preventDefault();
-
+  async function handleSubmit() {
     if (itineraryForm.current === null) return;
 
     const formData = new FormData(itineraryForm.current);

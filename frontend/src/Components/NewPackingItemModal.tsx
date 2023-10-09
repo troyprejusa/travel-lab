@@ -43,7 +43,7 @@ function NewItemModal(props: NewItemModalProps) {
           {/* <ModalCloseButton /> */}
 
           <ModalBody>
-            <form onSubmit={handleSubmit} ref={itemForm}>
+            <form ref={itemForm}>
               <FormControl isRequired>
                 <FormLabel>Item</FormLabel>
                 <Input placeholder="item" name="item" />
@@ -60,7 +60,7 @@ function NewItemModal(props: NewItemModalProps) {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleSubmit}>
+            <Button colorScheme="blue" mr={3} onClick={() => handleSubmit()}>
               Create
             </Button>
             <Button variant="ghost" onClick={onClose}>
@@ -72,9 +72,7 @@ function NewItemModal(props: NewItemModalProps) {
     </>
   );
 
-  async function handleSubmit(event: SyntheticEvent) {
-    event.preventDefault();
-
+  async function handleSubmit() {
     if (itemForm.current === null) return;
 
     const formData = new FormData(itemForm.current);

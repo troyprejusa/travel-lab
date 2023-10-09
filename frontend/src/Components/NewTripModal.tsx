@@ -47,7 +47,7 @@ function NewTripModal() {
           {/* <ModalCloseButton /> */}
 
           <ModalBody>
-            <form onSubmit={handleSubmit} ref={tripForm}>
+            <form ref={tripForm}>
               <FormControl isRequired>
                 <FormLabel>Destination</FormLabel>
                 <Input placeholder="Destination" name="destination" />
@@ -72,7 +72,7 @@ function NewTripModal() {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleSubmit}>
+            <Button colorScheme="blue" mr={3} onClick={() => handleSubmit()}>
               Create
             </Button>
             <Button variant="ghost" onClick={onClose}>
@@ -84,9 +84,7 @@ function NewTripModal() {
     </>
   );
 
-  async function handleSubmit(event: SyntheticEvent) {
-    event.preventDefault();
-
+  async function handleSubmit() {
     if (tripForm.current === null) return;
 
     const formData = new FormData(tripForm.current);

@@ -72,7 +72,7 @@ function NewTravellerModal() {
             <ConfigurableButton
               colorScheme="blue"
               mr={3}
-              onClick={handleSubmit}
+              onClick={() => handleSubmit()}
               disabled={true}
               tooltipMsg="Feature in work"
             >
@@ -87,9 +87,7 @@ function NewTravellerModal() {
     </>
   );
 
-  async function handleSubmit(event: SyntheticEvent) {
-    event.preventDefault();
-
+  async function handleSubmit() {
     if (travellerForm.current === null) return;
 
     const formData = new FormData(travellerForm.current);
