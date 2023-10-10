@@ -10,7 +10,13 @@ user_router = APIRouter(
     prefix='/user'
 )
 
+'''
 # Upsert a user in database
+
+Because Auth0 can have data for a user that we may or may 
+not have added to our database yet, perform an upsert and 
+return whatever data is there for this user
+'''
 @user_router.post('/{email}')
 async def upsert_user(email: str) -> UserModel | str:
     try:
@@ -28,14 +34,14 @@ async def upsert_user(email: str) -> UserModel | str:
 
 # Update a user's first name, last name, and phone
 @user_router.patch('/{email}')
-async def put_user_info(
+async def patch_user_info(
         email: str,
         first_name: Annotated[str, Form()],
         last_name: Annotated[str, Form()],
         phone: Annotated[str, Form()],
     ) -> UserModel | str:
     try:
-        updated_user = db_handler.put_user_info(first_name, last_name, phone, email)
+        updated_user = db_handler.patch_user_info(first_name, last_name, phone, email)
 
         return updated_user
       
@@ -44,7 +50,7 @@ async def put_user_info(
         return JSONResponse(
             status_code=500,
             content = {
-                "message": f"ERROR: Unable to upsert user {email}"
+                "message": f"ERROR: Unable to update user info {email}"
             }
         )
     

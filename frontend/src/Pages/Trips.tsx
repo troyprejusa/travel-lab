@@ -1,6 +1,6 @@
 import React, { SyntheticEvent, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { TripModel } from '../utilities/Interfaces';
+import { useDispatch, useSelector } from 'react-redux';
+import { TripModel, UserModel } from '../utilities/Interfaces';
 import TripCard from '../Components/TripCard';
 import fetchHelpers from '../utilities/fetchHelpers';
 import TripActionCard from '../Components/TripActionCard';
@@ -8,6 +8,7 @@ import { Wrap, Flex, Button, Heading, Box, useToast } from '@chakra-ui/react';
 import { signOutBeforeTripSelect } from '../utilities/stateHandlers';
 import { useAuth0 } from '@auth0/auth0-react';
 import Constants from '../utilities/Constants';
+import { RootState } from '../redux/Store';
 
 function Trips(): JSX.Element {
 
@@ -16,6 +17,7 @@ function Trips(): JSX.Element {
   // be viewing one trip at a time
   const initialTripState: Array<TripModel> = [];
   const [trips, setTrips] = useState(initialTripState);
+  const user: UserModel = useSelector((state: RootState) => state.user)
   
   const dispatch = useDispatch();
   const { getAccessTokenSilently, logout } = useAuth0();
@@ -37,7 +39,7 @@ function Trips(): JSX.Element {
         </Button>
       </Flex>
       <Flex justifyContent={'center'}>
-        <Heading>Choose your adventure!</Heading>
+        <Heading>{`Choose your adventure ${user.first_name}!`}</Heading>
       </Flex>
       <Wrap margin={'10%'} spacing={'10%'}>
         {trips.map((trip: TripModel, i: number) => (

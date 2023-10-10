@@ -208,11 +208,14 @@ class PsycopgDatabaseHandler(AbstractDatabaseHandler):
 
         return user
     
-    def put_user_info(self, first_name: str, last_name: str, phone: str, email: str) -> None:
-        self.query("""
+    def patch_user_info(self, first_name: str, last_name: str, phone: str, email: str) -> None:
+        updated_user = self.query("""
             UPDATE traveller SET first_name=%s, last_name=%s, phone=%s
-            WHERE email=%s;
-    """, (first_name, last_name, phone, email))
+            WHERE email=%s
+            RETURNING *;
+        """, (first_name, last_name, phone, email))[0]
+        
+        return updated_user
     
     def delete_user(self, email: str) -> None:
         self.query("DELETE FROM traveller WHERE email=%s;", (email,))

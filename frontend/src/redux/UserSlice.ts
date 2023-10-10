@@ -160,7 +160,7 @@ export const reduxUpdateUserData = createAsyncThunk(
 
       if (res.ok) {
         const updatedUser: UserModel = await res.json();
-        console.log(updatedUser);
+        // console.log(updatedUser);
         return updatedUser;
       } else {
         // Send to rejected case
