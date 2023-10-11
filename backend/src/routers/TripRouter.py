@@ -5,6 +5,7 @@ from models.Schemas import TripModel, TravellerResponse, ItineraryModel, Message
 from typing import Annotated
 from datetime import date, datetime
 from utilities.auth_helpers import verify_attendance, verify_admin
+import utilities.Constants as Constants
 # from models.S3Handler import minio_client
 
 

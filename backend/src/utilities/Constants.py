@@ -28,6 +28,15 @@ else:
     DB_PWD = os.getenv('DEV_DB_PWD')
     DB_DBNAME = os.getenv('DEV_DB_DBNAME')
 
+# Database limits
+LIMIT_TRIPS_CREATED_PER_USER = int(os.getenv('LIMIT_TRIPS_CREATED_PER_USER'))   # protects trip table
+LIMIT_TRIPS_ATTENDED_PER_USER = int(os.getenv('LIMIT_TRIPS_ATTENDED_PER_USER'))     # Junction: protects traveller_trip table
+LIMIT_TRAVELLERS_PER_TRIP = int(os.getenv('LIMIT_TRAVELLERS_PER_TRIP'))     # Junction: protects traveller_trip table
+LIMIT_ITINERARY_PER_TRIP = int(os.getenv('LIMIT_ITINERARY_PER_TRIP'))   # protects itinerary table
+LIMIT_POLLS_PER_TRIP = int(os.getenv('LIMIT_POLLS_PER_TRIP'))    # protects polls tables
+LIMIT_PACKING_PER_TRIP = int(os.getenv('LIMIT_PACKING_PER_TRIP'))   # protects packing table
+LIMIT_MESSAGES_PER_TRIP = int(os.getenv('LIMIT_MESSAGES_PER_TRIP'))     # protects messages table
+
 # S3
 S3_HOST = os.getenv('S3_HOST')
 S3_PORT = os.getenv('S3_PORT')

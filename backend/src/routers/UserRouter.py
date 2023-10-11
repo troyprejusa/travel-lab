@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
 from models.Schemas import UserModel, TripModel
 from utilities.auth_helpers import verify_attendance, verify_admin
+import utilities.Constants as Constants
 
 
 user_router = APIRouter(
