@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Form
+from fastapi import APIRouter, Request, Form, HTTPException
 from typing import Annotated
 from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
@@ -26,10 +26,10 @@ async def upsert_user(email: str) -> UserModel | str:
     
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content = {
-                "message": f"ERROR: Unable to upsert user {email}"
+            detail={
+                "message": f"Unable to upsert user {email}"
             }
         )
 
@@ -48,10 +48,10 @@ async def patch_user_info(
       
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content = {
-                "message": f"ERROR: Unable to update user info {email}"
+            detail={
+                "message": f"Unable to update user info {email}"
             }
         )
     
@@ -64,16 +64,16 @@ async def delete_user(email: str) -> str:
         return JSONResponse(
             status_code=200,
             content={
-                "message": f"SUCCESS: Deleted user {email}"
+                "message": f"Deleted user {email}"
             }
         )
     
     except Exception as error:
         print('ERROR in delete_user:\n', error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content={
-                "message": f"ERROR: Unable to delete user {request.state.user['email']}"
+            detail={
+                "message": f"Unable to delete user {email}"
             }
         )
 
@@ -86,10 +86,10 @@ async def get_trips(request: Request) -> list[TripModel] | str:
     
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content = {
-                "message": f"ERROR: Unable to get trips for {request.state.user['email']}"
+            detail={
+                "message": f"Unable to get trips for {request.state.user['email']}"
             }
         )
 
@@ -104,16 +104,16 @@ async def leave_trip(request: Request, trip_id: str) -> str:
         return JSONResponse(
             status_code=200,
             content={
-                "message": f"SUCCESS: Removed user {request.state.user['email']} from trip {trip_id}"
+                "message": f"Removed user {request.state.user['email']} from trip {trip_id}"
             }
         )
     
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content = {
-                "message": f"ERROR: Unable to remove user {request.state.user['email']} from trip {trip_id}"
+            detail={
+                "message": f"Unable to remove user {request.state.user['email']} from trip {trip_id}"
             }
         )
     
@@ -127,16 +127,16 @@ async def request_join_trip(request: Request, trip_id: str) -> str:
         return JSONResponse(
             status_code=200,
             content={
-                "message": f"SUCCESS: Submitted request for user {request.state.user['email']} to join {trip_id}"
+                "message": f"Submitted request for user {request.state.user['email']} to join {trip_id}"
             }
         )
     
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content = {
-                "message": f"ERROR: Unable for user {request.state.user['email']} to request joining trip {trip_id}"
+            detail={
+                "message": f"Unable for user {request.state.user['email']} to request joining trip {trip_id}"
             }
         )
     
@@ -151,16 +151,16 @@ async def accept_join_trip(request: Request, trip_id: str, traveller_id: str) ->
         return JSONResponse(
             status_code=200,
             content={
-                "message": f"SUCCESS: Accepted user {traveller_id} into trip {trip_id}"
+                "message": f"Accepted user {traveller_id} into trip {trip_id}"
             }
         )
     
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content = {
-                "message": f"ERROR: Unable accept user {traveller_id} for trip {trip_id}"
+            detail={
+                "message": f"Unable accept user {traveller_id} for trip {trip_id}"
             }
         )
 
@@ -175,15 +175,15 @@ async def remove_from_trip(request: Request, trip_id: str, traveller_id: str) ->
         return JSONResponse(
             status_code=200,
             content={
-                "message": f"SUCCESS: User {traveller_id} no longer a part of trip {trip_id}"
+                "message": f"User {traveller_id} no longer a part of trip {trip_id}"
             }
         )
     
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content = {
-                "message": f"ERROR: Error while submitting rejection for user {traveller_id} from trip {trip_id}"
+            detail={
+                "message": f"Error while submitting rejection for user {traveller_id} from trip {trip_id}"
             }
         )

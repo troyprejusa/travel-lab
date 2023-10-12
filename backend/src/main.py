@@ -1,6 +1,5 @@
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import RedirectResponse
 from routers.UserRouter import user_router
 from routers.TripRouter import trip_router
 from routers.DevRouter import dev_router
@@ -64,9 +63,11 @@ async def authenticate_user(request: Request, call_next):
         except jwt.exceptions.InvalidTokenError as token_error:
             # Invalid JWT
             print('authenticate_user: Invalid JWT\n', token_error)
-            return JSONResponse(
-                status_code=500,
-                content= {"message": "Access forbidden"}
+            raise HTTPException(
+                status_code=401,
+                detail={
+                    "message": "Authentication required"
+                }
             )
 
 
@@ -95,17 +96,17 @@ async def redirect_nav(request: Request, full_path: str):
 
 
 # Global exception handler
-@app.exception_handler(Exception)
-async def general_exception_handler(request: Request, error: Exception) -> str:
-    # Same behavior as default exception handling, but returns
-    # JSON instead of string
-    print('general_exception_handler:\n', error)
-    return JSONResponse(
-        status_code=500,
-        content = {
-            "message": "Internal server error"
-        }
-    )
+# @app.exception_handler(Exception)
+# async def handle_exception(request: Request, error: Exception) -> str:
+#     # Same behavior as default exception handling, but returns
+#     # JSON instead of string
+#     print('general_exception_handler:\n', error)
+#     return JSONResponse(
+#         status_code=500,
+#         content = {
+#             "message": "Internal server error"
+#         }
+#     )
 
 
 if __name__ == "__main__":

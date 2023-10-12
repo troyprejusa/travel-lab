@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Form
+from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
 from models.Schemas import TripModel, TravellerResponse, ItineraryModel, MessageModel, NewPollWS, PollResponse, PackingModel
@@ -32,10 +32,10 @@ async def create_trip(
     
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content = {
-                "message": f"ERROR: Unable to create trip to {destination}"
+            detail={
+                "message": f"Unable to create trip to {destination}"
             }
         )
     
@@ -49,10 +49,10 @@ async def get_trip_permissions(request: Request, trip_id: str) -> dict | str:
     
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content = {
-                "message": f"ERROR: Unable to get permissions for {request.state.user['email']}"
+            detail={
+                "message": f"Unable to get permissions for {request.state.user['email']}"
             }
         )
 
@@ -67,16 +67,16 @@ async def delete_trip(request: Request, trip_id: str) -> dict[str, str]:
         return JSONResponse(
             status_code=200,
             content = {
-                "message": f"SUCCESS: Deleted trip {trip_id}"
+                "message": f"Deleted trip {trip_id}"
             }
         )
     
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content = {
-                "message": f"ERROR: Unable to delete trip {trip_id}"
+            detail={
+                "message": f"Unable to delete trip {trip_id}"
             }
         )
     
@@ -93,10 +93,10 @@ async def get_itinerary_info(request: Request, trip_id: str) -> list[ItineraryMo
 
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content = {
-                "message": f"ERROR: Unable to retrieve itinerary for trip id {trip_id}"
+            detail={
+                "message": f"Unable to retrieve itinerary for trip id {trip_id}"
             }
         )
     
@@ -118,16 +118,16 @@ async def add_itinerary_stop(
         return JSONResponse(
             status_code=200,
             content= {
-                "message": "SUCCESS: Created itinerary stop"
+                "message": "Created itinerary stop"
             }
         )
     
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content = {
-                "message": f"ERROR: Unable to submit itinerary stop for trip id {trip_id}"
+            detail={
+                "message": f"Unable to submit itinerary stop for trip id {trip_id}"
             }
         )
     
@@ -141,16 +141,16 @@ async def delete_itinerary_stop(request: Request, trip_id: str, item_id: int) ->
         return JSONResponse(
             status_code=200,
             content= {
-                "message": f"SUCCESS: Deleted itinerary stop from trip id {trip_id}"
+                "message": f"Deleted itinerary stop from trip id {trip_id}"
             }
         )
     
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content = {
-                "message": f"ERROR: Unable to delete itinerary stop for trip id {trip_id}"
+            detail={
+                "message": f"Unable to delete itinerary stop for trip id {trip_id}"
             }
         )
     
@@ -167,10 +167,10 @@ async def get_polls(request: Request, trip_id: str) -> list[PollResponse] | str:
     
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content= {
-                "message": f'ERROR: Unable to retrieve polls for trip id {trip_id}'
+            detail={
+                "message": f'Unable to retrieve polls for trip id {trip_id}'
             }
         )
     
@@ -192,10 +192,10 @@ async def create_poll(request: Request, trip_id: str, poll_body: NewPollWS) -> d
 
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content= {
-                "message": f'ERROR: Unable to post poll'
+            detail={
+                "message": f'Unable to post poll'
             }
         )
 
@@ -215,10 +215,10 @@ async def delete_poll(request: Request, trip_id: str, poll_id: int) -> dict[str,
 
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content= {
-                "message": f'ERROR: Unable to delete poll id {poll_id}'
+            detail={
+                "message": f'Unable to delete poll id {poll_id}'
             }
         )
 
@@ -234,9 +234,9 @@ async def get_packing_items(request: Request, trip_id: str) -> list[PackingModel
         return items
 
     except Exception as error:
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content= {
+            detail={
                 "message": f'Unable to retrieve itms for trip {trip_id}'
             }
         )
@@ -264,9 +264,9 @@ async def add_packing_item(
     
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content= {
+            detail={
                 "message": f'Unable to add packing item {item} to trip {trip_id}'
             }
         )
@@ -287,9 +287,9 @@ async def claim_packing_item(request: Request, trip_id: str, item_id: int) -> st
 
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content= {
+            detail={
                 "message": f'Unable to claim item_id {item_id}'
             }
         )
@@ -310,9 +310,9 @@ async def unclaim_packing_item(request: Request, trip_id: str, item_id: int) -> 
 
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content= {
+            detail={
                 "message": f'Unable to unclaim item_id {item_id}'
             }
         )
@@ -333,9 +333,9 @@ async def delete_packing_item(request: Request, trip_id: str, item_id: int) -> s
 
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content= {
+            detail={
                 "message": f'Unable to delete item_id {item_id} from trip {trip_id}'
             }
         )
@@ -353,10 +353,10 @@ async def get_messages(request: Request, trip_id: str) -> list[MessageModel] | s
     
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content= {
-                "message": f'ERROR: Unable to retrieve messages for trip id {trip_id}'
+            detail={
+                "message": f'Unable to retrieve messages for trip id {trip_id}'
             }
         )
     
@@ -376,10 +376,10 @@ async def delete_messages(request: Request, trip_id: str) -> str:
     
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content= {
-                "message": f'ERROR: Unable to delete messages for trip id {trip_id}'
+            detail={
+                "message": f'Unable to delete messages for trip id {trip_id}'
             }
         )
     
@@ -396,9 +396,9 @@ async def get_travellers(request: Request, trip_id: str) ->  list[TravellerRespo
 
     except Exception as error:
         print(error)
-        return JSONResponse(
+        raise HTTPException(
             status_code=500,
-            content = {
-                "message": f"ERROR: Unable to find travellers for trip id {trip_id}"
+            detail={
+                "message": f"Unable to find travellers for trip id {trip_id}"
             }
         )
