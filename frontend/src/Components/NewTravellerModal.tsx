@@ -57,7 +57,7 @@ function NewTravellerModal() {
             <br></br>
             <Text>{trip.id}</Text>
             <br></br>
-            <form ref={travellerForm}>
+            <form ref={travellerForm} onSubmit={handleSubmit}>
               <FormControl isRequired>
                 <FormLabel>Email</FormLabel>
                 <Input placeholder="email" name="email" />
@@ -72,7 +72,7 @@ function NewTravellerModal() {
             <ConfigurableButton
               colorScheme="blue"
               mr={3}
-              onClick={() => handleSubmit()}
+              onClick={handleSubmit}
               disabled={true}
               tooltipMsg="Feature in work"
             >
@@ -87,7 +87,11 @@ function NewTravellerModal() {
     </>
   );
 
-  async function handleSubmit() {
+  async function handleSubmit(event: SyntheticEvent) {
+    if (event.type === 'submit') {
+      event.preventDefault();
+    }
+    
     if (travellerForm.current === null) return;
 
     const formData = new FormData(travellerForm.current);

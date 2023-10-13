@@ -47,7 +47,7 @@ function NewTripModal() {
           {/* <ModalCloseButton /> */}
 
           <ModalBody>
-            <form ref={tripForm}>
+            <form ref={tripForm} onSubmit={handleSubmit}>
               <FormControl isRequired>
                 <FormLabel>Destination</FormLabel>
                 <Input placeholder="Destination" name="destination" />
@@ -72,7 +72,7 @@ function NewTripModal() {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={() => handleSubmit()}>
+            <Button colorScheme="blue" mr={3} onClick={handleSubmit}>
               Create
             </Button>
             <Button variant="ghost" onClick={onClose}>
@@ -84,7 +84,11 @@ function NewTripModal() {
     </>
   );
 
-  async function handleSubmit() {
+  async function handleSubmit(event: SyntheticEvent) {
+    if (event.type === 'submit') {
+      event.preventDefault();
+    }
+    
     if (tripForm.current === null) return;
 
     const formData = new FormData(tripForm.current);
@@ -140,8 +144,16 @@ function NewTripModal() {
         // Navigate to the trip
         navigate(`/trip/${trip.id}/home`);
       } else {
-        const message: any = await res.json();
-        throw new Error(JSON.stringify(message));
+        const errorRes = await res.json();
+        console.error(errorRes);
+        toast({
+          position: 'top',
+          title: 'Unable to create trip :(',
+          description: errorRes.detail.message,
+          status: 'error',
+          duration: 4000,
+          isClosable: true,
+        });
       }
     } catch (error: any) {
       console.error(error);

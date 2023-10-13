@@ -23,8 +23,17 @@ async def create_trip(
     start_date: Annotated[date, Form()],
     end_date: Annotated[date, Form()]
     ) -> TripModel | str:
-
     try:
+        if db_handler.count_user_created_trips(request.state.user['email']) >= Constants.LIMIT_TRIPS_CREATED_PER_USER:
+            return JSONResponse(
+                status_code=422,
+                content={
+                    "detail": {
+                        "message": "Reached limit for number of created trips. Delete an existing trip before creating a new one."
+                    }
+                }
+            )
+
         new_trip_id = db_handler.create_trip(destination, description, start_date, end_date, request.state.user['email'])
         trip_data = db_handler.get_trip_data(new_trip_id)
         
@@ -113,6 +122,16 @@ async def add_itinerary_stop(
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
+        if db_handler.count_itinerary(trip_id) >= Constants.LIMIT_ITINERARY_PER_TRIP:
+            return JSONResponse(
+                status_code=422,
+                content={
+                    "detail": {
+                        "message": "Reached limit for number of itinerary stops for trip. Delete other itinerary stops on this trip to create more."
+                    }
+                }
+            )
+
         db_handler.create_itinerary(trip_id, title, description, start_time, end_time, request.state.user['email'])
      
         return JSONResponse(
@@ -179,6 +198,16 @@ async def get_polls(request: Request, trip_id: str) -> list[PollResponse] | str:
 async def create_poll(request: Request, trip_id: str, poll_body: NewPollWS) -> dict[str, str]:
     try:
         verify_attendance(trip_id, request.state.user['trips'])
+
+        if db_handler.count_polls(trip_id) >= Constants.LIMIT_POLLS_PER_TRIP:
+            return JSONResponse(
+                status_code=422,
+                content={
+                    "detail": {
+                        "message": "Reached limit for number of polls on this trip. Delete an existing poll before creating another."
+                    }
+                }
+            )
 
         poll_id = db_handler.create_poll(trip_id, poll_body.title, poll_body.description, request.state.user['email'])
         db_handler.create_poll_options(poll_id, poll_body.options)
@@ -252,6 +281,16 @@ async def add_packing_item(
 
     try:
         verify_attendance(trip_id, request.state.user['trips'])
+
+        if db_handler.count_packing(trip_id) >= Constants.LIMIT_PACKING_PER_TRIP:
+            return JSONResponse(
+                status_code=422,
+                content={
+                    "detail": {
+                        "message": "Reached limit for number of packing items on this trip. Delete an existing item before creating another."
+                    }
+                }
+            )
 
         db_handler.create_packing_item(trip_id, item, quantity, description, request.state.user['email'])
 

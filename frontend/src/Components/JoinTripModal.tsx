@@ -38,7 +38,7 @@ function JoinTripModal() {
           {/* <ModalCloseButton /> */}
 
           <ModalBody>
-            <form ref={joinForm}>
+            <form ref={joinForm} onSubmit={handleSubmit}>
               <FormControl isRequired>
                 <FormLabel>Trip id</FormLabel>
                 <Input name="trip_id" />
@@ -47,8 +47,8 @@ function JoinTripModal() {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={() => handleSubmit()}>
-              Create
+            <Button colorScheme="blue" mr={3} onClick={handleSubmit}>
+              Request
             </Button>
             <Button variant="ghost" onClick={onClose}>
               Close
@@ -59,7 +59,11 @@ function JoinTripModal() {
     </>
   );
 
-  async function handleSubmit() {
+  async function handleSubmit(event: SyntheticEvent) {
+    if (event.type === 'submit') {
+      event.preventDefault();
+    }
+
     if (joinForm.current === null) return;
 
     const formData = new FormData(joinForm.current);
@@ -93,8 +97,16 @@ function JoinTripModal() {
           isClosable: true,
         });
       } else {
-        const errorRes: any = await res.json();
-        throw new Error(errorRes);
+        const errorRes = await res.json();
+        console.error(errorRes);
+        toast({
+          position: 'top',
+          title: 'Unable to request to join this trip :(',
+          description: errorRes.detail.message,
+          status: 'error',
+          duration: 4000,
+          isClosable: true,
+        });
       }
     } catch (error: any) {
       console.error(error);

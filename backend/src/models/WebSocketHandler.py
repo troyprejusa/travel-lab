@@ -18,7 +18,7 @@ def parse_trip_id(query: str) -> str:
         if key == 'trip_id':
             return val
     
-    # Because this function is essential to this module, thow if none is provided
+    # Because this function is essential to this module, throw if none is provided
     raise KeyError('Trip id not found in query parameters')
 
 def date_to_string_flat(obj: dict) -> None:
@@ -57,6 +57,11 @@ class ItinerarySocket(WebSocketHandler):
     async def on_frontend_itinerary_create(self, sid, data) -> None:
         try:
             itinerary_data = NewItineraryWS.parse_obj(data)     # Verify data
+
+            if db_handler.count_itinerary(itinerary_data.trip_id) >= Constants.LIMIT_ITINERARY_PER_TRIP:
+                await self.reply_error(sid, 'backend_itinerary_create_error', "Reached limit for number of itinerary stops for trip. Delete other itinerary stops on this trip to create more.")
+                return
+
             itinerary_db = db_handler.create_itinerary(itinerary_data.trip_id, itinerary_data.title, itinerary_data.description, itinerary_data.start_time, itinerary_data.end_time, itinerary_data.created_by)
             date_to_string_flat(itinerary_db)
             await self.emit('backend_itinerary_create', itinerary_db, room = itinerary_data.trip_id)
@@ -81,6 +86,11 @@ class PollSocket(WebSocketHandler):
     async def on_frontend_poll_create(self, sid, data) -> None:
         try:
             new_poll = NewPollWS.parse_obj(data)    # Verify data
+
+            if db_handler.count_polls(new_poll.trip_id) >= Constants.LIMIT_POLLS_PER_TRIP:
+                await self.reply_error(sid, 'backend_poll_create_error', "Reached limit for number of polls on this trip. Delete an existing poll before creating another.")
+                return
+            
             poll_id = db_handler.create_poll(new_poll.trip_id, new_poll.title, new_poll.description, new_poll.created_by)
             db_handler.create_poll_options(poll_id, new_poll.options)
             new_poll_db = db_handler.get_poll(poll_id)
@@ -120,6 +130,11 @@ class PackingSocket(WebSocketHandler):
     async def on_frontend_packing_create(self, sid, data) -> None:
         try:
             new_item = NewPackingWS.parse_obj(data)     # Verify data
+
+            if db_handler.count_packing(new_item.trip_id) >= Constants.LIMIT_PACKING_PER_TRIP:
+                await self.reply_error(sid, 'backend_packing_create_error', "Reached limit for number of packing items on this trip. Delete an existing item before creating another.")
+                return
+            
             item_db = db_handler.create_packing_item(new_item.trip_id, new_item.item, new_item.quantity, new_item.description, new_item.created_by)
             date_to_string_flat(item_db)
             await self.emit('backend_packing_create', item_db, room = new_item.trip_id)
@@ -164,6 +179,11 @@ class MsgSocket(WebSocketHandler):
     async def on_frontend_msg(self, sid, data):
         try:
             msg = MessageWS.parse_obj(data)     # Verify data
+
+            if db_handler.count_messages(msg.trip_id) >= Constants.LIMIT_MESSAGES_PER_TRIP:
+                await self.reply_error(sid, 'backend_msg_error', "Reached limit for messages for this trip. Delete existing messages before submitting another.")
+                return
+
             db_msg = db_handler.create_msg(msg.trip_id, msg.content, msg.created_by)
             date_to_string_flat(db_msg)
             await self.emit('backend_msg', db_msg, room = msg.trip_id)

@@ -95,7 +95,7 @@ class MessageSocket extends TripSocket {
       toast({
         position: 'top',
         title: 'Unable to send message :(',
-        description: 'Something went wrong...',
+        description: data.message,
         status: 'error',
         duration: 4000,
         isClosable: true,
@@ -126,7 +126,7 @@ class PollSocket extends TripSocket {
       toast({
         position: 'top',
         title: 'Unable to create poll :(',
-        description: 'Something went wrong...',
+        description: data.message,
         status: 'error',
         duration: 4000,
         isClosable: true,
@@ -197,7 +197,7 @@ class ItinerarySocket extends TripSocket {
       toast({
         position: 'top',
         title: 'Unable to create itinerary stop :(',
-        description: 'Something went wrong...',
+        description: data.message,
         status: 'error',
         duration: 4000,
         isClosable: true,
@@ -248,7 +248,7 @@ class PackingSocket extends TripSocket {
       toast({
         position: 'top',
         title: 'Unable to add item to packing list :(',
-        description: 'Something went wrong...',
+        description: data.message,
         status: 'error',
         duration: 4000,
         isClosable: true,

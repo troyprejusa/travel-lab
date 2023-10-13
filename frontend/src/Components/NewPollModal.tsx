@@ -70,7 +70,7 @@ function NewPollModal(props: NewPollModalProps) {
           {/* <ModalCloseButton /> */}
 
           <ModalBody>
-            <form ref={pollForm}>
+            <form ref={pollForm} onSubmit={handleSubmit}>
               <FormControl isRequired>
                 <FormLabel>Title</FormLabel>
                 <Input placeholder="title" name="title" />
@@ -96,7 +96,7 @@ function NewPollModal(props: NewPollModalProps) {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={() => handleSubmit()}>
+            <Button colorScheme="blue" mr={3} onClick={handleSubmit}>
               Create
             </Button>
             <Button variant="ghost" onClick={onClose}>
@@ -108,7 +108,11 @@ function NewPollModal(props: NewPollModalProps) {
     </>
   );
 
-  async function handleSubmit() {
+  async function handleSubmit(event: SyntheticEvent) {
+    if (event.type === 'submit') {
+      event.preventDefault();
+    }
+    
     if (pollForm.current === null) return;
 
     const formData = new FormData(pollForm.current);

@@ -498,7 +498,7 @@ class PsycopgDatabaseHandler(AbstractDatabaseHandler):
     def count_user_created_trips(self, email: str) -> int:
         count = self.query("""
             SELECT COUNT(*) FROM trip WHERE created_by=%s;
-        """, (email,))[0]
+        """, (email,))[0]['count']
 
         return count
     
@@ -506,42 +506,42 @@ class PsycopgDatabaseHandler(AbstractDatabaseHandler):
         count = self.query("""
             SELECT COUNT(*) FROM traveller_trip 
                 WHERE traveller_id=(SELECT id FROM traveller WHERE email=%s);
-        """, (email,))[0]
+        """, (email,))[0]['count']
 
         return count
 
     def count_travellers_on_trip(self, trip_id: str) -> int:
         count = self.query("""
             SELECT COUNT(*) FROM traveller_trip WHERE trip_id=%s
-        """, (trip_id,))[0]
+        """, (trip_id,))[0]['count']
 
         return count
     
     def count_itinerary(self, trip_id) -> int:
         count = self.query("""
             SELECT COUNT(*) FROM itinerary WHERE trip_id=%s;
-        """, (trip_id,))[0]
+        """, (trip_id,))[0]['count']
 
         return count
     
     def count_polls(self, trip_id: str) -> int:
         count = self.query("""
             SELECT COUNT(*) FROM poll WHERE trip_id=%s;
-        """, (trip_id,))[0]
+        """, (trip_id,))[0]['count']
 
         return count
     
     def count_packing(self, trip_id: str) -> int:
         count = self.query("""
             SELECT COUNT(*) FROM packing WHERE trip_id=%s;
-        """, (trip_id,))[0]
+        """, (trip_id,))[0]['count']
 
         return count
     
     def count_messages(self, trip_id: str) -> int:
         count = self.query("""
             SELECT COUNT(*) FROM message WHERE trip_id=%s;
-        """, (trip_id,))[0]
+        """, (trip_id,))[0]['count']
 
         return count
     

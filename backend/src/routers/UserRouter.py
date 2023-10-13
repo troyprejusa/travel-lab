@@ -122,6 +122,26 @@ async def leave_trip(request: Request, trip_id: str) -> str:
 @user_router.post('/trips/{trip_id}')
 async def request_join_trip(request: Request, trip_id: str) -> str:
     try:
+        if db_handler.count_user_trips_attended(request.state.user['email']) >= Constants.LIMIT_TRIPS_ATTENDED_PER_USER:
+            return JSONResponse(
+                status_code=422,
+                content={
+                    "detail": {
+                        "message": f"User {request.state.user['email']} has reached limit for number of attended trips. Leave an existing trip before joining another one."
+                    }
+                }
+            )
+        
+        if db_handler.count_travellers_on_trip(trip_id) >= Constants.LIMIT_TRAVELLERS_PER_TRIP:
+            return JSONResponse(
+                status_code=422,
+                content={
+                    "detail": {
+                        "message": f"Trip {trip_id} has reached limit for for the number of travellers. Other travellers must leave before you can join."
+                    }
+                }
+            )
+        
         db_handler.request_trip(request.state.user['email'], trip_id)
         
         return JSONResponse(
