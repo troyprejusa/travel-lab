@@ -42,9 +42,9 @@ function PollCard(props: PollCardProps) {
 
   const trip: TripModel = useSelector((state: RootState) => state.trip);
   const user: UserModel = useSelector((state: RootState) => state.user);
-  const travellers: Array<UserModel> = useSelector(
+  const confirmed_travellers: Array<UserModel> = useSelector(
     (state: RootState) => state.travellers
-  );
+  ).filter((traveller: UserModel) => traveller.confirmed);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -57,6 +57,11 @@ function PollCard(props: PollCardProps) {
       }
     });
   });
+
+  // Vote tally
+  const remainingVotes =
+    confirmed_travellers.length -
+    props.data.options.reduce((prev, curr) => prev + curr.votes.length, 0);
 
   return (
     <>
@@ -85,8 +90,8 @@ function PollCard(props: PollCardProps) {
               </Heading>
               <AvatarRipple
                 userData={
-                  travellers[
-                    travellers.findIndex(
+                  confirmed_travellers[
+                    confirmed_travellers.findIndex(
                       (traveller: UserModel) =>
                         props.data.created_by === traveller.email
                     )
@@ -151,18 +156,27 @@ function PollCard(props: PollCardProps) {
                   onClick={() => handleDeleteButtonClick(props.data.poll_id)}
                   aria-label="delete poll"
                   tooltipMsg={
-                    user.admin ? '' : 'Only trip admins can delete polls'
+                    user.admin
+                      ? 'Delete poll'
+                      : 'Only trip admins can delete polls'
                   }
                   disabled={!user.admin}
                 />
               </ButtonGroup>
             </Flex>
-            <Heading size={'lg'}>{props.data.title}</Heading>
-            <Heading size={'sm'}>{props.data.created_by}</Heading>
-            <Box>
-              <Heading size={'md'}>Description:</Heading>
-              <Text>{props.data.description}</Text>
-            </Box>
+            <Flex flexDirection={'column'} gap={'10px'}>
+              <Heading size={'lg'}>{props.data.title}</Heading>
+              <Text size={'sm'}>Created by: {props.data.created_by}</Text>
+              <Box>
+                <Heading size={'md'}>Description:</Heading>
+                <Text>{props.data.description || 'Nothing to show...'}</Text>
+              </Box>
+              <Box>
+                {remainingVotes
+                  ? `${remainingVotes} travellers have not voted`
+                  : 'All travellers have voted'}
+              </Box>
+            </Flex>
           </ModalBody>
 
           <ModalFooter>
@@ -208,7 +222,7 @@ function PollCard(props: PollCardProps) {
   }
 
   async function handleDeleteButtonClick(poll_id: number) {
-    pollSocket.deletePoll({"trip_id": trip.id, "poll_id": poll_id});
+    pollSocket.deletePoll({ trip_id: trip.id, poll_id: poll_id });
 
     // Close the modal
     onClose();

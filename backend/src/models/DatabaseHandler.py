@@ -148,13 +148,14 @@ class PsycopgDatabaseHandler(AbstractDatabaseHandler):
         self.password = password
         self.database = database
 
+        self.connect();
+        
+    def connect(self):
         try:
-            print('DatabaseHandler.py: Attempting to connect to database...')
-            self.connection = psycopg2.connect(host = host, port = port, user = user, password = password, database = database)
-            print('DatabaseHandler.py: Connected to database')
+            self.connection = psycopg2.connect(host = self.host, port = self.port, user = self.user, password = self.password, database = self.database)
         except Exception as error:
             print(error)
-            raise Exception(f"DatabaseHandler.py: Unable to connect to database{settings['database']}")
+            raise Exception(f"DatabaseHandler.py: Unable to connect to database{self.database}")
 
     '''
     Wrap the cursor.execute method as to open and close a cursor,
@@ -196,6 +197,12 @@ class PsycopgDatabaseHandler(AbstractDatabaseHandler):
                             # anything (CREATE, DROP, INSERT, UPDATE, DELETE, etc.)
                             # will throw an error
                             return None
+                        
+                        except (psycopg2.OperationalError, psycopg2.InterfaceError):
+                            # If there's an issue with the connection, attempt to reconnect
+                            if self.connection.closed != 0:
+                                self.connection.close()
+                                self.connect()
 
                 except psycopg2.Error as pg_error:
                     # print(f'QUERY FAILURE!')
