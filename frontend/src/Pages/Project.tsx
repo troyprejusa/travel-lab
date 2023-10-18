@@ -9,8 +9,9 @@ import fetchHelpers from '../utilities/fetchHelpers';
 import { fetchAllTripData } from '../utilities/stateHandlers';
 import { Box } from '@chakra-ui/react';
 import Constants from '../utilities/Constants';
+import { withAuthenticationRequired } from '@auth0/auth0-react';
 
-function Project(): JSX.Element {
+function ProjectUnprotected(): JSX.Element {
   const dispatch = useDispatch();
   const trip: TripModel = useSelector((state: RootState) => state.trip);
   const { getAccessTokenSilently } = useAuth0();
@@ -24,7 +25,7 @@ function Project(): JSX.Element {
     <>
       <Navbar>
         <Box
-          id='trip-outlet'
+          id="trip-outlet"
           padding={Constants.OUTLET_PADDING}
           minWidth={`calc(100vw - ${Constants.NAVBAR_LEFT_PANE_WIDTH})`}
           minHeight={`calc(100vh - ${Constants.NAVBAR_TOP_PANE_HEIGHT})`}
@@ -42,5 +43,11 @@ function Project(): JSX.Element {
     fetchAllTripData(trip.id, token, dispatch);
   }
 }
+
+const Project = withAuthenticationRequired(ProjectUnprotected, {
+  onRedirecting: () => (
+    <div>Your session has expired, redirecting to login page...</div>
+  ),
+});
 
 export default Project;

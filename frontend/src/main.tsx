@@ -26,15 +26,18 @@ import Packing from './Pages/Packing';
 import Travellers from './Pages/Travellers';
 import TripSettings from './Pages/TripSettings';
 import NotFound from './Pages/NotFound';
+import UserOutlet from './Pages/UserOutlet';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<Landing />} />
 
-      <Route path="/user/:username" element={<Staging />} />
-      <Route path="/user/:username/trips" element={<Trips />} />
-      <Route path="/user/:username/settings" element={<UserSettings />} />
+      <Route path="/user/:username" element={<UserOutlet />} >
+        <Route path="" element={<Staging />} />
+        <Route path="trips" element={<Trips />} />
+        <Route path="settings" element={<UserSettings />} />
+      </Route>
 
       <Route path="/trip/:trip_id" element={<Project />}>
         <Route path="home" element={<Home />} />
