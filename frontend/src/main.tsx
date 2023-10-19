@@ -17,7 +17,7 @@ import Landing from './Pages/Landing';
 import Staging from './Pages/Staging';
 import Trips from './Pages/Trips';
 import UserSettings from './Pages/UserSettings';
-import Project from './Pages/Project';
+import ProtectedProject from './Pages/Project';
 import Home from './Pages/Home';
 import Itinerary from './Pages/Itinerary';
 import MessageBoard from './Pages/MessageBoard';
@@ -26,20 +26,20 @@ import Packing from './Pages/Packing';
 import Travellers from './Pages/Travellers';
 import TripSettings from './Pages/TripSettings';
 import NotFound from './Pages/NotFound';
-import UserOutlet from './Pages/UserOutlet';
+import ProtectedUserOutlet from './Pages/UserOutlet';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<Landing />} />
 
-      <Route path="/user/:username" element={<UserOutlet />} >
+      <Route path="/user/:username" element={<ProtectedUserOutlet />} >
         <Route path="" element={<Staging />} />
         <Route path="trips" element={<Trips />} />
         <Route path="settings" element={<UserSettings />} />
       </Route>
 
-      <Route path="/trip/:trip_id" element={<Project />}>
+      <Route path="/trip/:trip_id" element={<ProtectedProject />}>
         <Route path="home" element={<Home />} />
         <Route path="itinerary" element={<Itinerary />} />
         <Route path="message" element={<MessageBoard />} />
