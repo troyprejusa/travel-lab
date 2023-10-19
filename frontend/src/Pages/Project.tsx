@@ -11,7 +11,7 @@ import { Box } from '@chakra-ui/react';
 import Constants from '../utilities/Constants';
 import { withAuthenticationRequired } from '@auth0/auth0-react';
 
-function ProjectUnprotected(): JSX.Element {
+function Project(): JSX.Element {
   const dispatch = useDispatch();
   const trip: TripModel = useSelector((state: RootState) => state.trip);
   const { getAccessTokenSilently } = useAuth0();
@@ -44,10 +44,10 @@ function ProjectUnprotected(): JSX.Element {
   }
 }
 
-const Project = withAuthenticationRequired(ProjectUnprotected, {
+const ProtectedProject = withAuthenticationRequired(Project, {
   onRedirecting: () => (
     <div>Your session has expired, redirecting to login page...</div>
   ),
 });
 
-export default Project;
+export default ProtectedProject;

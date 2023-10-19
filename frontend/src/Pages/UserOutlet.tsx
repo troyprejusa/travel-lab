@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { Box } from '@chakra-ui/react';
 import { withAuthenticationRequired } from '@auth0/auth0-react';
 
-function UserOutletUnprotected(): JSX.Element {
+function UserOutlet(): JSX.Element {
   return (
     <>
       <Box>
@@ -13,9 +13,10 @@ function UserOutletUnprotected(): JSX.Element {
   );
 }
 
-const UserOutlet = withAuthenticationRequired(UserOutletUnprotected, {
+const ProtectedUserOutlet = withAuthenticationRequired(UserOutlet, {
   onRedirecting: () => (
     <div>Your session has expired, redirecting to login page...</div>
   ),
 });
-export default UserOutlet;
+
+export default ProtectedUserOutlet;
