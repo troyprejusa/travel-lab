@@ -4,16 +4,20 @@ from utilities import Constants
 import jwt
 
 
+rate_tracker = {}
+
+async def rate_limiter(request: Request, call_next):
+    print("TROY:", request.url)
+    response = await call_next(request)
+    return response
+
+# Allow non-authenticated access to the following endpoints:
 whitelist = set([
     'docs',
     'openapi.json',
     'dev',
     'sio'
 ])
-
-# Global variable
-rate_tracker = {}
-
 
 async def authenticate_user(request: Request, call_next):
     # print('HTTP Request:', request.url.path)
@@ -53,8 +57,3 @@ async def authenticate_user(request: Request, call_next):
                     "message": "Authentication required"
                 }
             )
-        
-async def rate_limiter(request: Request, call_next):
-    print("TROY:", request.url)
-    response = await call_next(request)
-    return response
