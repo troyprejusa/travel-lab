@@ -6,8 +6,7 @@ import { reduxResetTrip } from "../redux/TripSlice";
 import { reduxFetchItinerary, reduxResetItinerary } from "../redux/ItinerarySlice";
 import { reduxFetchTravellers, reduxResetTravellers } from "../redux/TravellersSlice";
 import { reduxFetchTripPermissions, reduxUserLogout } from "../redux/UserSlice";
-import { msgSocket } from "./TripSocket";
-import { pollSocket } from "./TripSocket";
+import { msgSocket, pollSocket, itinerarySocket, packingSocket } from "./TripSocket";
 
 export const fetchAllTripData = (trip_id: string, token: string, dispatch: Dispatch) => {
     dispatch(reduxFetchTripPermissions({ trip_id: trip_id, token: token }));
@@ -18,44 +17,39 @@ export const fetchAllTripData = (trip_id: string, token: string, dispatch: Dispa
     dispatch(reduxFetchTravellers({ trip_id: trip_id, token: token }));
 }
 
+export const resetAllTripData = (dispatch: Dispatch) => {
+    dispatch(reduxResetMessages(null));
+    dispatch(reduxResetPolls(null));
+    dispatch(reduxResetPacking(null))
+    dispatch(reduxResetTrip(null));
+    dispatch(reduxResetItinerary(null));
+    dispatch(reduxResetTravellers(null));
+}
+
+export const closeAllSockets = () => {
+    msgSocket.disconnectSocket();
+    pollSocket.disconnectSocket();
+    itinerarySocket.disconnectSocket();
+    packingSocket.disconnectSocket();
+}
+
 export const signOutBeforeTripSelect = (dispatch: Dispatch) => {
     dispatch(reduxUserLogout(null));
 }
 
 export const signOutAfterTripSelect = (dispatch: Dispatch) => {
     dispatch(reduxUserLogout(null));
+    resetAllTripData(dispatch);
+    closeAllSockets();
 
-    msgSocket.disconnectSocket();
-    pollSocket.disconnectSocket();
-
-    dispatch(reduxResetMessages(null));
-    dispatch(reduxResetPolls(null));
-    dispatch(reduxResetPacking(null))
-    dispatch(reduxResetTrip(null));
-    dispatch(reduxResetItinerary(null));
-    dispatch(reduxResetTravellers(null));
 }
 
 export const resetAfterLeavingTrip = (dispatch: Dispatch) => {
-    msgSocket.disconnectSocket();
-    pollSocket.disconnectSocket();
-
-    dispatch(reduxResetMessages(null));
-    dispatch(reduxResetPolls(null));
-    dispatch(reduxResetPacking(null))
-    dispatch(reduxResetTrip(null));
-    dispatch(reduxResetItinerary(null));
-    dispatch(reduxResetTravellers(null));
+    resetAllTripData(dispatch);
+    closeAllSockets();
 }
 
 export const resetAfterTripDelete = (dispatch: Dispatch) => {
-    msgSocket.disconnectSocket();
-    pollSocket.disconnectSocket();
-    
-    dispatch(reduxResetMessages(null));
-    dispatch(reduxResetPolls(null));
-    dispatch(reduxResetPacking(null))
-    dispatch(reduxResetTrip(null));
-    dispatch(reduxResetItinerary(null));
-    dispatch(reduxResetTravellers(null));
+    // This can be the same as above
+    resetAfterLeavingTrip(dispatch);
 }
