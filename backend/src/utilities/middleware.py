@@ -2,12 +2,36 @@ from fastapi import Request, HTTPException
 from utilities import auth_helpers
 from utilities import Constants
 import jwt
-
+from collections import deque
+import time
+from utilities import Constants
 
 rate_tracker = {}
 
 async def rate_limiter(request: Request, call_next):
-    print("TROY:", request.url)
+    if request.client.host not in rate_tracker:
+        rate_tracker[request.client.host] = deque()
+
+    user_record = rate_tracker[request.client.host]
+    
+    now = time.monotonic()
+
+    user_record.append(now)
+
+    # Trim the list for the last N seconds
+    while now - user_record[0] > Constants.API_REQUESTS_WINDOW:
+        user_record.popleft()
+
+    if len(user_record) > Constants.API_REQUEST_COUNT:
+        raise HTTPException(
+            status_code=429,
+            detail={
+                "message": "This user has submitted too many requests"
+            }
+        )
+    
+    print('RATE:', len(user_record) / Constants.API_REQUESTS_WINDOW)
+    
     response = await call_next(request)
     return response
 
