@@ -1,40 +1,39 @@
 import socketio
 import jwt
-from utilities import Constants
+from utilities import Constants, auth_helpers, middleware
 from models.DatabaseHandler import db_handler
-from utilities import auth_helpers
 from models.Schemas import \
     NewItineraryWS, ItineraryDeleteWS, \
     NewPollWS, PollVoteWS, PollDeleteWS, \
     NewPackingWS, PackingClaimWS, PackingUnclaimWS, PackingDeleteWS, \
     MessageWS
 import datetime
+import time
 
 
-def parse_trip_id(query: str) -> str:
-    query_components = query.split('&')
-    query_elements = list(map(lambda q: q.split('='), query_components))
-    for key, val in query_elements:
-        if key == 'trip_id':
-            return val
-    
-    # Because this function is essential to this module, throw if none is provided
-    raise KeyError('Trip id not found in query parameters')
-
-def date_to_string_flat(obj: dict) -> None:
-    for key, val in obj.items():
-        if type(val) is datetime.datetime:
-            obj[key] = val.isoformat()
-
+ws_rate_tracker = middleware.RateTracker(Constants.WS_REQUEST_COUNT, Constants.WS_REQUEST_WINDOW)
 
 class WebSocketHandler(socketio.AsyncNamespace):
+
+    # Interceptor (middleware) for all events
+    async def trigger_event(self, event, sid, *args):
+        # print('I got a message!', event)
+        ok = ws_rate_tracker.add_entry(sid)
+        if ok:
+            # Continue processing
+            await super().trigger_event(event, sid, *args)
+        else:
+            # Disconnect potentially malicious user
+            print(f'Disconnecting sid {sid}')
+            await self.emit('rate_limit_exceeded', {"message": f"Rate limit exceeded in {self.__class__.__name__}"})
+            await self.disconnect(sid)
 
     async def on_connect(self, sid, environ, auth):
         try:
             await auth_helpers.jwt_decode_w_retry(auth.get('token'))
 
             # Enter the correct room for this trip
-            trip_id = parse_trip_id(environ['QUERY_STRING'])
+            trip_id = WebSocketHandler.parse_trip_id(environ['QUERY_STRING'])
             self.enter_room(sid, trip_id)
 
         except jwt.exceptions.InvalidTokenError as token_error:
@@ -46,10 +45,28 @@ class WebSocketHandler(socketio.AsyncNamespace):
             raise ConnectionRefusedError(f'Error during connection attempt to {self.__class__.__name__}')
 
     def on_disconnect(self, sid):
-        print(f'{sid} disconnected from {self.__class__.__name__}')
+        # print(f'{sid} disconnected from {self.__class__.__name__}')
+        pass
 
     async def reply_error(self, sid, event: str, msg: str):
         await self.emit(event, {"message": msg}, to=sid)
+
+    @staticmethod
+    def parse_trip_id(query: str) -> str:
+        query_components = query.split('&')
+        query_elements = list(map(lambda q: q.split('='), query_components))
+        for key, val in query_elements:
+            if key == 'trip_id':
+                return val
+        
+        # Because the trip id is essential to this module, throw if none is provided
+        raise KeyError('Trip id not found in query parameters')
+    
+    @staticmethod
+    def date_to_string_flat(obj: dict) -> None:
+        for key, val in obj.items():
+            if type(val) is datetime.datetime:
+                obj[key] = val.isoformat()
 
 
 class ItinerarySocket(WebSocketHandler):
@@ -63,7 +80,7 @@ class ItinerarySocket(WebSocketHandler):
                 return
 
             itinerary_db = db_handler.create_itinerary(itinerary_data.trip_id, itinerary_data.title, itinerary_data.description, itinerary_data.start_time, itinerary_data.end_time, itinerary_data.created_by)
-            date_to_string_flat(itinerary_db)
+            WebSocketHandler.date_to_string_flat(itinerary_db)
             await self.emit('backend_itinerary_create', itinerary_db, room = itinerary_data.trip_id)
 
         except Exception as error:
@@ -94,7 +111,7 @@ class PollSocket(WebSocketHandler):
             poll_id = db_handler.create_poll(new_poll.trip_id, new_poll.title, new_poll.description, new_poll.created_by)
             db_handler.create_poll_options(poll_id, new_poll.options)
             new_poll_db = db_handler.get_poll(poll_id)
-            date_to_string_flat(new_poll_db)
+            WebSocketHandler.date_to_string_flat(new_poll_db)
 
             await self.emit('backend_poll_create', new_poll_db, room = new_poll.trip_id)
         
@@ -136,7 +153,7 @@ class PackingSocket(WebSocketHandler):
                 return
             
             item_db = db_handler.create_packing_item(new_item.trip_id, new_item.item, new_item.quantity, new_item.description, new_item.created_by)
-            date_to_string_flat(item_db)
+            WebSocketHandler.date_to_string_flat(item_db)
             await self.emit('backend_packing_create', item_db, room = new_item.trip_id)
 
         except Exception as error:
@@ -185,7 +202,7 @@ class MsgSocket(WebSocketHandler):
                 return
 
             db_msg = db_handler.create_msg(msg.trip_id, msg.content, msg.created_by)
-            date_to_string_flat(db_msg)
+            WebSocketHandler.date_to_string_flat(db_msg)
             await self.emit('backend_msg', db_msg, room = msg.trip_id)
 
         except Exception as error:

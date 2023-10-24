@@ -42,6 +42,8 @@ class TripSocket {
   protected namespace: string;
   protected socket: Socket | undefined;
   protected dispatch: Dispatch | undefined;
+  protected trip_id: string | undefined;
+  protected token: string | undefined;
 
   constructor(host: string, apiPath: string, namespace: string) {
     this.host = host;
@@ -49,15 +51,18 @@ class TripSocket {
     this.namespace = namespace;
   }
 
-  establishSocket(token: string, trip_id: string, dispatcher: Dispatch) {
-    this.dispatch = dispatcher;
+  establishSocket(token: string, trip_id: string, dispatch: Dispatch) {
+    this.token = token;
+    this.trip_id = trip_id;
+    this.dispatch = dispatch;
 
     // If we already have a connection, let's disconnect since we
     // are potentially switching trips when we get to here
     this.socket?.disconnect();
 
     this.socket = io(this.host + this.namespace, {
-      reconnectionDelayMax: 5000,
+       reconnectionDelayMax: 5000,
+      reconnectionAttempts: 5,
       path: this.apiPath,
       auth: {
         token: token,
@@ -65,6 +70,37 @@ class TripSocket {
       query: {
         trip_id: trip_id,
       },
+    });
+
+    this.socket!.on('disconnect', (reason: string) => {
+      if (reason !== 'io client disconnect') {
+        console.log('Websocket disconnected:\n', reason);
+        toast({
+          position: 'top',
+          title: 'Live updates disabled :(',
+          description: "Something went wrong, we'll try to reconnect you...",
+          status: 'error',
+          duration: 4000,
+          isClosable: true,
+        })
+  
+        if (this.token && this.trip_id && this.dispatch) {
+          const { token, trip_id, dispatch } = this;
+            setTimeout(() => {this.establishSocket(token, trip_id, dispatch)}, 5000);
+        }
+      }
+    });
+
+    this.socket!.on('rate_limit_exceeded', (data) => {
+      console.log('Websocket rate limit exceeded');
+      toast({
+        position: 'top',
+        title: 'Too much activity :(',
+        description: 'Please wait 5 seconds before trying again',
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
     });
   }
 

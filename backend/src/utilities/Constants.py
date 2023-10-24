@@ -9,6 +9,8 @@ API_HOST = os.getenv('API_HOST')
 API_PORT = int(os.getenv('API_PORT'))
 API_REQUEST_COUNT = int(os.getenv('API_REQUEST_COUNT'))
 API_REQUESTS_WINDOW = int(os.getenv('API_REQUESTS_WINDOW'))
+WS_REQUEST_COUNT = int(os.getenv('WS_REQUEST_COUNT'))
+WS_REQUEST_WINDOW = int(os.getenv('WS_REQUEST_WINDOW'))
 
 # JWT
 AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
