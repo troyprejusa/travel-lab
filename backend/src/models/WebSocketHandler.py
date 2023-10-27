@@ -8,7 +8,6 @@ from models.Schemas import \
     NewPackingWS, PackingClaimWS, PackingUnclaimWS, PackingDeleteWS, \
     MessageWS
 import datetime
-import time
 
 
 ws_rate_tracker = middleware.RateTracker(Constants.WS_REQUEST_COUNT, Constants.WS_REQUEST_WINDOW)

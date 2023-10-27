@@ -18,6 +18,7 @@ class TripModel(BaseModel):
     description: str | None = None
     start_date: date
     end_date: date
+    vacation_type: str
     created_at: datetime
     created_by: str
 

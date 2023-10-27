@@ -1,6 +1,5 @@
 import React from 'react';
 import { Flex, Text, Grid, GridItem, Box, Heading } from '@chakra-ui/react';
-import TripPhoto from '../assets/tripphoto.jpg';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
 import Constants from '../utilities/Constants';
@@ -110,7 +109,7 @@ function Home(): JSX.Element {
             background={Constants.BACKGROUND_TRANSPARENCY}
           >
             <img
-              src={TripPhoto}
+              src={Constants.PHOTO_MAP['default']}
               alt={'trip'}
               style={{
                 width: '100%',

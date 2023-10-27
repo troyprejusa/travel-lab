@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { reduxSetTrip } from '../redux/TripSlice';
 import { TripModel } from '../utilities/Interfaces';
-import TripPhoto from '../assets/tripphoto.jpg';
+import Constants from '../utilities/Constants';
 import {
   itinerarySocket,
   msgSocket,
@@ -36,7 +36,7 @@ function TripCard(props: TripCardProps) {
   return (
     <Center py={6} onClick={() => handleViewClick()} cursor={'pointer'}>
       <Box
-        w={'md'}
+        w={'sm'}
         bg={useColorModeValue('white', 'gray.900')}
         boxShadow={'2xl'}
         rounded={'md'}
@@ -52,7 +52,7 @@ function TripCard(props: TripCardProps) {
           pos={'relative'}
         >
           <img
-            src={TripPhoto}
+            src={Constants.PHOTO_MAP['default']}
             alt={'trip'}
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />

@@ -21,7 +21,8 @@ async def create_trip(
     destination: Annotated[str, Form()],
     description: Annotated[str, Form()],
     start_date: Annotated[date, Form()],
-    end_date: Annotated[date, Form()]
+    end_date: Annotated[date, Form()],
+    vacation_type: Annotated[str, Form()]
     ) -> TripModel | str:
     try:
         if db_handler.count_user_created_trips(request.state.user['email']) >= Constants.LIMIT_TRIPS_CREATED_PER_USER:
@@ -34,7 +35,7 @@ async def create_trip(
                 }
             )
 
-        new_trip_id = db_handler.create_trip(destination, description, start_date, end_date, request.state.user['email'])
+        new_trip_id = db_handler.create_trip(destination, description, start_date, end_date, vacation_type,request.state.user['email'])
         trip_data = db_handler.get_trip_data(new_trip_id)
         
         return trip_data

@@ -1,4 +1,4 @@
-import splashphotoHero from '../assets/tripphoto.jpg';
+import Constants from '../utilities/Constants';
 import {
   Container,
   SimpleGrid,
@@ -92,7 +92,7 @@ export default function LandingHero() {
           <Image
             rounded={'md'}
             alt={'feature image'}
-            src={splashphotoHero}
+            src={Constants.PHOTO_MAP['default']}
             objectFit={'cover'}
           />
         </Flex>

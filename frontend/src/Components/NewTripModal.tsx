@@ -18,10 +18,9 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Box,
-  Heading,
-  Text,
   useToast,
+  FormHelperText,
+  Select,
 } from '@chakra-ui/react';
 
 interface NewTripModalProps {}
@@ -52,7 +51,7 @@ function NewTripModal() {
                 <FormLabel>Destination</FormLabel>
                 <Input placeholder="Destination" name="destination" />
               </FormControl>
-              <FormControl isRequired>
+              <FormControl>
                 <FormLabel>Description</FormLabel>
                 <Input placeholder="Description" name="description" />
               </FormControl>
@@ -67,6 +66,21 @@ function NewTripModal() {
               <FormControl isRequired>
                 <FormLabel>Return Date</FormLabel>
                 <Input placeholder="Return Date" type="date" name="end_date" />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Type</FormLabel>
+                <Select name='vacation_type' defaultValue={'road_trip'}>
+                  <option value="tropical">Tropical</option>
+                  <option value="wilderness">Wilderness</option>
+                  <option value="city">City</option>
+                  <option value="historic">Historic</option>
+                  <option value="country">Country</option>
+                  <option value="road_trip">Road Trip</option>
+                  <option value="winter">Winter</option>
+                </Select>
+                <FormHelperText>
+                  We use this to provide a default trip picture
+                </FormHelperText>
               </FormControl>
             </form>
           </ModalBody>
@@ -88,7 +102,7 @@ function NewTripModal() {
     if (event.type === 'submit') {
       event.preventDefault();
     }
-    
+
     if (tripForm.current === null) return;
 
     const formData = new FormData(tripForm.current);
@@ -125,7 +139,9 @@ function NewTripModal() {
     }
 
     try {
-      const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
+      const token: string = await fetchHelpers.getAuth0Token(
+        getAccessTokenSilently
+      );
       const res: Response = await fetch('/trip/', {
         method: 'POST',
         body: formData,

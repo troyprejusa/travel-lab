@@ -10,6 +10,21 @@ class DatabaseSetup:
         self.database.query("""
             CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
         """)
+
+    def create_types(self) -> None:
+        self.database.query("""
+            DROP TYPE IF EXISTS vacation_setting;
+                                
+            CREATE TYPE vacation_setting AS ENUM (
+                'tropical', 
+                'wilderness', 
+                'city', 
+                'historic',
+                'country',
+                'road_trip',
+                'winter'
+            );
+        """)
     
     def intialize_traveller_table(self) -> None:
         # As this is now provided by Auth0, we only have the email by default
@@ -36,6 +51,7 @@ class DatabaseSetup:
                 description VARCHAR(200),
                 start_date DATE NOT NULL,
                 end_date DATE NOT NULL,
+                vacation_type vacation_setting NOT NULL, 
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 created_by VARCHAR(255) references traveller(email) ON DELETE SET NULL
             );
@@ -168,6 +184,7 @@ class DatabaseSetup:
 
     def setup_db(self) -> None:
         self.initialize_extensions()
+        self.create_types()
         self.intialize_traveller_table()
         self.initialize_trip_table()
         self.initialize_traveller_trip_table()
@@ -229,15 +246,17 @@ class DatabaseSetup:
                 description,
                 start_date,
                 end_date,
-                created_by
+                created_by,
+                vacation_type
             )
             VALUES (
                 'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
-                'Puerto Vallarta',
+                'Seqoia National Park',
                 'Getaway trip',
                 '2020-06-10',
                 '2020-06-11',
-                'troy@test.com'
+                'troy@test.com',
+                'wilderness'
             );
 
             INSERT INTO trip 
@@ -247,7 +266,8 @@ class DatabaseSetup:
                 description,
                 start_date,
                 end_date,
-                created_by
+                created_by,
+                vacation_type
             )
             VALUES (
                 'ce60fd7b-6238-4bef-a924-269597fdaab1',
@@ -255,7 +275,8 @@ class DatabaseSetup:
                 'Getaway trip 2',
                 '2020-07-10',
                 '2020-07-11',
-                'troy@test.com'
+                'troy@test.com',
+                'tropical'
             );
                             
             INSERT INTO trip 
@@ -265,7 +286,8 @@ class DatabaseSetup:
                 description,
                 start_date,
                 end_date,
-                created_by
+                created_by,
+                vacation_type
             )
             VALUES (
                 '47fc5568-568e-4124-9e08-60508719dfb6',
@@ -273,7 +295,8 @@ class DatabaseSetup:
                 'Boys trip',
                 '2023-08-30',
                 '2023-08-31',
-                'joe@test.com'
+                'joe@test.com',
+                'historic'
             );
             
         """)
@@ -287,7 +310,7 @@ class DatabaseSetup:
             INSERT INTO traveller_trip 
             VALUES (
                 (SELECT id FROM traveller WHERE first_name='troy'),
-                (SELECT id FROM trip WHERE destination='Puerto Vallarta'),
+                (SELECT id FROM trip WHERE destination='Seqoia National Park'),
                 TRUE,
                 TRUE
             );
@@ -303,7 +326,7 @@ class DatabaseSetup:
             INSERT INTO traveller_trip 
                 VALUES (
                 (SELECT id FROM traveller WHERE first_name='joe'),
-                (SELECT id FROM trip WHERE destination='Puerto Vallarta'),
+                (SELECT id FROM trip WHERE destination='Seqoia National Park'),
                 TRUE,
                 FALSE
             );

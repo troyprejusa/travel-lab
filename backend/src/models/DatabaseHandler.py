@@ -266,18 +266,18 @@ class PsycopgDatabaseHandler(AbstractDatabaseHandler):
 
     # --------------- TRIP OPERATIONS --------------- #
 
-    def create_trip(self, destination: str, description: str, start_date: date, end_date: date, email: str) -> str:
+    def create_trip(self, destination: str, description: str, start_date: date, end_date: date, vacation_type: str, email: str) -> str:
         # This call must not only create the trip, but must add
         # this user to the trip in the same transaction so there
         # are no dangling trips
         new_trip_id = self.query("""
             WITH temp_table as (
                 INSERT INTO trip 
-                (destination, description, start_date, end_date, created_by)
-                VALUES (%s, %s, %s, %s, %s)
+                (destination, description, start_date, end_date, vacation_type, created_by)
+                VALUES (%s, %s, %s, %s, %s, %s)
                 RETURNING id
             ) INSERT INTO traveller_trip VALUES ((SELECT id FROM traveller WHERE email=%s), (SELECT id from temp_table), TRUE, TRUE) RETURNING trip_id;
-        """, (destination, description, start_date, end_date, email, email))[0]['trip_id']
+        """, (destination, description, start_date, end_date, vacation_type, email, email))[0]['trip_id']
 
         return new_trip_id
 

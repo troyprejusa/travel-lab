@@ -18,6 +18,7 @@ export interface TripModel {
   description: string;
   start_date: string;
   end_date: string;
+  vacation_type: string;
   created_at: string;
   created_by: string;
 }

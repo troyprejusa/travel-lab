@@ -7,6 +7,7 @@ const emptyTrip: TripModel = {
   description: '',
   start_date: '',
   end_date: '',
+  vacation_type: '',
   created_at: '',
   created_by: '',
 };

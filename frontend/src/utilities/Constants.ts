@@ -1,3 +1,5 @@
+import RoadTripPhoto from '../assets/road_trip.jpg';
+
 const Constants = {
   COLORS: ['#00C49F', '#FFBB28', '#0088FE', '#FF8042', '#9933FF'],
   BACKGROUND_TRANSPARENCY: 'rgba(255, 255, 255, 0.6)',
@@ -13,6 +15,11 @@ const Constants = {
   AUTH0_DOMAIN: import.meta.env.VITE_AUTH0_DOMAIN,
   AUTH0_CLIENT: import.meta.env.VITE_AUTH0_CLIENT,
   AUTH0_AUDIENCE: import.meta.env.VITE_AUTH0_AUDIENCE,
+
+  PHOTO_MAP: {
+    road_trip: RoadTripPhoto,
+    default: RoadTripPhoto
+  }
 };
 
 export default Constants;
