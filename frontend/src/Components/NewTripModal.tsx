@@ -74,7 +74,7 @@ function NewTripModal() {
                   <option value="wilderness">Wilderness</option>
                   <option value="city">City</option>
                   <option value="historic">Historic</option>
-                  <option value="country">Country</option>
+                  <option value="countryside">Countryside</option>
                   <option value="road_trip">Road Trip</option>
                   <option value="winter">Winter</option>
                 </Select>
