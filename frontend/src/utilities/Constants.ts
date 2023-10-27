@@ -1,4 +1,11 @@
+import CityPhoto from '../assets/city.jpg';
+import CountrysidePhoto from '../assets/countryside.jpg';
+import HistoricalPhoto from '../assets/historical.jpg';
 import RoadTripPhoto from '../assets/road_trip.jpg';
+import TropicalPhoto from '../assets/tropical.jpg';
+import WildernessPhoto from '../assets/wilderness.jpg';
+import WinterPhoto from '../assets/winter.jpg';
+
 
 const Constants = {
   COLORS: ['#00C49F', '#FFBB28', '#0088FE', '#FF8042', '#9933FF'],
@@ -17,7 +24,13 @@ const Constants = {
   AUTH0_AUDIENCE: import.meta.env.VITE_AUTH0_AUDIENCE,
 
   PHOTO_MAP: {
+    city: CityPhoto,
+    countryside: CountrysidePhoto,
+    historical: HistoricalPhoto,
     road_trip: RoadTripPhoto,
+    tropical: TropicalPhoto,
+    wilderness: WildernessPhoto,
+    winter: WinterPhoto,
     default: RoadTripPhoto
   }
 };
