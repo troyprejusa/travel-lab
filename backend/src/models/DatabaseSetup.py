@@ -20,7 +20,7 @@ class DatabaseSetup:
                 'wilderness', 
                 'city', 
                 'historic',
-                'country',
+                'countryside',
                 'road_trip',
                 'winter'
             );
