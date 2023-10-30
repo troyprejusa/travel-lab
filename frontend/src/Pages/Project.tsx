@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Navbar from '../Components/Navbar';
 import { useDispatch, useSelector } from 'react-redux';
 import { TripModel } from '../utilities/Interfaces';
-import { RootState } from '../redux/Store';
+import { AppDispatch, RootState } from '../redux/Store';
 import { useAuth0 } from '@auth0/auth0-react';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { fetchAllTripData } from '../utilities/stateHandlers';
@@ -12,7 +12,7 @@ import Constants from '../utilities/Constants';
 import { withAuthenticationRequired } from '@auth0/auth0-react';
 
 function Project(): JSX.Element {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const trip: TripModel = useSelector((state: RootState) => state.trip);
   const { getAccessTokenSilently } = useAuth0();
 

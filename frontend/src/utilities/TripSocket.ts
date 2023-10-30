@@ -15,7 +15,7 @@ import {
   reduxUnclaimItem,
   reduxDeleteItem,
 } from '../redux/PackingSlice';
-import { Dispatch } from '@reduxjs/toolkit';
+import { AppDispatch } from '../redux/Store';
 import {
   MessageWS,
   MessageModel,
@@ -41,7 +41,7 @@ class TripSocket {
   protected apiPath: string;
   protected namespace: string;
   protected socket: Socket | undefined;
-  protected dispatch: Dispatch | undefined;
+  protected dispatch: AppDispatch | undefined;
   protected trip_id: string | undefined;
   protected token: string | undefined;
 
@@ -51,7 +51,7 @@ class TripSocket {
     this.namespace = namespace;
   }
 
-  establishSocket(token: string, trip_id: string, dispatch: Dispatch) {
+  establishSocket(token: string, trip_id: string, dispatch: AppDispatch) {
     this.token = token;
     this.trip_id = trip_id;
     this.dispatch = dispatch;
@@ -116,9 +116,9 @@ class MessageSocket extends TripSocket {
     super(host, apiPath, namespace);
   }
 
-  establishSocket(token: string, trip_id: string, dispatcher: Dispatch) {
+  establishSocket(token: string, trip_id: string, dispatch: AppDispatch) {
     // Make a connection to the socket using the parent method
-    super.establishSocket(token, trip_id, dispatcher);
+    super.establishSocket(token, trip_id, dispatch);
 
     // Create event handlers for this
     this.socket!.on('backend_msg', (data: MessageModel) => {
@@ -149,9 +149,9 @@ class PollSocket extends TripSocket {
     super(host, apiPath, namespace);
   }
 
-  establishSocket(token: string, trip_id: string, dispatcher: Dispatch) {
+  establishSocket(token: string, trip_id: string, dispatch: AppDispatch) {
     // Make a connection to the socket using the parent method
-    super.establishSocket(token, trip_id, dispatcher);
+    super.establishSocket(token, trip_id, dispatch);
 
     this.socket!.on('backend_poll_create', (data: PollResponseModel) => {
       this.dispatch!(reduxAddPoll(data));
@@ -220,9 +220,9 @@ class ItinerarySocket extends TripSocket {
     super(host, apiPath, namespace);
   }
 
-  establishSocket(token: string, trip_id: string, dispatcher: Dispatch) {
+  establishSocket(token: string, trip_id: string, dispatch: AppDispatch) {
     // Make a connection to the socket using the parent method
-    super.establishSocket(token, trip_id, dispatcher);
+    super.establishSocket(token, trip_id, dispatch);
 
     this.socket!.on('backend_itinerary_create', (data: ItineraryModel) => {
       this.dispatch!(reduxAddItinerary(data));
@@ -271,9 +271,9 @@ class PackingSocket extends TripSocket {
     super(host, apiPath, namespace);
   }
 
-  establishSocket(token: string, trip_id: string, dispatcher: Dispatch) {
+  establishSocket(token: string, trip_id: string, dispatch: AppDispatch) {
     // Make a connection to the socket using the parent method
-    super.establishSocket(token, trip_id, dispatcher);
+    super.establishSocket(token, trip_id, dispatch);
 
     this.socket!.on('backend_packing_create', (data: PackingModel) => {
       this.dispatch!(reduxAddPackingItem(data));

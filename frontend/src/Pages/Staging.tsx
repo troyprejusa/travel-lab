@@ -7,7 +7,7 @@ import { reduxFetchUser } from '../redux/UserSlice';
 import { useNavigate } from 'react-router-dom';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { UserModel } from '../utilities/Interfaces';
-import { RootState } from '../redux/Store';
+import { AppDispatch, RootState } from '../redux/Store';
 import NewUserForm from '../Components/NewUserForm';
 import Constants from '../utilities/Constants';
 
@@ -16,7 +16,7 @@ function Staging(): JSX.Element {
     before proceeding to have the user select a trip */
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const userRedux: UserModel = useSelector((state: RootState) => state.user);
   const { user, getAccessTokenSilently, logout } = useAuth0();
   const toast = useToast();

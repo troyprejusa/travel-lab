@@ -2,8 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TripModel, UserModel } from '../utilities/Interfaces';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../redux/Store';
-import { Dispatch } from '@reduxjs/toolkit';
+import { AppDispatch, RootState } from '../redux/Store';
 import {
   Box,
   Accordion,
@@ -48,7 +47,7 @@ import {
 
 function TripSettings(): JSX.Element {
   const navigate = useNavigate();
-  const dispatch: Dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const user: UserModel = useSelector((state: RootState) => state.user);
   const trip: TripModel = useSelector((state: RootState) => state.trip);
   const travellers: Array<UserModel> = useSelector(

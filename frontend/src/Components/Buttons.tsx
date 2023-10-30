@@ -1,9 +1,9 @@
 import React from 'react';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { fetchAllTripData } from '../utilities/stateHandlers';
-import { Dispatch } from '@reduxjs/toolkit';
 import { useAuth0 } from '@auth0/auth0-react';
 import ConfirmModal from './ConfirmModal';
+import { AppDispatch } from '../redux/Store';
 import {
   FiEdit,
   FiTrash,
@@ -189,7 +189,7 @@ export const TrashButton = (props: ConfigurableIconAndModalButtonProps) => (
 
 interface RefreshButtonProps extends IconButtonProps {
   trip_id: string;
-  dispatch: Dispatch;
+  dispatch: AppDispatch;
 }
 
 export const RefreshButton = (props: RefreshButtonProps) => {

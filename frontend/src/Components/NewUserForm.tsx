@@ -28,10 +28,9 @@ import { FiPhone, FiUser } from 'react-icons/fi';
 import { PhoneIcon } from '@chakra-ui/icons';
 import { reduxUpdateUserData } from '../redux/UserSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { Dispatch } from '@reduxjs/toolkit';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { UserModel } from '../utilities/Interfaces';
-import { RootState } from '../redux/Store';
+import { AppDispatch, RootState } from '../redux/Store';
 import { useAuth0 } from '@auth0/auth0-react';
 
 interface UserFormData {
@@ -228,7 +227,7 @@ const Form1 = (props: UserFormProps) => {
 
 const Form2 = (props: UserFormProps) => {
   const user: UserModel = useSelector((state: RootState) => state.user);
-  const dispatch: Dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { getAccessTokenSilently } = useAuth0();
   const toast = useToast();
 
@@ -305,7 +304,7 @@ const Form2 = (props: UserFormProps) => {
           token: token,
         })
       );
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
       toast({
         position: 'top',
