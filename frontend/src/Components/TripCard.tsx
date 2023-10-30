@@ -52,7 +52,7 @@ function TripCard(props: TripCardProps) {
           pos={'relative'}
         >
           <img
-            src={Constants.PHOTO_MAP['default']}
+            src={Constants.PHOTO_MAP[props.tripData.vacation_type]}
             alt={'trip'}
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />

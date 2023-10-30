@@ -109,7 +109,7 @@ function Home(): JSX.Element {
             background={Constants.BACKGROUND_TRANSPARENCY}
           >
             <img
-              src={Constants.PHOTO_MAP['default']}
+              src={Constants.PHOTO_MAP[trip.vacation_type]}
               alt={'trip'}
               style={{
                 width: '100%',
