@@ -37,7 +37,7 @@ function LoginButton() {
   }
 
   return (
-    <Button colorScheme="orange" onClick={loginWithRedirect} cursor={'pointer'}>
+    <Button colorScheme="orange" onClick={() => loginWithRedirect()} cursor={'pointer'}>
       Log in
     </Button>
   );

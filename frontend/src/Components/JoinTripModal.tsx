@@ -41,7 +41,7 @@ function JoinTripModal() {
             <form ref={joinForm} onSubmit={handleSubmit}>
               <FormControl isRequired>
                 <FormLabel>Trip id</FormLabel>
-                <Input name="trip_id" />
+                <Input name="trip_id" type='text'/>
               </FormControl>
             </form>
           </ModalBody>
@@ -69,7 +69,7 @@ function JoinTripModal() {
     const formData = new FormData(joinForm.current);
 
     // Validate form
-    const id_entry: string = formData.get('trip_id');
+    const id_entry: string = formData.get('trip_id') as string;
 
     if (id_entry === '') {
       alert('Trip id cannot be empty!');
@@ -108,7 +108,7 @@ function JoinTripModal() {
           isClosable: true,
         });
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
       toast({
         position: 'top',

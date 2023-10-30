@@ -108,10 +108,10 @@ function NewTripModal() {
     const formData = new FormData(tripForm.current);
 
     // Validate form
-    const destination_entry: string = formData.get('destination');
-    const description_entry: string = formData.get('description');
-    const start_date_entry: string = formData.get('start_date');
-    const end_date_entry: string = formData.get('end_date');
+    const destination_entry: string = formData.get('destination') as string;
+    const description_entry: string = formData.get('description') as string;
+    const start_date_entry: string = formData.get('start_date') as string;
+    const end_date_entry: string = formData.get('end_date') as string;
 
     if (destination_entry === '') {
       alert('Destination cannot be empty!');

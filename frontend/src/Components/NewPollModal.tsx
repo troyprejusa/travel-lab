@@ -1,4 +1,10 @@
-import { useState, useRef, SyntheticEvent, ReactElement } from 'react';
+import {
+  useState,
+  useRef,
+  SyntheticEvent,
+  ReactElement,
+  ChangeEvent,
+} from 'react';
 import { NewPollModel, TripModel, UserModel } from '../utilities/Interfaces';
 import { pollSocket } from '../utilities/TripSocket';
 import {
@@ -14,11 +20,9 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Radio,
   Box,
   Select,
   Textarea,
-  ButtonGroup,
 } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
@@ -55,11 +59,7 @@ function NewPollModal(props: NewPollModalProps) {
 
   return (
     <>
-      <Button
-        size="md"
-        colorScheme="orange"
-        onClick={onOpen}
-      >
+      <Button size="md" colorScheme="orange" onClick={onOpen}>
         New poll
       </Button>
 
@@ -84,9 +84,9 @@ function NewPollModal(props: NewPollModalProps) {
                 <Select
                   placeholder="options"
                   size="md"
-                  onChange={(event: SyntheticEvent) =>
-                    setPollOptionCount(event.target.value)
-                  }
+                  onChange={(event: ChangeEvent<HTMLSelectElement>) => {
+                    setPollOptionCount(parseInt(event.target.value));
+                  }}
                 >
                   {selectOptions}
                 </Select>
@@ -112,7 +112,7 @@ function NewPollModal(props: NewPollModalProps) {
     if (event.type === 'submit') {
       event.preventDefault();
     }
-    
+
     if (pollForm.current === null) return;
 
     const formData = new FormData(pollForm.current);
@@ -132,7 +132,7 @@ function NewPollModal(props: NewPollModalProps) {
       if (key === 'title') {
         pollData.title = val.toString();
       } else if (key === 'description') {
-        const descriptionEntry = formData.get('description');
+        const descriptionEntry = formData.get('description') as string;
         if (descriptionEntry !== '') pollData.description = descriptionEntry;
       } else if (key.split('_').length > 1) {
         // This is an option

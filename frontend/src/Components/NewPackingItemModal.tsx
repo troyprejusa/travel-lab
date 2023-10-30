@@ -82,8 +82,8 @@ function NewItemModal(props: NewItemModalProps) {
     const formData = new FormData(itemForm.current);
 
     // Validate form
-    const item: string = formData.get('item');
-    const quantity: string = formData.get('quantity');
+    const item: string = formData.get('item') as string;
+    const quantity: string = formData.get('quantity') as string;
 
     if (item === '') {
       alert('Item cannot be empty!');
@@ -95,11 +95,11 @@ function NewItemModal(props: NewItemModalProps) {
       return;
     }
 
-    const new_packing: NewPackingWS = {
+    const new_packing = {
       trip_id: trip.id,
       created_by: user.email,
       ...Object.fromEntries(formData.entries()),
-    };
+    } as NewPackingWS;
 
     if (new_packing.description === '') new_packing.description = null;
 

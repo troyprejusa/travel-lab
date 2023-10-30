@@ -134,14 +134,14 @@ function Home(): JSX.Element {
             <Flex flexDirection={'column'} height={'100%'}>
               <StatsCard
                 title="Itinerary stops"
-                stat={itinerary.length}
+                stat={itinerary.length.toString()}
                 icon={<FiMap fontSize={ICON_SIZE} />}
               />
               <StatsCard
                 title="Stops you created"
                 stat={
                   itinerary.filter((stop) => stop.created_by === user.email)
-                    .length
+                    .length.toString()
                 }
                 icon={<FiMapPin fontSize={ICON_SIZE} />}
               />
@@ -163,14 +163,14 @@ function Home(): JSX.Element {
               <StatsCard
                 title="Confirmed travellers"
                 stat={
-                  travellers.filter((user: UserModel) => user.confirmed).length
+                  travellers.filter((user: UserModel) => user.confirmed).length.toString()
                 }
                 icon={<FiUsers fontSize={ICON_SIZE} />}
               />
               <StatsCard
                 title="Pending travellers"
                 stat={
-                  travellers.filter((user: UserModel) => !user.confirmed).length
+                  travellers.filter((user: UserModel) => !user.confirmed).length.toString()
                 }
                 icon={<FiUser fontSize={ICON_SIZE} />}
               />

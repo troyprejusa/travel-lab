@@ -1,10 +1,8 @@
 import { useRef, SyntheticEvent } from 'react';
-import fetchHelpers from '../utilities/fetchHelpers';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
 import {
   TripModel,
-  ItineraryModel,
   NewItineraryModel,
   UserModel,
 } from '../utilities/Interfaces';
@@ -98,10 +96,10 @@ function NewItineraryModal(props: NewItineraryModalProps) {
     const formData = new FormData(itineraryForm.current);
 
     // Validate form
-    const title_entry = formData.get('title');
-    // const description_entry = formData.get('description');
-    const start_time_entry = formData.get('start_time');
-    const end_time_entry = formData.get('end_time');
+    const title_entry = formData.get('title') as string;
+    // const description_entry = formData.get('description') as string;
+    const start_time_entry = formData.get('start_time') as string;
+    const end_time_entry = formData.get('end_time') as string;
 
     if (title_entry === '') {
       alert('Title cannot be empty!');
@@ -123,11 +121,11 @@ function NewItineraryModal(props: NewItineraryModalProps) {
       return;
     }
 
-    const new_itinerary: NewItineraryModel = {
+    const new_itinerary = {
       trip_id: trip.id,
       created_by: user.email,
       ...Object.fromEntries(formData.entries()),
-    };
+    } as NewItineraryModel;
 
     if (new_itinerary.description === '') new_itinerary.description = null;
     

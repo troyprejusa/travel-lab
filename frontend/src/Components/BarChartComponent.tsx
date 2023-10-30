@@ -68,10 +68,14 @@ function BarChartComponent(props: BarChartComponentProps) {
       if (poll_vote) {
         pollSocket.sendVote(poll_vote);
       }
-    } catch (typeError: TypeError) {
-      // Do nothing on purpose to handle 
-      // clicks on the graph surface not 
-      // related to voting
+    } catch (error) {
+      if (error instanceof TypeError) {
+        // Do nothing on purpose to handle 
+        // clicks on the graph surface not 
+        // related to voting
+      } else {
+        throw error;
+      }
     }
   }
 }

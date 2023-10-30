@@ -29,7 +29,7 @@ import TitleBarOverlay from '../Components/TitleBarOverlay';
 function MessageBoard(): JSX.Element {
   const user: UserModel = useSelector((state: RootState) => state.user);
   const trip: TripModel = useSelector((state: RootState) => state.trip);
-  const messages: Array<string> = useSelector(
+  const messages: Array<MessageModel> = useSelector(
     (state: RootState) => state.messages
   );
 

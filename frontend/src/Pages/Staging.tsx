@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { signOutBeforeTripSelect } from '../utilities/stateHandlers';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Flex, Box, Button, useToast } from '@chakra-ui/react';
@@ -54,14 +54,14 @@ function Staging(): JSX.Element {
     </Box>
   );
 
-  async function setUser(user: any) {
+  async function setUser(user) {
     if (user && user.email) {
       try {
         const token: string = await fetchHelpers.getAuth0Token(
           getAccessTokenSilently
         );
         dispatch(reduxFetchUser({ email: user.email, token: token }));
-      } catch (error: any) {
+      } catch (error) {
         console.error(error);
         toast({
           position: 'top',
