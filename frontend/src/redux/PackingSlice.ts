@@ -80,28 +80,28 @@ const packingSlice: Slice = createSlice({
   },
 });
 
-export const reduxFetchPacking = createAsyncThunk(
-  'messages/reduxFetchPacking',
-  async ({ trip_id, token }, thunkAPI) => {
-    try {
-      const res: Response = await fetch(`/trip/${trip_id}/packing`, {
-        method: 'GET',
-        headers: fetchHelpers.getTokenHeader(token),
-      });
+export const reduxFetchPacking = createAsyncThunk<
+  Array<PackingModel>,
+  { trip_id: string; token: string }
+>('messages/reduxFetchPacking', async ({ trip_id, token }, thunkAPI) => {
+  try {
+    const res: Response = await fetch(`/trip/${trip_id}/packing`, {
+      method: 'GET',
+      headers: fetchHelpers.getTokenHeader(token),
+    });
 
-      if (res.ok) {
-        const packingData: Array<PackingModel> = await res.json();
-        // console.log(packingData);
-        return packingData;
-      } else {
-        const errorRes: any = await res.json();
-        return thunkAPI.rejectWithValue(errorRes);
-      }
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(error);
+    if (res.ok) {
+      const packingData: Array<PackingModel> = await res.json();
+      // console.log(packingData);
+      return packingData;
+    } else {
+      const errorRes: any = await res.json();
+      return thunkAPI.rejectWithValue(errorRes);
     }
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error);
   }
-);
+});
 
 export const {
   reduxAddPackingItem,

@@ -105,32 +105,35 @@ const travellersSlice: Slice = createSlice({
   },
 });
 
-export const reduxFetchTravellers = createAsyncThunk(
-  'messages/reduxFetchTravellers',
-  async ({ trip_id, token }, thunkAPI) => {
-    try {
-      const res: Response = await fetch(`/trip/${trip_id}/travellers`, {
-        method: 'GET',
-        headers: fetchHelpers.getTokenHeader(token),
-      });
+export const reduxFetchTravellers = createAsyncThunk<
+  Array<UserModel>,
+  { trip_id: string; token: string }
+>('messages/reduxFetchTravellers', async ({ trip_id, token }, thunkAPI) => {
+  try {
+    const res: Response = await fetch(`/trip/${trip_id}/travellers`, {
+      method: 'GET',
+      headers: fetchHelpers.getTokenHeader(token),
+    });
 
-      if (res.ok) {
-        const travellers: Array<UserModel> = await res.json();
-        // console.log(travellers)
-        return travellers;
-      } else {
-        // Send to rejected case
-        const errorRes = await res.json();
-        return thunkAPI.rejectWithValue(errorRes);
-      }
-    } catch (error: any) {
+    if (res.ok) {
+      const travellers: Array<UserModel> = await res.json();
+      // console.log(travellers)
+      return travellers;
+    } else {
       // Send to rejected case
-      return thunkAPI.rejectWithValue(error);
+      const errorRes = await res.json();
+      return thunkAPI.rejectWithValue(errorRes);
     }
+  } catch (error: any) {
+    // Send to rejected case
+    return thunkAPI.rejectWithValue(error);
   }
-);
+});
 
-export const reduxAcceptTraveller = createAsyncThunk(
+export const reduxAcceptTraveller = createAsyncThunk<
+  any,
+  { token: string; trip_id: string; user_id: string }
+>(
   'messages/reduxAcceptTraveller',
   async ({ token, trip_id, user_id }, thunkAPI) => {
     try {
@@ -153,7 +156,10 @@ export const reduxAcceptTraveller = createAsyncThunk(
   }
 );
 
-export const reduxRemoveTraveller = createAsyncThunk(
+export const reduxRemoveTraveller = createAsyncThunk<
+  any,
+  { token: string; trip_id: string; user_id: string }
+>(
   'messages/reduxRemoveTraveller',
   async ({ token, trip_id, user_id }, thunkAPI) => {
     try {

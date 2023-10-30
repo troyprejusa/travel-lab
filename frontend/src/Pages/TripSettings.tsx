@@ -282,7 +282,7 @@ function TripSettings(): JSX.Element {
       dispatch(
         reduxAcceptTraveller({ token: token, trip_id: trip.id, user_id: id })
       );
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
       toast({
         position: 'top',

@@ -114,91 +114,90 @@ const userSlice: Slice = createSlice({
   },
 });
 
-export const reduxFetchUser = createAsyncThunk(
-  'user/reduxFetchUser',
-  async ({ email, token }, thunkAPI) => {
-    try {
-      const res: Response = await fetch(`/user/${email}`, {
-        method: 'POST',
-        headers: fetchHelpers.getTokenHeader(token),
-      });
+export const reduxFetchUser = createAsyncThunk<
+  UserModel,
+  { email: string; token: string }
+>('user/reduxFetchUser', async ({ email, token }, thunkAPI) => {
+  try {
+    const res: Response = await fetch(`/user/${email}`, {
+      method: 'POST',
+      headers: fetchHelpers.getTokenHeader(token),
+    });
 
-      if (res.ok) {
-        // This returns the user data directly, so we need to add the other fields to make
-        // it a placeholder UserModel until we know our role in the trip we select later
-        const userDb: DbUserModel = await res.json();
-        // console.log(user);
+    if (res.ok) {
+      // This returns the user data directly, so we need to add the other fields to make
+      // it a placeholder UserModel until we know our role in the trip we select later
+      const userDb: DbUserModel = await res.json();
+      // console.log(user);
 
-        const userData: UserModel = {
-          ...userDb,
-          confirmed: false,
-          admin: false,
-        };
-
-        return userData;
-      } else {
-        // Send to rejected case
-        const errorRes = await res.json();
-        return thunkAPI.rejectWithValue(errorRes);
-      }
-    } catch (error: any) {
+      const userData: UserModel = {
+        ...userDb,
+        confirmed: false,
+        admin: false,
+      };
+      return userData;
+    } else {
       // Send to rejected case
-      return thunkAPI.rejectWithValue(error);
+      const errorRes = await res.json();
+      return thunkAPI.rejectWithValue(errorRes);
     }
+  } catch (error: any) {
+    // Send to rejected case
+    return thunkAPI.rejectWithValue(error);
   }
-);
+});
 
-export const reduxUpdateUserData = createAsyncThunk(
-  'user/reduxPostUserData',
-  async ({ email, formData, token }, thunkAPI) => {
-    try {
-      const res: Response = await fetch(`/user/${email}`, {
-        method: 'PATCH',
-        body: formData,
-        headers: fetchHelpers.getTokenHeader(token),
-      });
+export const reduxUpdateUserData = createAsyncThunk<
+  UserModel,
+  { email: string; formData: FormData; token: string }
+>('user/reduxPostUserData', async ({ email, formData, token }, thunkAPI) => {
+  try {
+    const res: Response = await fetch(`/user/${email}`, {
+      method: 'PATCH',
+      body: formData,
+      headers: fetchHelpers.getTokenHeader(token),
+    });
 
-      if (res.ok) {
-        const updatedUser: UserModel = await res.json();
-        // console.log(updatedUser);
-        return updatedUser;
-      } else {
-        // Send to rejected case
-        const errorRes = await res.json();
-        return thunkAPI.rejectWithValue(errorRes);
-      }
-    } catch (error: any) {
+    if (res.ok) {
+      const updatedUser: UserModel = await res.json();
+      // console.log(updatedUser);
+      return updatedUser;
+    } else {
       // Send to rejected case
-      return thunkAPI.rejectWithValue(error);
+      const errorRes = await res.json();
+      return thunkAPI.rejectWithValue(errorRes);
     }
+  } catch (error) {
+    // Send to rejected case
+    return thunkAPI.rejectWithValue(error);
   }
-);
+});
 
-export const reduxFetchTripPermissions = createAsyncThunk(
-  'user/reduxFetchTripPermissions',
-  async ({ trip_id, token }, thunkAPI) => {
-    try {
-      const res: Response = await fetch(`/trip/${trip_id}/permissions`, {
-        method: 'GET',
-        headers: fetchHelpers.getTokenHeader(token),
-      });
+export const reduxFetchTripPermissions = createAsyncThunk<
+  { confirmed: boolean; admin: boolean },
+  { trip_id: string; token: string }
+>('user/reduxFetchTripPermissions', async ({ trip_id, token }, thunkAPI) => {
+  try {
+    const res: Response = await fetch(`/trip/${trip_id}/permissions`, {
+      method: 'GET',
+      headers: fetchHelpers.getTokenHeader(token),
+    });
 
-      if (res.ok) {
-        const userPermissions = await res.json();
-        // console.log(userPermissions);
+    if (res.ok) {
+      const userPermissions = await res.json();
+      // console.log(userPermissions);
 
-        return userPermissions;
-      } else {
-        // Send to rejected case
-        const errorRes = await res.json();
-        return thunkAPI.rejectWithValue(errorRes);
-      }
-    } catch (error: any) {
+      return userPermissions;
+    } else {
       // Send to rejected case
-      return thunkAPI.rejectWithValue(error);
+      const errorRes = await res.json();
+      return thunkAPI.rejectWithValue(errorRes);
     }
+  } catch (error: any) {
+    // Send to rejected case
+    return thunkAPI.rejectWithValue(error);
   }
-);
+});
 
 export const { reduxUserLogout } = userSlice.actions;
 
