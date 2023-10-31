@@ -62,6 +62,8 @@ async def rate_limiter(request: Request, call_next):
 whitelist = set([
     'docs',
     'openapi.json',
+    '',
+    'assets',
     'dev',
     'sio'
 ])

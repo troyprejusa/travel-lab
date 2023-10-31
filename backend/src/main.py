@@ -1,5 +1,6 @@
-from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import RedirectResponse
+from fastapi import FastAPI, Request
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse, FileResponse
 from routers.UserRouter import user_router
 from routers.TripRouter import trip_router
 from routers.DevRouter import dev_router
@@ -20,9 +21,16 @@ if Constants.MODE == 'development':
 # Create app
 app = FastAPI()
 
+
 # Add middleware - non-decorator syntax
 app.middleware('http')(middleware.rate_limiter)
 app.middleware('http')(middleware.authenticate_user)
+
+@app.get('/')
+async def serve_page() -> FileResponse:
+    return FileResponse("/app/dist/index.html")
+
+app.mount('/assets', StaticFiles(directory='/app/dist/assets'), name='assets')
 
 # /dev
 app.include_router(dev_router)

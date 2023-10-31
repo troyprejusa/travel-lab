@@ -19,7 +19,7 @@ class DatabaseSetup:
                 'tropical', 
                 'wilderness', 
                 'city', 
-                'historic',
+                'historical',
                 'countryside',
                 'road_trip',
                 'winter'
@@ -296,7 +296,7 @@ class DatabaseSetup:
                 '2023-08-30',
                 '2023-08-31',
                 'joe@test.com',
-                'historic'
+                'historical'
             );
             
         """)

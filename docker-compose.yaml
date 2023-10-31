@@ -6,12 +6,12 @@ services:
     command: /app/src/startup.sh
     volumes:
       - /Users/troyprejusa/Dev/apps/travel-lab/backend:/app
+      - /Users/troyprejusa/Dev/apps/travel-lab/frontend/dist:/app/dist
     ports:
       - "8000:8000"   # For the API
       - "5678:5678"   # For VSCode debugger
     depends_on:
       - database_dev
-    #   - s3mock
 
   database_dev:
     image: postgres
@@ -24,6 +24,18 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+
+  webserver_dev:
+    image: nginx
+    container_name: nginx_server
+    volumes:
+      - /Users/troyprejusa/Dev/apps/travel-lab/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /Users/troyprejusa/Dev/dev-certs/travel-lab-certs:/etc/nginx/certs:ro
+      - /Users/troyprejusa/Dev/apps/travel-lab/frontend/dist:/usr/share/nginx/html:ro
+    ports:
+      - "443:443"
+    depends_on:
+      - api_dev
 
   # s3mock:
   #   image: minio/minio
