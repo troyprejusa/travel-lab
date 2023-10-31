@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Container,
@@ -8,6 +9,7 @@ import {
 } from '@chakra-ui/react';
 
 export default function SmallWithNavigation() {
+  const navigate = useNavigate();
   return (
     <Box
       bg={useColorModeValue('gray.50', 'gray.900')}
@@ -31,6 +33,9 @@ export default function SmallWithNavigation() {
           </Box>
           <Box as="a" href={'#'}>
             Terms and Conditions
+          </Box>
+          <Box onClick={() => {navigate('/licenses')}} cursor={'pointer'}>
+            Third-Party Licenses
           </Box>
         </Stack>
         <Text>2023 Travel Lab. All rights reserved</Text>

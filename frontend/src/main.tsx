@@ -25,6 +25,7 @@ import Poll from './Pages/Poll';
 import Packing from './Pages/Packing';
 import Travellers from './Pages/Travellers';
 import TripSettings from './Pages/TripSettings';
+import Licenses from './Pages/Licenses';
 import NotFound from './Pages/NotFound';
 import ProtectedUserOutlet from './Pages/UserOutlet';
 
@@ -48,6 +49,8 @@ const router = createBrowserRouter(
         <Route path="travellers" element={<Travellers />} />
         <Route path="settings" element={<TripSettings />} />
       </Route>
+
+      <Route path='licenses' element={<Licenses />} />
 
       <Route path="*" element={<NotFound />} />
     </>

@@ -21,7 +21,6 @@ if Constants.MODE == 'development':
 # Create app
 app = FastAPI()
 
-
 # Add middleware - non-decorator syntax
 app.middleware('http')(middleware.rate_limiter)
 app.middleware('http')(middleware.authenticate_user)
