@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "license": "license-checker --production --json --customPath license-format.json > third-party-licenses.json; license-checker --production --summary"
+    "license-info": "license-checker --production --json --customPath license-format.json > third-party-licenses.json; license-checker --production --summary"
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.2.1",
