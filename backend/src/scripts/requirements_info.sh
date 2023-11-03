@@ -1,6 +1,10 @@
 #!/usr/bin/bash
+echo "WARNING: You must execute this script from inside the container for it to work correctly!"
 
-echo "You must execute this from inside the container for it to work!"
+original_dir=$(pwd)
+
+cd "$(dirname ${BASH_SOURCE})"
 cd ..
 pip freeze > requirements.txt
-cd scripts
+
+cd "$original_dir"

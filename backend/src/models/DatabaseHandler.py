@@ -502,6 +502,13 @@ class PsycopgDatabaseHandler(AbstractDatabaseHandler):
     
     # --------------- DATABASE LIMIT OPERATIONS --------------- #
 
+    def count_users(self) -> int:
+        count = self.query("""
+            SELECT COUNT(*) FROM traveller;
+        """)[0]['count']
+
+        return count
+
     def count_user_created_trips(self, email: str) -> int:
         count = self.query("""
             SELECT COUNT(*) FROM trip WHERE created_by=%s;

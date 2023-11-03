@@ -24,11 +24,9 @@ app = FastAPI()
 # Add middleware - non-decorator syntax
 app.middleware('http')(middleware.rate_limiter)
 app.middleware('http')(middleware.authenticate_user)
+app.middleware('http')(middleware.serve_public)
 
-@app.get('/')
-async def serve_page() -> FileResponse:
-    return FileResponse("/app/dist/index.html")
-
+# /assets
 app.mount('/assets', StaticFiles(directory='/app/dist/assets'), name='assets')
 
 # /dev

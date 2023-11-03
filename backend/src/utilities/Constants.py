@@ -33,6 +33,7 @@ else:
     DB_DBNAME = os.getenv('DEV_DB_DBNAME')
 
 # Database limits
+LIMIT_TOTAL_USERS = int(os.getenv('LIMIT_TOTAL_USERS'))     # protects traveller table
 LIMIT_TRIPS_CREATED_PER_USER = int(os.getenv('LIMIT_TRIPS_CREATED_PER_USER'))   # protects trip table
 LIMIT_TRIPS_ATTENDED_PER_USER = int(os.getenv('LIMIT_TRIPS_ATTENDED_PER_USER'))     # Junction: protects traveller_trip table
 LIMIT_TRAVELLERS_PER_TRIP = int(os.getenv('LIMIT_TRAVELLERS_PER_TRIP'))     # Junction: protects traveller_trip table

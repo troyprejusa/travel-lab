@@ -1,4 +1,5 @@
 from fastapi import Request, HTTPException
+from fastapi.responses import FileResponse
 from utilities import auth_helpers
 from utilities import Constants
 import jwt
@@ -58,14 +59,15 @@ async def rate_limiter(request: Request, call_next):
     response = await call_next(request)
     return response
 
-# Allow non-authenticated access to the following endpoints:
+# Allow non-authenticated access to the following endpoints
+# The logic is such that these represent calls to /docs, /openapi.json,
 whitelist = set([
-    'docs',
-    'openapi.json',
     '',
     'assets',
     'dev',
-    'sio'
+    'sio',
+    'docs',
+    'openapi.json'
 ])
 
 async def authenticate_user(request: Request, call_next):
@@ -80,18 +82,9 @@ async def authenticate_user(request: Request, call_next):
     else:
         try:
             # Expecting AUTHORIZATION: BEARER <token>
-            try:
-                auth_header = request.headers['authorization'].split()
-                if (auth_header[0].lower() != 'bearer'):
-                    raise KeyError('No bearer header')
-                
-            except KeyError:
-                raise HTTPException(
-                    status_code=401,
-                    detail={
-                        "message": "Authentication required"
-                    }
-                )
+            auth_header = request.headers['authorization'].split()
+            if (auth_header[0].lower() != 'bearer'):
+                raise KeyError('No bearer header')
             
             # Decode the JWT and add it to the request state - no exception on decode means we're good to proceed
             decoded_jwt = await auth_helpers.jwt_decode_w_retry(auth_header[1])
@@ -104,12 +97,27 @@ async def authenticate_user(request: Request, call_next):
             
             return response
         
-        except jwt.exceptions.InvalidTokenError as token_error:
-            # Invalid JWT
-            print('authenticate_user: Invalid JWT\n', token_error)
+        except (jwt.exceptions.InvalidTokenError, KeyError) as error:
+            print(f'authenticate_user: Invalid authentication:\n{request.url.path}\n{error}')
             raise HTTPException(
                 status_code=401,
                 detail={
                     "message": "Authentication required"
                 }
             )
+
+async def serve_public(request: Request, call_next):
+    if request.method == 'GET':
+        match request.url.path:
+            case '/':
+                return FileResponse('/app/dist/index.html')
+            case '/index.html':
+                return FileResponse('/app/dist/index.html')
+            case '/robots.txt':
+                return FileResponse('/app/dist/robots.txt')
+            case '/vite.svg':
+                return FileResponse('/app/dist/vite.svg')
+            case _:
+                return await call_next(request)
+    else:
+        return await call_next(request)
