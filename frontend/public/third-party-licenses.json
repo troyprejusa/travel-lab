@@ -1097,13 +1097,6 @@
     "licenseText": "MIT License\n\nCopyright © 2019 Framer BV\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE.",
     "copyright": "Copyright © 2019 Framer BV"
   },
-  "frontend@0.0.0": {
-    "licenses": "UNLICENSED",
-    "private": true,
-    "licenseText": "{\n    \"licenses\": \"\",\n    \"licenseText\": \"\",\n    \"copyright\": \"\",\n    \"repository\": \"\",\n    \"name\": false,\n    \"version\": false,\n    \"licenseFile\": false,\n    \"publisher\": false,\n    \"url\": false,\n    \"path\": false,\n    \"email\": false\n}",
-    "copyright": "",
-    "repository": ""
-  },
   "function-bind@1.1.1": {
     "licenses": "MIT",
     "repository": "https://github.com/Raynos/function-bind",
@@ -1481,6 +1474,13 @@
     "repository": "https://github.com/sudodoki/toggle-selection",
     "licenseText": "# Toggle Selection\n\nSimple module exposing function that deselects current browser selection and returns function that restores selection.\n\n```\nvar deselect = require('toggle-selection');\nvar reselect = deselect(); // remove all selection\n// … \n// do something with current selection, text, etc;\n// …\nreselect(); // restore selection\n```\n\nAll credits go to [@shvaikalesh](https://github.com/shvaikalesh).\n\n# [Example](https://github.com/sudodoki/toggle-selection/blob/master/example)\n\n![example recording](http://g.recordit.co/YPu6mHvcKe.gif)",
     "copyright": ""
+  },
+  "travel-lab-frontend@0.0.1": {
+    "licenses": "UNLICENSED",
+    "private": true,
+    "licenseText": "{\n    \"licenses\": \"\",\n    \"licenseText\": \"\",\n    \"copyright\": \"\",\n    \"repository\": \"\",\n    \"name\": false,\n    \"version\": false,\n    \"licenseFile\": false,\n    \"publisher\": false,\n    \"url\": false,\n    \"path\": false,\n    \"email\": false\n}",
+    "copyright": "",
+    "repository": ""
   },
   "tslib@2.4.0": {
     "licenses": "0BSD",
