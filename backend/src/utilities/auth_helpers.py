@@ -18,6 +18,7 @@ async def jwt_decode_w_retry(token: str) -> dict:
             payload = decode_jwt(token, rsa_key)
         except jwt.exceptions.InvalidTokenError:
             # Retry with updated keys
+            key_cache.pop(key_id)
             rsa_key = await get_rsa_keys(token)
             payload = decode_jwt(token, rsa_key)
 
