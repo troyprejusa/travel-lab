@@ -48,7 +48,7 @@ export default function LandingFooter() {
             Terms and Conditions
           </Box>
           <Box cursor={'pointer'} onClick={() => navigate('/licenses')}>
-            Third-Party Licenses
+            Licenses
           </Box>
         </Stack>
         <Text>2023 Travel Lab</Text>

@@ -1,14 +1,14 @@
 import TitleBar from '../Components/TitleBar';
 import { useEffect, useState } from 'react';
 import LicenseTable from '../Components/LicenseTable';
-import { Text } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 
 export interface LicenseInfo {
-  package: string,
-  repository: string, 
-  copyright: string,
-  licenses: string,
-  licenseText: string
+  package: string;
+  repository: string;
+  copyright: string;
+  licenses: string;
+  licenseText: string;
 }
 
 function Licenses() {
@@ -18,10 +18,14 @@ function Licenses() {
   }, []);
 
   return (
-    <>
+    <Box>
       <TitleBar text="Third Party Licenses" />
-      <Text>{licenses ? <LicenseTable data={licenses}/> : 'Fetching licenses...'}</Text>
-    </>
+      {licenses ? (
+        <LicenseTable data={licenses} />
+      ) : (
+        <Text>{'Fetching licenses...'}</Text>
+      )}
+    </Box>
   );
 
   async function getLicenseInfo() {
@@ -31,7 +35,7 @@ function Licenses() {
         const data: any = await res.json();
         const licenseData: Array<LicenseInfo> = [];
         for (const key in data) {
-          licenseData.push({package: key, ...data[key]})
+          licenseData.push({ package: key, ...data[key] });
         }
         setLicenses(licenseData);
       }

@@ -30,7 +30,7 @@ function LicenseTable(props: LicenseTableProps) {
         </Thead>
         <Tbody>
           {props.data.map((datum: LicenseInfo) => (
-            <Tr>
+            <Tr key={datum.package}>
               <Td>{datum.package}</Td>
               <Td>{datum.repository}</Td>
               <Td>{datum.copyright}</Td>
