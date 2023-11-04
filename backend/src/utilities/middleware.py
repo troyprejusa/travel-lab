@@ -1,44 +1,28 @@
 from fastapi import Request, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from utilities import auth_helpers
 from utilities import Constants
 import jwt
-from collections import deque
-import time
 from utilities import Constants
+from utilities.RateTracker import RateTracker
+import json
 
-
-class RateTracker:
-    def __init__(self, request_count: int, request_window: int):
-        self.tracker = {}
-        self.request_count = request_count
-        self.request_window = request_window
-
-    def add_entry(self, id) -> bool:
-        tracker = self.tracker  # Alias for convenience
-
-        if id not in tracker:
-            tracker[id] = deque()
-
-        user_record = tracker[id]
-        
-        now = time.monotonic()
-
-        user_record.append(now)
-
-        # Trim the list for the last N seconds
-        while now - user_record[0] > self.request_window:
-            user_record.popleft()
-
-        if len(user_record) >self.request_count:
-            return False
-        
-        return True
-    
-    # TODO: Add periodic cleanup for this data structure
-
-
+# GLOBAL VARIABLES (BELOW)
 rest_rate_tracker = RateTracker(Constants.API_REQUEST_COUNT, Constants.API_REQUESTS_WINDOW)
+
+# Allow non-authenticated access to the following endpoints (/docs, /openapi.json, ...)
+whitelist = set([
+    '',
+    'assets',
+    'dev',
+    'sio',
+    'docs',
+    'openapi.json'
+])
+
+with open('/app/dist/third-party-licenses.json', 'r') as license_file:
+    license_data = json.load(license_file)
+# GLOBAL VARIABLES (ABOVE)
 
 async def rate_limiter(request: Request, call_next):
     ok = rest_rate_tracker.add_entry(request.client.host)
@@ -50,25 +34,12 @@ async def rate_limiter(request: Request, call_next):
                 "message": "This user has submitted too many requests"
             }
         )
-    
     # print({
     #     'CLIENT': request.client.host, 
     #     'RATE': len(rest_rate_tracker.tracker[request.client.host]) / Constants.API_REQUESTS_WINDOW
     #     })
-        
     response = await call_next(request)
     return response
-
-# Allow non-authenticated access to the following endpoints
-# The logic is such that these represent calls to /docs, /openapi.json,
-whitelist = set([
-    '',
-    'assets',
-    'dev',
-    'sio',
-    'docs',
-    'openapi.json'
-])
 
 async def authenticate_user(request: Request, call_next):
     # print('HTTP Request:', request.url.path)
@@ -117,6 +88,8 @@ async def serve_public(request: Request, call_next):
                 return FileResponse('/app/dist/robots.txt')
             case '/vite.svg':
                 return FileResponse('/app/dist/vite.svg')
+            case '/third-party-licenses.json':
+                return JSONResponse(content=license_data)
             case _:
                 return await call_next(request)
     else:
