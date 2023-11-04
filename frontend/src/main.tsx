@@ -26,13 +26,21 @@ import Packing from './Pages/Packing';
 import Travellers from './Pages/Travellers';
 import TripSettings from './Pages/TripSettings';
 import Licenses from './Pages/Licenses';
+import TermsAndConditions from './Pages/TermsAndConditions';
 import NotFound from './Pages/NotFound';
 import ProtectedUserOutlet from './Pages/UserOutlet';
+import HomeOutlet from './Pages/HomeOutlet';
+import About from './Pages/About';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route path="/" element={<Landing />} />
+      <Route path="/" element={<HomeOutlet />} >
+        <Route path="/" element={<Landing />} />
+        <Route path='about' element={<About />} />
+        <Route path='termsandconditions' element={<TermsAndConditions />} />
+        <Route path='licenses' element={<Licenses />} />
+      </Route>
 
       <Route path="/user/:username" element={<ProtectedUserOutlet />} >
         <Route path="" element={<Staging />} />
@@ -49,8 +57,6 @@ const router = createBrowserRouter(
         <Route path="travellers" element={<Travellers />} />
         <Route path="settings" element={<TripSettings />} />
       </Route>
-
-      <Route path='licenses' element={<Licenses />} />
 
       <Route path="*" element={<NotFound />} />
     </>

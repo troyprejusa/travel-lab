@@ -5,11 +5,9 @@ import { withAuthenticationRequired } from '@auth0/auth0-react';
 
 function UserOutlet(): JSX.Element {
   return (
-    <>
-      <Box>
-        <Outlet />
-      </Box>
-    </>
+    <Box id='user-outlet'>
+      <Outlet />
+    </Box>
   );
 }
 

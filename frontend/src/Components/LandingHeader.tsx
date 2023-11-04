@@ -3,7 +3,6 @@ import {
   Flex,
   Text,
   IconButton,
-  Button,
   Stack,
   Collapse,
   Icon,
@@ -23,9 +22,11 @@ import {
 import LoginButton from './LoginButton';
 import SignUpButton from './SignUpButton';
 import VersionLabel from './VersionLabel';
+import { useNavigate } from 'react-router-dom';
 
 export default function WithSubnavigation() {
   const { isOpen, onToggle } = useDisclosure();
+  const navigate = useNavigate();
 
   return (
     <Box>
@@ -60,7 +61,8 @@ export default function WithSubnavigation() {
             fontFamily="monospace"
             color={useColorModeValue('gray.800', 'white')}
             userSelect={'none'}
-            cursor={'default'}
+            cursor={'pointer'}
+            onClick={() => navigate('/')}
           >
             Travel | Lab
           </Text>
@@ -93,6 +95,7 @@ const DesktopNav = () => {
   const linkColor = useColorModeValue('gray.600', 'gray.200');
   const linkHoverColor = useColorModeValue('gray.800', 'white');
   const popoverContentBgColor = useColorModeValue('white', 'gray.800');
+  const navigate = useNavigate();
 
   return (
     <Stack direction={'row'} spacing={4}>
@@ -101,9 +104,9 @@ const DesktopNav = () => {
           <Popover trigger={'hover'} placement={'bottom-start'}>
             <PopoverTrigger>
               <Box
-                as="a"
+                cursor={'pointer'}
+                onClick={() => navigate(navItem.href || '#')}
                 p={2}
-                href={navItem.href ?? '#'}
                 fontSize={'sm'}
                 fontWeight={500}
                 color={linkColor}
@@ -193,13 +196,14 @@ const MobileNav = () => {
 
 const MobileNavItem = ({ label, children, href }: NavItem) => {
   const { isOpen, onToggle } = useDisclosure();
+  const navigate = useNavigate();
 
   return (
     <Stack spacing={4} onClick={children && onToggle}>
       <Box
+        cursor={'pointer'}
+        onClick={() => navigate(href || '#')}
         py={2}
-        as="a"
-        href={href ?? '#'}
         justifyContent="space-between"
         alignItems="center"
         _hover={{
@@ -268,7 +272,7 @@ const NAV_ITEMS: Array<NavItem> = [
     ],
   },
   {
-    label: 'About us',
-    href: '#',
+    label: 'About',
+    href: '/about',
   },
 ];

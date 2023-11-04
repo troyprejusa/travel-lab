@@ -2,11 +2,9 @@ import React, { useEffect } from 'react';
 import { Box } from '@chakra-ui/react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
-import LandingHeader from '../Components/LandingHeader';
 import LandingHero from '../Components/LandingHero';
 import FeaturesSection from '../Components/FeaturesSection';
 import LandingStatistics from '../Components/LandingStatistics';
-import LandingFooter from '../Components/LandingFooter';
 
 function Landing(): JSX.Element {
   const navigate = useNavigate();
@@ -18,15 +16,9 @@ function Landing(): JSX.Element {
 
   return (
     <Box>
-      <LandingHeader />
       <LandingHero />
       <FeaturesSection />
       <LandingStatistics />
-      <br />
-      <br />
-      <br />
-      <br />
-      <LandingFooter />
     </Box>
   );
 

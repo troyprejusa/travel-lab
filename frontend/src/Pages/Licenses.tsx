@@ -1,7 +1,9 @@
+import TitleBar from "../Components/TitleBar";
+
 function Licenses() {
   return (
     <>
-      <h1>Licenses</h1>
+      <TitleBar text="Third Party Licenses"/>
     </>
   );
 }
