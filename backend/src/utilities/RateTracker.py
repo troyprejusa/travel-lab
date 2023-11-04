@@ -24,9 +24,22 @@ class RateTracker:
         while now - user_record[0] > self.request_window:
             user_record.popleft()
 
-        if len(user_record) >self.request_count:
+        # TODO: Make this data structure self-cleaning
+        self.cleanup()
+
+        if len(user_record) > self.request_count:
             return False
         
         return True
     
-    # TODO: Add periodic cleanup for this data structure
+    def cleanup(self):
+        # Do a (brute force) cleanup of this structure to remove old entries
+        now = time.monotonic()
+        remove_key = []
+        for id, timestamps in self.tracker.items():
+            if len(timestamps) > 0 and now - timestamps[-1] > self.request_window:
+                remove_key.append(id)
+
+        for rem in remove_key:
+            self.tracker.pop(rem)
+    
