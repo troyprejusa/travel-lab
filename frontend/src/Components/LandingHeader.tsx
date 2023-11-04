@@ -63,6 +63,7 @@ export default function WithSubnavigation() {
             userSelect={'none'}
             cursor={'pointer'}
             onClick={() => navigate('/')}
+            marginY={'auto'}
           >
             Travel | Lab
           </Text>
