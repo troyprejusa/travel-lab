@@ -49,9 +49,17 @@ async def serve_static_files(request: Request, call_next):
 
         # Other cases
         if len(endpoint_array) == 1:
+            # /<filename>
             return FileResponse(f'/app/dist/{endpoint_array[0]}')
         elif len(endpoint_array) == 2 and endpoint_array[0] == 'assets':
-            return FileResponse(f'/app/dist/assets/{endpoint_array[1]}')
+            # /assets/<filename>
+
+            # Vite includes hashes in the filename for this directory,
+            # so they are OK for permanent caching (1 year) 
+            cache_headers = {
+                'Cache-Control': 'public, max-age=31536000, immutable'
+            }
+            return FileResponse(f'/app/dist/assets/{endpoint_array[1]}', headers=cache_headers)
             
     response = await call_next(request)
     return response

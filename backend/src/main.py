@@ -22,7 +22,7 @@ if Constants.MODE == 'development':
 app = FastAPI()
 
 # Add middleware - non-decorator syntax
-# NOTE: FastAPI executes middleware in the REVERSE order they are declared :(
+# NOTE: FastAPI executes middleware in the REVERSE order they are declared, like an onion
 app.middleware('http')(middleware.authenticate_user)    # (3) Authenticate user
 app.middleware('http')(middleware.serve_static_files)   # (2) Serve public content
 app.middleware('http')(middleware.rate_limiter)         # (1) Rate limit
