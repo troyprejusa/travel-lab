@@ -165,7 +165,7 @@ function TripSettings(): JSX.Element {
           </h2>
           <AccordionPanel pb={4}>
             <Text>
-              Promote travellers to administrators, or remove travellers from
+              Promote travellers to administrators (feature in work), or remove travellers from
               trip.
             </Text>
             <TableContainer marginTop={6} borderRadius={'6px'}>
