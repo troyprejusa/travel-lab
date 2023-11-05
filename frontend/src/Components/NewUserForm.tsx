@@ -32,6 +32,7 @@ import fetchHelpers from '../utilities/fetchHelpers';
 import { UserModel } from '../utilities/Interfaces';
 import { AppDispatch, RootState } from '../redux/Store';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useNavigate } from 'react-router-dom';
 
 interface UserFormData {
   first_name: string;
@@ -102,6 +103,8 @@ export default function NewUserForm() {
 const Form1 = (props: UserFormProps) => {
   const newForm = useRef<HTMLFormElement>(null);
   const toast = useToast();
+  const user: UserModel = useSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
 
   return (
     <form ref={newForm} onSubmit={handleNext}>
@@ -139,11 +142,10 @@ const Form1 = (props: UserFormProps) => {
       </FormControl>
       <ButtonGroup mt="5%" w="100%">
         <Flex w="100%" justifyContent="space-between">
-          <Flex>
             <Button type="submit" w="7rem" colorScheme="teal" variant="solid">
               Next
             </Button>
-          </Flex>
+            <Text cursor={'pointer'} color={'blue.500'} onClick={() => navigate(`/user/${user.email}/settings`)}>Cancel account</Text>
         </Flex>
       </ButtonGroup>
     </form>
