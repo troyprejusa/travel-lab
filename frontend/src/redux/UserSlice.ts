@@ -49,12 +49,11 @@ const userSlice: Slice = createSlice({
           return action.payload;
         }
       )
-      .addCase(reduxFetchUser.rejected, (state, action) => {
+      .addCase(reduxFetchUser.rejected, (state, action: any) => {
         // user/reduxFetchUser/rejected
-        console.error(action.payload);
         toast({
           position: 'top',
-          title: 'Unable to retrieve user data :(',
+          title: action.payload?.detail?.message || 'Unable to retrieve user data :(',
           description: 'Something went wrong...',
           status: 'error',
           duration: 4000,

@@ -79,14 +79,32 @@ class PsycopgDatabaseHandler:
                     raise pg_error
                 
     # ------------------- USER OPERATIONS ------------------- #
-                
-    def upsert_user(self, email: str) -> dict:
+
+    def get_user(self, email: str) -> dict | None:
         user = self.query("""
-            INSERT INTO traveller (email) VALUES (%s) ON CONFLICT (email) DO NOTHING;
-            SELECT * FROM traveller WHERE email=%s;
-        """, (email, email))[0]
+            SELECT * FROM traveller where email = %s;
+        """, (email,))
+
+        if len(user) == 0:
+            return None
+        else:
+            return user[0]
+        
+    def create_user(self, email: str) -> dict:
+        user = self.query("""
+            INSERT INTO traveller (email) VALUES (%s)
+            RETURNING *;
+        """, (email,))[0]
 
         return user
+                
+    # def upsert_user(self, email: str) -> dict:
+    #     user = self.query("""
+    #         INSERT INTO traveller (email) VALUES (%s) ON CONFLICT (email) DO NOTHING;
+    #         SELECT * FROM traveller WHERE email=%s;
+    #     """, (email, email))[0]
+
+    #     return user
     
     def patch_user_info(self, first_name: str, last_name: str, phone: str, email: str) -> None:
         updated_user = self.query("""

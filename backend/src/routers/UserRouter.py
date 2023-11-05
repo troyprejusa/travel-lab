@@ -21,7 +21,19 @@ return whatever data is there for this user
 @user_router.post('/{email}')
 async def upsert_user(email: str) -> UserModel | str:
     try:
-        user = db_handler.upsert_user(email)
+        user = db_handler.get_user(email)
+        if not user:
+            if db_handler.count_users() >= Constants.LIMIT_TOTAL_USERS:
+                return JSONResponse(
+                    status_code=422,
+                    content={
+                        "detail": {
+                            "message": "No more users allowed at this time."
+                        }
+                    }
+                )
+            user = db_handler.create_user(email)
+
         return user
     
     except Exception as error:
