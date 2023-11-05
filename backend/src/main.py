@@ -22,9 +22,10 @@ if Constants.MODE == 'development':
 app = FastAPI()
 
 # Add middleware - non-decorator syntax
-app.middleware('http')(middleware.rate_limiter)
-app.middleware('http')(middleware.authenticate_user)
-app.middleware('http')(middleware.serve_public)
+# NOTE: FastAPI executes middleware in the REVERSE order they are declared :(
+app.middleware('http')(middleware.authenticate_user)    # (3) Authenticate user
+app.middleware('http')(middleware.serve_static_files)   # (2) Serve public content
+app.middleware('http')(middleware.rate_limiter)         # (1) Rate limit
 
 # /assets
 app.mount('/assets', StaticFiles(directory='/app/dist/assets'), name='assets')

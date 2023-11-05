@@ -12,8 +12,6 @@ rest_rate_tracker = RateTracker(Constants.API_REQUEST_COUNT, Constants.API_REQUE
 
 # Allow non-authenticated access to the following endpoints (/docs, /openapi.json, ...)
 whitelist = set([
-    '',
-    'assets',
     'dev',
     'sio',
     'docs',
@@ -38,6 +36,23 @@ async def rate_limiter(request: Request, call_next):
     #     'CLIENT': request.client.host, 
     #     'RATE': len(rest_rate_tracker.tracker[request.client.host]) / Constants.API_REQUESTS_WINDOW
     #     })
+    response = await call_next(request)
+    return response
+
+async def serve_static_files(request: Request, call_next):
+    if request.method == 'GET':
+        endpoint_array = request.url.path[1:].split('/')
+
+        # Edge case
+        if (request.url.path == '/'):
+            return FileResponse('/app/dist/index.html')
+
+        # Other cases
+        if len(endpoint_array) == 1:
+            return FileResponse(f'/app/dist/{endpoint_array[0]}')
+        elif len(endpoint_array) == 2 and endpoint_array[0] == 'assets':
+            return FileResponse(f'/app/dist/assets/{endpoint_array[1]}')
+            
     response = await call_next(request)
     return response
 
@@ -76,21 +91,3 @@ async def authenticate_user(request: Request, call_next):
                     "message": "Authentication required"
                 }
             )
-
-async def serve_public(request: Request, call_next):
-    if request.method == 'GET':
-        match request.url.path:
-            case '/':
-                return FileResponse('/app/dist/index.html')
-            case '/index.html':
-                return FileResponse('/app/dist/index.html')
-            case '/robots.txt':
-                return FileResponse('/app/dist/robots.txt')
-            case '/vite.svg':
-                return FileResponse('/app/dist/vite.svg')
-            case '/third-party-licenses.json':
-                return JSONResponse(content=license_data)
-            case _:
-                return await call_next(request)
-    else:
-        return await call_next(request)
