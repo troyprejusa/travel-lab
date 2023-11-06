@@ -1,0 +1,11 @@
+ Count  License                                              
+ 11     Apache Software License                              
+ 1      Apache Software License; BSD License                 
+ 3      Apache Software License; MIT License                 
+ 13     BSD License                                          
+ 1      CC0 1.0 Universal (CC0 1.0) Public Domain Dedication 
+ 1      GNU Library or Lesser General Public License (LGPL)  
+ 1      ISC                                                  
+ 17     MIT License                                          
+ 2      Mozilla Public License 2.0 (MPL 2.0)                 
+ 1      Python Software Foundation License                   
