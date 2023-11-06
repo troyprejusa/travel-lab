@@ -31,7 +31,6 @@ interface ConfigurableButtonProps extends ButtonProps {
   disabled?: boolean;
 }
 
-// Button + Modal
 export const ConfigurableButton = (props: ConfigurableButtonProps) => {
   const { tooltipMsg, disabled, ...rest } = props;
 

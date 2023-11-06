@@ -4,6 +4,9 @@ from models.DatabaseHandler import db_handler
 import jwt
 from jwt import PyJWKClient
 from utilities import Constants
+from auth0.authentication import GetToken
+from auth0.management import Auth0
+
 
 
 # Global variable
@@ -55,9 +58,7 @@ def decode_jwt(token: str, rsa_key) -> dict:
 
 def establish_user_attendance(email: str) -> dict:
     try:
-        user_data = {}
-        user_data['email'] = email
-        user_data['trips'] = {}
+        trip_data = {}
 
         user_trips = db_handler.query("""
             SELECT trip_id, admin FROM traveller_trip WHERE 
@@ -67,10 +68,10 @@ def establish_user_attendance(email: str) -> dict:
 
         # user_data.trips will be an object of objects, keyed by trip_id
         for trip in user_trips:
-            user_data['trips'][trip['trip_id']] = trip
+            trip_data[trip['trip_id']] = trip
         # print(user_data)
 
-        return user_data
+        return trip_data
     
     except Exception as error:
         print('establish_user_attendance: Unable to gather trip data for user user\n', error)
@@ -89,3 +90,12 @@ def verify_admin(trip_id: str, trips: dict[str, dict[str, str]]) -> None:
         return
         
     raise Exception('verify_admin: User is not an admin on this trip')
+
+
+def get_auth0_manager():
+    get_token = GetToken(Constants.AUTH0_DOMAIN, Constants.AUTH0_CLIENT_ID, client_secret=Constants.AUTH0_CLIENT_SECRET)
+    token = get_token.client_credentials(f'https://{Constants.AUTH0_DOMAIN}/api/v2/')
+    mgmt_api_token = token['access_token']
+    auth0 = Auth0(Constants.AUTH0_DOMAIN, mgmt_api_token)
+
+    return auth0

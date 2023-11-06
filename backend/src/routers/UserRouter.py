@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi.responses import JSONResponse
 from models.DatabaseHandler import db_handler
 from models.Schemas import UserModel, TripModel
-from utilities.auth_helpers import verify_attendance, verify_admin
+from utilities.auth_helpers import verify_attendance, verify_admin, get_auth0_manager
 import utilities.Constants as Constants
 
 
@@ -69,8 +69,10 @@ async def patch_user_info(
     
 # Delete current user from database
 @user_router.delete('/{email}')
-async def delete_user(email: str) -> str:
+async def delete_user(request: Request, email: str) -> str:
     try:
+        auth0 = get_auth0_manager()
+        auth0.users.delete(request.state.user['auth0_id'])
         db_handler.delete_user(email)
 
         return JSONResponse(
