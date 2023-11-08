@@ -1,3 +1,7 @@
+import LoginButton from './LoginButton';
+import SignUpButton from './SignUpButton';
+import VersionLabel from './VersionLabel';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Flex,
@@ -19,10 +23,6 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
 } from '@chakra-ui/icons';
-import LoginButton from './LoginButton';
-import SignUpButton from './SignUpButton';
-import VersionLabel from './VersionLabel';
-import { useNavigate } from 'react-router-dom';
 
 export default function WithSubnavigation() {
   const { isOpen, onToggle } = useDisclosure();

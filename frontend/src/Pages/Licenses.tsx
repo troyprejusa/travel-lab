@@ -40,14 +40,6 @@ function Licenses() {
         }
       }
 
-      const fontRes: Response = await fetch('/font-licenses.json');
-      if (fontRes.ok) {
-        const data  = await fontRes.json();
-        for (const key in data) {
-          licenseData.push({ type: 'font', package: key, ...data[key] });
-        }
-      }
-
       const photoRes: Response = await fetch('/unsplash-photos-licenses.json')
       if (photoRes.ok) {
         const data  = await photoRes.json();
@@ -55,7 +47,7 @@ function Licenses() {
           licenseData.push({ type: 'photo', package: key, ...data[key] });
         }
       }
-      
+
       // Save all retrieved license data
       setLicenses(licenseData);
 
