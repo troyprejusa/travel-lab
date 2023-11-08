@@ -1,5 +1,3 @@
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import LoginButton from './LoginButton';
 import SignUpButton from './SignUpButton';
 import VersionLabel from './VersionLabel';
@@ -27,12 +25,17 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
 } from '@chakra-ui/icons';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 export default function WithSubnavigation() {
-  const [allowEntry, setAllowEntry] = useState<boolean>(false);
-  const [searchParams] = useSearchParams();
+  
   const { isOpen, onToggle } = useDisclosure();
   const navigate = useNavigate();
+
+    // NOTE: ALPHA LOGIC:
+    const [allowEntry, setAllowEntry] = useState<boolean>(false);
+    const [searchParams] = useSearchParams();
 
   useEffect(() => {
     checkQueryParam();
