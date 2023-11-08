@@ -48,6 +48,7 @@ export default function LandingHero() {
             fontSize={'60px'}
             userSelect={'none'}
             cursor={'default'}
+            width={'max-content'}
           >
             Travel | Lab
           </Heading>

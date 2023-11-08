@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Text } from '@chakra-ui/react';
 
 export default function VersionLabel() {
@@ -13,7 +12,7 @@ export default function VersionLabel() {
         alignSelf={'flex-start'}
         rounded={'md'}
       >
-        {'v0.0.1'}
+        {'ALPHA v0.0.1'}
       </Text>
     </Box>
   );

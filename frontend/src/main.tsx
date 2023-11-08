@@ -31,6 +31,7 @@ import NotFound from './Pages/NotFound';
 import ProtectedUserOutlet from './Pages/UserOutlet';
 import HomeOutlet from './Pages/HomeOutlet';
 import About from './Pages/About';
+import PrivacyPolicy from './Pages/PrivacyPolicy';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -38,6 +39,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<HomeOutlet />} >
         <Route path="/" element={<Landing />} />
         <Route path='about' element={<About />} />
+        <Route path='privacy' element={<PrivacyPolicy />} />
         <Route path='termsandconditions' element={<TermsAndConditions />} />
         <Route path='licenses' element={<Licenses />} />
       </Route>

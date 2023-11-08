@@ -145,7 +145,7 @@ const Form1 = (props: UserFormProps) => {
             <Button type="submit" w="7rem" colorScheme="teal" variant="solid">
               Next
             </Button>
-            <Text cursor={'pointer'} color={'blue.500'} onClick={() => navigate(`/user/${user.email}/settings`)}>Cancel account</Text>
+            <Text cursor={'pointer'} color={'blue.500'} onClick={() => navigate(`/user/${user.email}/settings`)}>Delete account</Text>
         </Flex>
       </ButtonGroup>
     </form>

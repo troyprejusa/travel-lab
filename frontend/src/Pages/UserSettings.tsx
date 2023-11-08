@@ -1,5 +1,12 @@
-import React from 'react';
 import TitleBar from '../Components/TitleBar';
+import { ConfigurableButtonAndModal } from '../Components/Buttons';
+import { useAuth0 } from '@auth0/auth0-react';
+import fetchHelpers from '../utilities/fetchHelpers';
+import { UserModel } from '../utilities/Interfaces';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/Store';
+import { signOutBeforeTripSelect } from '../utilities/stateHandlers';
+import { useNavigate } from 'react-router-dom';
 import {
   Text,
   Box,
@@ -10,15 +17,9 @@ import {
   AlertTitle,
   useToast,
 } from '@chakra-ui/react';
-import { ConfigurableButtonAndModal } from '../Components/Buttons';
-import { useAuth0 } from '@auth0/auth0-react';
-import fetchHelpers from '../utilities/fetchHelpers';
-import { UserModel } from '../utilities/Interfaces';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../redux/Store';
-import { signOutBeforeTripSelect } from '../utilities/stateHandlers';
 
 function UserSettings(): JSX.Element {
+  const navigate = useNavigate();
   const user: UserModel = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   const { getAccessTokenSilently, logout } = useAuth0();
@@ -28,7 +29,7 @@ function UserSettings(): JSX.Element {
     <>
       <TitleBar text="User Settings" />
       <Text color={'blue.500'} cursor={'pointer'} onClick={() => navigate('/')}>
-        Return to home
+        Return to previous
       </Text>
       <Box>
         <Text>User Photo</Text>

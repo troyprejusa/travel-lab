@@ -1,6 +1,5 @@
-import React, { ReactNode, SyntheticEvent } from 'react';
+import { ReactNode } from 'react';
 import { IconType } from 'react-icons';
-import { ReactText } from 'react';
 import { Link as RRDLink, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -11,6 +10,9 @@ import { useDispatch } from 'react-redux';
 import { RootState } from '../redux/Store';
 import { TripModel, UserModel } from '../utilities/Interfaces';
 import { AvatarWrapper } from './AvatarWrapper';
+import { useAuth0 } from '@auth0/auth0-react';
+import { RefreshButton } from './Buttons';
+import Constants from '../utilities/Constants';
 import {
   IconButton,
   Box,
@@ -46,9 +48,6 @@ import {
   FiUsers,
   FiThumbsUp,
 } from 'react-icons/fi';
-import { useAuth0 } from '@auth0/auth0-react';
-import { RefreshButton } from './Buttons';
-import Constants from '../utilities/Constants';
 
 interface LinkItemProps {
   name: string;
@@ -125,6 +124,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             cursor="pointer"
             userSelect={'none'}
             onClick={() => handleReturnToTrips()}
+            width={'max-content'}
           >
             Travel | Lab
           </Text>
@@ -222,19 +222,19 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         aria-label="open menu"
         icon={<FiMenu />}
       />
-      <Tooltip label='select trip'>
-
-      <Text
-        display={{ base: 'flex', md: 'none' }}
-        fontSize="2xl"
-        fontFamily="monospace"
-        fontWeight="bold"
-        cursor={'pointer'}
-        userSelect={'none'}
-        onClick={() => handleReturnToTrips()}
-      >
-        Travel | Lab
-      </Text>
+      <Tooltip label="select trip">
+        <Text
+          display={{ base: 'flex', md: 'none' }}
+          fontSize="2xl"
+          fontFamily="monospace"
+          fontWeight="bold"
+          cursor={'pointer'}
+          userSelect={'none'}
+          onClick={() => handleReturnToTrips()}
+          width={'max-content'}
+        >
+          Travel | Lab
+        </Text>
       </Tooltip>
 
       <HStack spacing={{ base: '4', md: '6' }}>

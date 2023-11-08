@@ -43,6 +43,12 @@ export default function LandingFooter() {
           </Box>
           <Box
             cursor={'pointer'}
+            onClick={() => navigate('/privacy')}
+          >
+            Privacy Policy
+          </Box>
+          <Box
+            cursor={'pointer'}
             onClick={() => navigate('/termsandconditions')}
           >
             Terms and Conditions
