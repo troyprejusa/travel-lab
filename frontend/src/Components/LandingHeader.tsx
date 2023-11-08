@@ -30,11 +30,13 @@ import {
 
 export default function WithSubnavigation() {
   const [allowEntry, setAllowEntry] = useState<boolean>(false);
-  const [ searchParams ] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const { isOpen, onToggle } = useDisclosure();
   const navigate = useNavigate();
 
-  useEffect(() => {checkQueryParam()}, []);
+  useEffect(() => {
+    checkQueryParam();
+  }, []);
 
   return (
     <Box>
@@ -117,14 +119,13 @@ export default function WithSubnavigation() {
     const key: string | null = searchParams.get('key');
     if (!email || !key) return;
 
-    // DO STUFF HERE!
-
     const formData = new FormData();
-    formData.set('key', key)
+    formData.set('email', email);
+    formData.set('key', key);
     const res: Response = await fetch('/dev/alpha', {
       method: 'POST',
-      body: formData
-    })
+      body: formData,
+    });
 
     if (res.ok) {
       setAllowEntry(true);

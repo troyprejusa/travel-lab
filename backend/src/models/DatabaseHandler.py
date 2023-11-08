@@ -446,6 +446,15 @@ class PsycopgDatabaseHandler:
 
         return count
     
+    # --------------- ALPHA OPERATIONS --------------- #
+    def check_alpha_key(self, email: str, key: str) -> bool:
+        count = self.query("""
+            SELECT COUNT(*) FROM alpha WHERE email=%s AND key=%s;
+        """, (email, key))[0]['count']
+
+        return count == 1
+
+    
 # CREATE DATABASE HANDLER
 settings = {
     'host': Constants.DB_HOST,
