@@ -1,4 +1,6 @@
+import { ReactElement } from 'react';
 import Constants from '../utilities/Constants';
+import TravelLabLogo from './TravelLabLogo';
 import {
   Container,
   SimpleGrid,
@@ -12,7 +14,6 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { FiCalendar, FiBriefcase, FiMessageSquare } from 'react-icons/fi';
-import { ReactElement } from 'react';
 
 interface FeatureProps {
   text: string;
@@ -43,15 +44,7 @@ export default function LandingHero() {
     <Container maxW={'5xl'} py={12}>
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10}>
         <Stack spacing={4}>
-          <Heading
-            fontFamily="monospace"
-            fontSize={'60px'}
-            userSelect={'none'}
-            cursor={'default'}
-            width={'max-content'}
-          >
-            Travel | Lab
-          </Heading>
+          <TravelLabLogo />
           <Heading fontSize={'35px'}>
             Planning a group trip{' '}
             <Text as={'span'} color={'orange.400'}>

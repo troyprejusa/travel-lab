@@ -57,7 +57,7 @@ export default function LandingFooter() {
             Licenses
           </Box>
         </Stack>
-        <Text>2023 Travel Lab</Text>
+        <Text>2023 Troy's Travel Lab</Text>
       </Container>
     </Box>
   );

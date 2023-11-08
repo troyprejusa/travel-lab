@@ -62,7 +62,7 @@ function NewTravellerModal() {
                 <FormLabel>Email</FormLabel>
                 <Input placeholder="email" name="email" />
                 <FormHelperText>
-                  Email must belong to a current Travel Lab user
+                  Email must belong to a current user
                 </FormHelperText>
               </FormControl>
             </form>
