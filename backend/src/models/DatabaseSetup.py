@@ -182,6 +182,14 @@ class DatabaseSetup:
             DROP TABLE IF EXISTS packing;
         """)
 
+    def initialize_alpha_table(self) -> None:
+        self.database.query("""
+            CREATE TABLE IF NOT EXISTS alpha (
+                email VARCHAR(255) PRIMARY KEY references traveller(email),
+                key CHAR(16) UNIQUE NOT NULL
+            );
+        """)
+
     def setup_db(self) -> None:
         self.initialize_extensions()
         self.create_types()
@@ -192,6 +200,7 @@ class DatabaseSetup:
         self.initialize_messages_table()
         self.initialize_poll_tables()
         self.initialize_packing_table()
+        self.initialize_alpha_table()
     
     def drop_tables(self) -> None:
         self.drop_traveller_table()

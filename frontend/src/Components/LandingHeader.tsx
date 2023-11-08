@@ -1,3 +1,9 @@
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import LoginButton from './LoginButton';
+import SignUpButton from './SignUpButton';
+import VersionLabel from './VersionLabel';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Flex,
@@ -12,6 +18,8 @@ import {
   useColorModeValue,
   useBreakpointValue,
   useDisclosure,
+  Alert,
+  AlertIcon,
 } from '@chakra-ui/react';
 import {
   HamburgerIcon,
@@ -19,14 +27,14 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
 } from '@chakra-ui/icons';
-import LoginButton from './LoginButton';
-import SignUpButton from './SignUpButton';
-import VersionLabel from './VersionLabel';
-import { useNavigate } from 'react-router-dom';
 
 export default function WithSubnavigation() {
+  const [allowEntry, setAllowEntry] = useState<boolean>(false);
+  const [ searchParams ] = useSearchParams();
   const { isOpen, onToggle } = useDisclosure();
   const navigate = useNavigate();
+
+  useEffect(() => {checkQueryParam()}, []);
 
   return (
     <Box>
@@ -64,6 +72,7 @@ export default function WithSubnavigation() {
             cursor={'pointer'}
             onClick={() => navigate('/')}
             marginY={'auto'}
+            width={'max-content'}
           >
             Travel | Lab
           </Text>
@@ -79,9 +88,21 @@ export default function WithSubnavigation() {
           direction={'row'}
           spacing={6}
         >
-          <VersionLabel />
-          <SignUpButton />
-          <LoginButton />
+          <Box marginY={'auto'}>
+            <VersionLabel />
+          </Box>
+          {!allowEntry && (
+            <Alert status="info" width={'max-content'}>
+              <AlertIcon />
+              Sign up is invite-only
+            </Alert>
+          )}
+          {allowEntry && (
+            <>
+              <SignUpButton />
+              <LoginButton />
+            </>
+          )}
         </Stack>
       </Flex>
 
@@ -90,6 +111,25 @@ export default function WithSubnavigation() {
       </Collapse>
     </Box>
   );
+
+  async function checkQueryParam() {
+    const email: string | null = searchParams.get('email');
+    const key: string | null = searchParams.get('key');
+    if (!email || !key) return;
+
+    // DO STUFF HERE!
+
+    const formData = new FormData();
+    formData.set('key', key)
+    const res: Response = await fetch('/dev/alpha', {
+      method: 'POST',
+      body: formData
+    })
+
+    if (res.ok) {
+      setAllowEntry(true);
+    }
+  }
 }
 
 const DesktopNav = () => {
