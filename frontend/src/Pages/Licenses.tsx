@@ -4,6 +4,7 @@ import LicenseTable from '../Components/LicenseTable';
 import { Box, Text } from '@chakra-ui/react';
 
 export interface LicenseInfo {
+  type: string;
   package: string;
   repository: string;
   copyright: string;
@@ -29,16 +30,35 @@ function Licenses() {
   );
 
   async function getLicenseInfo() {
+    const licenseData: Array<LicenseInfo> = [];
     try {
       const res: Response = await fetch('/third-party-licenses.json');
       if (res.ok) {
-        const data: any = await res.json();
-        const licenseData: Array<LicenseInfo> = [];
+        const data = await res.json();
         for (const key in data) {
-          licenseData.push({ package: key, ...data[key] });
+          licenseData.push({ type: 'software', package: key, ...data[key] });
         }
-        setLicenses(licenseData);
       }
+
+      const fontRes: Response = await fetch('/font-licenses.json');
+      if (fontRes.ok) {
+        const data  = await fontRes.json();
+        for (const key in data) {
+          licenseData.push({ type: 'font', package: key, ...data[key] });
+        }
+      }
+
+      const photoRes: Response = await fetch('/unsplash-photos-licenses.json')
+      if (photoRes.ok) {
+        const data  = await photoRes.json();
+        for (const key in data) {
+          licenseData.push({ type: 'photo', package: key, ...data[key] });
+        }
+      }
+      
+      // Save all retrieved license data
+      setLicenses(licenseData);
+
     } catch (error) {
       console.error(error);
     }

@@ -21,6 +21,7 @@ function LicenseTable(props: LicenseTableProps) {
       <Table variant="simple">
         <Thead>
           <Tr>
+            <Th>Type</Th>
             <Th>Package</Th>
             <Th>Repository</Th>
             <Th>Copyright</Th>
@@ -31,6 +32,7 @@ function LicenseTable(props: LicenseTableProps) {
         <Tbody>
           {props.data.map((datum: LicenseInfo) => (
             <Tr key={datum.package}>
+              <Td>{datum.type}</Td>
               <Td>{datum.package}</Td>
               <Td>{datum.repository}</Td>
               <Td>{datum.copyright}</Td>
