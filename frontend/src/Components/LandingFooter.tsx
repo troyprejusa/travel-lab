@@ -20,10 +20,10 @@ const links = [
     text: 'Cookie Policy',
     ref: '/cookies',
   },
-  {
-    text: 'Terms and Conditions',
-    ref: '/termsandconditions',
-  },
+  // {
+  //   text: 'Terms and Conditions',
+  //   ref: '/termsandconditions',
+  // },
   {
     text: 'Licenses',
     ref: '/licenses',
