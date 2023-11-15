@@ -132,6 +132,8 @@ export default function WithSubnavigation() {
 
     if (res.ok) {
       setAllowEntry(true);
+    } else {
+      console.error("User is not invited to join Troy's Travel Lab during the alpha release")
     }
   }
 }
