@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -7,6 +6,29 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
+
+const links = [
+  {
+    text: 'Home',
+    ref: '/',
+  },
+  {
+    text: 'Privacy Policy',
+    ref: '/privacy',
+  },
+  {
+    text: 'Cookie Policy',
+    ref: '/cookies',
+  },
+  {
+    text: 'Terms and Conditions',
+    ref: '/termsandconditions',
+  },
+  {
+    text: 'Licenses',
+    ref: '/licenses',
+  }
+];
 
 export default function LandingFooter() {
   const navigate = useNavigate();
@@ -29,33 +51,11 @@ export default function LandingFooter() {
         align={{ base: 'center', md: 'center' }}
       >
         <Stack direction={'row'} spacing={6}>
-          {/* <Box as="a" href={'#'}>
-            FAQ
-          </Box>
-          <Box as="a" href={'#'}>
-            Contact Us
-          </Box> */}
-            <Box
-            cursor={'pointer'}
-            onClick={() => navigate('/')}
-          >
-            Home
-          </Box>
-          <Box
-            cursor={'pointer'}
-            onClick={() => navigate('/privacy')}
-          >
-            Privacy Policy
-          </Box>
-          <Box
-            cursor={'pointer'}
-            onClick={() => navigate('/termsandconditions')}
-          >
-            Terms and Conditions
-          </Box>
-          <Box cursor={'pointer'} onClick={() => navigate('/licenses')}>
-            Licenses
-          </Box>
+          {links.map((link) => (
+            <Box cursor={'pointer'} onClick={() => navigate(link.ref)}>
+              {link.text}
+            </Box>
+          ))}
         </Stack>
         <Text>2023 Troy's Travel Lab</Text>
       </Container>
