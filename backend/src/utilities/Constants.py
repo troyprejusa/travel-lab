@@ -5,29 +5,37 @@ load_dotenv()
 MODE = os.getenv('MODE')
 
 # API
-API_HOST = os.getenv('API_HOST')
 API_PORT = int(os.getenv('API_PORT'))
 API_REQUEST_COUNT = int(os.getenv('API_REQUEST_COUNT'))
 API_REQUESTS_WINDOW = int(os.getenv('API_REQUESTS_WINDOW'))
 WS_REQUEST_COUNT = int(os.getenv('WS_REQUEST_COUNT'))
 WS_REQUEST_WINDOW = int(os.getenv('WS_REQUEST_WINDOW'))
 
-# JWT
-AUTH0_DOMAIN = os.getenv('AUTH0_DOMAIN')
-AUTH0_AUDIENCE = os.getenv('AUTH0_AUDIENCE')
-AUTH0_ALGORITHM = [os.getenv('AUTH0_ALGORITHM')]
-AUTH0_CLAIM_NAMESPACE = os.getenv('AUTH0_CLAIM_NAMESPACE')
-AUTH0_CLIENT_ID = os.getenv('AUTH0_CLIENT_ID')
-AUTH0_CLIENT_SECRET = os.getenv('AUTH0_CLIENT_SECRET')
-
-# Database
 if MODE == 'production':
+    # JWT
+    AUTH0_DOMAIN = os.getenv('PROD_AUTH0_DOMAIN')
+    AUTH0_AUDIENCE = os.getenv('PROD_AUTH0_AUDIENCE')
+    AUTH0_ALGORITHM = [os.getenv('PROD_AUTH0_ALGORITHM')]
+    AUTH0_CLAIM_NAMESPACE = os.getenv('PROD_AUTH0_CLAIM_NAMESPACE')
+    AUTH0_CLIENT_ID = os.getenv('PROD_AUTH0_CLIENT_ID')
+    AUTH0_CLIENT_SECRET = os.getenv('PROD_AUTH0_CLIENT_SECRET')
+
+    # Database
     DB_HOST =  os.getenv('PROD_DB_HOST')
     DB_PORT = os.getenv('PROD_DB_PORT')
     DB_USER = os.getenv('PROD_DB_USER')
     DB_PWD = os.getenv('PROD_DB_PWD')
     DB_DBNAME = os.getenv('PROD_DB_DBNAME')
 else:
+    # JWT
+    AUTH0_DOMAIN = os.getenv('DEV_AUTH0_DOMAIN')
+    AUTH0_AUDIENCE = os.getenv('DEV_AUTH0_AUDIENCE')
+    AUTH0_ALGORITHM = [os.getenv('DEV_AUTH0_ALGORITHM')]
+    AUTH0_CLAIM_NAMESPACE = os.getenv('DEV_AUTH0_CLAIM_NAMESPACE')
+    AUTH0_CLIENT_ID = os.getenv('DEV_AUTH0_CLIENT_ID')
+    AUTH0_CLIENT_SECRET = os.getenv('DEV_AUTH0_CLIENT_SECRET')
+
+    # Database
     DB_HOST =  os.getenv('DEV_DB_HOST')
     DB_PORT = os.getenv('DEV_DB_PORT')
     DB_USER = os.getenv('DEV_DB_USER')

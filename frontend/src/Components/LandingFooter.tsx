@@ -51,8 +51,8 @@ export default function LandingFooter() {
         align={{ base: 'center', md: 'center' }}
       >
         <Stack direction={'row'} spacing={6}>
-          {links.map((link) => (
-            <Box cursor={'pointer'} onClick={() => navigate(link.ref)}>
+          {links.map((link, i) => (
+            <Box key={`link_${i}`}cursor={'pointer'} onClick={() => navigate(link.ref)}>
               {link.text}
             </Box>
           ))}

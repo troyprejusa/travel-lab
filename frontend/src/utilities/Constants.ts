@@ -6,15 +6,24 @@ import TropicalPhoto from '../assets/tropical.jpg';
 import WildernessPhoto from '../assets/wilderness.jpg';
 import WinterPhoto from '../assets/winter.jpg';
 
-const Constants = {
-  MODE: import.meta.env.MODE, // Automatically set by Vite
-  PROXY_HOST: import.meta.env.VITE_PROXY_HOST,
-  PROXY_PORT_DEV: import.meta.env.VITE_PROXY_PORT_DEV,
-  PROXY_PORT_PROD: import.meta.env.VITE_PROXY_PORT_PROD,
+const vite_mode = import.meta.env.MODE; // Automatically set by Vite
+const deployment = import.meta.env.VITE_DEPLOYMENT;
 
-  AUTH0_DOMAIN: import.meta.env.VITE_AUTH0_DOMAIN,
-  AUTH0_CLIENT: import.meta.env.VITE_AUTH0_CLIENT,
-  AUTH0_AUDIENCE: import.meta.env.VITE_AUTH0_AUDIENCE,
+let mode;   // development, staging, or production
+if (vite_mode === 'production' && deployment !== 'heroku') {
+  mode = 'staging';
+} else {
+  mode = vite_mode;
+}
+
+const Constants = {
+  MODE: mode,
+  PROXY_HOST: mode === 'production' ?  import.meta.env.VITE_PROD_PROXY_HOST : import.meta.env.VITE_DEV_PROXY_HOST,
+  PROXY_PORT: mode === 'development' ? import.meta.env.VITE_DEV_PROXY_PORT : '443',
+
+  AUTH0_DOMAIN: mode === 'production' ? import.meta.env.VITE_PROD_AUTH0_DOMAIN : import.meta.env.VITE_DEV_AUTH0_DOMAIN,
+  AUTH0_CLIENT: mode === 'production' ? import.meta.env.VITE_PROD_AUTH0_CLIENT : import.meta.env.VITE_DEV_AUTH0_CLIENT,
+  AUTH0_AUDIENCE: mode === 'production' ? import.meta.env.VITE_PROD_AUTH0_AUDIENCE : import.meta.env.VITE_DEV_AUTH0_AUDIENCE,
 
   PHOTO_MAP: {
     city: CityPhoto,

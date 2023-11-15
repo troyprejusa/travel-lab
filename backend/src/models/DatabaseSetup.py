@@ -185,9 +185,14 @@ class DatabaseSetup:
     def initialize_alpha_table(self) -> None:
         self.database.query("""
             CREATE TABLE IF NOT EXISTS alpha (
-                email VARCHAR(255) PRIMARY KEY references traveller(email),
+                email VARCHAR(255) PRIMARY KEY references traveller(email) ON DELETE CASCADE,
                 key CHAR(16) UNIQUE NOT NULL
             );
+        """)
+
+    def drop_alpha_table(self) -> None:
+        self.database.query("""
+            DROP TABLE IF EXISTS alpha;
         """)
 
     def setup_db(self) -> None:
@@ -210,6 +215,7 @@ class DatabaseSetup:
         self.drop_messages_table()
         self.drop_poll_tables()
         self.drop_packing_table()
+        self.drop_alpha_table()
 
     def insert_data(self):
         self.insert_users()
@@ -219,6 +225,7 @@ class DatabaseSetup:
         self.insert_messages()
         self.insert_polls()
         self.insert_packing()
+        self.insert_alpha()
 
     def insert_users(self):
         # Insert a fake user troy
@@ -440,5 +447,12 @@ class DatabaseSetup:
                             
             INSERT INTO packing (trip_id, item, quantity, description, created_by, packed_by)
             VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'firestarter', 1, 'Please bring something easy to use', 'troy@test.com', 'joe@test.com');
+        """)
+
+    def insert_alpha(self):
+        self.database.query("""
+            INSERT INTO alpha VALUES ('troy@test.com', 'CvZ0hoNWz0CduAjv');
+                            
+            INSERT INTO alpha VALUES ('joe@test.com', 'QqrxmmLyNXdWB1JE');
         """)
         
