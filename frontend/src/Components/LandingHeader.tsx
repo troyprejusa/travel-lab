@@ -306,21 +306,21 @@ interface NavItem {
 }
 
 const NAV_ITEMS: Array<NavItem> = [
-  {
-    label: 'Tools',
-    children: [
-      {
-        label: 'Itinerary management',
-        subLabel: 'Plan out stops during the trip',
-        href: '#',
-      },
-      {
-        label: 'Collaborative packing',
-        subLabel: 'Decide who is bringing shared items for the group',
-        href: '#',
-      },
-    ],
-  },
+  // {
+  //   label: 'Tools',
+  //   children: [
+  //     {
+  //       label: 'Itinerary management',
+  //       subLabel: 'Plan out stops during the trip',
+  //       href: '#',
+  //     },
+  //     {
+  //       label: 'Collaborative packing',
+  //       subLabel: 'Decide who is bringing shared items for the group',
+  //       href: '#',
+  //     },
+  //   ],
+  // },
   {
     label: 'About',
     href: '/about',
