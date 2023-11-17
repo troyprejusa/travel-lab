@@ -23,7 +23,10 @@ with open('/app/src/dist/third-party-licenses.json', 'r') as license_file:
 # GLOBAL VARIABLES (ABOVE)
 
 async def rate_limiter(request: Request, call_next):
-    ok = rest_rate_tracker.add_entry(request.client.host)
+    # It is okay to use request.client.host as long as the request is not 
+    # proxied. Heroku is a router, not a proxy, so either is ok
+    user_ip = request.headers.get('x-forwarded-for') or request.client.host
+    ok = rest_rate_tracker.add_entry(user_ip)
     
     if not ok:
         raise HTTPException(
@@ -33,8 +36,8 @@ async def rate_limiter(request: Request, call_next):
             }
         )
     # print({
-    #     'CLIENT': request.client.host, 
-    #     'RATE': len(rest_rate_tracker.tracker[request.client.host]) / Constants.API_REQUESTS_WINDOW
+    #     'CLIENT': user_ip, 
+    #     'RATE': len(rest_rate_tracker.tracker[user_ip]) / Constants.API_REQUESTS_WINDOW
     #     })
     response = await call_next(request)
     return response
