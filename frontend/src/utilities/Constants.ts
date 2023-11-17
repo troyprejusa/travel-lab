@@ -22,8 +22,6 @@ if (vite_mode === 'production' && deployment !== 'heroku') {
 
 const Constants = {
 
-  PROXY_HOST: mode === 'production' ?  import.meta.env.VITE_PROD_PROXY_HOST : import.meta.env.VITE_DEV_PROXY_HOST,
-
   AUTH0_DOMAIN: mode === 'production' ? import.meta.env.VITE_PROD_AUTH0_DOMAIN : import.meta.env.VITE_DEV_AUTH0_DOMAIN,
   AUTH0_CLIENT: mode === 'production' ? import.meta.env.VITE_PROD_AUTH0_CLIENT : import.meta.env.VITE_DEV_AUTH0_CLIENT,
   AUTH0_AUDIENCE: mode === 'production' ? import.meta.env.VITE_PROD_AUTH0_AUDIENCE : import.meta.env.VITE_DEV_AUTH0_AUDIENCE,

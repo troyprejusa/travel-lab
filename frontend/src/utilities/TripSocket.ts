@@ -357,7 +357,7 @@ class PackingSocket extends TripSocket {
   }
 }
 
-const host: string = `wss://${Constants.PROXY_HOST}`;
+const host: string = `wss://${window.location.host}`;
 const apiPath: string = '/sio/socket.io';
 
 export const msgSocket = new MessageSocket(host, apiPath, '/message');
