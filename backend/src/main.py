@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import RedirectResponse, FileResponse
+from fastapi.responses import RedirectResponse
 from routers.UserRouter import user_router
 from routers.TripRouter import trip_router
 from routers.DevRouter import dev_router
