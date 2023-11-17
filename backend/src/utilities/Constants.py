@@ -2,10 +2,9 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-MODE = os.getenv('MODE')
+MODE = os.getenv('MODE', 'development')
 
 # API
-API_PORT = int(os.getenv('API_PORT'))
 API_REQUEST_COUNT = int(os.getenv('API_REQUEST_COUNT'))
 API_REQUESTS_WINDOW = int(os.getenv('API_REQUESTS_WINDOW'))
 WS_REQUEST_COUNT = int(os.getenv('WS_REQUEST_COUNT'))

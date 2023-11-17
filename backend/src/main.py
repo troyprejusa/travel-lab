@@ -9,7 +9,6 @@ from models.DatabaseHandler import db_handler
 from models.DatabaseSetup import DatabaseSetup
 from utilities import middleware
 from utilities import Constants
-import uvicorn
 
 
 if Constants.MODE == 'development':
@@ -47,8 +46,4 @@ app.mount('/sio', socketio_ASGI)
 async def redirect_nav(request: Request, full_path: str):
     print(f'redirect_nav: Requested unkown route:\n{full_path}\nRedirecting to root...')
     return RedirectResponse('/')
-
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=Constants.API_PORT)
     
