@@ -28,7 +28,7 @@ app.middleware('http')(middleware.serve_static_files)   # (2) Serve public conte
 app.middleware('http')(middleware.rate_limiter)         # (1) Rate limit
 
 # /assets
-app.mount('/assets', StaticFiles(directory='/app/dist/assets'), name='assets')
+app.mount('/assets', StaticFiles(directory='/app/src/dist/assets'), name='assets')
 
 # /dev
 app.include_router(dev_router)

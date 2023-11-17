@@ -6,7 +6,7 @@ services:
     command: /app/src/startup.sh
     volumes:
       - /Users/troyprejusa/Dev/apps/travel-lab/backend:/app
-      - /Users/troyprejusa/Dev/apps/travel-lab/frontend/dist:/app/dist
+      - /Users/troyprejusa/Dev/apps/travel-lab/frontend/dist:/app/src/dist
     ports:
       - "8000:8000"   # For the API
       - "5678:5678"   # For VSCode debugger

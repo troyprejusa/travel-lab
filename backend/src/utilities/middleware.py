@@ -18,7 +18,7 @@ whitelist = set([
     'openapi.json'
 ])
 
-with open('/app/dist/third-party-licenses.json', 'r') as license_file:
+with open('/app/src/dist/third-party-licenses.json', 'r') as license_file:
     license_data = json.load(license_file)
 # GLOBAL VARIABLES (ABOVE)
 
@@ -45,12 +45,12 @@ async def serve_static_files(request: Request, call_next):
 
         # Edge case
         if (request.url.path == '/'):
-            return FileResponse('/app/dist/index.html')
+            return FileResponse('/app/src/dist/index.html')
 
         # Other cases
         if len(endpoint_array) == 1:
             # /<filename>
-            return FileResponse(f'/app/dist/{endpoint_array[0]}')
+            return FileResponse(f'/app/src/dist/{endpoint_array[0]}')
         elif len(endpoint_array) == 2 and endpoint_array[0] == 'assets':
             # /assets/<filename>
 
@@ -59,7 +59,7 @@ async def serve_static_files(request: Request, call_next):
             cache_headers = {
                 'Cache-Control': 'public, max-age=31536000, immutable'
             }
-            return FileResponse(f'/app/dist/assets/{endpoint_array[1]}', headers=cache_headers)
+            return FileResponse(f'/app/src/dist/assets/{endpoint_array[1]}', headers=cache_headers)
             
     response = await call_next(request)
     return response
