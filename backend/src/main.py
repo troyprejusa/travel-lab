@@ -58,7 +58,7 @@ async def general_exception_handler(_request: Request, exception: Exception) -> 
         # can perform as normal
         raise exception
     
-    print(str(exception))
+    print(f'GLOBAL_EXCEPTION_HANDLER: {type(exception).__name__}\n\t{exception}')
 
     # Same behavior as default exception handling, but returns
     # JSON instead of string
