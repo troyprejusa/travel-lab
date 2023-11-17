@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from routers.UserRouter import user_router
 from routers.TripRouter import trip_router
 from routers.DevRouter import dev_router
@@ -43,7 +45,27 @@ app.mount('/sio', socketio_ASGI)
 
 # Default redirection to handle client-side fwd/back/refresh
 @app.get('{full_path:path}')
-async def redirect_nav(request: Request, full_path: str):
+async def redirect_nav(_request: Request, full_path: str):
     print(f'redirect_nav: Requested unkown route:\n{full_path}\nRedirecting to root...')
     return RedirectResponse('/')
+
+# Global exception handler
+@app.exception_handler(Exception)
+async def general_exception_handler(_request: Request, exception: Exception) -> str:
+    if isinstance(exception, (RequestValidationError, StarletteHTTPException)):
+        # Note: FastAPI HTTPException inherits from Starlette's so this catches both
+        # Re-raise the exception so that FastAPI's default exceptions handlers
+        # can perform as normal
+        raise exception
+    
+    print(str(exception))
+
+    # Same behavior as default exception handling, but returns
+    # JSON instead of string
+    return JSONResponse(
+        status_code=500,
+        content = {
+            "message": "Internal server error"
+        }
+    )
     
