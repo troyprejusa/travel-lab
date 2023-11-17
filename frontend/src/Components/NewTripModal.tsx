@@ -6,6 +6,12 @@ import { useNavigate } from 'react-router-dom';
 import { TripModel } from '../utilities/Interfaces';
 import { useAuth0 } from '@auth0/auth0-react';
 import {
+  itinerarySocket,
+  msgSocket,
+  packingSocket,
+  pollSocket,
+} from '../utilities/TripSocket';
+import {
   Button,
   Modal,
   ModalOverlay,
@@ -13,7 +19,7 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  ModalCloseButton,
+  // ModalCloseButton,
   useDisclosure,
   FormControl,
   FormLabel,
@@ -109,17 +115,11 @@ function NewTripModal() {
 
     // Validate form
     const destination_entry: string = formData.get('destination') as string;
-    const description_entry: string = formData.get('description') as string;
     const start_date_entry: string = formData.get('start_date') as string;
     const end_date_entry: string = formData.get('end_date') as string;
 
     if (destination_entry === '') {
       alert('Destination cannot be empty!');
-      return;
-    }
-
-    if (description_entry === '') {
-      alert('Description cannot be empty!');
       return;
     }
 
@@ -157,8 +157,15 @@ function NewTripModal() {
         // Make trip the current trip
         dispatch(reduxSetTrip(trip));
 
+        // Establish a websocket connection for this trip
+        itinerarySocket.establishSocket(token, trip.id, dispatch);
+        pollSocket.establishSocket(token, trip.id, dispatch);
+        packingSocket.establishSocket(token, trip.id, dispatch);
+        msgSocket.establishSocket(token, trip.id, dispatch);
+
         // Navigate to the trip
         navigate(`/trip/${trip.id}/home`);
+
       } else {
         const errorRes = await res.json();
         console.error(errorRes);

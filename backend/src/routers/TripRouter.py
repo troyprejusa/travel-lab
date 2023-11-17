@@ -19,10 +19,10 @@ trip_router = APIRouter(
 async def create_trip(
     request: Request,
     destination: Annotated[str, Form()],
-    description: Annotated[str, Form()],
     start_date: Annotated[date, Form()],
     end_date: Annotated[date, Form()],
-    vacation_type: Annotated[str, Form()]
+    vacation_type: Annotated[str, Form()],
+    description: Annotated[str | None, Form()] = None
     ) -> TripModel | str:
     try:
         if db_handler.count_user_created_trips(request.state.user['email']) >= Constants.LIMIT_TRIPS_CREATED_PER_USER:

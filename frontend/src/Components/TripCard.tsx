@@ -4,15 +4,15 @@ import { useDispatch } from 'react-redux';
 import { reduxSetTrip } from '../redux/TripSlice';
 import { TripModel } from '../utilities/Interfaces';
 import Constants from '../utilities/Constants';
+import fetchHelpers from '../utilities/fetchHelpers';
+import { useAuth0 } from '@auth0/auth0-react';
+// import { AvatarWrapper } from './AvatarWrapper';
 import {
   itinerarySocket,
   msgSocket,
   packingSocket,
   pollSocket,
 } from '../utilities/TripSocket';
-import { AvatarWrapper } from './AvatarWrapper';
-import fetchHelpers from '../utilities/fetchHelpers';
-import { useAuth0 } from '@auth0/auth0-react';
 import {
   Box,
   Center,
@@ -95,17 +95,18 @@ function TripCard(props: TripCardProps) {
         getAccessTokenSilently
       );
 
-      // Establish a websocket connection for these rooms
+      // Set this trip as the current trip in state
+      dispatch(reduxSetTrip(props.tripData));
+
+      // Establish a websocket connection for this trip
       itinerarySocket.establishSocket(token, props.tripData.id, dispatch);
       pollSocket.establishSocket(token, props.tripData.id, dispatch);
       packingSocket.establishSocket(token, props.tripData.id, dispatch);
       msgSocket.establishSocket(token, props.tripData.id, dispatch);
 
-      // Set this trip as the current trip in state
-      dispatch(reduxSetTrip(props.tripData));
-
-      // Navigate on to view the trip
+      // Navigate to view the trip
       navigate(`/trip/${props.tripData.id}/home`);
+
     } catch (error: any) {
       console.error(error);
       toast({
