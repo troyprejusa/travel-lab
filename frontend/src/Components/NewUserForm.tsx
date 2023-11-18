@@ -278,7 +278,7 @@ const Form2 = (props: UserFormProps) => {
         <AlertIcon />
         <Box>
           By continuing, you are consenting to use this application
-          understanding Privacy Policy, Terms and Conditions, and cookies
+          understanding the Privacy Policy, Terms and Conditions, and cookies
           described on the homepage. If you do not consent, delete your account{' '}
           <span style={{ color: 'blue', textDecoration: 'underline' }}>
             <Link to={`/user/${user.email}/settings`}>here</Link>
