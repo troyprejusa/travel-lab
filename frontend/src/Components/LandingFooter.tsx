@@ -17,10 +17,6 @@ const links = [
     ref: '/privacy',
   },
   {
-    text: 'Cookie Policy',
-    ref: '/cookies',
-  },
-  {
     text: 'Terms and Conditions',
     ref: '/termsandconditions',
   },

@@ -27,7 +27,6 @@ import Travellers from './Pages/Travellers';
 import TripSettings from './Pages/TripSettings';
 import Licenses from './Pages/Licenses';
 import PrivacyPolicy from './Pages/PrivacyPolicy';
-import CookiePolicy from './Pages/CookiePolicy';
 import TermsAndConditions from './Pages/TermsAndConditions';
 import NotFound from './Pages/NotFound';
 import ProtectedUserOutlet from './Pages/UserOutlet';
@@ -41,7 +40,6 @@ const router = createBrowserRouter(
         <Route path="/" element={<Landing />} />
         <Route path='about' element={<About />} />
         <Route path='privacy' element={<PrivacyPolicy />} />
-        <Route path='cookies' element={<CookiePolicy />} />
         <Route path='termsandconditions' element={<TermsAndConditions />} />
         <Route path='licenses' element={<Licenses />} />
       </Route>
