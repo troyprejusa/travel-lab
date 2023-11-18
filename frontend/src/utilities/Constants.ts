@@ -7,7 +7,7 @@ import WildernessPhoto from '../assets/wilderness.jpg';
 import WinterPhoto from '../assets/winter.jpg';
 
 
-const DEPLOYMENT = 'heroku';
+const DEPLOYMENT = 'local';
 
 
 /* The logic below is here so that I can build the app and make sure 
