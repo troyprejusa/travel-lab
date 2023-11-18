@@ -1,4 +1,6 @@
 import io, { Socket } from 'socket.io-client';
+import { AppDispatch } from '../redux/Store';
+import { createStandaloneToast } from '@chakra-ui/react';
 import {
   reduxAddItinerary,
   reduxDeleteItinerary,
@@ -15,7 +17,6 @@ import {
   reduxUnclaimItem,
   reduxDeleteItem,
 } from '../redux/PackingSlice';
-import { AppDispatch } from '../redux/Store';
 import {
   MessageWS,
   MessageModel,
@@ -31,8 +32,6 @@ import {
   PackingModel,
   PackingDeleteWS,
 } from './Interfaces';
-import Constants from './Constants';
-import { createStandaloneToast } from '@chakra-ui/react';
 
 const { toast } = createStandaloneToast();
 
@@ -79,7 +78,7 @@ class TripSocket {
           position: 'top',
           title: 'Live updates disabled :(',
           description:
-            `${this.constructor.name}: Something went wrong, we'll try to reconnect you. If the issue persists, refresh the page`,
+            "Something went wrong, we'll try to reconnect you. If the issue persists, refresh the page",
           status: 'error',
           duration: 4000,
           isClosable: true,
