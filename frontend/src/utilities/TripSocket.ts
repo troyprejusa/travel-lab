@@ -61,8 +61,8 @@ class TripSocket {
     this.socket?.disconnect();
 
     this.socket = io(this.host + this.namespace, {
-       reconnectionDelayMax: 5000,
-      reconnectionAttempts: 5,
+      reconnectionDelay: 500,
+      reconnectionAttempts: 1,
       path: this.apiPath,
       auth: {
         token: token,
@@ -78,16 +78,12 @@ class TripSocket {
         toast({
           position: 'top',
           title: 'Live updates disabled :(',
-          description: "Something went wrong, we'll try to reconnect you...",
+          description:
+            `${this.constructor.name}: Something went wrong, we'll try to reconnect you. If the issue persists, refresh the page`,
           status: 'error',
           duration: 4000,
           isClosable: true,
-        })
-  
-        if (this.token && this.trip_id && this.dispatch) {
-          const { token, trip_id, dispatch } = this;
-            setTimeout(() => {this.establishSocket(token, trip_id, dispatch)}, 5000);
-        }
+        });
       }
     });
 
