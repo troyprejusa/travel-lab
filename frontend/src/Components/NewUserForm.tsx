@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Progress,
   Box,
@@ -23,6 +24,8 @@ import {
   ListIcon,
   useToast,
   Text,
+  Alert,
+  AlertIcon,
 } from '@chakra-ui/react';
 import { FiPhone, FiUser } from 'react-icons/fi';
 import { PhoneIcon } from '@chakra-ui/icons';
@@ -69,7 +72,7 @@ export default function NewUserForm() {
     >
       <Progress
         hasStripe
-        value={100 * (step + 1) / forms.length}
+        value={(100 * (step + 1)) / forms.length}
         mb="5%"
         mx="5%"
         isAnimated
@@ -142,10 +145,16 @@ const Form1 = (props: UserFormProps) => {
       </FormControl>
       <ButtonGroup mt="5%" w="100%">
         <Flex w="100%" justifyContent="space-between">
-            <Button type="submit" w="7rem" colorScheme="teal" variant="solid">
-              Next
-            </Button>
-            <Text cursor={'pointer'} color={'blue.500'} onClick={() => navigate(`/user/${user.email}/settings`)}>Delete account</Text>
+          <Button type="submit" w="7rem" colorScheme="teal" variant="solid">
+            Next
+          </Button>
+          <Text
+            cursor={'pointer'}
+            color={'blue.500'}
+            onClick={() => navigate(`/user/${user.email}/settings`)}
+          >
+            Delete account
+          </Text>
         </Flex>
       </ButtonGroup>
     </form>
@@ -238,18 +247,20 @@ const Form2 = (props: UserFormProps) => {
   for (const [key, val] of Object.entries(props.formData.current)) {
     let icon;
     if (key === 'phone') {
-        icon = FiPhone;
+      icon = FiPhone;
     } else {
-        icon = FiUser;
+      icon = FiUser;
     }
 
     listItems.push(
       <ListItem key={i}>
-        <ListIcon as={icon} fontSize='24px' color="green.500" />
+        <ListIcon as={icon} fontSize="24px" color="green.500" />
         <Text as="span" fontSize={'18px'} fontWeight={'bold'}>
           {key.replace('_', ' ')}:{' '}
         </Text>
-        <Text as="span" fontSize={'18px'}>{val}</Text>
+        <Text as="span" fontSize={'18px'}>
+          {val}
+        </Text>
       </ListItem>
     );
     i += 1;
@@ -263,6 +274,18 @@ const Form2 = (props: UserFormProps) => {
       <List spacing={3} margin={4}>
         {listItems}
       </List>
+      <Alert status="warning">
+        <AlertIcon />
+        <Box>
+          By continuing, you are consenting to use this application
+          understanding Privacy Policy, Terms and Conditions, and cookies
+          described on the homepage. If you do not consent, delete your account{' '}
+          <span style={{ color: 'blue', textDecoration: 'underline' }}>
+            <Link to={`/user/${user.email}/settings`}>here</Link>
+          </span>
+          .
+        </Box>
+      </Alert>
       <ButtonGroup mt="5%" w="100%">
         <Flex w="100%" justifyContent="space-between">
           <Flex>
