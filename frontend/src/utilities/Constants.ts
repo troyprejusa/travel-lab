@@ -7,14 +7,16 @@ import WildernessPhoto from '../assets/wilderness.jpg';
 import WinterPhoto from '../assets/winter.jpg';
 
 
+const DEPLOYMENT = 'heroku';
+
+
 /* The logic below is here so that I can build the app and make sure 
 that the API is successfully serving the desired content via the 
 reverse proxy. I.e. just because I built the app doesn't mean I want 
 to connect to the production services (auth and database) for this */
 let mode;                                 // development, staging, or production
 const vite_mode = import.meta.env.MODE;   // Automatically set by Vite
-const deployment = import.meta.env.VITE_DEPLOYMENT;
-if (vite_mode === 'production' && deployment !== 'heroku') {
+if (vite_mode === 'production' && DEPLOYMENT !== 'heroku') {
   mode = 'staging';
 } else {
   mode = vite_mode;
