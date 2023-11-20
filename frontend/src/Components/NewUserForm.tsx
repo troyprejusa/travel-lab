@@ -148,13 +148,9 @@ const Form1 = (props: UserFormProps) => {
           <Button type="submit" w="7rem" colorScheme="teal" variant="solid">
             Next
           </Button>
-          <Text
-            cursor={'pointer'}
-            color={'blue.500'}
-            onClick={() => navigate(`/user/${user.email}/settings`)}
-          >
+          <Link to={`/user/${user.email}/settings`} style={{ color: 'blue' }}>
             Delete account
-          </Text>
+          </Link>
         </Flex>
       </ButtonGroup>
     </form>
@@ -237,6 +233,7 @@ const Form1 = (props: UserFormProps) => {
 };
 
 const Form2 = (props: UserFormProps) => {
+  const navigate = useNavigate();
   const user: UserModel = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
   const { getAccessTokenSilently } = useAuth0();
@@ -280,9 +277,9 @@ const Form2 = (props: UserFormProps) => {
           By continuing, you are consenting to use this application
           understanding the Privacy Policy, Terms and Conditions, and cookies
           described on the homepage. If you do not consent, delete your account{' '}
-          <span style={{ color: 'blue', textDecoration: 'underline' }}>
-            <Link to={`/user/${user.email}/settings`}>here</Link>
-          </span>
+          <Link to={`/user/${user.email}/settings`} style={{ color: 'blue' }}>
+            here
+          </Link>
           .
         </Box>
       </Alert>
@@ -329,6 +326,7 @@ const Form2 = (props: UserFormProps) => {
           token: token,
         })
       );
+      navigate(`/user/${user.email}/trips`);
     } catch (error) {
       console.error(error);
       toast({

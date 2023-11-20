@@ -11,12 +11,14 @@ import {
   Text,
   Box,
   Divider,
-  Button,
   Alert,
   AlertIcon,
   AlertTitle,
   useToast,
+  Heading,
+  Flex
 } from '@chakra-ui/react';
+import Constants from '../utilities/Constants';
 
 function UserSettings(): JSX.Element {
   const navigate = useNavigate();
@@ -26,30 +28,32 @@ function UserSettings(): JSX.Element {
   const toast = useToast();
 
   return (
-    <>
+    <Box background={Constants.BACKROUND_GRADIENT} height={'100vh'} overflowY={'scroll'}>
       <TitleBar text="User Settings" />
-      <Text color={'blue.500'} cursor={'pointer'} onClick={() => navigate('/')}>
-        Return to previous
-      </Text>
-      <Box>
-        <Text>User Photo</Text>
-        <Alert status="info">
-          <AlertIcon />
-          <AlertTitle>Photo upload feature in work</AlertTitle>
-        </Alert>
-      </Box>
-      <Divider margin={'1rem'} />
-      <Box>
-        <Text>Delete Account</Text>
-        <ConfigurableButtonAndModal
-          modalHeader="Delete account"
-          modalBody="Are you sure you want to delete your account? This action cannot be undone"
-          onClick={() => handleDeleteAccount()}
-        >
-          Delete Account
-        </ConfigurableButtonAndModal>
-      </Box>
-    </>
+      <Flex flexDirection={'column'} rowGap={'1rem'}>
+        <Text color={'blue'} cursor={'pointer'} onClick={() => navigate('/')}>
+          Return to previous
+        </Text>
+        <Box>
+          <Heading size={'md'}>User Photo</Heading>
+          <Alert status="info">
+            <AlertIcon />
+            <AlertTitle>Photo upload feature in work</AlertTitle>
+          </Alert>
+        </Box>
+        <Divider margin={'1rem'} />
+        <Box>
+          <Heading size="md">Delete Account</Heading>
+          <ConfigurableButtonAndModal
+            modalHeader="Delete account"
+            modalBody="Are you sure you want to delete your account? This action cannot be undone"
+            onClick={() => handleDeleteAccount()}
+          >
+            Delete Account
+          </ConfigurableButtonAndModal>
+        </Box>
+      </Flex>
+    </Box>
   );
 
   async function handleDeleteAccount() {
@@ -81,7 +85,6 @@ function UserSettings(): JSX.Element {
           });
         }, 4000);
         signOutBeforeTripSelect(dispatch);
-
       } else {
         throw new Error();
       }

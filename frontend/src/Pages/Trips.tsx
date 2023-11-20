@@ -4,21 +4,30 @@ import { TripModel, UserModel } from '../utilities/Interfaces';
 import TripCard from '../Components/TripCard';
 import fetchHelpers from '../utilities/fetchHelpers';
 import TripActionCard from '../Components/TripActionCard';
-import { Wrap, Flex, Button, Heading, Box, useToast } from '@chakra-ui/react';
 import { signOutBeforeTripSelect } from '../utilities/stateHandlers';
 import { useAuth0 } from '@auth0/auth0-react';
 import Constants from '../utilities/Constants';
 import { RootState } from '../redux/Store';
+import { useNavigate } from 'react-router-dom';
+import { HomeButton } from '../Components/Buttons'
+import {
+  Wrap,
+  Flex,
+  Button,
+  Heading,
+  Box,
+  useToast,
+} from '@chakra-ui/react';
 
 function Trips(): JSX.Element {
-
   // This state will just be local to this component, because it doesn't
   // make sense to store all trips with all metadata, since we will only
   // be viewing one trip at a time
   const initialTripState: Array<TripModel> = [];
   const [trips, setTrips] = useState(initialTripState);
-  const user: UserModel = useSelector((state: RootState) => state.user)
-  
+  const user: UserModel = useSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
+
   const dispatch = useDispatch();
   const { getAccessTokenSilently, logout } = useAuth0();
 
@@ -27,10 +36,15 @@ function Trips(): JSX.Element {
   const toast = useToast();
 
   return (
-    <Box background={Constants.BACKROUND_GRADIENT} height={'100vh'} overflowY={'scroll'}>
-      <Flex justifyContent={'flex-end'}>
+    <Box
+      background={Constants.BACKROUND_GRADIENT}
+      height={'100vh'}
+      overflowY={'scroll'}
+    >
+      <Flex justifyContent={'space-between'}>
+        <HomeButton onClick={returnToHome} aria-label='return to landing page' tooltipMsg={'return to landing page'} margin={'1rem'}/>
         <Button
-          margin="20px"
+          margin="1rem"
           size="md"
           colorScheme="red"
           onClick={handleSignOut}
@@ -78,6 +92,10 @@ function Trips(): JSX.Element {
         });
       }
     })();
+  }
+
+  function returnToHome() {
+    navigate('/home');
   }
 
   function handleSignOut(event: SyntheticEvent) {

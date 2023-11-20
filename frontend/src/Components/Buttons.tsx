@@ -14,6 +14,7 @@ import {
   FiRotateCw,
   FiSunrise,
   FiSunset,
+  FiHome,
 } from 'react-icons/fi';
 import {
   IconButton,
@@ -142,6 +143,10 @@ export const PromoteUserButton = (props: ConfigurableIconButtonProps) => (
 export const DemoteUserButton = (props: ConfigurableIconButtonProps) => (
   <ConfigurableIconButton {...props} icon={<FiSunset />} colorScheme="purple" />
 );
+
+export const HomeButton = (props: ConfigurableIconButtonProps) => (
+  <ConfigurableIconButton {...props} icon={<FiHome />} />
+)
 
 /* --------------------------- Icon Buttons with Modal ---------------------------*/
 

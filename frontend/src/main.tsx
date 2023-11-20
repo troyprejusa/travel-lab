@@ -31,13 +31,15 @@ import TermsAndConditions from './Pages/TermsAndConditions';
 import NotFound from './Pages/NotFound';
 import ProtectedUserOutlet from './Pages/UserOutlet';
 import HomeOutlet from './Pages/HomeOutlet';
+import AccountSetup from './Pages/AccountSetup';
 import About from './Pages/About';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<HomeOutlet />} >
-        <Route path="/" element={<Landing />} />
+        <Route path="" element={<Landing />} />
+        <Route path="/home" element={<Landing />} />
         <Route path='about' element={<About />} />
         <Route path='privacy' element={<PrivacyPolicy />} />
         <Route path='termsandconditions' element={<TermsAndConditions />} />
@@ -46,6 +48,7 @@ const router = createBrowserRouter(
 
       <Route path="/user/:username" element={<ProtectedUserOutlet />} >
         <Route path="" element={<Staging />} />
+        <Route path="setup" element={<AccountSetup />}/>
         <Route path="trips" element={<Trips />} />
         <Route path="settings" element={<UserSettings />} />
       </Route>
