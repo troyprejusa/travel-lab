@@ -75,7 +75,7 @@ export default function WithSubnavigation() {
             color={useColorModeValue('gray.800', 'white')}
             userSelect={'none'}
             cursor={'pointer'}
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/home')}
             marginY={'auto'}
             width={'max-content'}
           >

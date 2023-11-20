@@ -10,7 +10,7 @@ import {
 const links = [
   {
     text: 'Home',
-    ref: '/',
+    ref: '/home',
   },
   {
     text: 'Privacy Policy',
