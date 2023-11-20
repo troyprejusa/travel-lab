@@ -17,6 +17,7 @@ import {
   reduxUnclaimItem,
   reduxDeleteItem,
 } from '../redux/PackingSlice';
+import { reduxSetConnectionState } from '../redux/WebSocketSlice';
 import {
   MessageWS,
   MessageModel,
@@ -55,8 +56,9 @@ class TripSocket {
     this.trip_id = trip_id;
     this.dispatch = dispatch;
 
-    // If we already have a connection, let's disconnect since we
-    // are potentially switching trips when we get to here
+    // If we already have a connection, let's disconnect
+    // in case the developer did not manually disconnect
+    // before switching trips
     this.socket?.disconnect();
 
     this.socket = io(this.host + this.namespace, {
@@ -71,38 +73,108 @@ class TripSocket {
       },
     });
 
+    this.socket!.on('connect', () => {
+      console.log(`${this.namespace}:`, 'connected');
+
+      this.dispatch(
+        reduxSetConnectionState({ socketName: this.namespace, connected: true })
+      );
+
+      const engine = this.socket.io.engine;
+
+      console.log(
+        `${this.namespace} |`,
+        'Socket.io engine: current transport -',
+        engine.transport.name
+      );
+
+      engine.once('upgrade', () => {
+        console.log(
+          `${this.namespace} |`,
+          'Socket.io engine: upgraded transport -',
+          engine.transport.name
+        );
+      });
+
+      engine.on('close', (reason) => {
+        console.log(
+          `${this.namespace} |`,
+          'Socket.io engine: low-level connection closed\n',
+          reason
+        );
+      });
+    });
+
+    this.socket!.on('connect_error', () => {
+      console.log(`${this.namespace}:`, 'connection error');
+    });
+
+    // this.socket.io.on("reconnect_attempt", () => {
+    //   console.log(`${this.namespace}:`, 'Attempting to reconnect...')
+
+    // })
+
+    // this.socket.io.on("reconnect", () => {
+    //   console.log(`${this.namespace}:`, 'Reconnected!')
+    // })
+
+    // this.socket.io.on("reconnect_error", () => {
+    //   console.log(`${this.namespace}:`, 'Error reconnecting')
+    // })
+
+    // this.socket.io.on("reconnect_failed", () => {
+    //   console.log(`${this.namespace}:`, 'Reconnection failed')
+    // })
+
     this.socket!.on('disconnect', (reason: string) => {
-      if (reason !== 'io client disconnect') {
-        console.log('Websocket disconnected:\n', reason);
-        toast({
-          position: 'top',
-          title: 'Live updates disabled :(',
-          description:
-            "Something went wrong, we'll try to reconnect you. If the issue persists, refresh the page",
-          status: 'error',
-          duration: 4000,
-          isClosable: true,
-        });
-      }
+      /* We only need to alert the user if there was an *unexpected* disconnect from 
+      the server.
+      
+      NOTE: When the socket is disconnected explicitly by the client or the server,
+      (i.e. with .disconnect()) it will not attempt to reconnect */
+      console.log(`${this.namespace}: Disconnected\n`, reason);
+
+      this.dispatch(
+        reduxSetConnectionState({
+          socketName: this.namespace,
+          connected: false,
+        })
+      );
+
+      if (
+        reason === 'io client disconnect' ||
+        reason === 'io server disconnect'
+      )
+        return;
+
+      toast({
+        position: 'top',
+        title: `${this.namespace.slice(1)} server connection lost :(`,
+        description:
+          "Something went wrong, we'll try to reconnect you. If the issue persists, refresh the page",
+        status: 'error',
+        duration: 4000,
+        isClosable: true,
+      });
     });
 
     this.socket!.on('rate_limit_exceeded', (data) => {
-      console.log('Websocket rate limit exceeded');
       toast({
         position: 'top',
-        title: 'Too much activity :(',
-        description: 'Please wait 5 seconds before trying again',
+        title: `Too much ${this.namespace.slice(1)} activity :(`,
+        description: `You have made too many interactions in a short period. Your ${this.namespace.slice(
+          1
+        )} session has been disconnected. Refresh the application to continue using this service`,
         status: 'error',
-        duration: 4000,
+        duration: null,
         isClosable: true,
       });
     });
   }
 
   disconnectSocket() {
-    if (this.socket && this.socket.connected) {
-      this.socket.disconnect();
-    }
+    // Issue the disconnect whether the socket is connected, pending, or closed
+    this.socket?.disconnect();
   }
 }
 
