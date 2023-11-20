@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { msgSocket } from '../utilities/TripSocket';
 import {
   UserModel,
@@ -25,6 +25,7 @@ import fetchHelpers from '../utilities/fetchHelpers';
 import { reduxResetMessages } from '../redux/MessageSlice';
 import Constants from '../utilities/Constants';
 import TitleBarOverlay from '../Components/TitleBarOverlay';
+import RedAlertIcon from '../Components/RedAlertIcon';
 
 function MessageBoard(): JSX.Element {
   const user: UserModel = useSelector((state: RootState) => state.user);
@@ -32,6 +33,7 @@ function MessageBoard(): JSX.Element {
   const messages: Array<MessageModel> = useSelector(
     (state: RootState) => state.messages
   );
+  const messageSocketStatus = useSelector((state: RootState) => state.websocket.message);
 
   const { getAccessTokenSilently } = useAuth0();
   const dispatch = useDispatch();
@@ -71,7 +73,11 @@ function MessageBoard(): JSX.Element {
             </ConfigurableButtonAndModal>
           </TitleBarOverlay>
           <TitleBar text="Messages">
-            <PulseDot />
+            {messageSocketStatus ? (
+              <PulseDot />
+            ) : (
+              <RedAlertIcon />
+            )}
           </TitleBar>
           <Box
             flex="1 1 auto"

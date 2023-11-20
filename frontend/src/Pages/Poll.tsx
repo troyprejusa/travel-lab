@@ -9,11 +9,13 @@ import { Box } from '@chakra-ui/react';
 import TitleBar from '../Components/TitleBar';
 import PulseDot from '../Components/PulseDot';
 import TitleBarOverlay from '../Components/TitleBarOverlay';
+import RedAlertIcon from '../Components/RedAlertIcon';
 
 function Poll(): JSX.Element {
   const polls: Array<PollResponseModel> = useSelector(
     (state: RootState) => state.polls
   );
+  const pollSocketStatus = useSelector((state: RootState) => state.websocket.poll);
 
   return (
     <>
@@ -21,7 +23,7 @@ function Poll(): JSX.Element {
         <NewPollModal />
       </TitleBarOverlay>
       <TitleBar text="Poll">
-        <PulseDot />
+        {pollSocketStatus ? <PulseDot /> : <RedAlertIcon />}
       </TitleBar>
       <Flex
         margin={'0% 10% 0% 10%'}

@@ -6,6 +6,7 @@ import itineraryReducer from './ItinerarySlice';
 import messageReducer from './MessageSlice';
 import pollReducer from './PollSlice';
 import packingReducer from './PackingSlice';
+import websocketReducer from './WebSocketSlice';
 
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     messages: messageReducer,
     polls: pollReducer,
     packing: packingReducer,
+    websocket: websocketReducer
   },
 });
 

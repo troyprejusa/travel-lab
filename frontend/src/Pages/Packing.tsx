@@ -20,6 +20,7 @@ import {
 } from '@chakra-ui/react';
 import { packingSocket } from '../utilities/TripSocket';
 import TitleBarOverlay from '../Components/TitleBarOverlay';
+import RedAlertIcon from '../Components/RedAlertIcon';
 
 function Packing(): JSX.Element {
   const user: UserModel = useSelector((state: RootState) => state.user);
@@ -27,6 +28,7 @@ function Packing(): JSX.Element {
   const packingList: Array<PackingModel> = useSelector(
     (state: RootState) => state.packing
   );
+  const packingSocketStatus = useSelector((state: RootState) => state.websocket.packing);
 
   return (
     <>
@@ -34,7 +36,7 @@ function Packing(): JSX.Element {
         <NewItemModal />
       </TitleBarOverlay>
       <TitleBar text="Packing">
-        <PulseDot />
+        {packingSocketStatus ? <PulseDot /> : <RedAlertIcon />}
       </TitleBar>
       <TableContainer marginTop={6} borderRadius={'6px'}>
         <Table variant="striped" colorScheme="blackAlpha">

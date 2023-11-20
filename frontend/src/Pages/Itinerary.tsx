@@ -12,10 +12,14 @@ import TitleBar from '../Components/TitleBar';
 import Constants from '../utilities/Constants';
 import PulseDot from '../Components/PulseDot';
 import TitleBarOverlay from '../Components/TitleBarOverlay';
+import RedAlertIcon from '../Components/RedAlertIcon';
 
 function Itinerary(): JSX.Element {
   const itinerary: Array<ItineraryModel> = useSelector(
     (state: RootState) => state.itinerary
+  );
+  const itinerarySocketStatus = useSelector(
+    (state: RootState) => state.websocket.itinerary
   );
 
   return (
@@ -25,7 +29,7 @@ function Itinerary(): JSX.Element {
       </TitleBarOverlay>
 
       <TitleBar text="Itinerary">
-        <PulseDot />
+        {itinerarySocketStatus ? <PulseDot /> : <RedAlertIcon />}
       </TitleBar>
       <Flex flexWrap={'wrap'} justifyContent={'space-around'} gap={'20px'}>
         <Stack spacing="4" height={'80vh'} w={'xs'} overflowY={'scroll'}>
