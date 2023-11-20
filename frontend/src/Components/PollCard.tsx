@@ -124,8 +124,8 @@ function PollCard(props: PollCardProps) {
               vote
             </Badge>
           )}
-          <h2>{props.data.created_by}</h2>
-          <h3>{`${new Date(props.data.created_at).toDateString()}`}</h3>
+          <Text>{props.data.created_by}</Text>
+          <Text>{new Date(props.data.created_at).toDateString()}</Text>
         </Box>
       </Box>
 
@@ -150,33 +150,63 @@ function PollCard(props: PollCardProps) {
                 />
               </Box>
             </VStack>
-            <Flex justifyContent={'flex-end'}>
-              <ButtonGroup>
-                <TrashButton
-                  onClick={() => handleDeleteButtonClick(props.data.poll_id)}
-                  aria-label="delete poll"
-                  tooltipMsg={
-                    user.admin
-                      ? 'Delete poll'
-                      : 'Only trip admins can delete polls'
-                  }
-                  disabled={!user.admin}
-                />
-              </ButtonGroup>
-            </Flex>
-            <Flex flexDirection={'column'} gap={'10px'}>
-              <Heading size={'lg'}>{props.data.title}</Heading>
-              <Text size={'sm'}>Created by: {props.data.created_by}</Text>
+            <Box padding={'1rem'}>
+              <Box textAlign={'center'}>
+                {remainingVotes === 0 ? (
+                  <Text
+                    textTransform={'uppercase'}
+                    color={'green.400'}
+                    fontWeight={600}
+                    fontSize={'sm'}
+                    bg={'green.50'}
+                    p={2}
+                    alignSelf={'flex-start'}
+                    rounded={'md'}
+                  >
+                    vote complete
+                  </Text>
+                ) : (
+                  <Text
+                    textTransform={'uppercase'}
+                    color={'red.400'}
+                    fontWeight={600}
+                    fontSize={'sm'}
+                    bg={'red.50'}
+                    p={2}
+                    alignSelf={'flex-start'}
+                    rounded={'md'}
+                  >
+                    {`${remainingVotes} vote${
+                      remainingVotes > 1 ? 's' : ''
+                    } remaining`}
+                  </Text>
+                )}
+              </Box>
+              <Flex justifyContent={'space-between'} marginTop='1rem' marginBottom={'1rem'}>
+                <Box>
+                  <Heading size={'lg'}>{props.data.title}</Heading>
+                  <Text size={'sm'} color={'gray.500'}>
+                    Created by: {props.data.created_by}
+                  </Text>
+                </Box>
+                <ButtonGroup>
+                  <TrashButton
+                    onClick={() => handleDeleteButtonClick(props.data.poll_id)}
+                    aria-label="delete poll"
+                    tooltipMsg={
+                      user.admin
+                        ? 'Delete poll'
+                        : 'Only trip admins can delete polls'
+                    }
+                    disabled={!user.admin}
+                  />
+                </ButtonGroup>
+              </Flex>
               <Box>
                 <Heading size={'md'}>Description:</Heading>
                 <Text>{props.data.description || 'Nothing to show...'}</Text>
               </Box>
-              <Box>
-                {remainingVotes
-                  ? `${remainingVotes} travellers have not voted`
-                  : 'All travellers have voted'}
-              </Box>
-            </Flex>
+            </Box>
           </ModalBody>
 
           <ModalFooter>

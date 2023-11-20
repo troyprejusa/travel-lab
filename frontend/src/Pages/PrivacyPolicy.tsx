@@ -1,11 +1,12 @@
 import TitleBar from '../Components/TitleBar';
+import { Box } from '@chakra-ui/react';
 
 function PrivacyPolicy() {
   return (
-    <>
+    <Box padding={8}>
       <TitleBar text="Privacy Policy" />
       <div dangerouslySetInnerHTML={{ __html: termlyPolicy }}></div>
-    </>
+    </Box>
   );
 }
 

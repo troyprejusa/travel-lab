@@ -1,9 +1,9 @@
-import { Heading, Text } from '@chakra-ui/react';
 import TitleBar from '../Components/TitleBar';
+import { Heading, Text, Box } from '@chakra-ui/react';
 
 function TermsAndConditions() {
   return (
-    <>
+    <Box padding={8}>
       <TitleBar text="Terms and Conditions" />
       <Heading>Disclaimer</Heading>
       <Text>
@@ -21,7 +21,7 @@ function TermsAndConditions() {
         you are confirming that you are one of the users invited to use this
         application.
       </Text>
-    </>
+    </Box>
   );
 }
 
