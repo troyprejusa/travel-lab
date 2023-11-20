@@ -21,11 +21,11 @@ const features = [
     text: "Plan all the stops along your trip, and keep track of everyone's contact information all in one place.",
   },
   {
-    title: 'Message travel group',
+    title: 'Message the group',
     text: 'Use a chat room to share messages with your group without having to leave the app.',
   },
   {
-    title: 'Poll the group',
+    title: 'Create polls',
     text: 'No more arguing about what to visit. Create and vote on polls to let the group decide.',
   },
   {
