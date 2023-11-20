@@ -22,7 +22,9 @@ class WebSocketHandler(socketio.AsyncNamespace):
             # Continue processing
             await super().trigger_event(event, sid, *args)
         else:
-            # Disconnect potentially malicious user
+            # Close namespace connection if user exceeds rate limit
+            # NOTE: This does not close the underlying connection, 
+            # so it does not close ALL namespaces for this user
             print(f'Disconnecting sid {sid}')
             await self.emit('rate_limit_exceeded', {"message": f"Rate limit exceeded in {self.__class__.__name__}"})
             await self.disconnect(sid)
@@ -210,7 +212,11 @@ class MsgSocket(WebSocketHandler):
 
 
 # Setup websocket server - Socket.io
-sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins="*")
+# Include special CORS provisions for dev endpoints
+sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins=[
+    'https://travel-lab.dev:5173',
+    'https://travel-lab.dev'
+])
 sio.register_namespace(ItinerarySocket('/itinerary'))
 sio.register_namespace(PollSocket('/poll'))
 sio.register_namespace(PackingSocket('/packing'))
