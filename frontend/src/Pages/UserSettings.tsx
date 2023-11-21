@@ -16,7 +16,9 @@ import {
   AlertTitle,
   useToast,
   Heading,
-  Flex
+  Flex,
+  OrderedList,
+  ListItem,
 } from '@chakra-ui/react';
 import Constants from '../utilities/Constants';
 
@@ -28,7 +30,12 @@ function UserSettings(): JSX.Element {
   const toast = useToast();
 
   return (
-    <Box background={Constants.BACKROUND_GRADIENT} height={'100vh'} overflowY={'scroll'}>
+    <Box
+      background={Constants.BACKROUND_GRADIENT}
+      height={'100vh'}
+      overflowY={'scroll'}
+      padding={'2rem'}
+    >
       <TitleBar text="User Settings" />
       <Flex flexDirection={'column'} rowGap={'1rem'}>
         <Text color={'blue'} cursor={'pointer'} onClick={() => navigate('/')}>
@@ -40,6 +47,24 @@ function UserSettings(): JSX.Element {
             <AlertIcon />
             <AlertTitle>Photo upload feature in work</AlertTitle>
           </Alert>
+        </Box>
+        <Divider margin={'1rem'} />
+        <Box>
+          <Heading size={'md'}>Change Password</Heading>
+          <Text>Here are the steps to change your password:</Text>
+          <OrderedList>
+            <ListItem>Sign out of the application</ListItem>
+            <ListItem>
+              From the landing page, click on the Log In button
+            </ListItem>
+            <ListItem>
+              Click on the Forgot Password? | Reset Password link
+            </ListItem>
+            <ListItem>
+              Follow the prompts with the authentication provider to change your
+              password
+            </ListItem>
+          </OrderedList>
         </Box>
         <Divider margin={'1rem'} />
         <Box>
