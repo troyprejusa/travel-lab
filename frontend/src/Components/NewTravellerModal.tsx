@@ -8,7 +8,7 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  ModalCloseButton,
+  // ModalCloseButton,
   useDisclosure,
   FormControl,
   FormLabel,
@@ -23,7 +23,7 @@ import { TripModel } from '../utilities/Interfaces';
 import { RootState } from '../redux/Store';
 import { ConfigurableButton } from './Buttons';
 
-interface NewTravellerModalProps {}
+// interface NewTravellerModalProps {}
 
 function NewTravellerModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -92,9 +92,9 @@ function NewTravellerModal() {
       event.preventDefault();
     }
     
-    if (travellerForm.current === null) return;
+    // if (travellerForm.current === null) return;
 
-    const formData = new FormData(travellerForm.current);
+    // const formData = new FormData(travellerForm.current);
 
     // Validate form
   }

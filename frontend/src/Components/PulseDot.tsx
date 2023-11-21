@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Box, keyframes, Tooltip } from '@chakra-ui/react';
 
 export default function PulseDot() {

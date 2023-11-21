@@ -76,11 +76,11 @@ class TripSocket {
     this.socket!.on('connect', () => {
       console.log(`${this.namespace}:`, 'connected');
 
-      this.dispatch(
+      this.dispatch!(
         reduxSetConnectionState({ socketName: this.namespace, connected: true })
       );
 
-      const engine = this.socket.io.engine;
+      const engine = this.socket!.io.engine;
 
       console.log(
         `${this.namespace} |`,
@@ -134,7 +134,7 @@ class TripSocket {
       (i.e. with .disconnect()) it will not attempt to reconnect */
       console.log(`${this.namespace}: Disconnected\n`, reason);
 
-      this.dispatch(
+      this.dispatch!(
         reduxSetConnectionState({
           socketName: this.namespace,
           connected: false,
@@ -158,7 +158,7 @@ class TripSocket {
       });
     });
 
-    this.socket!.on('rate_limit_exceeded', (data) => {
+    this.socket!.on('rate_limit_exceeded', () => {
       toast({
         position: 'top',
         title: `Too much ${this.namespace.slice(1)} activity :(`,
@@ -193,7 +193,7 @@ class MessageSocket extends TripSocket {
     });
 
     // Create event handlers for this
-    this.socket!.on('backend_msg_error', (data: any) => {
+    this.socket!.on('backend_msg_error', (data) => {
       console.error(data);
       toast({
         position: 'top',
@@ -256,7 +256,7 @@ class PollSocket extends TripSocket {
       this.dispatch!(reduxAddVote(data));
     });
 
-    this.socket!.on('backend_vote_error', (data: any) => {
+    this.socket!.on('backend_vote_error', (data) => {
       console.error(data);
       toast({
         position: 'top',
@@ -269,7 +269,7 @@ class PollSocket extends TripSocket {
     });
   }
 
-  sendPoll(poll: any) {
+  sendPoll(poll) {
     this.socket!.emit('frontend_poll_create', poll);
   }
 
@@ -295,7 +295,7 @@ class ItinerarySocket extends TripSocket {
       this.dispatch!(reduxAddItinerary(data));
     });
 
-    this.socket!.on('backend_itinerary_create_error', (data: any) => {
+    this.socket!.on('backend_itinerary_create_error', (data) => {
       console.error(data);
       toast({
         position: 'top',
@@ -311,7 +311,7 @@ class ItinerarySocket extends TripSocket {
       this.dispatch!(reduxDeleteItinerary(data));
     });
 
-    this.socket!.on('backend_itinerary_delete_error', (data: any) => {
+    this.socket!.on('backend_itinerary_delete_error', (data) => {
       console.error(data);
       toast({
         position: 'top',
@@ -346,7 +346,7 @@ class PackingSocket extends TripSocket {
       this.dispatch!(reduxAddPackingItem(data));
     });
 
-    this.socket!.on('backend_packing_create_error', (data: any) => {
+    this.socket!.on('backend_packing_create_error', (data) => {
       console.error(data);
       toast({
         position: 'top',
@@ -362,7 +362,7 @@ class PackingSocket extends TripSocket {
       this.dispatch!(reduxClaimItem(data));
     });
 
-    this.socket!.on('backend_packing_claim_error', (data: any) => {
+    this.socket!.on('backend_packing_claim_error', (data) => {
       console.error(data);
       toast({
         position: 'top',
@@ -378,7 +378,7 @@ class PackingSocket extends TripSocket {
       this.dispatch!(reduxUnclaimItem(data));
     });
 
-    this.socket!.on('backend_packing_unclaim_error', (data: any) => {
+    this.socket!.on('backend_packing_unclaim_error', (data) => {
       console.error(data);
       toast({
         position: 'top',
@@ -394,7 +394,7 @@ class PackingSocket extends TripSocket {
       this.dispatch!(reduxDeleteItem(data));
     });
 
-    this.socket!.on('backend_packing_delete_error', (data: any) => {
+    this.socket!.on('backend_packing_delete_error', (data) => {
       console.error(data);
       toast({
         position: 'top',

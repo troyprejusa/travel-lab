@@ -1,4 +1,4 @@
-import React from 'react';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Provider as ReduxProvider } from 'react-redux';
@@ -73,7 +73,7 @@ const root: ReactDOM.Root = ReactDOM.createRoot(
 );
 
 root.render(
-  <React.StrictMode>
+  <StrictMode>
     <ChakraProvider>
       <ReduxProvider store={reduxStore}>
         <Auth0Provider
@@ -89,5 +89,5 @@ root.render(
         </Auth0Provider>
       </ReduxProvider>
     </ChakraProvider>
-  </React.StrictMode>
+  </StrictMode>
 );

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Flex, Text, Grid, GridItem, Box, Heading } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';

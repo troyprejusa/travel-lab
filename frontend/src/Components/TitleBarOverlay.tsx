@@ -1,7 +1,6 @@
-import React from "react";
 import { Box } from "@chakra-ui/react";
 
-export default function TitleBarOverlay(props: any) {
+export default function TitleBarOverlay(props) {
     return (
         <Box position={'absolute'}>
             {props.children}

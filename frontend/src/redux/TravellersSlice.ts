@@ -124,14 +124,14 @@ export const reduxFetchTravellers = createAsyncThunk<
       const errorRes = await res.json();
       return thunkAPI.rejectWithValue(errorRes);
     }
-  } catch (error: any) {
+  } catch (error) {
     // Send to rejected case
     return thunkAPI.rejectWithValue(error);
   }
 });
 
 export const reduxAcceptTraveller = createAsyncThunk<
-  any,
+  string,
   { token: string; trip_id: string; user_id: string }
 >(
   'messages/reduxAcceptTraveller',
@@ -149,7 +149,7 @@ export const reduxAcceptTraveller = createAsyncThunk<
         const errorRes = await res.json();
         return thunkAPI.rejectWithValue(errorRes);
       }
-    } catch (error: any) {
+    } catch (error) {
       // Send to rejected case
       return thunkAPI.rejectWithValue(error);
     }
@@ -157,7 +157,7 @@ export const reduxAcceptTraveller = createAsyncThunk<
 );
 
 export const reduxRemoveTraveller = createAsyncThunk<
-  any,
+  string,
   { token: string; trip_id: string; user_id: string }
 >(
   'messages/reduxRemoveTraveller',
@@ -175,7 +175,7 @@ export const reduxRemoveTraveller = createAsyncThunk<
         const errorRes = await res.json();
         return thunkAPI.rejectWithValue(errorRes);
       }
-    } catch (error: any) {
+    } catch (error) {
       // Send to rejected case
       return thunkAPI.rejectWithValue(error);
     }

@@ -151,7 +151,7 @@ function MessageBoard(): JSX.Element {
       } else {
         throw new Error('Unable to delete messages');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
       toast({
         position: 'top',

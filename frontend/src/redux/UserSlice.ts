@@ -8,7 +8,13 @@ import { DbUserModel, UserModel } from '../utilities/Interfaces';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { createStandaloneToast } from '@chakra-ui/react';
 
+
 const { toast } = createStandaloneToast();
+
+interface UserPermissions {
+  confirmed: boolean;
+  admin: boolean
+}
 
 const emptyUser: UserModel = {
   id: '',
@@ -24,7 +30,7 @@ const userSlice: Slice = createSlice({
   name: 'user', // user/<action_name>
   initialState: emptyUser,
   reducers: {
-    reduxModifyUserPermissions(state, action: PayloadAction<any>) {
+    reduxModifyUserPermissions(state, action: PayloadAction<UserPermissions>) {
       // user/reduxModifyUserPermissions
       state.confirmed = action.payload.confirmed;
       state.admin = action.payload.admin;
@@ -49,7 +55,7 @@ const userSlice: Slice = createSlice({
           return action.payload;
         }
       )
-      .addCase(reduxFetchUser.rejected, (state, action: any) => {
+      .addCase(reduxFetchUser.rejected, (state, action) => {
         // user/reduxFetchUser/rejected
         toast({
           position: 'top',
@@ -91,7 +97,7 @@ const userSlice: Slice = createSlice({
       })
       .addCase(
         reduxFetchTripPermissions.fulfilled,
-        (state, action: PayloadAction<any>) => {
+        (state, action: PayloadAction<UserPermissions>) => {
           // user/reduxFetchTripPermissions/fulfilled
           state.confirmed = action.payload.confirmed;
           state.admin = action.payload.admin;
@@ -140,7 +146,7 @@ export const reduxFetchUser = createAsyncThunk<
       const errorRes = await res.json();
       return thunkAPI.rejectWithValue(errorRes);
     }
-  } catch (error: any) {
+  } catch (error) {
     // Send to rejected case
     return thunkAPI.rejectWithValue(error);
   }
@@ -192,7 +198,7 @@ export const reduxFetchTripPermissions = createAsyncThunk<
       const errorRes = await res.json();
       return thunkAPI.rejectWithValue(errorRes);
     }
-  } catch (error: any) {
+  } catch (error) {
     // Send to rejected case
     return thunkAPI.rejectWithValue(error);
   }

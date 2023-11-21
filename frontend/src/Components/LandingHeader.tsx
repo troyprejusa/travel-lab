@@ -22,7 +22,7 @@ import {
 import {
   HamburgerIcon,
   CloseIcon,
-  ChevronDownIcon,
+  // ChevronDownIcon,
   ChevronRightIcon,
 } from '@chakra-ui/icons';
 import { useState, useEffect } from 'react';

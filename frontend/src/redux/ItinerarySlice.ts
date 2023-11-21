@@ -81,7 +81,7 @@ export const reduxFetchItinerary = createAsyncThunk<
       const errorRes = await res.json();
       return thunkAPI.rejectWithValue(errorRes);
     }
-  } catch (error: any) {
+  } catch (error) {
     // Send to rejected case
     return thunkAPI.rejectWithValue(error);
   }

@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { TripModel, UserModel } from '../utilities/Interfaces';
 import TripCard from '../Components/TripCard';
@@ -77,10 +77,10 @@ function Trips(): JSX.Element {
           const trips: Array<TripModel> = await res.json();
           setTrips(trips);
         } else {
-          const message: any = await res.json();
+          const message = await res.json();
           throw new Error(JSON.stringify(message));
         }
-      } catch (error: any) {
+      } catch (error) {
         console.error(error);
         toast({
           position: 'top',
@@ -98,7 +98,7 @@ function Trips(): JSX.Element {
     navigate('/home');
   }
 
-  function handleSignOut(event: SyntheticEvent) {
+  function handleSignOut() {
     signOutBeforeTripSelect(dispatch);
     logout({
       logoutParams: {

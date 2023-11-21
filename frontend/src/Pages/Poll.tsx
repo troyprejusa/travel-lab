@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Flex } from '@chakra-ui/react';
 import NewPollModal from '../Components/NewPollModal';
 import { useSelector } from 'react-redux';
