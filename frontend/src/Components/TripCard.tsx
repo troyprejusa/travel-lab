@@ -65,7 +65,7 @@ function TripCard(props: TripCardProps) {
             fontSize={'sm'}
             letterSpacing={1.1}
           >
-            {props.tripData.start_date} | {props.tripData.start_date}
+            {props.tripData.start_date} | {props.tripData.end_date}
           </Text>
           <Heading
             color={useColorModeValue('gray.700', 'white')}

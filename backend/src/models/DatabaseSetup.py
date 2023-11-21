@@ -267,12 +267,12 @@ class DatabaseSetup:
             )
             VALUES (
                 'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
-                'Seqoia National Park',
+                'Thailand',
                 'Getaway trip',
-                '2020-06-10',
-                '2020-06-11',
+                '2023-11-10',
+                '2023-11-19',
                 'troy@test.com',
-                'wilderness'
+                'tropical'
             );
 
             INSERT INTO trip 
@@ -287,12 +287,12 @@ class DatabaseSetup:
             )
             VALUES (
                 'ce60fd7b-6238-4bef-a924-269597fdaab1',
-                'Cabo',
-                'Getaway trip 2',
-                '2020-07-10',
-                '2020-07-11',
+                'New York City',
+                'Visit friends and eat halal',
+                '2024-04-19',
+                '2024-04-21',
                 'troy@test.com',
-                'tropical'
+                'city'
             );
                             
             INSERT INTO trip 
@@ -307,7 +307,7 @@ class DatabaseSetup:
             )
             VALUES (
                 '47fc5568-568e-4124-9e08-60508719dfb6',
-                'Europe',
+                'Greece',
                 'Boys trip',
                 '2023-08-30',
                 '2023-08-31',
@@ -326,7 +326,7 @@ class DatabaseSetup:
             INSERT INTO traveller_trip 
             VALUES (
                 (SELECT id FROM traveller WHERE first_name='troy'),
-                (SELECT id FROM trip WHERE destination='Seqoia National Park'),
+                'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
                 TRUE,
                 TRUE
             );
@@ -334,7 +334,7 @@ class DatabaseSetup:
             INSERT INTO traveller_trip 
                 VALUES (
                 (SELECT id FROM traveller WHERE first_name='troy'),
-                (SELECT id FROM trip WHERE destination='Cabo'),
+                'ce60fd7b-6238-4bef-a924-269597fdaab1',
                 TRUE,
                 TRUE
             );
@@ -342,7 +342,7 @@ class DatabaseSetup:
             INSERT INTO traveller_trip 
                 VALUES (
                 (SELECT id FROM traveller WHERE first_name='joe'),
-                (SELECT id FROM trip WHERE destination='Seqoia National Park'),
+                'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
                 TRUE,
                 FALSE
             );
@@ -351,7 +351,7 @@ class DatabaseSetup:
             INSERT INTO traveller_trip 
                 VALUES (
                 (SELECT id FROM traveller WHERE first_name='joe'),
-                (SELECT id FROM trip WHERE destination='Cabo'),
+                'ce60fd7b-6238-4bef-a924-269597fdaab1',
                 FALSE,
                 FALSE
             );
@@ -359,7 +359,7 @@ class DatabaseSetup:
             INSERT INTO traveller_trip 
                 VALUES (
                 (SELECT id FROM traveller WHERE first_name='joe'),
-                (SELECT id FROM trip WHERE destination='Europe'),
+                '47fc5568-568e-4124-9e08-60508719dfb6',
                 TRUE,
                 TRUE
             );
@@ -370,10 +370,10 @@ class DatabaseSetup:
             INSERT INTO itinerary (trip_id, title, description, start_time, end_time, created_by)
             VALUES (
                 'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
-                'The Beach',
-                'First stop on the trip!!',
-                '2023-09-04 14:30:00',
-                '2023-09-04 18:00:00',
+                'Maya Beach',
+                'First stop on the trip!',
+                '2023-11-13 13:00:00',
+                '2023-11-13 16:00:00',
                 'troy@test.com'
             );
                             
@@ -381,9 +381,9 @@ class DatabaseSetup:
             VALUES (
                 'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
                 'Dinner Reservation',
-                '2023-09-06 19:00:00',
-                '2023-06-06 20:00:00',
-                'troy@test.com'
+                '2023-11-16 18:00:00',
+                '2023-11-16 20:00:00',
+                'joe@test.com'
             );
         """)
 
@@ -408,12 +408,12 @@ class DatabaseSetup:
             VALUES (
                 101,
                 'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
-                'More time in San Juan or Bio Bay?',
+                'More time in Phuket or Bangkok?',
                 'troy@test.com'
             );
                             
-            INSERT INTO poll_option (id, poll_id, option) VALUES (201, 101, 'San Juan');
-            INSERT INTO poll_option (id, poll_id, option) VALUES (202, 101, 'Bio Bay');
+            INSERT INTO poll_option (id, poll_id, option) VALUES (201, 101, 'Phuket');
+            INSERT INTO poll_option (id, poll_id, option) VALUES (202, 101, 'Bangkok');
                             
             INSERT INTO poll (
                 id,
@@ -430,9 +430,9 @@ class DatabaseSetup:
                 'joe@test.com'
             );
                             
-            INSERT INTO poll_option (id, poll_id, option) VALUES (203, 102, 'PR food');
-            INSERT INTO poll_option (id, poll_id, option) VALUES (204, 102, 'Seafood');
-            INSERT INTO poll_option (id, poll_id, option) VALUES (205, 102, 'appetizers');
+            INSERT INTO poll_option (id, poll_id, option) VALUES (203, 102, 'appetizers');
+            INSERT INTO poll_option (id, poll_id, option) VALUES (204, 102, 'seafood');
+            INSERT INTO poll_option (id, poll_id, option) VALUES (205, 102, 'barbecue');
                             
             INSERT INTO poll_vote (id, poll_id, vote, voted_by) VALUES (301, 102, 204, 'joe@test.com');
         """)
@@ -440,13 +440,13 @@ class DatabaseSetup:
     def insert_packing(self):
         self.database.query("""
             INSERT INTO packing (trip_id, item, quantity, description, created_by, packed_by)
-            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'pans', 2, 'safe for grilling', 'joe@test.com', 'troy@test.com');
+            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'sunscreen', 2, 'spray-on preferred', 'joe@test.com', 'troy@test.com');
                             
             INSERT INTO packing (trip_id, item, quantity, created_by)
-            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'spatula', 5, 'troy@test.com');
+            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'bug spray', 2, 'troy@test.com');
                             
             INSERT INTO packing (trip_id, item, quantity, description, created_by, packed_by)
-            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'firestarter', 1, 'Please bring something easy to use', 'troy@test.com', 'joe@test.com');
+            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'underwater camera', 1, 'maybe a selfie-stick too?', 'troy@test.com', 'joe@test.com');
         """)
 
     def insert_alpha(self):

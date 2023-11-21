@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import LandingHero from '../Components/LandingHero';
 import FeaturesSection from '../Components/FeaturesSection';
 import LandingStatistics from '../Components/LandingStatistics';
+import FeatureGallery from '../Components/FeatureGallery';
 
 function Landing(): JSX.Element {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ function Landing(): JSX.Element {
       <LandingHero />
       <FeaturesSection />
       <LandingStatistics />
+      <FeatureGallery />
     </Box>
   );
 
