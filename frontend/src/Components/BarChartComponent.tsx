@@ -1,4 +1,4 @@
-
+import React from 'react';
 import { pollSocket } from '../utilities/TripSocket';
 import { PollChartDataPoint, PollVoteWS } from '../utilities/Interfaces';
 import {
@@ -28,7 +28,6 @@ function BarChartComponent(props: BarChartComponentProps) {
   };
   if (!props.userVoted) {
     userInteractions.barChartInteractions['onClick'] = handleBarClick;
-    
     userInteractions.barInteractions['cursor'] = 'pointer';
     userInteractions.barInteractions['background'] = {
       fill: 'transparent',
@@ -45,7 +44,7 @@ function BarChartComponent(props: BarChartComponentProps) {
         <XAxis dataKey={'option'} />
         <YAxis />
         <Bar dataKey={'count'} {...userInteractions.barInteractions}>
-          {props.dataPoints.map((_datum, index) => (
+          {props.dataPoints.map((datum, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Bar>
@@ -53,7 +52,7 @@ function BarChartComponent(props: BarChartComponentProps) {
     </ResponsiveContainer>
   );
 
-  function handleBarClick(data) {
+  function handleBarClick(data: any) {
     // We are putting the handle click on the BarChart so that
     // users can click on bars for which there are currently
     // no votes. However, that means that there are areas of

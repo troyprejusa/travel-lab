@@ -1,9 +1,10 @@
 import { LicenseInfo } from '../Pages/Licenses';
 import {
+  Text,
   Table,
   Thead,
   Tbody,
-  // Tfoot,
+  Tfoot,
   Tr,
   Th,
   Td,

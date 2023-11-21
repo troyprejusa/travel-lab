@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 import {
   AlertDialog,
   AlertDialogBody,
@@ -12,7 +12,7 @@ import {
 interface ConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
-  clickHandler;
+  clickHandler: any;
   header?: string;
   body?: string;
 }

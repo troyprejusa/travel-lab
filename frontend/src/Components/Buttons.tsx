@@ -1,4 +1,4 @@
-
+import React from 'react';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { fetchAllTripData } from '../utilities/stateHandlers';
 import { useAuth0 } from '@auth0/auth0-react';

@@ -1,4 +1,4 @@
-import {
+import React, {
   MutableRefObject,
   ReactNode,
   SyntheticEvent,
@@ -107,6 +107,7 @@ const Form1 = (props: UserFormProps) => {
   const newForm = useRef<HTMLFormElement>(null);
   const toast = useToast();
   const user: UserModel = useSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
 
   return (
     <form ref={newForm} onSubmit={handleNext}>

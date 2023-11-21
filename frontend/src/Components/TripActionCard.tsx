@@ -1,4 +1,4 @@
-
+import React from 'react';
 import NewTripModal from '../Components/NewTripModal';
 import JoinTripModal from '../Components/JoinTripModal';
 import {
@@ -10,9 +10,9 @@ import {
   Divider,
 } from '@chakra-ui/react';
 
-// interface TripActionCardProps {}
+interface TripActionCardProps {}
 
-function TripActionCard() {
+function TripActionCard(props: TripActionCardProps) {
   return (
     <Center py={6}>
       <Box

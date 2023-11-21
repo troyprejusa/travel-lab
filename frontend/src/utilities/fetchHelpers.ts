@@ -21,7 +21,7 @@ const fetchHelpers = {
           audience: Constants.AUTH0_AUDIENCE,
         },
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       throw new Error('Unable to retrieve access token');
     }

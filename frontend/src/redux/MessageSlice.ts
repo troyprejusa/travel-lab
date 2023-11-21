@@ -81,7 +81,7 @@ export const reduxFetchMessages = createAsyncThunk<
       const errorRes = await res.json();
       return thunkAPI.rejectWithValue(errorRes);
     }
-  } catch (error) {
+  } catch (error: any) {
     // Send to rejected case
     return thunkAPI.rejectWithValue(error);
   }

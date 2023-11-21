@@ -1,11 +1,16 @@
+import React from 'react';
+
 import {
   Box,
   Container,
+  Heading,
   SimpleGrid,
   Icon,
   Text,
+  Stack,
   HStack,
   VStack,
+  Button,
 } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
 

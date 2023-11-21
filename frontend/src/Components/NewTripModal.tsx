@@ -29,7 +29,7 @@ import {
   Select,
 } from '@chakra-ui/react';
 
-// interface NewTripModalProps {}
+interface NewTripModalProps {}
 
 function NewTripModal() {
   const dispatch = useDispatch();
@@ -178,7 +178,7 @@ function NewTripModal() {
           isClosable: true,
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       toast({
         position: 'top',

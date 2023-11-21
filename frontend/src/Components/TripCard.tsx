@@ -1,3 +1,4 @@
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { reduxSetTrip } from '../redux/TripSlice';
@@ -106,7 +107,7 @@ function TripCard(props: TripCardProps) {
       // Navigate to view the trip
       navigate(`/trip/${props.tripData.id}/home`);
 
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       toast({
         position: 'top',

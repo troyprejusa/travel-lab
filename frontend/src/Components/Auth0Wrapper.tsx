@@ -1,6 +1,9 @@
+import React from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 
-function Auth0Wrapper(props) {
+
+function Auth0Wrapper({ children }) {
+
   const { isLoading, error } = useAuth0();
 
   if (!isLoading) {
@@ -10,7 +13,7 @@ function Auth0Wrapper(props) {
     return <div>Unable to sign in</div>;
   }
 
-  return <>{props.children}</>;
+  return <>{children}</>;
 }
 
 export default Auth0Wrapper;

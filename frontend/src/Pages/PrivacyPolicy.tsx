@@ -1,5 +1,3 @@
-/* eslint no-irregular-whitespace: 0 */
-
 import TitleBar from '../Components/TitleBar';
 import { Box } from '@chakra-ui/react';
 

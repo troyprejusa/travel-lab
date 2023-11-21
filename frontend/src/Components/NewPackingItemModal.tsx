@@ -9,7 +9,7 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  // ModalCloseButton,
+  ModalCloseButton,
   useDisclosure,
   FormControl,
   FormLabel,
@@ -20,9 +20,9 @@ import { NewPackingWS, TripModel, UserModel } from '../utilities/Interfaces';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
 
-// interface NewItemModalProps {}
+interface NewItemModalProps {}
 
-function NewItemModal() {
+function NewItemModal(props: NewItemModalProps) {
   const user: UserModel = useSelector((state: RootState) => state.user);
   const trip: TripModel = useSelector((state: RootState) => state.trip);
   const { isOpen, onOpen, onClose } = useDisclosure();

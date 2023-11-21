@@ -1,3 +1,4 @@
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TripModel, UserModel } from '../utilities/Interfaces';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,7 +15,7 @@ import {
   Table,
   Thead,
   Tbody,
-  // Tfoot,
+  Tfoot,
   Tr,
   Th,
   Td,
@@ -34,7 +35,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import {
   AcceptUserButton,
   RejectUserButton,
-  // PromoteUserButton,
+  PromoteUserButton,
   TrashButton,
   ConfigurableButtonAndModal,
 } from '../Components/Buttons';
@@ -306,7 +307,7 @@ function TripSettings(): JSX.Element {
       dispatch(
         reduxRemoveTraveller({ token: token, trip_id: trip.id, user_id: id })
       );
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       toast({
         position: 'top',
@@ -333,10 +334,10 @@ function TripSettings(): JSX.Element {
         resetAfterLeavingTrip(dispatch);
         navigate(`/user/${user.email}/trips`);
       } else {
-        const errorRes = await res.json();
+        const errorRes: any = await res.json();
         throw new Error(errorRes);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       toast({
         position: 'top',
@@ -361,10 +362,10 @@ function TripSettings(): JSX.Element {
         resetAfterTripDelete(dispatch);
         navigate(`/user/${user.email}/trips`);
       } else {
-        const errorRes = await res.json();
+        const errorRes: any = await res.json();
         throw new Error(errorRes);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       toast({
         position: 'top',

@@ -95,10 +95,10 @@ export const reduxFetchPacking = createAsyncThunk<
       // console.log(packingData);
       return packingData;
     } else {
-      const errorRes = await res.json();
+      const errorRes: any = await res.json();
       return thunkAPI.rejectWithValue(errorRes);
     }
-  } catch (error) {
+  } catch (error: any) {
     return thunkAPI.rejectWithValue(error);
   }
 });

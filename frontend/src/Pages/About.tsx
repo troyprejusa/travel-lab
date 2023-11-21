@@ -1,4 +1,5 @@
 import { ReactElement } from 'react';
+import TitleBar from '../Components/TitleBar';
 import TroyPortrait from '../assets/troy-prejusa-portrait.jpeg';
 import {
   Text,
