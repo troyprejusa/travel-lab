@@ -7,6 +7,22 @@ import WildernessPhoto from '../assets/wilderness.jpg';
 import WinterPhoto from '../assets/winter.jpg';
 
 
+interface ConstantsInterface {
+  AUTH0_DOMAIN: string;
+  AUTH0_CLIENT: string;
+  AUTH0_AUDIENCE: string;
+  PHOTO_MAP: {
+    [key: string]: string; // index signature
+  },
+  COLORS: Array<string>;
+  BACKGROUND_TRANSPARENCY: string;
+  BACKROUND_GRADIENT: string;
+  NAVBAR_LEFT_PANE_WIDTH: string;
+  NAVBAR_TOP_PANE_HEIGHT: string;
+  OUTLET_PADDING: string;
+}
+
+
 /* The logic below is here so that I can build the app and make sure 
 that the API is successfully serving the desired content via the 
 reverse proxy. I.e. just because I built the app doesn't mean I want 
@@ -19,7 +35,7 @@ if (vite_mode === 'production' && import.meta.env.VITE_DEPLOYMENT !== 'heroku') 
   mode = vite_mode;
 }
 
-const Constants = {
+const Constants: ConstantsInterface = {
 
   AUTH0_DOMAIN: mode === 'production' ? import.meta.env.VITE_PROD_AUTH0_DOMAIN : import.meta.env.VITE_DEV_AUTH0_DOMAIN,
   AUTH0_CLIENT: mode === 'production' ? import.meta.env.VITE_PROD_AUTH0_CLIENT : import.meta.env.VITE_DEV_AUTH0_CLIENT,

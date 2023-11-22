@@ -160,3 +160,10 @@ export interface PollChartDataPoint {
   count: number;
   voted_by: Array<string>;
 }
+
+// # --------------- GENERIC RESPONSE TYPES --------------- #
+export interface HTTPExceptionResponse {
+  detail: {
+    message?: string
+  }
+}

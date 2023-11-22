@@ -1,6 +1,12 @@
+import { ReactNode } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 
-function Auth0Wrapper(props) {
+
+interface Auth0WrapperProps {
+  children: ReactNode;
+}
+
+function Auth0Wrapper(props: Auth0WrapperProps) {
   const { isLoading, error } = useAuth0();
 
   if (!isLoading) {

@@ -4,7 +4,7 @@ import {
   PayloadAction,
   createAsyncThunk,
 } from '@reduxjs/toolkit';
-import { DbUserModel, UserModel } from '../utilities/Interfaces';
+import { DbUserModel, UserModel, HTTPExceptionResponse } from '../utilities/Interfaces';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { createStandaloneToast } from '@chakra-ui/react';
 
@@ -57,9 +57,10 @@ const userSlice: Slice = createSlice({
       )
       .addCase(reduxFetchUser.rejected, (state, action) => {
         // user/reduxFetchUser/rejected
+        const response = action.payload as HTTPExceptionResponse;
         toast({
           position: 'top',
-          title: action.payload?.detail?.message || 'Unable to retrieve user data :(',
+          title: response.detail.message || 'Unable to retrieve user data :(',
           description: 'Something went wrong...',
           status: 'error',
           duration: 4000,

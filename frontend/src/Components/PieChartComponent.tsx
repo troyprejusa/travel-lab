@@ -57,7 +57,7 @@ function PieChartComponent(props: PieChartComponentProps) {
           nameKey="option"
           dataKey="count"
         >
-          {props.data.map((datum, index) => (
+          {props.data.map((_datum, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Pie>

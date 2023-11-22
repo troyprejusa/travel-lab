@@ -38,6 +38,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from 'react-router-dom';
 
 interface UserFormData {
+  [key: string]: string; // index signature
   first_name: string;
   last_name: string;
   phone: string;

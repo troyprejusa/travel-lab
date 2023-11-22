@@ -14,7 +14,8 @@ const fetchHelpers = {
     });
   },
 
-  getAuth0Token: async function (getAccessTokenSilently): Promise<string> {
+  // To avoid having to maintain type-sync with Auth0, I will eslint-ignore this definition
+  getAuth0Token: async function (getAccessTokenSilently: Function): Promise<string> {
     try {
       return await getAccessTokenSilently({
         authorizationParams: {

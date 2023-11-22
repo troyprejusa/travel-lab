@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAuth0, User } from '@auth0/auth0-react';
 import { Flex, Box, Spinner, useToast } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { reduxFetchUser } from '../redux/UserSlice';
@@ -54,12 +54,12 @@ function Staging(): JSX.Element {
     </Box>
   );
 
-  async function setUser(user) {
+  async function setUser(user: User) {
     try {
       const token: string = await fetchHelpers.getAuth0Token(
         getAccessTokenSilently
       );
-      dispatch(reduxFetchUser({ email: user.email, token: token }));
+      dispatch(reduxFetchUser({ email: user.email!, token: token }));
     } catch (error) {
       console.error(error);
       toast({

@@ -21,6 +21,7 @@ import { reduxSetConnectionState } from '../redux/WebSocketSlice';
 import {
   MessageWS,
   MessageModel,
+  NewPollModel,
   PollVoteWS,
   PollDeleteWS,
   PollResponseModel,
@@ -269,7 +270,7 @@ class PollSocket extends TripSocket {
     });
   }
 
-  sendPoll(poll) {
+  sendPoll(poll: NewPollModel) {
     this.socket!.emit('frontend_poll_create', poll);
   }
 

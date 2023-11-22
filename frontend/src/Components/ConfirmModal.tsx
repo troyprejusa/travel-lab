@@ -12,7 +12,7 @@ import {
 interface ConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
-  clickHandler;
+  clickHandler: () => void;
   header?: string;
   body?: string;
 }
