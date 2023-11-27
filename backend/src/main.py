@@ -1,5 +1,4 @@
 from fastapi import FastAPI, Request
-from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -27,9 +26,6 @@ app = FastAPI()
 app.middleware('http')(middleware.authenticate_user)    # (3) Authenticate user
 app.middleware('http')(middleware.serve_static_files)   # (2) Serve public content
 app.middleware('http')(middleware.rate_limiter)         # (1) Rate limit
-
-# /assets
-app.mount('/assets', StaticFiles(directory='/app/src/dist/assets'), name='assets')
 
 # /dev
 app.include_router(dev_router)
