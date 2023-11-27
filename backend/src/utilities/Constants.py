@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 MODE = os.getenv('MODE', 'development')
+HOST = os.getenv('HOST', 'localhost')
 
 # API
 API_REQUEST_COUNT = int(os.getenv('API_REQUEST_COUNT'))
@@ -51,8 +52,8 @@ LIMIT_POLLS_PER_TRIP = int(os.getenv('LIMIT_POLLS_PER_TRIP'))    # protects poll
 LIMIT_PACKING_PER_TRIP = int(os.getenv('LIMIT_PACKING_PER_TRIP'))   # protects packing table
 LIMIT_MESSAGES_PER_TRIP = int(os.getenv('LIMIT_MESSAGES_PER_TRIP'))     # protects messages table
 
-# S3
-S3_HOST = os.getenv('S3_HOST')
-S3_PORT = os.getenv('S3_PORT')
-S3_ACCESS_KEY = os.getenv('S3_ACCESS_KEY')
-S3_SECRET_KEY = os.getenv('S3_SECRET_KEY')
+# S3 - future work
+# S3_HOST = os.getenv('S3_HOST')
+# S3_PORT = os.getenv('S3_PORT')
+# S3_ACCESS_KEY = os.getenv('S3_ACCESS_KEY')
+# S3_SECRET_KEY = os.getenv('S3_SECRET_KEY')

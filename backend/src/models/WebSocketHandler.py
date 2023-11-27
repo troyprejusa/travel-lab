@@ -214,8 +214,10 @@ class MsgSocket(WebSocketHandler):
 # Setup websocket server - Socket.io
 # Include special CORS provisions for dev endpoints
 sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins=[
-    'https://travel-lab.dev:5173',
-    'https://travel-lab.dev'
+    # Set the hosts allowed to connect to this server (IMPORTANT!)
+    'https://travel-lab.dev:5173',  # Vite dev server
+    'https://travel-lab.dev',       # Nginx + API
+    Constants.HOST                  # Web host                  
 ])
 sio.register_namespace(ItinerarySocket('/itinerary'))
 sio.register_namespace(PollSocket('/poll'))

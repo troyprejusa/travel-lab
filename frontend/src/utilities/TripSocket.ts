@@ -37,17 +37,15 @@ import {
 const { toast } = createStandaloneToast();
 
 class TripSocket {
-  protected host: string;
-  protected apiPath: string;
+  protected readonly host = `wss://${window.location.host}`;
+  protected readonly apiPath = '/sio/socket.io'; // Socket.io needs to receive at /socket.io and backend mounts the server to /sio
   protected namespace: string;
   protected socket: Socket | undefined;
   protected dispatch: AppDispatch | undefined;
   protected trip_id: string | undefined;
   protected token: string | undefined;
 
-  constructor(host: string, apiPath: string, namespace: string) {
-    this.host = host;
-    this.apiPath = apiPath;
+  constructor(namespace: string) {
     this.namespace = namespace;
   }
 
@@ -62,9 +60,10 @@ class TripSocket {
     this.socket?.disconnect();
 
     this.socket = io(this.host + this.namespace, {
+      path: this.apiPath,
+      transports: ['websocket'], // "sticky-sessions" required for long-polling, which causes issues with Heroku default configuration
       reconnectionDelay: 500,
       reconnectionAttempts: 1,
-      path: this.apiPath,
       auth: {
         token: token,
       },
@@ -74,40 +73,40 @@ class TripSocket {
     });
 
     this.socket!.on('connect', () => {
-      console.log(`${this.namespace}:`, 'connected');
+      // console.log(`${this.namespace}:`, 'connected');
 
       this.dispatch(
         reduxSetConnectionState({ socketName: this.namespace, connected: true })
       );
 
-      const engine = this.socket.io.engine;
+      // const engine = this.socket.io.engine;
 
-      console.log(
-        `${this.namespace} |`,
-        'Socket.io engine: current transport -',
-        engine.transport.name
-      );
+      // console.log(
+      //   `${this.namespace} |`,
+      //   'Socket.io engine: current transport -',
+      //   engine.transport.name
+      // );
 
-      engine.once('upgrade', () => {
-        console.log(
-          `${this.namespace} |`,
-          'Socket.io engine: upgraded transport -',
-          engine.transport.name
-        );
-      });
+      // engine.once('upgrade', () => {
+      //   console.log(
+      //     `${this.namespace} |`,
+      //     'Socket.io engine: upgraded transport -',
+      //     engine.transport.name
+      //   );
+      // });
 
-      engine.on('close', (reason) => {
-        console.log(
-          `${this.namespace} |`,
-          'Socket.io engine: low-level connection closed\n',
-          reason
-        );
-      });
+      // engine.on('close', (reason) => {
+      //   console.log(
+      //     `${this.namespace} |`,
+      //     'Socket.io engine: low-level connection closed\n',
+      //     reason
+      //   );
+      // });
     });
 
-    this.socket!.on('connect_error', () => {
-      console.log(`${this.namespace}:`, 'connection error');
-    });
+    // this.socket!.on('connect_error', () => {
+    //   console.log(`${this.namespace}:`, 'connection error');
+    // });
 
     // this.socket.io.on("reconnect_attempt", () => {
     //   console.log(`${this.namespace}:`, 'Attempting to reconnect...')
@@ -179,8 +178,8 @@ class TripSocket {
 }
 
 class MessageSocket extends TripSocket {
-  constructor(host: string, apiPath: string, namespace: string) {
-    super(host, apiPath, namespace);
+  constructor(namespace: string) {
+    super(namespace);
   }
 
   establishSocket(token: string, trip_id: string, dispatch: AppDispatch) {
@@ -212,8 +211,8 @@ class MessageSocket extends TripSocket {
 }
 
 class PollSocket extends TripSocket {
-  constructor(host: string, apiPath: string, namespace: string) {
-    super(host, apiPath, namespace);
+  constructor(namespace: string) {
+    super(namespace);
   }
 
   establishSocket(token: string, trip_id: string, dispatch: AppDispatch) {
@@ -283,8 +282,8 @@ class PollSocket extends TripSocket {
 }
 
 class ItinerarySocket extends TripSocket {
-  constructor(host: string, apiPath: string, namespace: string) {
-    super(host, apiPath, namespace);
+  constructor(namespace: string) {
+    super(namespace);
   }
 
   establishSocket(token: string, trip_id: string, dispatch: AppDispatch) {
@@ -334,8 +333,8 @@ class ItinerarySocket extends TripSocket {
 }
 
 class PackingSocket extends TripSocket {
-  constructor(host: string, apiPath: string, namespace: string) {
-    super(host, apiPath, namespace);
+  constructor(namespace: string) {
+    super(namespace);
   }
 
   establishSocket(token: string, trip_id: string, dispatch: AppDispatch) {
@@ -424,10 +423,7 @@ class PackingSocket extends TripSocket {
   }
 }
 
-const host: string = `wss://${window.location.host}`;
-const apiPath: string = '/sio/socket.io';
-
-export const msgSocket = new MessageSocket(host, apiPath, '/message');
-export const pollSocket = new PollSocket(host, apiPath, '/poll');
-export const itinerarySocket = new ItinerarySocket(host, apiPath, '/itinerary');
-export const packingSocket = new PackingSocket(host, apiPath, '/packing');
+export const msgSocket = new MessageSocket('/message');
+export const pollSocket = new PollSocket('/poll');
+export const itinerarySocket = new ItinerarySocket('/itinerary');
+export const packingSocket = new PackingSocket('/packing');
