@@ -12,7 +12,7 @@ export default function VersionLabel() {
         alignSelf={'flex-start'}
         rounded={'md'}
       >
-        {'ALPHA v0.0.1'}
+        {'ALPHA v1.0.0'}
       </Text>
     </Box>
   );
