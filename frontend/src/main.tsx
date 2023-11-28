@@ -1,4 +1,4 @@
-import React from 'react';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Provider as ReduxProvider } from 'react-redux';
@@ -37,18 +37,18 @@ import About from './Pages/About';
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route path="/" element={<HomeOutlet />} >
+      <Route path="/" element={<HomeOutlet />}>
         <Route path="" element={<Landing />} />
         <Route path="/home" element={<Landing />} />
-        <Route path='about' element={<About />} />
-        <Route path='privacy' element={<PrivacyPolicy />} />
-        <Route path='termsandconditions' element={<TermsAndConditions />} />
-        <Route path='licenses' element={<Licenses />} />
+        <Route path="about" element={<About />} />
+        <Route path="privacy" element={<PrivacyPolicy />} />
+        <Route path="termsandconditions" element={<TermsAndConditions />} />
+        <Route path="licenses" element={<Licenses />} />
       </Route>
 
-      <Route path="/user/:username" element={<ProtectedUserOutlet />} >
+      <Route path="/user/:username" element={<ProtectedUserOutlet />}>
         <Route path="" element={<Staging />} />
-        <Route path="setup" element={<AccountSetup />}/>
+        <Route path="setup" element={<AccountSetup />} />
         <Route path="trips" element={<Trips />} />
         <Route path="settings" element={<UserSettings />} />
       </Route>
@@ -73,7 +73,7 @@ const root: ReactDOM.Root = ReactDOM.createRoot(
 );
 
 root.render(
-  <React.StrictMode>
+  <StrictMode>
     <ChakraProvider>
       <ReduxProvider store={reduxStore}>
         <Auth0Provider
@@ -89,5 +89,5 @@ root.render(
         </Auth0Provider>
       </ReduxProvider>
     </ChakraProvider>
-  </React.StrictMode>
+  </StrictMode>
 );

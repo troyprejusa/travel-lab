@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TripModel, UserModel } from '../utilities/Interfaces';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,7 +14,7 @@ import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
+  // Tfoot,
   Tr,
   Th,
   Td,
@@ -35,7 +34,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import {
   AcceptUserButton,
   RejectUserButton,
-  PromoteUserButton,
+  // PromoteUserButton,
   TrashButton,
   ConfigurableButtonAndModal,
 } from '../Components/Buttons';

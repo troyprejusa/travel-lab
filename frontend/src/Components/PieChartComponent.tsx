@@ -1,4 +1,3 @@
-import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 import { PollChartDataPoint } from '../utilities/Interfaces';
 import Constants from '../utilities/Constants';

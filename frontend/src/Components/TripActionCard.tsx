@@ -1,4 +1,3 @@
-import React from 'react';
 import NewTripModal from '../Components/NewTripModal';
 import JoinTripModal from '../Components/JoinTripModal';
 import {

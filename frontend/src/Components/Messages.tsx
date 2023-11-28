@@ -1,4 +1,3 @@
-import React from 'react';
 import { MessageModel } from '../utilities/Interfaces';
 import { Box, Text } from '@chakra-ui/react';
 import Constants from '../utilities/Constants';

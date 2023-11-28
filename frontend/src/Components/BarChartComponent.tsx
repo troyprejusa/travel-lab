@@ -1,4 +1,3 @@
-import React from 'react';
 import { pollSocket } from '../utilities/TripSocket';
 import { PollChartDataPoint, PollVoteWS } from '../utilities/Interfaces';
 import {

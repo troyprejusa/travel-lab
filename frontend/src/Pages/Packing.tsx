@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 import { TripModel, UserModel } from '../utilities/Interfaces';
 import NewItemModal from '../Components/NewPackingItemModal';
@@ -11,7 +10,7 @@ import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
+  // Tfoot,
   Tr,
   Th,
   Td,

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Avatar, AvatarProps, Box, Flex, keyframes } from '@chakra-ui/react';
 import { UserModel } from '../utilities/Interfaces';
 

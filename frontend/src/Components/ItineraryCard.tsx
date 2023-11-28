@@ -1,6 +1,5 @@
-import React from 'react';
 import { ItineraryModel, TripModel, UserModel } from '../utilities/Interfaces';
-import { EditButton, TrashButton } from './Buttons';
+import { TrashButton } from './Buttons';
 import Constants from '../utilities/Constants';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
