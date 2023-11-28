@@ -34,8 +34,8 @@ function About() {
             of planning trips with friends. Time and time again, we would create
             shared calendars to track events, spreadsheets to jot down important
             details, and message threads to stay in communcation regarding the
-            details. Troy's Travel Lab is my way of bringing these separate
-            resources together to plan a trip all in one place.
+            details. Troy's Travel Lab is my way of bringing these resources
+            together to plan a trip all in one place.
           </Text>
           <Text color={'gray.500'} fontSize={'lg'}>
             If you experience any issues or need any support with this
