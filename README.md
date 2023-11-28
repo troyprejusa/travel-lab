@@ -1,10 +1,12 @@
-<img src="frontend/src/assets/src/Travel-Lab-DALL-E.png" height=300>
+<div align="center">
+    <img src="frontend/src/assets/src/Travel-Lab-DALL-E.png" height=250>
+</div>
 
 # Troys Travel Lab
 
-https://troys-travel-lab-19b56a64fe24.herokuapp.com
-
 ## Overview
+
+https://troys-travel-lab-19b56a64fe24.herokuapp.com
 
 > **Note**: The deployed application is in closed alpha release, so the general public will not be able to create an account at this time. Access to the site is invite-only by the author.
 
@@ -22,8 +24,8 @@ together to plan a trip all in one place.
 - TypeScript
 - React | React Router
 - Redux Toolkit | Thunks
-- Auth0 React SPA SDK
 - Socket.io Client
+- Auth0 React SPA SDK
 - Chakra-UI
 - Vite
 
@@ -31,6 +33,6 @@ together to plan a trip all in one place.
 
 - Python
 - FastAPI
-- Pyscopg2 | PostgreSQL
+- PostgreSQL | Pyscopg2
+- Python Socket.io Server
 - Auth0 Python SDK
-- Socket.io Server
