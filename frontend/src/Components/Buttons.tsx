@@ -148,7 +148,7 @@ export const HomeButton = (props: ConfigurableIconButtonProps) => (
   <ConfigurableIconButton {...props} icon={<FiHome />} />
 );
 
-export const UserButton = (props: ConfigurableButtonProps) => (
+export const UserButton = (props: ConfigurableIconButtonProps) => (
   <ConfigurableIconButton {...props} icon={<FiUser />} />
 );
 

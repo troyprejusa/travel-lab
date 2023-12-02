@@ -49,7 +49,6 @@ function Trips(): JSX.Element {
     >
       <Flex justifyContent={'space-between'}>
         <HomeButton
-          disabled={!alphaKey.email}
           onClick={returnToHome}
           aria-label="return to landing page"
           tooltipMsg={'return to landing page'}
@@ -57,6 +56,7 @@ function Trips(): JSX.Element {
         />
         <ButtonGroup gap="4" margin={'1rem'}>
           <UserButton
+            aria-label='user profile'
             tooltipMsg="user profile"
             onClick={() => {
               navigate(`/user/${user.email}/settings`);
