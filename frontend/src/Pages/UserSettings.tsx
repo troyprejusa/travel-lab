@@ -7,7 +7,6 @@ import { UserModel } from '../utilities/Interfaces';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
 import { signOutBeforeTripSelect } from '../utilities/stateHandlers';
-import { useNavigate } from 'react-router-dom';
 import {
   Text,
   Box,
@@ -24,7 +23,6 @@ import {
 import Constants from '../utilities/Constants';
 
 function UserSettings(): JSX.Element {
-  const navigate = useNavigate();
   const user: UserModel = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   const { getAccessTokenSilently, logout } = useAuth0();
