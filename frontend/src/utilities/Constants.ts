@@ -19,7 +19,11 @@ if (vite_mode === 'production' && import.meta.env.VITE_DEPLOYMENT !== 'heroku') 
   mode = vite_mode;
 }
 
-const Constants = {
+interface ConstantsShape {
+  [key: string]: any
+}
+
+const Constants: ConstantsShape = {
 
   API_PREFIX: '/api/v1',
   SOCKETIO_PREFIX: '/sio',

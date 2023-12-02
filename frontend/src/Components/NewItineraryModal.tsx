@@ -23,9 +23,9 @@ import {
 } from '@chakra-ui/react';
 import { itinerarySocket } from '../utilities/TripSocket';
 
-interface NewItineraryModalProps {}
+// interface NewItineraryModalProps {}
 
-function NewItineraryModal(props: NewItineraryModalProps) {
+function NewItineraryModal() {
   const trip: TripModel = useSelector((state: RootState) => state.trip);
   const user: UserModel = useSelector((state: RootState) => state.user);
   const { isOpen, onOpen, onClose } = useDisclosure();

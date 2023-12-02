@@ -77,7 +77,7 @@ class TripSocket {
     this.socket!.on('connect', () => {
       // console.log(`${this.namespace}:`, 'connected');
 
-      this.dispatch(
+      this.dispatch!(
         reduxSetConnectionState({ socketName: this.namespace, connected: true })
       );
 
@@ -135,7 +135,7 @@ class TripSocket {
       (i.e. with .disconnect()) it will not attempt to reconnect */
       console.log(`${this.namespace}: Disconnected\n`, reason);
 
-      this.dispatch(
+      this.dispatch!(
         reduxSetConnectionState({
           socketName: this.namespace,
           connected: false,
@@ -159,7 +159,7 @@ class TripSocket {
       });
     });
 
-    this.socket!.on('rate_limit_exceeded', (data) => {
+    this.socket!.on('rate_limit_exceeded', (_data) => {
       toast({
         position: 'top',
         title: `Too much ${this.namespace.slice(1)} activity :(`,

@@ -7,7 +7,7 @@ interface LoadingPageProps {
 }
 function LoadingPage(props: LoadingPageProps) {
   return (
-    <Box background={Constants.BACKROUND_GRADIENT} height={'100vh'}>
+    <Box background={Constants.BACKROUND_GRADIENT} height={'100vh'} padding={'2rem'}>
         {props.children}
       <Flex justifyContent={'center'} alignItems={'center'}>
         <Spinner

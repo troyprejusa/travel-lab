@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { TripModel, UserModel } from '../utilities/Interfaces';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/Store';
+import Constants from '../utilities/Constants';
 import {
   Box,
   Accordion,
@@ -164,8 +165,8 @@ function TripSettings(): JSX.Element {
           </h2>
           <AccordionPanel pb={4}>
             <Text>
-              Promote travellers to administrators (feature in work), or remove travellers from
-              trip.
+              Promote travellers to administrators (feature in work), or remove
+              travellers from trip.
             </Text>
             <TableContainer marginTop={6} borderRadius={'6px'}>
               <Table variant="striped" colorScheme="blackAlpha">
@@ -324,10 +325,13 @@ function TripSettings(): JSX.Element {
       const token: string = await fetchHelpers.getAuth0Token(
         getAccessTokenSilently
       );
-      const res: Response = await fetch(`${Constants.API_PREFIX}/user/trips/${trip.id}`, {
-        method: 'DELETE',
-        headers: fetchHelpers.getTokenHeader(token),
-      });
+      const res: Response = await fetch(
+        `${Constants.API_PREFIX}/user/trips/${trip.id}`,
+        {
+          method: 'DELETE',
+          headers: fetchHelpers.getTokenHeader(token),
+        }
+      );
 
       if (res.ok) {
         resetAfterLeavingTrip(dispatch);
@@ -352,10 +356,13 @@ function TripSettings(): JSX.Element {
   async function handleDeleteTrip() {
     try {
       const token = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
-      const res: Response = await fetch(`${Constants.API_PREFIX}/trip/${trip.id}`, {
-        method: 'DELETE',
-        headers: fetchHelpers.getTokenHeader(token),
-      });
+      const res: Response = await fetch(
+        `${Constants.API_PREFIX}/trip/${trip.id}`,
+        {
+          method: 'DELETE',
+          headers: fetchHelpers.getTokenHeader(token),
+        }
+      );
 
       if (res.ok) {
         resetAfterTripDelete(dispatch);

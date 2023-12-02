@@ -1,5 +1,6 @@
 import { pollSocket } from '../utilities/TripSocket';
 import { PollChartDataPoint, PollVoteWS } from '../utilities/Interfaces';
+import Constants from '../utilities/Constants';
 import {
   ResponsiveContainer,
   BarChart,
@@ -8,9 +9,7 @@ import {
   YAxis,
   Cell,
 } from 'recharts';
-import Constants from '../utilities/Constants';
-
-const COLORS = Constants.COLORS;
+import { CategoricalChartFunc } from 'recharts/types/chart/generateCategoricalChart';
 
 interface BarChartComponentProps {
   userVoted: boolean;
@@ -18,10 +17,22 @@ interface BarChartComponentProps {
   constructVoteCallback: (chosenOption: string) => PollVoteWS | null;
 }
 
+interface PollInteractions {
+  barChartInteractions: {
+    onClick?: CategoricalChartFunc;
+  };
+  barInteractions: {
+    cursor?: string;
+    background?: {
+      [key: string]: string;
+    };
+  };
+}
+
 function BarChartComponent(props: BarChartComponentProps) {
   // The styling and interaction on this component will depend
   // on whether or not this user has voted.
-  const userInteractions = {
+  const userInteractions: PollInteractions = {
     barChartInteractions: {},
     barInteractions: {},
   };
@@ -43,8 +54,11 @@ function BarChartComponent(props: BarChartComponentProps) {
         <XAxis dataKey={'option'} />
         <YAxis />
         <Bar dataKey={'count'} {...userInteractions.barInteractions}>
-          {props.dataPoints.map((datum, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          {props.dataPoints.map((_datum, index) => (
+            <Cell
+              key={`cell-${index}`}
+              fill={Constants.COLORS[index % Constants.COLORS.length]}
+            />
           ))}
         </Bar>
       </BarChart>
@@ -69,8 +83,8 @@ function BarChartComponent(props: BarChartComponentProps) {
       }
     } catch (error) {
       if (error instanceof TypeError) {
-        // Do nothing on purpose to handle 
-        // clicks on the graph surface not 
+        // Do nothing on purpose to handle
+        // clicks on the graph surface not
         // related to voting
       } else {
         throw error;

@@ -9,9 +9,9 @@ import {
   Divider,
 } from '@chakra-ui/react';
 
-interface TripActionCardProps {}
+// interface TripActionCardProps {}
 
-function TripActionCard(props: TripActionCardProps) {
+function TripActionCard() {
   return (
     <Center py={6}>
       <Box

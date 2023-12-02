@@ -27,9 +27,9 @@ import {
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/Store';
 
-interface NewPollModalProps {}
+// interface NewPollModalProps {}
 
-function NewPollModal(props: NewPollModalProps) {
+function NewPollModal() {
   const trip: TripModel = useSelector((state: RootState) => state.trip);
   const user: UserModel = useSelector((state: RootState) => state.user);
   const [pollOptionCount, setPollOptionCount] = useState(0);

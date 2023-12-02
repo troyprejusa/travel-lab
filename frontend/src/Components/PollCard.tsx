@@ -19,7 +19,7 @@ import {
   Modal,
   ModalOverlay,
   ModalHeader,
-  ModalCloseButton,
+  // ModalCloseButton,
   ModalContent,
   ModalBody,
   ModalFooter,

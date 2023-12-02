@@ -22,21 +22,19 @@ import {
 import {
   HamburgerIcon,
   CloseIcon,
-  ChevronDownIcon,
+  // ChevronDownIcon,
   ChevronRightIcon,
 } from '@chakra-ui/icons';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import Constants from '../utilities/Constants';
 
 export default function WithSubnavigation() {
-  
   const { isOpen, onToggle } = useDisclosure();
   const navigate = useNavigate();
 
-    // NOTE: ALPHA LOGIC:
-    const [allowEntry, setAllowEntry] = useState<boolean>(false);
-    const [searchParams] = useSearchParams();
+  // NOTE: ALPHA LOGIC:
+  const [allowEntry, setAllowEntry] = useState<boolean>(false);
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     checkQueryParam();
@@ -134,7 +132,9 @@ export default function WithSubnavigation() {
     if (res.ok) {
       setAllowEntry(true);
     } else {
-      console.error("This user is not invited to join Troy's Travel Lab during the alpha release")
+      console.error(
+        "This user is not invited to join Troy's Travel Lab during the alpha release"
+      );
     }
   }
 }

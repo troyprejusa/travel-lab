@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+import { User, useAuth0 } from '@auth0/auth0-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { reduxFetchUser } from '../redux/UserSlice';
 import { useNavigate } from 'react-router-dom';
@@ -26,7 +26,7 @@ function Staging(): JSX.Element {
   // Check user data and set into state. Auth0 user may be fetched from
   // remote server, so it is asynchronous
   useEffect(() => {
-    if (user && user.email) setUser(user);
+     setUser(user);
   }, [user]);
 
   // If the redux user data changes
@@ -44,22 +44,24 @@ function Staging(): JSX.Element {
     <LoadingPage />
   );
 
-  async function setUser(user) {
-    try {
-      const token: string = await fetchHelpers.getAuth0Token(
-        getAccessTokenSilently
-      );
-      dispatch(reduxFetchUser({ email: user.email, token: token }));
-    } catch (error) {
-      console.error(error);
-      toast({
-        position: 'top',
-        title: 'Unable to get user data :(',
-        description: 'Something went wrong...',
-        status: 'error',
-        duration: 4000,
-        isClosable: true,
-      });
+  async function setUser(user: User | undefined) {
+    if (user && user.email) {
+      try {
+        const token: string = await fetchHelpers.getAuth0Token(
+          getAccessTokenSilently
+        );
+        dispatch(reduxFetchUser({ email: user.email, token: token }));
+      } catch (error) {
+        console.error(error);
+        toast({
+          position: 'top',
+          title: 'Unable to get user data :(',
+          description: 'Something went wrong...',
+          status: 'error',
+          duration: 4000,
+          isClosable: true,
+        });
+      }
     }
   }
 }

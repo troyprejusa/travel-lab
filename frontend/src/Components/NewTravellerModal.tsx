@@ -1,4 +1,4 @@
-import { useRef, SyntheticEvent } from 'react';
+// import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Button,
@@ -8,13 +8,13 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  ModalCloseButton,
+  // ModalCloseButton,
   useDisclosure,
-  FormControl,
-  FormLabel,
-  Input,
+  // FormControl,
+  // FormLabel,
+  // Input,
   Text,
-  FormHelperText,
+  // FormHelperText,
   Alert,
   AlertIcon,
   AlertTitle,
@@ -23,14 +23,14 @@ import { TripModel } from '../utilities/Interfaces';
 import { RootState } from '../redux/Store';
 import { ConfigurableButton } from './Buttons';
 
-interface NewTravellerModalProps {}
+// interface NewTravellerModalProps {}
 
 function NewTravellerModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const trip: TripModel = useSelector((state: RootState) => state.trip);
 
   // TODO: Future enhancement to use the form to invite users
-  const travellerForm = useRef<HTMLFormElement>(null);
+  // const travellerForm = useRef<HTMLFormElement>(null);
 
   return (
     <>
@@ -51,13 +51,10 @@ function NewTravellerModal() {
             </Alert>
             <Text>
               For now, have travellers request to join trip from the trip
-              selection screen. Request to join this trip using the trip id for
-              this trip:
+              selection screen. Request to join this trip using this trip id:
             </Text>
-            <br></br>
-            <Text>{trip.id}</Text>
-            <br></br>
-            <form ref={travellerForm} onSubmit={handleSubmit}>
+            <Text fontWeight={'bold'} padding={'4'}>{trip.id}</Text>
+            {/* <form ref={travellerForm} onSubmit={handleSubmit}>
               <FormControl isRequired>
                 <FormLabel>Email</FormLabel>
                 <Input placeholder="email" name="email" />
@@ -65,14 +62,14 @@ function NewTravellerModal() {
                   Email must belong to a current user
                 </FormHelperText>
               </FormControl>
-            </form>
+            </form> */}
           </ModalBody>
 
           <ModalFooter>
             <ConfigurableButton
               colorScheme="blue"
               mr={3}
-              onClick={handleSubmit}
+              // onClick={handleSubmit}
               disabled={true}
               tooltipMsg="Feature in work"
             >
@@ -87,17 +84,17 @@ function NewTravellerModal() {
     </>
   );
 
-  async function handleSubmit(event: SyntheticEvent) {
-    if (event.type === 'submit') {
-      event.preventDefault();
-    }
+  // async function handleSubmit(event: SyntheticEvent) {
+  //   if (event.type === 'submit') {
+  //     event.preventDefault();
+  //   }
     
-    if (travellerForm.current === null) return;
+  //   if (travellerForm.current === null) return;
 
-    const formData = new FormData(travellerForm.current);
+  //   const formData = new FormData(travellerForm.current);
 
-    // Validate form
-  }
+  //   // Validate form
+  // }
 }
 
 export default NewTravellerModal;

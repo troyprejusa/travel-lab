@@ -2,6 +2,16 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 import { PollChartDataPoint } from '../utilities/Interfaces';
 import Constants from '../utilities/Constants';
 
+interface CustomizedLabelInputs {
+  cx: number;
+  cy: number;
+  midAngle: number;
+  innerRadius: number;
+  outerRadius: number;
+  percent: number;
+  index: number;
+}
+
 const COLORS = Constants.COLORS;
 
 const RADIAN = Math.PI / 180;
@@ -12,8 +22,8 @@ const renderCustomizedLabel = ({
   innerRadius,
   outerRadius,
   percent,
-  index,
-}) => {
+  // index,
+}: CustomizedLabelInputs) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
@@ -50,7 +60,7 @@ function PieChartComponent(props: PieChartComponentProps) {
           nameKey="option"
           dataKey="count"
         >
-          {props.data.map((datum, index) => (
+          {props.data.map((_datum, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Pie>

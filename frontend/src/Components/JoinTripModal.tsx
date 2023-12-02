@@ -9,7 +9,7 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  ModalCloseButton,
+  // ModalCloseButton,
   useDisclosure,
   FormControl,
   FormLabel,
@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import Constants from '../utilities/Constants';
 
-interface JoinTripModalProps {}
+// interface JoinTripModalProps {}
 
 function JoinTripModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();

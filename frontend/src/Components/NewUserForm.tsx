@@ -1,9 +1,10 @@
-import React, {
+import {
   MutableRefObject,
   ReactNode,
   SyntheticEvent,
   useRef,
   useState,
+  FunctionComponent
 } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -41,6 +42,7 @@ interface UserFormData {
   first_name: string;
   last_name: string;
   phone: string;
+  [key: string]: string;
 }
 
 interface UserFormProps {
@@ -51,14 +53,14 @@ interface UserFormProps {
 }
 
 export default function NewUserForm() {
-  const forms: Array<React.FunctionComponent<UserFormProps>> = [Form1, Form2];
+  const forms: Array<FunctionComponent<UserFormProps>> = [Form1, Form2];
   const [step, setStep] = useState(0);
 
   // Create persistent object
   const userForm = useRef<UserFormData>({} as UserFormData);
 
   // Alias the component
-  const ThisForm: React.FunctionComponent<UserFormProps> = forms[step];
+  const ThisForm: FunctionComponent<UserFormProps> = forms[step];
 
   return (
     <Box
@@ -90,7 +92,7 @@ export default function NewUserForm() {
 
   function appendFormData(currForm: UserFormData, newForm: FormData) {
     for (const [key, val] of newForm) {
-      currForm[key] = val;
+      currForm[String(key)] = String(val);
     }
   }
 
@@ -107,7 +109,6 @@ const Form1 = (props: UserFormProps) => {
   const newForm = useRef<HTMLFormElement>(null);
   const toast = useToast();
   const user: UserModel = useSelector((state: RootState) => state.user);
-  const navigate = useNavigate();
 
   return (
     <form ref={newForm} onSubmit={handleNext}>

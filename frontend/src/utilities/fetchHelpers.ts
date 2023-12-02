@@ -14,7 +14,7 @@ const fetchHelpers = {
     });
   },
 
-  getAuth0Token: async function (getAccessTokenSilently): Promise<string> {
+  getAuth0Token: async function (getAccessTokenSilently: Function): Promise<string> {
     try {
       return await getAccessTokenSilently({
         authorizationParams: {

@@ -30,7 +30,7 @@ import {
 } from '@chakra-ui/react';
 import Constants from '../utilities/Constants';
 
-interface NewTripModalProps {}
+// interface NewTripModalProps {}
 
 function NewTripModal() {
   const dispatch = useDispatch();
