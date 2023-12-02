@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from '../Components/Navbar';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,9 +7,10 @@ import { AppDispatch, RootState } from '../redux/Store';
 import { useAuth0 } from '@auth0/auth0-react';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { fetchAllTripData } from '../utilities/stateHandlers';
-import { Box } from '@chakra-ui/react';
 import Constants from '../utilities/Constants';
 import { withAuthenticationRequired } from '@auth0/auth0-react';
+import LoadingPage from '../Components/LoadingPage';
+import { Box, Heading, Flex } from '@chakra-ui/react';
 
 function Project(): JSX.Element {
   const dispatch = useDispatch<AppDispatch>();
@@ -46,7 +47,11 @@ function Project(): JSX.Element {
 
 const ProtectedProject = withAuthenticationRequired(Project, {
   onRedirecting: () => (
-    <div>Your session has expired, redirecting to login page...</div>
+    <LoadingPage>
+      <Flex justifyContent="center" marginBottom={'4rem'}>
+        <Heading size={'lg'}>Verifying session...</Heading>
+      </Flex>
+    </LoadingPage>
   ),
 });
 
