@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from routers.DevRouter import dev_router
@@ -38,8 +38,10 @@ app.mount('/sio', socketio_ASGI)
 # Default redirection to handle client-side fwd/back/refresh
 @app.get('{full_path:path}')
 async def redirect_nav(_request: Request, full_path: str):
-    # print(f'redirect_nav: Requested unkown route:\n{full_path}\nRedirecting to root...')
-    return RedirectResponse('/')
+    # NOTE: Sending FileResponse allows the app to handle the refresh correctly.
+    # Sending RedirectResponse('/') does send return to root, but doesn't autonavigate after
+    # print(f'redirect_nav: Requested unkown route:\n{full_path}\nSending index.html...')
+    return FileResponse('/app/src/dist/index.html')
 
 # Global exception handler
 @app.exception_handler(Exception)

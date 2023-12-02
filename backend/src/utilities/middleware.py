@@ -51,19 +51,18 @@ async def rate_limiter(request: Request, call_next):
 
 async def serve_static_files(request: Request, call_next):
     if request.method == 'GET':
-        endpoint_array = request.url.path[1:].split('/')
-
-        # Edge case
+        # Handle edge case
         if (request.url.path == '/'):
             return FileResponse('/app/src/dist/index.html')
+        
+        endpoint_array = request.url.path[1:].split('/')
 
-        # Other cases
+        # /<filename>
         if len(endpoint_array) == 1 and endpoint_array[0] not in reserved_files:
-            # /<filename>
             return FileResponse(f'/app/src/dist/{endpoint_array[0]}')
-        elif len(endpoint_array) == 2 and endpoint_array[0] == 'assets':
-            # /assets/<filename>
-
+        
+        # /assets/<filename>
+        if len(endpoint_array) == 2 and endpoint_array[0] == 'assets':
             # Vite includes hashes in the filename for this directory,
             # so they are OK for "permanent" caching (1 year) 
             cache_headers = {
