@@ -14,14 +14,15 @@ import {
   FiSunrise,
   FiSunset,
   FiHome,
+  FiUser,
 } from 'react-icons/fi';
 import {
   IconButton,
   IconButtonProps,
   useDisclosure,
   Tooltip,
-  ButtonProps,
   Button,
+  ButtonProps,
 } from '@chakra-ui/react';
 
 /* --------------------------- Buttons  ---------------------------*/
@@ -145,7 +146,11 @@ export const DemoteUserButton = (props: ConfigurableIconButtonProps) => (
 
 export const HomeButton = (props: ConfigurableIconButtonProps) => (
   <ConfigurableIconButton {...props} icon={<FiHome />} />
-)
+);
+
+export const UserButton = (props: ConfigurableButtonProps) => (
+  <ConfigurableIconButton {...props} icon={<FiUser />} />
+);
 
 /* --------------------------- Icon Buttons with Modal ---------------------------*/
 

@@ -1,4 +1,4 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { TripModel, UserModel } from '../utilities/Interfaces';
 import TripCard from '../Components/TripCard';
@@ -9,7 +9,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import Constants from '../utilities/Constants';
 import { RootState } from '../redux/Store';
 import { useNavigate } from 'react-router-dom';
-import { HomeButton } from '../Components/Buttons'
+import { HomeButton, UserButton } from '../Components/Buttons';
 import { reduxSetAlphaKey } from '../redux/AlphaSlice';
 import {
   Wrap,
@@ -18,6 +18,7 @@ import {
   Heading,
   Box,
   useToast,
+  ButtonGroup,
 } from '@chakra-ui/react';
 
 function Trips(): JSX.Element {
@@ -34,7 +35,9 @@ function Trips(): JSX.Element {
   const alphaKey = useSelector((state: RootState) => state.alpha);
 
   useEffect(getTrips, [getAccessTokenSilently]);
-  useEffect(() => {setAlphaKey()}, []);
+  useEffect(() => {
+    setAlphaKey();
+  }, []);
 
   const toast = useToast();
 
@@ -45,15 +48,24 @@ function Trips(): JSX.Element {
       overflowY={'scroll'}
     >
       <Flex justifyContent={'space-between'}>
-        <HomeButton disabled={!alphaKey.email} onClick={returnToHome} aria-label='return to landing page' tooltipMsg={'return to landing page'} margin={'1rem'}/>
-        <Button
-          margin="1rem"
-          size="md"
-          colorScheme="red"
-          onClick={handleSignOut}
-        >
-          Sign Out
-        </Button>
+        <HomeButton
+          disabled={!alphaKey.email}
+          onClick={returnToHome}
+          aria-label="return to landing page"
+          tooltipMsg={'return to landing page'}
+          margin={'1rem'}
+        />
+        <ButtonGroup gap="4" margin={'1rem'}>
+          <UserButton
+            tooltipMsg="user profile"
+            onClick={() => {
+              navigate(`/user/${user.email}/settings`);
+            }}
+          />
+          <Button size="md" colorScheme="red" onClick={handleSignOut}>
+            Sign Out
+          </Button>
+        </ButtonGroup>
       </Flex>
       <Flex justifyContent={'center'}>
         <Heading>{`Choose your adventure ${user.first_name}!`}</Heading>
@@ -71,10 +83,13 @@ function Trips(): JSX.Element {
     (async function () {
       try {
         const token = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
-        const res: Response = await fetch(`/user/trips`, {
-          method: 'GET',
-          headers: fetchHelpers.getTokenHeader(token),
-        });
+        const res: Response = await fetch(
+          `${Constants.API_PREFIX}/user/trips`,
+          {
+            method: 'GET',
+            headers: fetchHelpers.getTokenHeader(token),
+          }
+        );
 
         if (res.ok) {
           const trips: Array<TripModel> = await res.json();
@@ -98,19 +113,26 @@ function Trips(): JSX.Element {
   }
 
   async function setAlphaKey() {
-    const token: string = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
-    const res: Response = await fetch(`/user/${user.email}/alpha`, {
-      method: 'GET',
-      headers: fetchHelpers.getTokenHeader(token)
-    })
-    
+    const token: string = await fetchHelpers.getAuth0Token(
+      getAccessTokenSilently
+    );
+    const res: Response = await fetch(
+      `${Constants.API_PREFIX}/user/${user.email}/alpha`,
+      {
+        method: 'GET',
+        headers: fetchHelpers.getTokenHeader(token),
+      }
+    );
+
     if (res.ok) {
       let keyValue: string = await res.text();
-      keyValue = keyValue.slice(1, keyValue.length - 1);  // Strip the quotes
-      dispatch(reduxSetAlphaKey({
-        email: user.email,
-        key: keyValue
-      }))
+      keyValue = keyValue.slice(1, keyValue.length - 1); // Strip the quotes
+      dispatch(
+        reduxSetAlphaKey({
+          email: user.email,
+          key: keyValue,
+        })
+      );
     }
   }
 
