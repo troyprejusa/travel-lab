@@ -1,4 +1,5 @@
 import TitleBar from '../Components/TitleBar';
+import { Link } from 'react-router-dom';
 import { ConfigurableButtonAndModal } from '../Components/Buttons';
 import { useAuth0 } from '@auth0/auth0-react';
 import fetchHelpers from '../utilities/fetchHelpers';
@@ -38,9 +39,12 @@ function UserSettings(): JSX.Element {
     >
       <TitleBar text="User Settings" />
       <Flex flexDirection={'column'} rowGap={'1rem'}>
-        <Text color={'blue'} cursor={'pointer'} onClick={() => navigate('/')}>
-          Return to previous
-        </Text>
+        <Box>
+          <Link to={'/'} style={{ color: 'blue' }}>
+            Return to previous
+          </Link>
+        </Box>
+
         <Box>
           <Heading size={'md'}>User Photo</Heading>
           <Alert status="info">
@@ -86,10 +90,13 @@ function UserSettings(): JSX.Element {
       const token: string = await fetchHelpers.getAuth0Token(
         getAccessTokenSilently
       );
-      const res: Response = await fetch(`${Constants.API_PREFIX}/user/${user.email}`, {
-        method: 'DELETE',
-        headers: fetchHelpers.getTokenHeader(token),
-      });
+      const res: Response = await fetch(
+        `${Constants.API_PREFIX}/user/${user.email}`,
+        {
+          method: 'DELETE',
+          headers: fetchHelpers.getTokenHeader(token),
+        }
+      );
 
       if (res.ok) {
         toast({
