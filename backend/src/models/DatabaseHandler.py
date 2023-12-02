@@ -453,6 +453,13 @@ class PsycopgDatabaseHandler:
         """, (email, key))[0]['count']
 
         return count == 1
+    
+    def get_alpha_key(self, email: str) -> str:
+        key = self.query('''
+            SELECT KEY FROM alpha WHERE email=%s;
+        ''', (email,))[0]
+
+        return key
 
     
 # CREATE DATABASE HANDLER
