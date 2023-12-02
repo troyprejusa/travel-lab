@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Flex, Box, Spinner, useToast } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { reduxFetchUser } from '../redux/UserSlice';
 import { useNavigate } from 'react-router-dom';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { UserModel } from '../utilities/Interfaces';
 import { AppDispatch, RootState } from '../redux/Store';
-import Constants from '../utilities/Constants';
+import LoadingPage from '../Components/LoadingPage';
+import { useToast } from '@chakra-ui/react';
 
 function Staging(): JSX.Element {
   /* The purpose of this page is to get the needed user data
@@ -41,17 +41,7 @@ function Staging(): JSX.Element {
   }, [userRedux]);
 
   return (
-    <Box background={Constants.BACKROUND_GRADIENT} height={'100vh'}>
-      <Flex justifyContent={'center'} alignItems={'center'}>
-        <Spinner
-          thickness="4px"
-          speed="0.65s"
-          emptyColor="gray.200"
-          color="blue.500"
-          size="xl"
-        />
-      </Flex>
-    </Box>
+    <LoadingPage />
   );
 
   async function setUser(user) {
