@@ -46,22 +46,22 @@ export default function FeatureGallery() {
   const cards = [
     {
       title: 'Dashboard',
-      text: "The project board is an exclusive resource for contract work. It's perfect for freelancers, agencies, and moonlighters.",
+      // text: "The project board is an exclusive resource for contract work. It's perfect for freelancers, agencies, and moonlighters.",
       image: DashboardDemo
     },
     {
       title: 'Itinerary',
-      text: "The project board is an exclusive resource for contract work. It's perfect for freelancers, agencies, and moonlighters.",
+      // text: "The project board is an exclusive resource for contract work. It's perfect for freelancers, agencies, and moonlighters.",
       image: ItineraryDemo
     },
     {
       title: 'Polls',
-      text: "The project board is an exclusive resource for contract work. It's perfect for freelancers, agencies, and moonlighters.",
+      // text: "The project board is an exclusive resource for contract work. It's perfect for freelancers, agencies, and moonlighters.",
       image: PollDemo
     },
     {
       title: 'Packing',
-      text: "The project board is an exclusive resource for contract work. It's perfect for freelancers, agencies, and moonlighters.",
+      // text: "The project board is an exclusive resource for contract work. It's perfect for freelancers, agencies, and moonlighters.",
       image: PackingDemo
     },
     {
@@ -76,8 +76,6 @@ export default function FeatureGallery() {
       marginX={'auto'}
       marginY="4rem"
       position={'relative'}
-    //   height={'600px'}
-    //   width={'1000px'}
       maxHeight={'600px'}
       maxWidth={'1000px'}
       overflow={'hidden'}
@@ -110,7 +108,7 @@ export default function FeatureGallery() {
         <FiArrowRight size="40px" />
       </IconButton>
       {/* Slider */}
-      <Slider {...settings} ref={(slider) => setSlider(slider)}>
+      <Slider {...settings} ref={(slider: Slider) => setSlider(slider)}>
         {cards.map((card, index) => (
             <Image key={`image_${index}`} src={card.image}/>
         //   <Box
