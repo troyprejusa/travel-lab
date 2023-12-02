@@ -38,7 +38,7 @@ app.mount('/sio', socketio_ASGI)
 # Default redirection to handle client-side fwd/back/refresh
 @app.get('{full_path:path}')
 async def redirect_nav(_request: Request, full_path: str):
-    print(f'redirect_nav: Requested unkown route:\n{full_path}\nRedirecting to root...')
+    # print(f'redirect_nav: Requested unkown route:\n{full_path}\nRedirecting to root...')
     return RedirectResponse('/')
 
 # Global exception handler

@@ -10,12 +10,14 @@ import json
 # GLOBAL VARIABLES (BELOW)
 rest_rate_tracker = RateTracker(Constants.API_REQUEST_COUNT, Constants.API_REQUESTS_WINDOW)
 
-# Allow non-authenticated access to the following endpoint roots (/docs, /openapi.json, ...)
-whitelist = set([
-    'docs',
-    'openapi.json',
-    'dev',
-    'sio'
+'''
+ Require authentication for the following endpoint roots (/api, /test, etc.)
+
+ NOTE: Switched from a whitelist to a blacklist because we need unrecognized 
+ endpoints to continue to the default route handler to manage client fwd/back/refresh
+ '''
+auth_list = set([
+    'api',
 ])
 
 reserved_files = set([
@@ -63,7 +65,7 @@ async def serve_static_files(request: Request, call_next):
             # /assets/<filename>
 
             # Vite includes hashes in the filename for this directory,
-            # so they are OK for permanent caching (1 year) 
+            # so they are OK for "permanent" caching (1 year) 
             cache_headers = {
                 'Cache-Control': 'public, max-age=31536000, immutable'
             }
@@ -76,7 +78,7 @@ async def authenticate_user(request: Request, call_next):
     # print('HTTP Request:', request.url.path)
     root_path = request.url.path.split('/')[1]
 
-    if root_path in whitelist:
+    if root_path not in auth_list:
         # Bypass JWT verification
         response = await call_next(request)
         return response
