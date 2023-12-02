@@ -1,5 +1,6 @@
 import { MessageModel } from '../utilities/Interfaces';
 import fetchHelpers from '../utilities/fetchHelpers';
+import Constants from '../utilities/Constants';
 import { createStandaloneToast } from '@chakra-ui/react';
 
 import {
@@ -67,7 +68,7 @@ export const reduxFetchMessages = createAsyncThunk<
   { trip_id: string; token: string }
 >('messages/reduxFetchMessages', async ({ trip_id, token }, thunkAPI) => {
   try {
-    const res: Response = await fetch(`/trip/${trip_id}/message`, {
+    const res: Response = await fetch(`${Constants.API_PREFIX}/trip/${trip_id}/message`, {
       method: 'GET',
       headers: fetchHelpers.getTokenHeader(token),
     });

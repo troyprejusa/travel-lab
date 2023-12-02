@@ -2,9 +2,8 @@ from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from routers.UserRouter import user_router
-from routers.TripRouter import trip_router
 from routers.DevRouter import dev_router
+from routers.ApiRouterV1 import api_router
 from models.WebSocketHandler import socketio_ASGI
 from models.DatabaseHandler import db_handler
 from models.DatabaseSetup import DatabaseSetup
@@ -27,14 +26,11 @@ app.middleware('http')(middleware.authenticate_user)    # (3) Authenticate user
 app.middleware('http')(middleware.serve_static_files)   # (2) Serve public content
 app.middleware('http')(middleware.rate_limiter)         # (1) Rate limit
 
-# /dev
-app.include_router(dev_router)
+# Unauthenticated endpoints for dev/alpha
+app.include_router(dev_router, prefix='/dev')
 
-# /user
-app.include_router(user_router)
-
-# /trip
-app.include_router(trip_router)
+# REST API endpoints
+app.include_router(api_router, prefix='/api/v1')
 
 # socket.io - Mount ASGI interface-wrapped server
 app.mount('/sio', socketio_ASGI)

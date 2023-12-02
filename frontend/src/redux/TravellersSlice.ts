@@ -1,12 +1,13 @@
+import { UserModel } from '../utilities/Interfaces';
+import fetchHelpers from '../utilities/fetchHelpers';
+import Constants from '../utilities/Constants';
+import { createStandaloneToast } from '@chakra-ui/react';
 import {
   Slice,
   createSlice,
   PayloadAction,
   createAsyncThunk,
 } from '@reduxjs/toolkit';
-import { UserModel } from '../utilities/Interfaces';
-import fetchHelpers from '../utilities/fetchHelpers';
-import { createStandaloneToast } from '@chakra-ui/react';
 
 const { toast } = createStandaloneToast();
 
@@ -110,7 +111,7 @@ export const reduxFetchTravellers = createAsyncThunk<
   { trip_id: string; token: string }
 >('messages/reduxFetchTravellers', async ({ trip_id, token }, thunkAPI) => {
   try {
-    const res: Response = await fetch(`/trip/${trip_id}/travellers`, {
+    const res: Response = await fetch(`${Constants.API_PREFIX}/trip/${trip_id}/travellers`, {
       method: 'GET',
       headers: fetchHelpers.getTokenHeader(token),
     });
@@ -137,7 +138,7 @@ export const reduxAcceptTraveller = createAsyncThunk<
   'messages/reduxAcceptTraveller',
   async ({ token, trip_id, user_id }, thunkAPI) => {
     try {
-      const res: Response = await fetch(`/user/trips/${trip_id}/${user_id}`, {
+      const res: Response = await fetch(`${Constants.API_PREFIX}/user/trips/${trip_id}/${user_id}`, {
         method: 'PATCH',
         headers: fetchHelpers.getTokenHeader(token),
       });
@@ -163,7 +164,7 @@ export const reduxRemoveTraveller = createAsyncThunk<
   'messages/reduxRemoveTraveller',
   async ({ token, trip_id, user_id }, thunkAPI) => {
     try {
-      const res: Response = await fetch(`/user/trips/${trip_id}/${user_id}`, {
+      const res: Response = await fetch(`${Constants.API_PREFIX}/user/trips/${trip_id}/${user_id}`, {
         method: 'DELETE',
         headers: fetchHelpers.getTokenHeader(token),
       });

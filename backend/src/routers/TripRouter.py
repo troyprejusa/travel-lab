@@ -9,9 +9,7 @@ import utilities.Constants as Constants
 # from models.S3Handler import minio_client
 
 
-trip_router = APIRouter(
-    prefix='/trip'
-)
+trip_router = APIRouter()
 
 # --------------- TRIP OPERATIONS --------------- #
 

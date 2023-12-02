@@ -1,6 +1,7 @@
 import { ItineraryModel } from '../utilities/Interfaces';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { createStandaloneToast } from '@chakra-ui/react';
+import Constants from '../utilities/Constants';
 import {
   Slice,
   createSlice,
@@ -67,7 +68,7 @@ export const reduxFetchItinerary = createAsyncThunk<
   { trip_id: string; token: string }
 >('messages/reduxFetchItinerary', async ({ trip_id, token }, thunkAPI) => {
   try {
-    const res: Response = await fetch(`/trip/${trip_id}/itinerary`, {
+    const res: Response = await fetch(`${Constants.API_PREFIX}/trip/${trip_id}/itinerary`, {
       method: 'GET',
       headers: fetchHelpers.getTokenHeader(token),
     });

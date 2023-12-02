@@ -7,9 +7,7 @@ from utilities.auth_helpers import verify_attendance, verify_admin, get_auth0_ma
 import utilities.Constants as Constants
 
 
-user_router = APIRouter(
-    prefix='/user'
-)
+user_router = APIRouter()
 
 '''
 # Upsert a user in database

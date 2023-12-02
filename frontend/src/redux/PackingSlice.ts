@@ -1,16 +1,17 @@
+import fetchHelpers from '../utilities/fetchHelpers';
+import Constants from '../utilities/Constants';
+import { createStandaloneToast } from '@chakra-ui/react';
 import {
   PackingClaimWS,
   PackingDeleteWS,
   PackingModel,
 } from '../utilities/Interfaces';
-import fetchHelpers from '../utilities/fetchHelpers';
 import {
   Slice,
   createSlice,
   PayloadAction,
   createAsyncThunk,
 } from '@reduxjs/toolkit';
-import { createStandaloneToast } from '@chakra-ui/react';
 
 const { toast } = createStandaloneToast();
 
@@ -85,7 +86,7 @@ export const reduxFetchPacking = createAsyncThunk<
   { trip_id: string; token: string }
 >('messages/reduxFetchPacking', async ({ trip_id, token }, thunkAPI) => {
   try {
-    const res: Response = await fetch(`/trip/${trip_id}/packing`, {
+    const res: Response = await fetch(`${Constants.API_PREFIX}/trip/${trip_id}/packing`, {
       method: 'GET',
       headers: fetchHelpers.getTokenHeader(token),
     });

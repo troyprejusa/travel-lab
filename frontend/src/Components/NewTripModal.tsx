@@ -28,6 +28,7 @@ import {
   FormHelperText,
   Select,
 } from '@chakra-ui/react';
+import Constants from '../utilities/Constants';
 
 interface NewTripModalProps {}
 
@@ -142,7 +143,7 @@ function NewTripModal() {
       const token: string = await fetchHelpers.getAuth0Token(
         getAccessTokenSilently
       );
-      const res: Response = await fetch('/trip/', {
+      const res: Response = await fetch(`${Constants.API_PREFIX}/trip/`, {
         method: 'POST',
         body: formData,
         headers: fetchHelpers.getTokenHeader(token),

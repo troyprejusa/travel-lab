@@ -324,7 +324,7 @@ function TripSettings(): JSX.Element {
       const token: string = await fetchHelpers.getAuth0Token(
         getAccessTokenSilently
       );
-      const res: Response = await fetch(`/user/trips/${trip.id}`, {
+      const res: Response = await fetch(`${Constants.API_PREFIX}/user/trips/${trip.id}`, {
         method: 'DELETE',
         headers: fetchHelpers.getTokenHeader(token),
       });
@@ -352,7 +352,7 @@ function TripSettings(): JSX.Element {
   async function handleDeleteTrip() {
     try {
       const token = await fetchHelpers.getAuth0Token(getAccessTokenSilently);
-      const res: Response = await fetch(`/trip/${trip.id}`, {
+      const res: Response = await fetch(`${Constants.API_PREFIX}/trip/${trip.id}`, {
         method: 'DELETE',
         headers: fetchHelpers.getTokenHeader(token),
       });

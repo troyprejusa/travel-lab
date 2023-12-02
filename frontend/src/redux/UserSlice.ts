@@ -1,12 +1,13 @@
+import { DbUserModel, UserModel } from '../utilities/Interfaces';
+import fetchHelpers from '../utilities/fetchHelpers';
+import { createStandaloneToast } from '@chakra-ui/react';
+import Constants from '../utilities/Constants';
 import {
   Slice,
   createSlice,
   PayloadAction,
   createAsyncThunk,
 } from '@reduxjs/toolkit';
-import { DbUserModel, UserModel } from '../utilities/Interfaces';
-import fetchHelpers from '../utilities/fetchHelpers';
-import { createStandaloneToast } from '@chakra-ui/react';
 
 const { toast } = createStandaloneToast();
 
@@ -118,7 +119,7 @@ export const reduxFetchUser = createAsyncThunk<
   { email: string; token: string }
 >('user/reduxFetchUser', async ({ email, token }, thunkAPI) => {
   try {
-    const res: Response = await fetch(`/user/${email}`, {
+    const res: Response = await fetch(`${Constants.API_PREFIX}/user/${email}`, {
       method: 'POST',
       headers: fetchHelpers.getTokenHeader(token),
     });
@@ -151,7 +152,7 @@ export const reduxUpdateUserData = createAsyncThunk<
   { email: string; formData: FormData; token: string }
 >('user/reduxPostUserData', async ({ email, formData, token }, thunkAPI) => {
   try {
-    const res: Response = await fetch(`/user/${email}`, {
+    const res: Response = await fetch(`${Constants.API_PREFIX}/user/${email}`, {
       method: 'PATCH',
       body: formData,
       headers: fetchHelpers.getTokenHeader(token),
@@ -177,7 +178,7 @@ export const reduxFetchTripPermissions = createAsyncThunk<
   { trip_id: string; token: string }
 >('user/reduxFetchTripPermissions', async ({ trip_id, token }, thunkAPI) => {
   try {
-    const res: Response = await fetch(`/trip/${trip_id}/permissions`, {
+    const res: Response = await fetch(`${Constants.API_PREFIX}/trip/${trip_id}/permissions`, {
       method: 'GET',
       headers: fetchHelpers.getTokenHeader(token),
     });

@@ -21,6 +21,9 @@ if (vite_mode === 'production' && import.meta.env.VITE_DEPLOYMENT !== 'heroku') 
 
 const Constants = {
 
+  API_PREFIX: '/api/v1',
+  SOCKETIO_PREFIX: '/sio',
+
   AUTH0_DOMAIN: mode === 'production' ? import.meta.env.VITE_PROD_AUTH0_DOMAIN : import.meta.env.VITE_DEV_AUTH0_DOMAIN,
   AUTH0_CLIENT: mode === 'production' ? import.meta.env.VITE_PROD_AUTH0_CLIENT : import.meta.env.VITE_DEV_AUTH0_CLIENT,
   AUTH0_AUDIENCE: mode === 'production' ? import.meta.env.VITE_PROD_AUTH0_AUDIENCE : import.meta.env.VITE_DEV_AUTH0_AUDIENCE,

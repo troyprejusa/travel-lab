@@ -1,5 +1,6 @@
 import io, { Socket } from 'socket.io-client';
 import { AppDispatch } from '../redux/Store';
+import Constants from './Constants';
 import { createStandaloneToast } from '@chakra-ui/react';
 import {
   reduxAddItinerary,
@@ -34,11 +35,12 @@ import {
   PackingDeleteWS,
 } from './Interfaces';
 
+
 const { toast } = createStandaloneToast();
 
 class TripSocket {
   protected readonly host = `wss://${window.location.host}`;
-  protected readonly apiPath = '/sio/socket.io'; // Socket.io needs to receive at /socket.io and backend mounts the server to /sio
+  protected readonly apiPath = Constants.SOCKETIO_PREFIX + '/socket.io'; // Socket.io needs to receive at /socket.io and backend mounts the server to /sio
   protected namespace: string;
   protected socket: Socket | undefined;
   protected dispatch: AppDispatch | undefined;

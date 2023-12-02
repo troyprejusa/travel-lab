@@ -10,10 +10,15 @@ import json
 # GLOBAL VARIABLES (BELOW)
 rest_rate_tracker = RateTracker(Constants.API_REQUEST_COUNT, Constants.API_REQUESTS_WINDOW)
 
-# Allow non-authenticated access to the following endpoints (/docs, /openapi.json, ...)
+# Allow non-authenticated access to the following endpoint roots (/docs, /openapi.json, ...)
 whitelist = set([
+    'docs',
+    'openapi.json',
     'dev',
-    'sio',
+    'sio'
+])
+
+reserved_files = set([
     'docs',
     'openapi.json'
 ])
@@ -51,7 +56,7 @@ async def serve_static_files(request: Request, call_next):
             return FileResponse('/app/src/dist/index.html')
 
         # Other cases
-        if len(endpoint_array) == 1:
+        if len(endpoint_array) == 1 and endpoint_array[0] not in reserved_files:
             # /<filename>
             return FileResponse(f'/app/src/dist/{endpoint_array[0]}')
         elif len(endpoint_array) == 2 and endpoint_array[0] == 'assets':

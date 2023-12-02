@@ -1,4 +1,6 @@
 import fetchHelpers from '../utilities/fetchHelpers';
+import { createStandaloneToast } from '@chakra-ui/react';
+import Constants from '../utilities/Constants';
 import {
   Slice,
   createSlice,
@@ -10,7 +12,6 @@ import {
   PollVoteModel,
   PollVoteWS,
 } from '../utilities/Interfaces';
-import { createStandaloneToast } from '@chakra-ui/react';
 
 const { toast } = createStandaloneToast();
 
@@ -88,7 +89,7 @@ export const reduxFetchPolls = createAsyncThunk<
   { trip_id: string; token: string }
 >('polls/reduxFetchPolls', async ({ trip_id, token }, thunkAPI) => {
   try {
-    const res: Response = await fetch(`/trip/${trip_id}/poll`, {
+    const res: Response = await fetch(`${Constants.API_PREFIX}/trip/${trip_id}/poll`, {
       method: 'GET',
       headers: fetchHelpers.getTokenHeader(token),
     });

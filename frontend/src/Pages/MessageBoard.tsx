@@ -141,7 +141,7 @@ function MessageBoard(): JSX.Element {
       const token: string = await fetchHelpers.getAuth0Token(
         getAccessTokenSilently
       );
-      const res: Response = await fetch(`/trip/${trip.id}/message`, {
+      const res: Response = await fetch(`${Constants.API_PREFIX}/trip/${trip.id}/message`, {
         method: 'DELETE',
         headers: fetchHelpers.getTokenHeader(token),
       });

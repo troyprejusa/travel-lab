@@ -27,6 +27,7 @@ import {
 } from '@chakra-ui/icons';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import Constants from '../utilities/Constants';
 
 export default function WithSubnavigation() {
   
@@ -125,7 +126,7 @@ export default function WithSubnavigation() {
     const formData = new FormData();
     formData.set('email', email);
     formData.set('key', key);
-    const res: Response = await fetch('/dev/alpha', {
+    const res: Response = await fetch(`/dev/alpha`, {
       method: 'POST',
       body: formData,
     });

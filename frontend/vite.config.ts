@@ -14,9 +14,7 @@ export default defineConfig({
     },
     proxy: {
       '/dev': backend_server,
-      '/auth': backend_server,
-      '/user': backend_server,
-      '/trip': backend_server,
+      '/api/v1': backend_server,
       '/sio': {
         target: backend_server,
         ws: true

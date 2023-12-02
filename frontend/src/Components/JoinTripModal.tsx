@@ -16,6 +16,7 @@ import {
   Input,
   useToast,
 } from '@chakra-ui/react';
+import Constants from '../utilities/Constants';
 
 interface JoinTripModalProps {}
 
@@ -80,7 +81,7 @@ function JoinTripModal() {
       const token: string = await fetchHelpers.getAuth0Token(
         getAccessTokenSilently
       );
-      const res: Response = await fetch(`/user/trips/${id_entry}`, {
+      const res: Response = await fetch(`${Constants.API_PREFIX}/user/trips/${id_entry}`, {
         method: 'POST',
         headers: fetchHelpers.getTokenHeader(token),
       });

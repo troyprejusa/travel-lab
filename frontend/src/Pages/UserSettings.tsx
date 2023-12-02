@@ -86,7 +86,7 @@ function UserSettings(): JSX.Element {
       const token: string = await fetchHelpers.getAuth0Token(
         getAccessTokenSilently
       );
-      const res: Response = await fetch(`/user/${user.email}`, {
+      const res: Response = await fetch(`${Constants.API_PREFIX}/user/${user.email}`, {
         method: 'DELETE',
         headers: fetchHelpers.getTokenHeader(token),
       });

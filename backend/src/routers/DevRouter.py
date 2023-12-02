@@ -1,13 +1,10 @@
 from fastapi import APIRouter, Form
 from fastapi.responses import JSONResponse
 from typing import Annotated
-from utilities import Constants
 from models.DatabaseHandler import db_handler
 
 
-dev_router = APIRouter(
-    prefix='/dev'
-)
+dev_router = APIRouter()
 
 @dev_router.get("/")
 async def hello_world() -> dict[str, str]:
@@ -22,4 +19,3 @@ async def verify_alpha(email: Annotated[str, Form()], key: Annotated[str, Form()
         return JSONResponse(status_code=200, content={'message': 'Alpha key OK'})
     else:
         return JSONResponse(status_code=403, content={'message': 'Invalid alpha key'})
-
