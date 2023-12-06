@@ -10,6 +10,6 @@ notes
 node_modules
 
 # Python
-backend/lib
-backend/bin
 __pycache__
+.venv
+.pytest_cache
