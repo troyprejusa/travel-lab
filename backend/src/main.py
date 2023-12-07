@@ -1,3 +1,5 @@
+import sys
+import logging
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.exceptions import RequestValidationError
@@ -16,6 +18,14 @@ if Constants.MODE == 'development':
     db_setup.drop_tables()
     db_setup.setup_db()
     db_setup.insert_data()
+
+# Setup Logger
+app_logger = logging.getLogger('app_logger')
+stdout = logging.StreamHandler(stream=sys.stdout)
+fmt = logging.Formatter("%(asctime)s %(name)s: %(levelname)s | %(filename)s:%(lineno)s ~ %(message)s")
+stdout.setFormatter(fmt)
+app_logger.addHandler(stdout)
+app_logger.setLevel(logging.DEBUG)
 
 # Create app
 app = FastAPI()
@@ -40,7 +50,7 @@ app.mount('/sio', socketio_ASGI)
 async def redirect_nav(_request: Request, full_path: str):
     # NOTE: Sending FileResponse allows the app to handle the refresh correctly.
     # Sending RedirectResponse('/') does send return to root, but doesn't autonavigate after
-    # print(f'redirect_nav: Requested unkown route:\n{full_path}\nSending index.html...')
+    app_logger.debug(f'redirect_nav: Returning index.html for unkown route {full_path}')
     return FileResponse('/app/src/dist/index.html')
 
 # Global exception handler
@@ -52,7 +62,7 @@ async def general_exception_handler(_request: Request, exception: Exception) -> 
         # can perform as normal
         raise exception
     
-    print(f'GLOBAL_EXCEPTION_HANDLER: {type(exception).__name__}\n\t{exception}')
+    app_logger.error(f'{type(exception).__name__}: {exception}')
 
     # Same behavior as default exception handling, but returns
     # JSON instead of string

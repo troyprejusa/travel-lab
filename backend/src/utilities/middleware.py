@@ -1,11 +1,10 @@
 from fastapi import Request, HTTPException
-from fastapi.responses import FileResponse, JSONResponse
-from utilities import auth_helpers
-from utilities import Constants
-import jwt
-from utilities import Constants
-from utilities.RateTracker import RateTracker
+from fastapi.responses import FileResponse
+from . import Constants, auth_helpers
+from .RateTracker import RateTracker
+from .UtilitiesLogger import utilities_logger
 import json
+import jwt
 
 # GLOBAL VARIABLES (BELOW)
 rest_rate_tracker = RateTracker(Constants.API_REQUEST_COUNT, Constants.API_REQUESTS_WINDOW)
@@ -42,10 +41,12 @@ async def rate_limiter(request: Request, call_next):
                 "message": "This user has submitted too many requests"
             }
         )
-    # print({
-    #     'CLIENT': user_ip, 
-    #     'RATE': len(rest_rate_tracker.tracker[user_ip]) / Constants.API_REQUESTS_WINDOW
-    #     })
+    
+    utilities_logger.debug(json.dumps({
+        'client': user_ip, 
+        'usage_ratio': len(rest_rate_tracker.tracker[user_ip]) / Constants.API_REQUESTS_WINDOW
+    }))
+    
     response = await call_next(request)
     return response
 
@@ -74,7 +75,8 @@ async def serve_static_files(request: Request, call_next):
     return response
 
 async def authenticate_user(request: Request, call_next):
-    # print('HTTP Request:', request.url.path)
+    utilities_logger.debug(f'HTTP request to {request.url.path}')
+
     root_path = request.url.path.split('/')[1]
 
     if root_path not in auth_list:
@@ -106,7 +108,7 @@ async def authenticate_user(request: Request, call_next):
             return response
         
         except (jwt.exceptions.InvalidTokenError, KeyError) as error:
-            print(f'authenticate_user: Invalid authentication:\n{request.url.path}\n{error}')
+            utilities_logger.warning(f'Authentication error:\n{request.url.path}\n{error}')
             raise HTTPException(
                 status_code=401,
                 detail={

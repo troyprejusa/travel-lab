@@ -1,13 +1,14 @@
 import socketio
 import jwt
 from utilities import Constants, auth_helpers, middleware
-from models.DatabaseHandler import db_handler
-from models.Schemas import \
+from .DatabaseHandler import db_handler
+from .Schemas import \
     NewItineraryWS, ItineraryDeleteWS, \
     NewPollWS, PollVoteWS, PollDeleteWS, \
     NewPackingWS, PackingClaimWS, PackingUnclaimWS, PackingDeleteWS, \
     MessageWS
 import datetime
+from .ModelsLogger import models_logger
 
 
 ws_rate_tracker = middleware.RateTracker(Constants.WS_REQUEST_COUNT, Constants.WS_REQUEST_WINDOW)
@@ -16,7 +17,7 @@ class WebSocketHandler(socketio.AsyncNamespace):
 
     # Interceptor (middleware) for all events
     async def trigger_event(self, event, sid, *args):
-        # print('I got a message!', event)
+        models_logger.debug(f'WebSocket message received - {event}')
         ok = ws_rate_tracker.add_entry(sid)
         if ok:
             # Continue processing
@@ -25,7 +26,7 @@ class WebSocketHandler(socketio.AsyncNamespace):
             # Close namespace connection if user exceeds rate limit
             # NOTE: This does not close the underlying connection, 
             # so it does not close ALL namespaces for this user
-            print(f'Disconnecting sid {sid}')
+            models_logger.warning(f'{self.__class__.__name__} rate limit exceeded for {sid}, terminating session')
             await self.emit('rate_limit_exceeded', {"message": f"Rate limit exceeded in {self.__class__.__name__}"})
             await self.disconnect(sid)
 
@@ -38,16 +39,15 @@ class WebSocketHandler(socketio.AsyncNamespace):
             self.enter_room(sid, trip_id)
 
         except jwt.exceptions.InvalidTokenError as token_error:
-            print(f'{self.__class__.__name__}.on_connect: Invalid token\n', token_error)
+            models_logger.warning(f'{self.__class__.__name__}.on_connect: Invalid token\n{token_error}')
             raise ConnectionRefusedError(f'Unauthorized connection attempt to {self.__class__.__name__}')
         
         except Exception as error:
-            print(f'{self.__class__.__name__}.on_connect:\n', error)
+            models_logger.error(f'{self.__class__.__name__}.on_connect:\n{error}')
             raise ConnectionRefusedError(f'Error during connection attempt to {self.__class__.__name__}')
 
     def on_disconnect(self, sid):
-        # print(f'{sid} disconnected from {self.__class__.__name__}')
-        pass
+        models_logger.debug(f'{sid} disconnected from {self.__class__.__name__}')
 
     async def reply_error(self, sid, event: str, msg: str):
         await self.emit(event, {"message": msg}, to=sid)
@@ -85,7 +85,7 @@ class ItinerarySocket(WebSocketHandler):
             await self.emit('backend_itinerary_create', itinerary_db, room = itinerary_data.trip_id)
 
         except Exception as error:
-            print(error)
+            models_logger.error(f'{error}')
             await self.reply_error(sid, 'backend_itinerary_create_error', 'Unable to create itinerary stop')
 
     async def on_frontend_itinerary_delete(self, sid, data) -> None:
@@ -95,7 +95,7 @@ class ItinerarySocket(WebSocketHandler):
             await self.emit('backend_itinerary_delete', itinerary_delete.itinerary_id, room = itinerary_delete.trip_id)
         
         except Exception as error:
-            print(error)
+            models_logger.error(f'{error}')
             await self.reply_error(sid, 'backend_itinerary_delete_error', 'Unable to delete itinerary stop')
 
 
@@ -117,7 +117,7 @@ class PollSocket(WebSocketHandler):
             await self.emit('backend_poll_create', new_poll_db, room = new_poll.trip_id)
         
         except Exception as error:
-            print(error)
+            models_logger.error(f'{error}')
             await self.reply_error(sid, 'backend_poll_create_error', 'Unable to create poll')
 
     async def on_frontend_vote(self, sid, data) -> None:
@@ -129,7 +129,7 @@ class PollSocket(WebSocketHandler):
             await self.emit('backend_vote', poll_vote.dict(), room = poll_vote.trip_id)
 
         except Exception as error:
-            print(error)
+            models_logger.error(f'{error}')
             await self.reply_error(sid, 'backend_vote_error', 'Unable to submit vote')
 
     async def on_frontend_poll_delete(self, sid, data) -> None:
@@ -139,7 +139,7 @@ class PollSocket(WebSocketHandler):
             await self.emit('backend_poll_delete', poll_delete.poll_id, room = poll_delete.trip_id)
 
         except Exception as error:
-            print(error)
+            models_logger.error(f'{error}')
             await self.reply_error(sid, 'backend_poll_delete_error', 'Unable to delete poll')
 
 
@@ -158,7 +158,7 @@ class PackingSocket(WebSocketHandler):
             await self.emit('backend_packing_create', item_db, room = new_item.trip_id)
 
         except Exception as error:
-            print(error)
+            models_logger.error(f'{error}')
             await self.reply_error(sid, 'backend_packing_create_error', 'Unable to create packing item')
 
     async def on_frontend_packing_claim(self, sid, data) -> None:
@@ -168,7 +168,7 @@ class PackingSocket(WebSocketHandler):
             await self.emit('backend_packing_claim', claim_data.dict(), room = claim_data.trip_id)
 
         except Exception as error:
-            print(error)
+            models_logger.error(f'{error}')
             await self.reply_error(sid, 'backend_packing_claim_error', 'Unable to claim item')
 
     async def on_frontend_packing_unclaim(self, sid, data) -> None:
@@ -178,7 +178,7 @@ class PackingSocket(WebSocketHandler):
             await self.emit('backend_packing_claim', unclaim_data.dict(), room = unclaim_data.trip_id)
 
         except Exception as error:
-            print(error)
+            models_logger.error(f'{error}')
             await self.reply_error(sid, 'backend_packing_unclaim_error', 'Unable to unclaim item')
 
     async def on_frontend_packing_delete(self, sid, data) -> None:
@@ -188,7 +188,7 @@ class PackingSocket(WebSocketHandler):
             await self.emit('backend_packing_delete', item_delete.item_id, room = item_delete.trip_id)
 
         except Exception as error:
-            print(error)
+            models_logger.error(f'{error}')
             await self.reply_error(sid, 'backend_packing_delete_error', 'Unable to delete item')
 
 
@@ -207,7 +207,7 @@ class MsgSocket(WebSocketHandler):
             await self.emit('backend_msg', db_msg, room = msg.trip_id)
 
         except Exception as error:
-            print(error)
+            models_logger.error(f'{error}')
             await self.reply_error(sid, 'backend_msg_error', 'Unable to submit message')
 
 

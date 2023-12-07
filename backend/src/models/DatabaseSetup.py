@@ -1,4 +1,4 @@
-from models.DatabaseHandler import PsycopgDatabaseHandler
+from .DatabaseHandler import PsycopgDatabaseHandler
 
 
 class DatabaseSetup:

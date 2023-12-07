@@ -3,6 +3,7 @@ import psycopg2.extras
 from utilities import Constants
 from utilities.merge_polls import merge_polls
 from datetime import date
+from .ModelsLogger import models_logger
 
 
 class PsycopgDatabaseHandler:
@@ -23,7 +24,7 @@ class PsycopgDatabaseHandler:
         try:
             self.connection = psycopg2.connect(host = self.host, port = self.port, user = self.user, password = self.password, database = self.database)
         except Exception as error:
-            print(error)
+            models_logger.critical('Unable to connect to database!')
             raise Exception(f"DatabaseHandler.py: Unable to connect to database{self.database}")
 
     '''
@@ -42,8 +43,6 @@ class PsycopgDatabaseHandler:
                         cursor.execute(query, params)
                     else:
                         cursor.execute(query)
-
-                    # print(f'QUERY SUCCESS:\n\t{cursor.query}')
                     
                     if kwargs.get('row_count_only'):
                         # if row_count_only is specified and truthy,
@@ -74,8 +73,7 @@ class PsycopgDatabaseHandler:
                                 self.connect()
 
                 except psycopg2.Error as pg_error:
-                    # print(f'QUERY FAILURE!')
-                    print(f'QUERY FAILURE:\n\t{cursor.query}')
+                    models_logger.debug(f'Query failure:\n{cursor.query}')
                     raise pg_error
                 
     # ------------------- USER OPERATIONS ------------------- #

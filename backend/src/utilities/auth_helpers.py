@@ -1,12 +1,11 @@
 
-from utilities import Constants
+from . import Constants
 from models.DatabaseHandler import db_handler
 import jwt
 from jwt import PyJWKClient
-from utilities import Constants
 from auth0.authentication import GetToken
 from auth0.management import Auth0
-
+from .UtilitiesLogger import utilities_logger
 
 
 # Global variable
@@ -69,12 +68,11 @@ def establish_user_attendance(email: str) -> dict:
         # user_data.trips will be an object of objects, keyed by trip_id
         for trip in user_trips:
             trip_data[trip['trip_id']] = trip
-        # print(user_data)
 
         return trip_data
     
     except Exception as error:
-        print('establish_user_attendance: Unable to gather trip data for user user\n', error)
+        utilities_logger.error(f'establish_user_attendance: Unable to gather trip data for {email}\n{error}')
         raise error
 
 

@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Request, Form, HTTPException
-from typing import Annotated
 from fastapi.responses import JSONResponse
+from typing import Annotated
 from models.DatabaseHandler import db_handler
 from models.Schemas import UserModel, TripModel
 from utilities.auth_helpers import verify_attendance, verify_admin, get_auth0_manager
-import utilities.Constants as Constants
+from utilities import Constants
+from .RoutersLogger import router_logger
 
 
 user_router = APIRouter()
@@ -35,7 +36,7 @@ async def upsert_user(email: str) -> UserModel | str:
         return user
     
     except Exception as error:
-        print(error)
+        router_logger.error(f'{error}')
         raise HTTPException(
             status_code=500,
             detail={
@@ -57,7 +58,7 @@ async def patch_user_info(
         return updated_user
       
     except Exception as error:
-        print(error)
+        router_logger.error(f'{error}')
         raise HTTPException(
             status_code=500,
             detail={
@@ -81,7 +82,7 @@ async def delete_user(request: Request, email: str) -> str:
         )
     
     except Exception as error:
-        print('ERROR in delete_user:\n', error)
+        router_logger.error(f'{error}')
         raise HTTPException(
             status_code=500,
             detail={
@@ -96,7 +97,7 @@ async def get_alpha_key(email: str) -> str:
         return keyDict['key']
     
     except Exception as error:
-        print('ERROR getting alpha key:\n', error)
+        router_logger.error(f'{error}')
         raise HTTPException(
             status_code=500,
             detail={
@@ -112,7 +113,7 @@ async def get_trips(request: Request) -> list[TripModel] | str:
         return data
     
     except Exception as error:
-        print(error)
+        router_logger.error(f'{error}')
         raise HTTPException(
             status_code=500,
             detail={
@@ -136,7 +137,7 @@ async def leave_trip(request: Request, trip_id: str) -> str:
         )
     
     except Exception as error:
-        print(error)
+        router_logger.error(f'{error}')
         raise HTTPException(
             status_code=500,
             detail={
@@ -179,7 +180,7 @@ async def request_join_trip(request: Request, trip_id: str) -> str:
         )
     
     except Exception as error:
-        print(error)
+        router_logger.error(f'{error}')
         raise HTTPException(
             status_code=500,
             detail={
@@ -203,7 +204,7 @@ async def accept_join_trip(request: Request, trip_id: str, traveller_id: str) ->
         )
     
     except Exception as error:
-        print(error)
+        router_logger.error(f'{error}')
         raise HTTPException(
             status_code=500,
             detail={
@@ -227,7 +228,7 @@ async def remove_from_trip(request: Request, trip_id: str, traveller_id: str) ->
         )
     
     except Exception as error:
-        print(error)
+        router_logger.error(f'{error}')
         raise HTTPException(
             status_code=500,
             detail={
