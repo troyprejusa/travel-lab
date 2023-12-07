@@ -40,7 +40,7 @@ async def create_trip(
         return trip_data
     
     except Exception as error:
-        router_logger.error(f'{error}')
+        router_logger.error(error)
         raise HTTPException(
             status_code=500,
             detail={
@@ -57,7 +57,7 @@ async def get_trip_permissions(request: Request, trip_id: str) -> dict | str:
         return permissions
     
     except Exception as error:
-        router_logger.error(f'{error}')
+        router_logger.error(error)
         raise HTTPException(
             status_code=500,
             detail={
@@ -81,7 +81,7 @@ async def delete_trip(request: Request, trip_id: str) -> dict[str, str]:
         )
     
     except Exception as error:
-        router_logger.error(f'{error}')
+        router_logger.error(error)
         raise HTTPException(
             status_code=500,
             detail={
@@ -101,7 +101,7 @@ async def get_itinerary_info(request: Request, trip_id: str) -> list[ItineraryMo
         return itinerary
 
     except Exception as error:
-        router_logger.error(f'{error}')
+        router_logger.error(error)
         raise HTTPException(
             status_code=500,
             detail={
@@ -142,7 +142,7 @@ async def add_itinerary_stop(
         )
     
     except Exception as error:
-        router_logger.error(f'{error}')
+        router_logger.error(error)
         raise HTTPException(
             status_code=500,
             detail={
@@ -165,7 +165,7 @@ async def delete_itinerary_stop(request: Request, trip_id: str, item_id: int) ->
         )
     
     except Exception as error:
-        router_logger.error(f'{error}')
+        router_logger.error(error)
         raise HTTPException(
             status_code=500,
             detail={
@@ -185,7 +185,7 @@ async def get_polls(request: Request, trip_id: str) -> list[PollResponse] | str:
         return polls
     
     except Exception as error:
-        router_logger.error(f'{error}')
+        router_logger.error(error)
         raise HTTPException(
             status_code=500,
             detail={
@@ -220,7 +220,7 @@ async def create_poll(request: Request, trip_id: str, poll_body: NewPollWS) -> d
         )
 
     except Exception as error:
-        router_logger.error(f'{error}')
+        router_logger.error(error)
         raise HTTPException(
             status_code=500,
             detail={
@@ -243,7 +243,7 @@ async def delete_poll(request: Request, trip_id: str, poll_id: int) -> dict[str,
         )
 
     except Exception as error:
-        router_logger.error(f'{error}')
+        router_logger.error(error)
         raise HTTPException(
             status_code=500,
             detail={
@@ -302,7 +302,7 @@ async def add_packing_item(
         )
     
     except Exception as error:
-        router_logger.error(f'{error}')
+        router_logger.error(error)
         raise HTTPException(
             status_code=500,
             detail={
@@ -325,7 +325,7 @@ async def claim_packing_item(request: Request, trip_id: str, item_id: int) -> st
         )
 
     except Exception as error:
-        router_logger.error(f'{error}')
+        router_logger.error(error)
         raise HTTPException(
             status_code=500,
             detail={
@@ -348,7 +348,7 @@ async def unclaim_packing_item(request: Request, trip_id: str, item_id: int) -> 
         )
 
     except Exception as error:
-        router_logger.error(f'{error}')
+        router_logger.error(error)
         raise HTTPException(
             status_code=500,
             detail={
@@ -371,7 +371,7 @@ async def delete_packing_item(request: Request, trip_id: str, item_id: int) -> s
         )
 
     except Exception as error:
-        router_logger.error(f'{error}')
+        router_logger.error(error)
         raise HTTPException(
             status_code=500,
             detail={
@@ -391,7 +391,7 @@ async def get_messages(request: Request, trip_id: str) -> list[MessageModel] | s
         return msgs
     
     except Exception as error:
-        router_logger.error(f'{error}')
+        router_logger.error(error)
         raise HTTPException(
             status_code=500,
             detail={
@@ -414,7 +414,7 @@ async def delete_messages(request: Request, trip_id: str) -> str:
         )
     
     except Exception as error:
-        router_logger.error(f'{error}')
+        router_logger.error(error)
         raise HTTPException(
             status_code=500,
             detail={
@@ -434,7 +434,7 @@ async def get_travellers(request: Request, trip_id: str) ->  list[TravellerRespo
         return travellers
 
     except Exception as error:
-        router_logger.error(f'{error}')
+        router_logger.error(error)
         raise HTTPException(
             status_code=500,
             detail={

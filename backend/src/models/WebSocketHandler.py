@@ -85,7 +85,7 @@ class ItinerarySocket(WebSocketHandler):
             await self.emit('backend_itinerary_create', itinerary_db, room = itinerary_data.trip_id)
 
         except Exception as error:
-            models_logger.error(f'{error}')
+            models_logger.error(error)
             await self.reply_error(sid, 'backend_itinerary_create_error', 'Unable to create itinerary stop')
 
     async def on_frontend_itinerary_delete(self, sid, data) -> None:
@@ -95,7 +95,7 @@ class ItinerarySocket(WebSocketHandler):
             await self.emit('backend_itinerary_delete', itinerary_delete.itinerary_id, room = itinerary_delete.trip_id)
         
         except Exception as error:
-            models_logger.error(f'{error}')
+            models_logger.error(error)
             await self.reply_error(sid, 'backend_itinerary_delete_error', 'Unable to delete itinerary stop')
 
 
@@ -117,7 +117,7 @@ class PollSocket(WebSocketHandler):
             await self.emit('backend_poll_create', new_poll_db, room = new_poll.trip_id)
         
         except Exception as error:
-            models_logger.error(f'{error}')
+            models_logger.error(error)
             await self.reply_error(sid, 'backend_poll_create_error', 'Unable to create poll')
 
     async def on_frontend_vote(self, sid, data) -> None:
@@ -129,7 +129,7 @@ class PollSocket(WebSocketHandler):
             await self.emit('backend_vote', poll_vote.dict(), room = poll_vote.trip_id)
 
         except Exception as error:
-            models_logger.error(f'{error}')
+            models_logger.error(error)
             await self.reply_error(sid, 'backend_vote_error', 'Unable to submit vote')
 
     async def on_frontend_poll_delete(self, sid, data) -> None:
@@ -139,7 +139,7 @@ class PollSocket(WebSocketHandler):
             await self.emit('backend_poll_delete', poll_delete.poll_id, room = poll_delete.trip_id)
 
         except Exception as error:
-            models_logger.error(f'{error}')
+            models_logger.error(error)
             await self.reply_error(sid, 'backend_poll_delete_error', 'Unable to delete poll')
 
 
@@ -158,7 +158,7 @@ class PackingSocket(WebSocketHandler):
             await self.emit('backend_packing_create', item_db, room = new_item.trip_id)
 
         except Exception as error:
-            models_logger.error(f'{error}')
+            models_logger.error(error)
             await self.reply_error(sid, 'backend_packing_create_error', 'Unable to create packing item')
 
     async def on_frontend_packing_claim(self, sid, data) -> None:
@@ -168,7 +168,7 @@ class PackingSocket(WebSocketHandler):
             await self.emit('backend_packing_claim', claim_data.dict(), room = claim_data.trip_id)
 
         except Exception as error:
-            models_logger.error(f'{error}')
+            models_logger.error(error)
             await self.reply_error(sid, 'backend_packing_claim_error', 'Unable to claim item')
 
     async def on_frontend_packing_unclaim(self, sid, data) -> None:
@@ -178,7 +178,7 @@ class PackingSocket(WebSocketHandler):
             await self.emit('backend_packing_claim', unclaim_data.dict(), room = unclaim_data.trip_id)
 
         except Exception as error:
-            models_logger.error(f'{error}')
+            models_logger.error(error)
             await self.reply_error(sid, 'backend_packing_unclaim_error', 'Unable to unclaim item')
 
     async def on_frontend_packing_delete(self, sid, data) -> None:
@@ -188,7 +188,7 @@ class PackingSocket(WebSocketHandler):
             await self.emit('backend_packing_delete', item_delete.item_id, room = item_delete.trip_id)
 
         except Exception as error:
-            models_logger.error(f'{error}')
+            models_logger.error(error)
             await self.reply_error(sid, 'backend_packing_delete_error', 'Unable to delete item')
 
 
@@ -207,7 +207,7 @@ class MsgSocket(WebSocketHandler):
             await self.emit('backend_msg', db_msg, room = msg.trip_id)
 
         except Exception as error:
-            models_logger.error(f'{error}')
+            models_logger.error(error)
             await self.reply_error(sid, 'backend_msg_error', 'Unable to submit message')
 
 
