@@ -30,7 +30,8 @@ multidict==6.0.4
 orjson==3.8.14
 pip-licenses==4.3.3
 prettytable==3.9.0
-psycopg2-binary==2.9.6
+psycopg==3.1.15
+psycopg-binary==3.1.15
 pycparser==2.21
 pydantic==1.10.8
 PyJWT==2.8.0
