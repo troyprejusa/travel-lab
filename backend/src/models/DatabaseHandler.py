@@ -1,5 +1,5 @@
-import psycopg2
-import psycopg2.extras
+import psycopg
+from psycopg_pool import AsyncConnectionPool
 from utilities import Constants
 from utilities.merge_polls import merge_polls
 from datetime import date
