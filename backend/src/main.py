@@ -13,12 +13,6 @@ from utilities import middleware
 from utilities import Constants
 
 
-if Constants.MODE == 'development':
-    db_setup = DatabaseSetup(db_handler)
-    db_setup.drop_tables()
-    db_setup.setup_db()
-    db_setup.insert_data()
-
 # Setup Logger
 app_logger = logging.getLogger('app_logger')
 stdout = logging.StreamHandler(stream=sys.stdout)
@@ -29,6 +23,20 @@ app_logger.setLevel(logging.DEBUG)
 
 # Create app
 app = FastAPI()
+
+@app.on_event("startup")
+async def startup():
+    await db_handler.pool.open()
+    
+    if Constants.MODE == 'development':
+        db_setup = DatabaseSetup(db_handler)
+        await db_setup.drop_tables()
+        await db_setup.setup_db()
+        await db_setup.insert_data()
+
+@app.on_event("shutdown")
+async def shutdown():
+    await db_handler.pool.close()
 
 # Add middleware - non-decorator syntax
 # NOTE: FastAPI executes middleware in the REVERSE order they are declared, like an onion

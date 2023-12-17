@@ -24,7 +24,7 @@ async def create_trip(
     description: Annotated[str | None, Form()] = None
     ) -> TripModel | str:
     try:
-        if db_handler.count_user_created_trips(request.state.user['email']) >= Constants.LIMIT_TRIPS_CREATED_PER_USER:
+        if await db_handler.count_user_created_trips(request.state.user['email']) >= Constants.LIMIT_TRIPS_CREATED_PER_USER:
             return JSONResponse(
                 status_code=422,
                 content={
@@ -34,8 +34,8 @@ async def create_trip(
                 }
             )
 
-        new_trip_id = db_handler.create_trip(destination, description, start_date, end_date, vacation_type,request.state.user['email'])
-        trip_data = db_handler.get_trip_data(new_trip_id)
+        new_trip_id = await db_handler.create_trip(destination, description, start_date, end_date, vacation_type,request.state.user['email'])
+        trip_data = await db_handler.get_trip_data(new_trip_id)
         
         return trip_data
     
@@ -52,7 +52,7 @@ async def create_trip(
 async def get_trip_permissions(request: Request, trip_id: str) -> dict | str:
     try:
         verify_attendance(trip_id, request.state.user['trips'])
-        permissions = db_handler.get_trip_permissions(trip_id, request.state.user['email'])
+        permissions = await db_handler.get_trip_permissions(trip_id, request.state.user['email'])
         
         return permissions
     
@@ -71,7 +71,7 @@ async def delete_trip(request: Request, trip_id: str) -> dict[str, str]:
     try:
         verify_admin(trip_id, request.state.user['trips'])
 
-        db_handler.delete_trip(trip_id)
+        await db_handler.delete_trip(trip_id)
 
         return JSONResponse(
             status_code=200,
@@ -96,7 +96,7 @@ async def get_itinerary_info(request: Request, trip_id: str) -> list[ItineraryMo
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
-        itinerary = db_handler.get_itinerary(trip_id)
+        itinerary = await db_handler.get_itinerary(trip_id)
 
         return itinerary
 
@@ -122,7 +122,7 @@ async def add_itinerary_stop(
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
-        if db_handler.count_itinerary(trip_id) >= Constants.LIMIT_ITINERARY_PER_TRIP:
+        if await db_handler.count_itinerary(trip_id) >= Constants.LIMIT_ITINERARY_PER_TRIP:
             return JSONResponse(
                 status_code=422,
                 content={
@@ -132,7 +132,7 @@ async def add_itinerary_stop(
                 }
             )
 
-        db_handler.create_itinerary(trip_id, title, description, start_time, end_time, request.state.user['email'])
+        await db_handler.create_itinerary(trip_id, title, description, start_time, end_time, request.state.user['email'])
      
         return JSONResponse(
             status_code=200,
@@ -155,7 +155,7 @@ async def delete_itinerary_stop(request: Request, trip_id: str, item_id: int) ->
     try:
         verify_admin(trip_id, request.state.user['trips'])
 
-        db_handler.delete_itinerary(item_id)
+        await db_handler.delete_itinerary(item_id)
      
         return JSONResponse(
             status_code=200,
@@ -180,7 +180,7 @@ async def get_polls(request: Request, trip_id: str) -> list[PollResponse] | str:
     try:
         verify_attendance(trip_id, request.state.user['trips'])
         
-        polls = db_handler.get_polls(trip_id)
+        polls = await db_handler.get_polls(trip_id)
 
         return polls
     
@@ -199,7 +199,7 @@ async def create_poll(request: Request, trip_id: str, poll_body: NewPollWS) -> d
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
-        if db_handler.count_polls(trip_id) >= Constants.LIMIT_POLLS_PER_TRIP:
+        if await db_handler.count_polls(trip_id) >= Constants.LIMIT_POLLS_PER_TRIP:
             return JSONResponse(
                 status_code=422,
                 content={
@@ -209,8 +209,8 @@ async def create_poll(request: Request, trip_id: str, poll_body: NewPollWS) -> d
                 }
             )
 
-        poll_id = db_handler.create_poll(trip_id, poll_body.title, poll_body.description, request.state.user['email'])
-        db_handler.create_poll_options(poll_id, poll_body.options)
+        poll_id = await db_handler.create_poll(trip_id, poll_body.title, poll_body.description, request.state.user['email'])
+        await db_handler.create_poll_options(poll_id, poll_body.options)
 
         return JSONResponse(
             status_code=200,
@@ -233,7 +233,7 @@ async def delete_poll(request: Request, trip_id: str, poll_id: int) -> dict[str,
     try:
         verify_admin(trip_id, request.state.user['trips'])
 
-        db_handler.delete_poll(poll_id)
+        await db_handler.delete_poll(poll_id)
 
         return JSONResponse(
             status_code=200,
@@ -258,7 +258,7 @@ async def get_packing_items(request: Request, trip_id: str) -> list[PackingModel
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
-        items = db_handler.get_packing_items(trip_id)
+        items = await db_handler.get_packing_items(trip_id)
 
         return items
 
@@ -282,7 +282,7 @@ async def add_packing_item(
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
-        if db_handler.count_packing(trip_id) >= Constants.LIMIT_PACKING_PER_TRIP:
+        if await db_handler.count_packing(trip_id) >= Constants.LIMIT_PACKING_PER_TRIP:
             return JSONResponse(
                 status_code=422,
                 content={
@@ -292,7 +292,7 @@ async def add_packing_item(
                 }
             )
 
-        db_handler.create_packing_item(trip_id, item, quantity, description, request.state.user['email'])
+        await db_handler.create_packing_item(trip_id, item, quantity, description, request.state.user['email'])
 
         return JSONResponse(
             status_code=200,
@@ -315,7 +315,7 @@ async def claim_packing_item(request: Request, trip_id: str, item_id: int) -> st
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
-        db_handler.claim_packing_item(request.state.user['email'], item_id)
+        await db_handler.claim_packing_item(request.state.user['email'], item_id)
 
         return JSONResponse(
             status_code=200,
@@ -338,7 +338,7 @@ async def unclaim_packing_item(request: Request, trip_id: str, item_id: int) -> 
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
-        db_handler.unclaim_packing_item(item_id)
+        await db_handler.unclaim_packing_item(item_id)
 
         return JSONResponse(
             status_code=200,
@@ -361,7 +361,7 @@ async def delete_packing_item(request: Request, trip_id: str, item_id: int) -> s
     try:
         verify_admin(trip_id, request.state.user['trips'])
 
-        db_handler.delete_packing_item(item_id)
+        await db_handler.delete_packing_item(item_id)
 
         return JSONResponse(
             status_code=200,
@@ -386,7 +386,7 @@ async def get_messages(request: Request, trip_id: str) -> list[MessageModel] | s
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
-        msgs = db_handler.get_messages(trip_id)
+        msgs = await db_handler.get_messages(trip_id)
 
         return msgs
     
@@ -404,7 +404,7 @@ async def delete_messages(request: Request, trip_id: str) -> str:
     try:
         verify_admin(trip_id, request.state.user['trips'])
 
-        db_handler.delete_messages(trip_id)
+        await db_handler.delete_messages(trip_id)
 
         return JSONResponse(
             status_code=200,
@@ -429,7 +429,7 @@ async def get_travellers(request: Request, trip_id: str) ->  list[TravellerRespo
     try:
         verify_attendance(trip_id, request.state.user['trips'])
         
-        travellers = db_handler.get_travellers(trip_id)
+        travellers = await db_handler.get_travellers(trip_id)
         
         return travellers
 

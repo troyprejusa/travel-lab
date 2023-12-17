@@ -101,7 +101,7 @@ async def authenticate_user(request: Request, call_next):
             request.state.user = {}
             request.state.user['email'] = user_email
             request.state.user['auth0_id'] = auth0_id
-            request.state.user['trips'] = auth_helpers.establish_user_attendance(user_email)
+            request.state.user['trips'] = await auth_helpers.establish_user_attendance(user_email)
 
             response = await call_next(request)
             
