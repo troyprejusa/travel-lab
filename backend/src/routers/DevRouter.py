@@ -15,7 +15,7 @@ async def hello_world() -> dict[str, str]:
 
 @dev_router.post('/alpha')
 async def verify_alpha(email: Annotated[str, Form()], key: Annotated[str, Form()]) -> str:
-    if db_handler.check_alpha_key(email, key):
+    if await db_handler.check_alpha_key(email, key):
         return JSONResponse(status_code=200, content={'message': 'Alpha key OK'})
     else:
         return JSONResponse(status_code=403, content={'message': 'Invalid alpha key'})

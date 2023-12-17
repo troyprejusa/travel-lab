@@ -26,6 +26,8 @@ if MODE == 'production':
     DB_USER = os.getenv('PROD_DB_USER')
     DB_PWD = os.getenv('PROD_DB_PWD')
     DB_DBNAME = os.getenv('PROD_DB_DBNAME')
+    DB_CONN_LIMIT = int(os.getenv('PROD_DB_CONN_LIMIT'))
+
 else:
     # JWT
     AUTH0_DOMAIN = os.getenv('DEV_AUTH0_DOMAIN')
@@ -41,6 +43,7 @@ else:
     DB_USER = os.getenv('DEV_DB_USER')
     DB_PWD = os.getenv('DEV_DB_PWD')
     DB_DBNAME = os.getenv('DEV_DB_DBNAME')
+    DB_CONN_LIMIT = int(os.getenv('DEV_DB_CONN_LIMIT'))
 
 # Database limits
 LIMIT_TOTAL_USERS = int(os.getenv('LIMIT_TOTAL_USERS'))     # protects traveller table

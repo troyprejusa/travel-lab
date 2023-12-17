@@ -1,19 +1,27 @@
+'''
+Note that the string-formatted ids below are often UUIDs. 
+However, the UUIDs are treated like strings throughout the 
+code base, and are also not serializable for WebSockets. 
+Rather than pepper the codebase with conversions, 
+the UUID is converted to a string by DatabaseHander.query
+'''
+
 from pydantic import BaseModel
-from uuid import UUID
 from datetime import date, datetime
+
 
 # --------------- DATABASE TYPES --------------- #
 # These match the SQL tables 1-1
 
 class UserModel(BaseModel):
-    id: UUID
+    id: str
     first_name: str | None = None
     last_name: str | None = None
     email: str
     phone: str | None = None
     
 class TripModel(BaseModel):
-    id: UUID
+    id: str
     destination: str
     description: str | None = None
     start_date: date
@@ -24,7 +32,7 @@ class TripModel(BaseModel):
 
 class ItineraryModel(BaseModel):
     id: int
-    trip_id: UUID
+    trip_id: str
     title: str
     description: str | None = None
     start_time: datetime
@@ -34,7 +42,7 @@ class ItineraryModel(BaseModel):
 
 class PackingModel(BaseModel):
     id: int
-    trip_id: UUID
+    trip_id: str
     item: str
     quantity: int
     description: str | None = None
@@ -44,7 +52,7 @@ class PackingModel(BaseModel):
 
 class MessageModel(BaseModel):
     id: int
-    trip_id: UUID
+    trip_id: str
     content: str
     created_at: datetime
     created_by: str
@@ -53,7 +61,7 @@ class MessageModel(BaseModel):
 # These types are a result of JOINs on SQL tables
 
 class TravellerResponse(BaseModel):
-    id: UUID
+    id: str
     first_name: str | None = None
     last_name: str | None = None
     email: str

@@ -55,11 +55,11 @@ def decode_jwt(token: str, rsa_key) -> dict:
     )
    
 
-def establish_user_attendance(email: str) -> dict:
+async def establish_user_attendance(email: str) -> dict:
     try:
         trip_data = {}
 
-        user_trips = db_handler.query("""
+        user_trips = await db_handler.query("""
             SELECT trip_id, admin FROM traveller_trip WHERE 
             traveller_id=(SELECT id FROM traveller WHERE email=%s) AND 
             confirmed=TRUE;
@@ -72,15 +72,15 @@ def establish_user_attendance(email: str) -> dict:
         return trip_data
     
     except Exception as error:
-        utilities_logger.error(f'establish_user_attendance: Unable to gather trip data for {email}\n{error}')
+        utilities_logger.error(f'Unable to gather trip data for {email}\n{error}')
         raise error
 
 
 def verify_attendance(trip_id: str, trips: dict[str, dict[str, str]]) -> None:
     if trip_id in trips:
         return
-
-    raise Exception('verify_attendance: User not attending this trip')
+    utilities_logger.warning('User attempted to affect trip they are not attending')
+    raise Exception('User not attending this trip')
 
 
 def verify_admin(trip_id: str, trips: dict[str, dict[str, str]]) -> None:

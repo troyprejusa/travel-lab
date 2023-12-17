@@ -6,13 +6,13 @@ class DatabaseSetup:
         self.database = database;
     
     # UUID Extension
-    def initialize_extensions(self) -> None:
-        self.database.query("""
+    async def initialize_extensions(self) -> None:
+        await self.database.query("""
             CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
         """)
 
-    def create_types(self) -> None:
-        self.database.query("""
+    async def create_types(self) -> None:
+        await self.database.query("""
             DROP TYPE IF EXISTS vacation_setting;
                                 
             CREATE TYPE vacation_setting AS ENUM (
@@ -26,9 +26,9 @@ class DatabaseSetup:
             );
         """)
     
-    def intialize_traveller_table(self) -> None:
-        # As this is now provided by Auth0, we only have the email by default
-        self.database.query("""
+    async def intialize_traveller_table(self) -> None:
+        # As this is now provided by Auth0, we only have the email by DEFAULT
+        await self.database.query("""
             CREATE TABLE IF NOT EXISTS traveller (
                 id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
                 first_name VARCHAR(40),
@@ -38,13 +38,13 @@ class DatabaseSetup:
             );
         """)
     
-    def drop_traveller_table(self) -> None:
-        self.database.query("""
+    async def drop_traveller_table(self) -> None:
+        await self.database.query("""
             DROP TABLE IF EXISTS traveller CASCADE;
         """)
 
-    def initialize_trip_table(self) -> None:
-        self.database.query("""
+    async def initialize_trip_table(self) -> None:
+        await self.database.query("""
             CREATE TABLE IF NOT EXISTS trip (
                 id uuid DEFAULT uuid_generate_v4 () PRIMARY KEY,
                 destination VARCHAR(60) NOT NULL,
@@ -57,13 +57,13 @@ class DatabaseSetup:
             );
         """)
 
-    def drop_trip_table(self) -> None:
-        self.database.query("""
+    async def drop_trip_table(self) -> None:
+        await self.database.query("""
             DROP TABLE IF EXISTS trip CASCADE;
         """)
 
-    def initialize_traveller_trip_table(self) -> None:
-        self.database.query("""
+    async def initialize_traveller_trip_table(self) -> None:
+        await self.database.query("""
                 CREATE TABLE IF NOT EXISTS traveller_trip (
                     traveller_id uuid references traveller ON DELETE CASCADE,
                     trip_id uuid references trip ON DELETE CASCADE,
@@ -73,13 +73,13 @@ class DatabaseSetup:
             );
         """)
 
-    def drop_traveller_trip_table(self) -> None:
-        self.database.query("""
+    async def drop_traveller_trip_table(self) -> None:
+        await self.database.query("""
             DROP TABLE IF EXISTS traveller_trip;
         """)
 
-    def initialize_itinerary_table(self) -> None:
-        self.database.query("""
+    async def initialize_itinerary_table(self) -> None:
+        await self.database.query("""
             CREATE TABLE IF NOT EXISTS itinerary (
                 id BIGSERIAL PRIMARY KEY,
                 trip_id uuid NOT NULL references trip ON DELETE CASCADE,
@@ -92,13 +92,13 @@ class DatabaseSetup:
             );
         """)
 
-    def drop_itinerary_table(self) -> None:
-        self.database.query("""
+    async def drop_itinerary_table(self) -> None:
+        await self.database.query("""
             DROP TABLE IF EXISTS itinerary;
         """)
 
-    def initialize_messages_table(self) -> None:
-        self.database.query("""
+    async def initialize_messages_table(self) -> None:
+        await self.database.query("""
             CREATE TABLE IF NOT EXISTS message (
                 id BIGSERIAL PRIMARY KEY,
                 trip_id uuid NOT NULL references trip ON DELETE CASCADE,
@@ -108,12 +108,12 @@ class DatabaseSetup:
             );
         """)
     
-    def drop_messages_table(self) -> None:
-        self.database.query("""
+    async def drop_messages_table(self) -> None:
+        await self.database.query("""
             DROP TABLE IF EXISTS message;
         """)
     
-    def initialize_poll_tables(self) -> None:
+    async def initialize_poll_tables(self) -> None:
         '''
         The relationship below is poll -> poll_option -> poll_vote
         Once a poll is created, its fields will be locked in. There
@@ -128,7 +128,7 @@ class DatabaseSetup:
         To add your votes, simply send over the option you want, 
         which is a reference to the poll_option(id) field
         '''
-        self.database.query("""
+        await self.database.query("""
             CREATE TABLE IF NOT EXISTS poll (
                 id BIGSERIAL PRIMARY KEY,
                 trip_id uuid NOT NULL references trip ON DELETE CASCADE,
@@ -154,8 +154,8 @@ class DatabaseSetup:
             );
         """)
 
-    def drop_poll_tables(self) -> None:
-        self.database.query("""
+    async def drop_poll_tables(self) -> None:
+        await self.database.query("""
             DROP TABLE IF EXISTS poll CASCADE;
                                 
             DROP TABLE IF EXISTS poll_option CASCADE;
@@ -163,8 +163,8 @@ class DatabaseSetup:
             DROP TABLE IF EXISTS poll_vote;
         """)
 
-    def initialize_packing_table(self) -> None:
-        self.database.query("""                            
+    async def initialize_packing_table(self) -> None:
+        await self.database.query("""                            
             CREATE TABLE IF NOT EXISTS packing (
                 id BIGSERIAL PRIMARY KEY,
                 trip_id UUID NOT NULL references trip ON DELETE CASCADE,
@@ -177,59 +177,59 @@ class DatabaseSetup:
             );
         """)
 
-    def drop_packing_table(self) -> None:
-        self.database.query("""
+    async def drop_packing_table(self) -> None:
+        await self.database.query("""
             DROP TABLE IF EXISTS packing;
         """)
 
-    def initialize_alpha_table(self) -> None:
-        self.database.query("""
+    async def initialize_alpha_table(self) -> None:
+        await self.database.query("""
             CREATE TABLE IF NOT EXISTS alpha (
                 email VARCHAR(255) PRIMARY KEY references traveller(email) ON DELETE CASCADE,
                 key CHAR(16) UNIQUE NOT NULL
             );
         """)
 
-    def drop_alpha_table(self) -> None:
-        self.database.query("""
+    async def drop_alpha_table(self) -> None:
+        await self.database.query("""
             DROP TABLE IF EXISTS alpha;
         """)
 
-    def setup_db(self) -> None:
-        self.initialize_extensions()
-        self.create_types()
-        self.intialize_traveller_table()
-        self.initialize_trip_table()
-        self.initialize_traveller_trip_table()
-        self.initialize_itinerary_table()
-        self.initialize_messages_table()
-        self.initialize_poll_tables()
-        self.initialize_packing_table()
-        self.initialize_alpha_table()
+    async def setup_db(self) -> None:
+        await self.initialize_extensions()
+        await self.create_types()
+        await self.intialize_traveller_table()
+        await self.initialize_trip_table()
+        await self.initialize_traveller_trip_table()
+        await self.initialize_itinerary_table()
+        await self.initialize_messages_table()
+        await self.initialize_poll_tables()
+        await self.initialize_packing_table()
+        await self.initialize_alpha_table()
     
-    def drop_tables(self) -> None:
-        self.drop_traveller_table()
-        self.drop_trip_table()
-        self.drop_traveller_trip_table()
-        self.drop_itinerary_table()
-        self.drop_messages_table()
-        self.drop_poll_tables()
-        self.drop_packing_table()
-        self.drop_alpha_table()
+    async def drop_tables(self) -> None:
+        await self.drop_traveller_table()
+        await self.drop_trip_table()
+        await self.drop_traveller_trip_table()
+        await self.drop_itinerary_table()
+        await self.drop_messages_table()
+        await self.drop_poll_tables()
+        await self.drop_packing_table()
+        await self.drop_alpha_table()
 
-    def insert_data(self):
-        self.insert_users()
-        self.insert_trips()
-        self.add_users_to_trips()
-        self.insert_itinerary()
-        self.insert_messages()
-        self.insert_polls()
-        self.insert_packing()
-        self.insert_alpha()
+    async def insert_data(self):
+        await self.insert_users()
+        await self.insert_trips()
+        await self.add_users_to_trips()
+        await self.insert_itinerary()
+        await self.insert_messages()
+        await self.insert_polls()
+        await self.insert_packing()
+        await self.insert_alpha()
 
-    def insert_users(self):
+    async def insert_users(self):
         # Insert a fake user troy
-        self.database.query("""
+        await self.database.query("""
             INSERT INTO traveller 
             VALUES (
                 'ce475240-1b9f-4c52-900b-a83af218896a',
@@ -241,7 +241,7 @@ class DatabaseSetup:
         """)
 
         # Insert a fake user "joe"
-        self.database.query("""
+        await self.database.query("""
             INSERT INTO traveller 
             VALUES (
                 '4d17d823-e31c-47c9-81ad-a53dff295e6b',
@@ -252,9 +252,9 @@ class DatabaseSetup:
             );
         """)
 
-    def insert_trips(self):
+    async def insert_trips(self):
          # Insert two trips
-        self.database.query("""
+        await self.database.query("""
             INSERT INTO trip 
             (
                 id,
@@ -317,12 +317,12 @@ class DatabaseSetup:
             
         """)
 
-    def add_users_to_trips(self):
+    async def add_users_to_trips(self):
         '''
         Add Troy to trip 1 (confirmed, admin), 2 (confirmed, admin), and 3 (need to request)
         Add Joe to trip 1 (confirmed), 2 (not confirmed), and 3 (confirmed, admin)
         '''
-        self.database.query("""
+        await self.database.query("""
             INSERT INTO traveller_trip 
             VALUES (
                 (SELECT id FROM traveller WHERE first_name='troy'),
@@ -365,8 +365,8 @@ class DatabaseSetup:
             );
         """)
 
-    def insert_itinerary(self):
-        self.database.query("""
+    async def insert_itinerary(self):
+        await self.database.query("""
             INSERT INTO itinerary (trip_id, title, description, start_time, end_time, created_by)
             VALUES (
                 'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
@@ -387,8 +387,8 @@ class DatabaseSetup:
             );
         """)
 
-    def insert_messages(self):
-        self.database.query("""
+    async def insert_messages(self):
+        await self.database.query("""
             INSERT INTO message (trip_id, content, created_by)
             VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'Hey its joe. Are you guys are stoked or what?', 'joe@test.com');
                             
@@ -396,9 +396,9 @@ class DatabaseSetup:
             VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'Cant wait for the trip! - troy', 'troy@test.com');
         """)
 
-    def insert_polls(self):
+    async def insert_polls(self):
         # Insert some fake polls
-        self.database.query("""
+        await self.database.query("""
             INSERT INTO poll (
                 id,
                 trip_id,
@@ -437,8 +437,8 @@ class DatabaseSetup:
             INSERT INTO poll_vote (id, poll_id, vote, voted_by) VALUES (301, 102, 204, 'joe@test.com');
         """)
 
-    def insert_packing(self):
-        self.database.query("""
+    async def insert_packing(self):
+        await self.database.query("""
             INSERT INTO packing (trip_id, item, quantity, description, created_by, packed_by)
             VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'sunscreen', 2, 'spray-on preferred', 'joe@test.com', 'troy@test.com');
                             
@@ -449,8 +449,8 @@ class DatabaseSetup:
             VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'underwater camera', 1, 'maybe a selfie-stick too?', 'troy@test.com', 'joe@test.com');
         """)
 
-    def insert_alpha(self):
-        self.database.query("""
+    async def insert_alpha(self):
+        await self.database.query("""
             INSERT INTO alpha VALUES ('troy@test.com', 'CvZ0hoNWz0CduAjv');
                             
             INSERT INTO alpha VALUES ('joe@test.com', 'QqrxmmLyNXdWB1JE');

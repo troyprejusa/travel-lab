@@ -32,7 +32,7 @@ together to plan a trip all in one place.
 
 - Python
 - FastAPI
-- PostgreSQL | Pyscopg2
+- PostgreSQL | Pyscopg
 - Python Socket.io Server
 - Auth0 Python SDK
 

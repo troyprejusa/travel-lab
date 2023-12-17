@@ -20,9 +20,9 @@ return whatever data is there for this user
 @user_router.post('/{email}')
 async def upsert_user(email: str) -> UserModel | str:
     try:
-        user = db_handler.get_user(email)
+        user = await db_handler.get_user(email)
         if not user:
-            if db_handler.count_users() >= Constants.LIMIT_TOTAL_USERS:
+            if await db_handler.count_users() >= Constants.LIMIT_TOTAL_USERS:
                 return JSONResponse(
                     status_code=422,
                     content={
@@ -31,7 +31,7 @@ async def upsert_user(email: str) -> UserModel | str:
                         }
                     }
                 )
-            user = db_handler.create_user(email)
+            user = await db_handler.create_user(email)
 
         return user
     
@@ -53,7 +53,7 @@ async def patch_user_info(
         phone: Annotated[str, Form()],
     ) -> UserModel | str:
     try:
-        updated_user = db_handler.patch_user_info(first_name, last_name, phone, email)
+        updated_user = await db_handler.patch_user_info(first_name, last_name, phone, email)
 
         return updated_user
       
@@ -72,7 +72,7 @@ async def delete_user(request: Request, email: str) -> str:
     try:
         auth0 = get_auth0_manager()
         auth0.users.delete(request.state.user['auth0_id'])
-        db_handler.delete_user(email)
+        await db_handler.delete_user(email)
 
         return JSONResponse(
             status_code=200,
@@ -93,8 +93,7 @@ async def delete_user(request: Request, email: str) -> str:
 @user_router.get('/{email}/alpha')
 async def get_alpha_key(email: str) -> str:
     try:
-        keyDict = db_handler.get_alpha_key(email)
-        return keyDict['key']
+        return await db_handler.get_alpha_key(email)
     
     except Exception as error:
         router_logger.error(error)
@@ -109,7 +108,7 @@ async def get_alpha_key(email: str) -> str:
 @user_router.get('/trips')
 async def get_trips(request: Request) -> list[TripModel] | str:
     try:
-        data = db_handler.get_trips(request.state.user['email'])
+        data = await db_handler.get_trips(request.state.user['email'])
         return data
     
     except Exception as error:
@@ -127,7 +126,7 @@ async def leave_trip(request: Request, trip_id: str) -> str:
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
-        db_handler.leave_trip(request.state.user['email'], trip_id)
+        await db_handler.leave_trip(request.state.user['email'], trip_id)
         
         return JSONResponse(
             status_code=200,
@@ -150,7 +149,7 @@ async def leave_trip(request: Request, trip_id: str) -> str:
 @user_router.post('/trips/{trip_id}')
 async def request_join_trip(request: Request, trip_id: str) -> str:
     try:
-        if db_handler.count_user_trips_attended(request.state.user['email']) >= Constants.LIMIT_TRIPS_ATTENDED_PER_USER:
+        if await db_handler.count_user_trips_attended(request.state.user['email']) >= Constants.LIMIT_TRIPS_ATTENDED_PER_USER:
             return JSONResponse(
                 status_code=422,
                 content={
@@ -160,7 +159,7 @@ async def request_join_trip(request: Request, trip_id: str) -> str:
                 }
             )
         
-        if db_handler.count_travellers_on_trip(trip_id) >= Constants.LIMIT_TRAVELLERS_PER_TRIP:
+        if await db_handler.count_travellers_on_trip(trip_id) >= Constants.LIMIT_TRAVELLERS_PER_TRIP:
             return JSONResponse(
                 status_code=422,
                 content={
@@ -170,7 +169,7 @@ async def request_join_trip(request: Request, trip_id: str) -> str:
                 }
             )
         
-        db_handler.request_trip(request.state.user['email'], trip_id)
+        await db_handler.request_trip(request.state.user['email'], trip_id)
         
         return JSONResponse(
             status_code=200,
@@ -194,7 +193,7 @@ async def accept_join_trip(request: Request, trip_id: str, traveller_id: str) ->
     try:
         verify_admin(trip_id, request.state.user['trips'])
 
-        db_handler.accept_request(traveller_id, trip_id)
+        await db_handler.accept_request(traveller_id, trip_id)
         
         return JSONResponse(
             status_code=200,
@@ -218,7 +217,7 @@ async def remove_from_trip(request: Request, trip_id: str, traveller_id: str) ->
     try:
         verify_admin(trip_id, request.state.user['trips'])
 
-        db_handler.remove_traveller(traveller_id, trip_id)
+        await db_handler.remove_traveller(traveller_id, trip_id)
         
         return JSONResponse(
             status_code=200,
