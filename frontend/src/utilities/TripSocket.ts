@@ -65,7 +65,6 @@ class TripSocket {
       path: this.apiPath,
       transports: ['websocket'], // "sticky-sessions" required for long-polling, which causes issues with Heroku default configuration
       reconnectionDelay: 500,
-      reconnectionAttempts: 1,
       auth: {
         token: token,
       },
@@ -141,22 +140,6 @@ class TripSocket {
           connected: false,
         })
       );
-
-      if (
-        reason === 'io client disconnect' ||
-        reason === 'io server disconnect'
-      )
-        return;
-
-      toast({
-        position: 'top',
-        title: `${this.namespace.slice(1)} server connection lost :(`,
-        description:
-          "Something went wrong, we'll try to reconnect you. If the issue persists, refresh the page",
-        status: 'error',
-        duration: 4000,
-        isClosable: true,
-      });
     });
 
     this.socket!.on('rate_limit_exceeded', (_data) => {
