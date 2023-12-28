@@ -1523,7 +1523,7 @@
     "licenseText": "# Toggle Selection\n\nSimple module exposing function that deselects current browser selection and returns function that restores selection.\n\n```\nvar deselect = require('toggle-selection');\nvar reselect = deselect(); // remove all selection\n// … \n// do something with current selection, text, etc;\n// …\nreselect(); // restore selection\n```\n\nAll credits go to [@shvaikalesh](https://github.com/shvaikalesh).\n\n# [Example](https://github.com/sudodoki/toggle-selection/blob/master/example)\n\n![example recording](http://g.recordit.co/YPu6mHvcKe.gif)",
     "copyright": ""
   },
-  "troys-travel-lab-frontend@1.1.0": {
+  "troys-travel-lab-frontend@1.2.0": {
     "licenses": "UNLICENSED",
     "private": true,
     "licenseText": "{\n    \"licenses\": \"\",\n    \"licenseText\": \"\",\n    \"copyright\": \"\",\n    \"repository\": \"\",\n    \"name\": false,\n    \"version\": false,\n    \"licenseFile\": false,\n    \"publisher\": false,\n    \"url\": false,\n    \"path\": false,\n    \"email\": false\n}",
