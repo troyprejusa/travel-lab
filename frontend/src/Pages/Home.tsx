@@ -61,13 +61,13 @@ function Home(): JSX.Element {
         <Grid
           w="120vh"
           h={'80vh'}
-          templateRows="repeat(6, 1fr)"
-          templateColumns="repeat(9, 1fr)"
+          templateRows={{ base: "repeat(6, 1fr)", md: "repeat(6, 1fr)" }}
+          templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(9, 1fr)" }}
           gap={4}
         >
           <GridItem
-            rowSpan={4}
-            colSpan={3}
+            rowSpan={{ base: 1, md: 4 }}
+            colSpan={{ base: 1, md: 3 }}
             padding={4}
             borderRadius="md"
             boxShadow="sm"
@@ -101,8 +101,8 @@ function Home(): JSX.Element {
             </Flex>
           </GridItem>
           <GridItem
-            rowSpan={4}
-            colSpan={6}
+            rowSpan={{ base: 1, md: 4 }}
+            colSpan={{ base: 1, md: 6 }}
             borderRadius="md"
             boxShadow="sm"
             background={Constants.BACKGROUND_TRANSPARENCY}
@@ -119,8 +119,8 @@ function Home(): JSX.Element {
             />
           </GridItem>
           <GridItem
-            rowSpan={2}
-            colSpan={3}
+            rowSpan={{ base: 1, md: 2 }}
+            colSpan={{ base: 1, md: 3 }}
             padding={4}
             borderRadius="md"
             boxShadow="sm"
@@ -147,8 +147,8 @@ function Home(): JSX.Element {
             </Flex>
           </GridItem>
           <GridItem
-            rowSpan={2}
-            colSpan={3}
+            rowSpan={{ base: 1, md: 2 }}
+            colSpan={{ base: 1, md: 3 }}
             padding={4}
             borderRadius="md"
             boxShadow="sm"
@@ -176,8 +176,8 @@ function Home(): JSX.Element {
             </Flex>
           </GridItem>
           <GridItem
-            rowSpan={1}
-            colSpan={3}
+            rowSpan={{ base: 1, md: 1 }}
+            colSpan={{ base: 1, md: 3 }}
             padding={4}
             borderRadius="md"
             boxShadow="sm"
@@ -196,8 +196,8 @@ function Home(): JSX.Element {
             />
           </GridItem>
           <GridItem
-            rowSpan={1}
-            colSpan={3}
+            rowSpan={{ base: 1, md: 1 }}
+            colSpan={{ base: 1, md: 3 }}
             padding={4}
             borderRadius="md"
             boxShadow="sm"
