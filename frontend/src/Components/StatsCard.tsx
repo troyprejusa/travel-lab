@@ -17,7 +17,7 @@ interface StatsCardProps {
 function StatsCard(props: StatsCardProps) {
   const { title, stat, icon } = props;
   return (
-    <Stat>
+    <Stat overflowX={'clip'}>
       <Flex>
         <Box
           my={'auto'}
