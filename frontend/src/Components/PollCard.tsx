@@ -29,6 +29,9 @@ import {
   Heading,
   ButtonGroup,
   Text,
+  Alert,
+  AlertIcon,
+  AlertDescription,
 } from '@chakra-ui/react';
 import Constants from '../utilities/Constants';
 import { pollSocket } from '../utilities/TripSocket';
@@ -151,6 +154,14 @@ function PollCard(props: PollCardProps) {
               </Box>
             </VStack>
             <Box padding={'1rem'}>
+              {!userVoted && (
+                <Alert status="info" marginBottom={'1rem'} borderRadius={'6px'}>
+                  <AlertIcon />
+                  <AlertDescription>
+                    Click in the bar chart to vote
+                  </AlertDescription>
+                </Alert>
+              )}
               <Box textAlign={'center'}>
                 {remainingVotes === 0 ? (
                   <Text
@@ -182,7 +193,11 @@ function PollCard(props: PollCardProps) {
                   </Text>
                 )}
               </Box>
-              <Flex justifyContent={'space-between'} marginTop='1rem' marginBottom={'1rem'}>
+              <Flex
+                justifyContent={'space-between'}
+                marginTop="1rem"
+                marginBottom={'1rem'}
+              >
                 <Box>
                   <Heading size={'lg'}>{props.data.title}</Heading>
                   <Text size={'sm'} color={'gray.500'}>
@@ -199,6 +214,7 @@ function PollCard(props: PollCardProps) {
                         : 'Only trip admins can delete polls'
                     }
                     disabled={!user.admin}
+                    tabIndex={-1}
                   />
                 </ButtonGroup>
               </Flex>
