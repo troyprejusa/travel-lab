@@ -108,6 +108,7 @@ function MessageBoard(): JSX.Element {
             bg={'white'}
             borderRadius={'8px'}
             ref={msgRef}
+            onKeyDown={handleKeyDown}
           />
           <Button size="md" colorScheme="blue" onClick={() => sendMessage()}>
             Send
@@ -116,6 +117,13 @@ function MessageBoard(): JSX.Element {
       </Flex>
     </>
   );
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      sendMessage();
+    }
+  }
 
   function sendMessage() {
     if (!msgRef.current) return;
