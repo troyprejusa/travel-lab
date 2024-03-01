@@ -428,23 +428,6 @@ class PsycopgDatabaseHandler:
         """, (trip_id,))
 
         return result[0]['count']
-    
-    # --------------- ALPHA OPERATIONS --------------- #
-    async def check_alpha_key(self, email: str, key: str) -> bool:
-        result = await self.query("""
-            SELECT COUNT(*) FROM alpha WHERE email=%s AND key=%s;
-        """, (email, key))
-
-        count = result[0]['count']
-
-        return count == 1
-    
-    async def get_alpha_key(self, email: str) -> str:
-        result = await self.query('''
-            SELECT KEY FROM alpha WHERE email=%s;
-        ''', (email,))
-
-        return result[0]['key']
 
     
 # CREATE DATABASE HANDLER

@@ -89,20 +89,6 @@ async def delete_user(request: Request, email: str) -> str:
                 "message": f"Unable to delete user {email}"
             }
         )
-    
-@user_router.get('/{email}/alpha')
-async def get_alpha_key(email: str) -> str:
-    try:
-        return await db_handler.get_alpha_key(email)
-    
-    except Exception as error:
-        router_logger.error(error)
-        raise HTTPException(
-            status_code=500,
-            detail={
-                "message": f"Unable to get alpha key"
-            }
-        )
 
 # Get current user's trips
 @user_router.get('/trips')

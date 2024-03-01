@@ -44,8 +44,8 @@ app.middleware('http')(middleware.authenticate_user)    # (3) Authenticate user
 app.middleware('http')(middleware.serve_static_files)   # (2) Serve public content
 app.middleware('http')(middleware.rate_limiter)         # (1) Rate limit
 
-# Unauthenticated endpoints for dev/alpha
-app.include_router(dev_router, prefix='/dev')
+if Constants.MODE == 'development':
+    app.include_router(dev_router, prefix='/dev')
 
 # REST API endpoints
 app.include_router(api_router, prefix='/api/v1')
