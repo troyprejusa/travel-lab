@@ -45,7 +45,7 @@ function UserSettings(): JSX.Element {
 
         <Box>
           <Heading size={'md'}>User Photo</Heading>
-          <Alert status="info">
+          <Alert status="info" margin={'1rem'}>
             <AlertIcon />
             <AlertTitle>Photo upload feature in work</AlertTitle>
           </Alert>
@@ -75,6 +75,7 @@ function UserSettings(): JSX.Element {
             modalHeader="Delete account"
             modalBody="Are you sure you want to delete your account? This action cannot be undone"
             onClick={() => handleDeleteAccount()}
+            margin='1rem'
           >
             Delete Account
           </ConfigurableButtonAndModal>
