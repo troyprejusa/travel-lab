@@ -10,7 +10,6 @@ import Constants from '../utilities/Constants';
 import { RootState } from '../redux/Store';
 import { useNavigate } from 'react-router-dom';
 import { HomeButton, UserButton } from '../Components/Buttons';
-import { reduxSetAlphaKey } from '../redux/AlphaSlice';
 import {
   Wrap,
   Flex,
@@ -32,12 +31,8 @@ function Trips(): JSX.Element {
 
   const dispatch = useDispatch();
   const { getAccessTokenSilently, logout } = useAuth0();
-  const alphaKey = useSelector((state: RootState) => state.alpha);
 
   useEffect(getTrips, [getAccessTokenSilently]);
-  useEffect(() => {
-    setAlphaKey();
-  }, []);
 
   const toast = useToast();
 
@@ -49,7 +44,7 @@ function Trips(): JSX.Element {
     >
       <Flex justifyContent={'space-between'}>
         <HomeButton
-          onClick={returnToHome}
+          onClick={() => navigate('/home')}
           aria-label="return to landing page"
           tooltipMsg={'return to landing page'}
           margin={'1rem'}
@@ -110,34 +105,6 @@ function Trips(): JSX.Element {
         });
       }
     })();
-  }
-
-  async function setAlphaKey() {
-    const token: string = await fetchHelpers.getAuth0Token(
-      getAccessTokenSilently
-    );
-    const res: Response = await fetch(
-      `${Constants.API_PREFIX}/user/${user.email}/alpha`,
-      {
-        method: 'GET',
-        headers: fetchHelpers.getTokenHeader(token),
-      }
-    );
-
-    if (res.ok) {
-      let keyValue: string = await res.text();
-      keyValue = keyValue.slice(1, keyValue.length - 1); // Strip the quotes
-      dispatch(
-        reduxSetAlphaKey({
-          email: user.email,
-          key: keyValue,
-        })
-      );
-    }
-  }
-
-  function returnToHome() {
-    navigate(`/home?email=${alphaKey.email}&key=${alphaKey.key}`);
   }
 
   function handleSignOut() {

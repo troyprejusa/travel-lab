@@ -16,8 +16,6 @@ import {
   useColorModeValue,
   useBreakpointValue,
   useDisclosure,
-  Alert,
-  AlertIcon,
 } from '@chakra-ui/react';
 import {
   HamburgerIcon,
@@ -25,20 +23,11 @@ import {
   // ChevronDownIcon,
   ChevronRightIcon,
 } from '@chakra-ui/icons';
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+
 
 export default function WithSubnavigation() {
   const { isOpen, onToggle } = useDisclosure();
   const navigate = useNavigate();
-
-  // NOTE: ALPHA LOGIC:
-  const [allowEntry, setAllowEntry] = useState<boolean>(false);
-  const [searchParams] = useSearchParams();
-
-  useEffect(() => {
-    checkQueryParam();
-  }, []);
 
   return (
     <Box>
@@ -95,18 +84,8 @@ export default function WithSubnavigation() {
           <Box marginY={'auto'}>
             <VersionLabel />
           </Box>
-          {!allowEntry && (
-            <Alert status="info" width={'max-content'}>
-              <AlertIcon />
-              Sign up is invite-only
-            </Alert>
-          )}
-          {allowEntry && (
-            <>
-              <SignUpButton />
-              <LoginButton />
-            </>
-          )}
+          <SignUpButton />
+          <LoginButton />
         </Stack>
       </Flex>
 
@@ -115,28 +94,6 @@ export default function WithSubnavigation() {
       </Collapse>
     </Box>
   );
-
-  async function checkQueryParam() {
-    const email: string | null = searchParams.get('email');
-    const key: string | null = searchParams.get('key');
-    if (!email || !key) return;
-
-    const formData = new FormData();
-    formData.set('email', email);
-    formData.set('key', key);
-    const res: Response = await fetch(`/dev/alpha`, {
-      method: 'POST',
-      body: formData,
-    });
-
-    if (res.ok) {
-      setAllowEntry(true);
-    } else {
-      console.error(
-        "This user is not invited to join Troy's Travel Lab during the alpha release"
-      );
-    }
-  }
 }
 
 const DesktopNav = () => {

@@ -182,19 +182,6 @@ class DatabaseSetup:
             DROP TABLE IF EXISTS packing;
         """)
 
-    async def initialize_alpha_table(self) -> None:
-        await self.database.query("""
-            CREATE TABLE IF NOT EXISTS alpha (
-                email VARCHAR(255) PRIMARY KEY references traveller(email) ON DELETE CASCADE,
-                key CHAR(16) UNIQUE NOT NULL
-            );
-        """)
-
-    async def drop_alpha_table(self) -> None:
-        await self.database.query("""
-            DROP TABLE IF EXISTS alpha;
-        """)
-
     async def setup_db(self) -> None:
         await self.initialize_extensions()
         await self.create_types()
@@ -205,7 +192,6 @@ class DatabaseSetup:
         await self.initialize_messages_table()
         await self.initialize_poll_tables()
         await self.initialize_packing_table()
-        await self.initialize_alpha_table()
     
     async def drop_tables(self) -> None:
         await self.drop_traveller_table()
@@ -215,7 +201,6 @@ class DatabaseSetup:
         await self.drop_messages_table()
         await self.drop_poll_tables()
         await self.drop_packing_table()
-        await self.drop_alpha_table()
 
     async def insert_data(self):
         await self.insert_users()
@@ -225,7 +210,6 @@ class DatabaseSetup:
         await self.insert_messages()
         await self.insert_polls()
         await self.insert_packing()
-        await self.insert_alpha()
 
     async def insert_users(self):
         # Insert a fake user troy
@@ -449,10 +433,4 @@ class DatabaseSetup:
             VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'underwater camera', 1, 'maybe a selfie-stick too?', 'troy@test.com', 'joe@test.com');
         """)
 
-    async def insert_alpha(self):
-        await self.database.query("""
-            INSERT INTO alpha VALUES ('troy@test.com', 'CvZ0hoNWz0CduAjv');
-                            
-            INSERT INTO alpha VALUES ('joe@test.com', 'QqrxmmLyNXdWB1JE');
-        """)
         
