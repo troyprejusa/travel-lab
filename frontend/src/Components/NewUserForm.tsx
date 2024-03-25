@@ -277,7 +277,8 @@ const Form2 = (props: UserFormProps) => {
         <Box>
           By continuing, you are consenting to use this application
           understanding the Privacy Policy, Terms and Conditions, and cookies
-          described on the homepage. If you do not consent, delete your account{' '}
+          described on the homepage. If you do not consent, or you are not a part 
+          of the invited community of alpha users, please delete your account{' '}
           <Link to={`/user/${user.email}/settings`} style={{ color: 'blue' }}>
             here
           </Link>
