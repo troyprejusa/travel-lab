@@ -7,7 +7,6 @@ import messageReducer from './MessageSlice';
 import pollReducer from './PollSlice';
 import packingReducer from './PackingSlice';
 import websocketReducer from './WebSocketSlice';
-import alphaReducer from './AlphaSlice';
 
 const store = configureStore({
   reducer: {
@@ -19,7 +18,6 @@ const store = configureStore({
     polls: pollReducer,
     packing: packingReducer,
     websocket: websocketReducer,
-    alpha: alphaReducer,
   },
 });
 
