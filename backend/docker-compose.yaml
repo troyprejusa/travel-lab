@@ -25,18 +25,6 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql
 
-  webserver_dev:
-    image: nginx
-    container_name: nginx_server
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - /Users/troyprejusa/Dev/dev-certs/travel-lab-certs:/etc/nginx/certs:ro
-      - ../frontend/dist:/usr/share/nginx/html:ro
-    ports:
-      - "443:443"
-    depends_on:
-      - api_dev
-
   # s3mock:
   #   image: minio/minio
   #   container_name: minio_storage

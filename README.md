@@ -38,7 +38,6 @@ together to plan a trip all in one place.
 
 - Vite
 - Docker Compose
-- Nginx
 
 ## Running Development Mode
 
@@ -64,22 +63,15 @@ In the code you will notice some references to travel-lab.dev. This was a develo
 
 ### Containers and Services
 
-The Docker compose file will start 3 containers, at least of 2 of which are required:
+The Docker compose file starts the FastAPI development server and Postgres:
 
 1. Python - FastAPI app with code mounted in via volume and reload on save enabled
 2. Postgres - Development SQL database
-3. Nginx - Required for SSL termination if the FastAPI application is serving the webpage.
 
-Development mode can take either of 2 forms:
-
-1. Use Vite dev server to serve the application and terminate SSL. This, of course, comes with the extra feature of hot module reloading. Nginx is not used in this mode, but the ports have been deconflicted so there is no harm in having the Nginx container running.
-2. Let the FastAPI application serve the page. This will require the Nginx container.
-
-   Important!
-   Be sure to modify the `vite.config.ts`, `nginx.conf`, and `docker-compose.yaml` file as needed to use the right paths for volume mounts, certificates, etc. for your machine.
+Run Vite locally outside Docker to serve the frontend over HTTP with hot module reloading. FastAPI serves API requests and can also serve the built frontend when needed.
 
 ### Starting Development Mode
-From the repository root, run `docker compose -f backend/docker-compose.yaml up` to start the API, dev database, and Nginx.
+From the repository root, run `docker compose -f backend/docker-compose.yaml up` to start the API and dev database.
 
 - If you are going to use the Vite dev server to serve the application, open another terminal and enter command `npm run dev`
-- If you are going to use the FastAPI app to serve the application, from the /frontend folder do an `npm build` with the **deployment** environment variable set to **"local"**. The built bundle is volume-mounted into the container so it will be available to be served immediately. 
+- If you are going to use the FastAPI app to serve the application, from the `/frontend` folder run `npm run build` with the **deployment** environment variable set to **"local"**. The built bundle is volume-mounted into the container so it will be available to be served immediately.
