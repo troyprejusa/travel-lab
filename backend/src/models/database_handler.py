@@ -56,9 +56,9 @@ class PsycopgDatabaseHandler(DatabaseHandler):
                     '''
                     return None
 
-                except psycopg.Error as pg_error:
-                    models_logger.debug(f'Query failure:\n{cursor.query}')
-                    raise pg_error
+                except psycopg.Error:
+                    models_logger.debug(f'Query failure:\n{query}')
+                    raise
                 
     @staticmethod
     def convert_uuid_to_string(list_of_dicts: list[dict]):
