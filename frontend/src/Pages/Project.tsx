@@ -4,18 +4,18 @@ import Navbar from '../Components/Navbar';
 import { useDispatch, useSelector } from 'react-redux';
 import { TripModel } from '../utilities/Interfaces';
 import { AppDispatch, RootState } from '../redux/Store';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAppAuth } from '../auth/AppAuth';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { fetchAllTripData } from '../utilities/stateHandlers';
 import Constants from '../utilities/Constants';
-import { withAuthenticationRequired } from '@auth0/auth0-react';
+import { withAuthenticationRequired } from '../auth/AppAuth';
 import LoadingPage from '../Components/LoadingPage';
 import { Box, Heading, Flex } from '@chakra-ui/react';
 
 function Project(): JSX.Element {
   const dispatch = useDispatch<AppDispatch>();
   const trip: TripModel = useSelector((state: RootState) => state.trip);
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAppAuth();
 
   // Fetch all data for this project only on page load
   useEffect(() => {

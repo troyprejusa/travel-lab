@@ -5,10 +5,10 @@ import Constants from '../utilities/Constants';
 import NewUserForm from '../Components/NewUserForm';
 import { Box, Flex, Button } from '@chakra-ui/react';
 import { signOutBeforeTripSelect } from '../utilities/stateHandlers';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAppAuth } from '../auth/AppAuth';
 
 function AccountSetup() {
-  const { logout } = useAuth0();
+  const { logout } = useAppAuth();
   const dispatch = useDispatch<AppDispatch>();
 
 

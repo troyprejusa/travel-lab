@@ -1,7 +1,7 @@
 import TitleBar from '../Components/TitleBar';
 import { Link } from 'react-router-dom';
 import { ConfigurableButtonAndModal } from '../Components/Buttons';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAppAuth } from '../auth/AppAuth';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { UserModel } from '../utilities/Interfaces';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,7 +25,7 @@ import Constants from '../utilities/Constants';
 function UserSettings(): JSX.Element {
   const user: UserModel = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
-  const { getAccessTokenSilently, logout } = useAuth0();
+  const { getAccessTokenSilently, logout } = useAppAuth();
   const toast = useToast();
 
   return (

@@ -31,7 +31,7 @@ import {
   resetAfterTripDelete,
 } from '../utilities/stateHandlers';
 import fetchHelpers from '../utilities/fetchHelpers';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAppAuth } from '../auth/AppAuth';
 import {
   AcceptUserButton,
   RejectUserButton,
@@ -53,7 +53,7 @@ function TripSettings(): JSX.Element {
   const travellers: Array<UserModel> = useSelector(
     (state: RootState) => state.travellers
   );
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAppAuth();
   const toast = useToast();
 
   return (

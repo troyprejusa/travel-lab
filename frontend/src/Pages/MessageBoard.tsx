@@ -20,7 +20,7 @@ import {
 import TitleBar from '../Components/TitleBar';
 import PulseDot from '../Components/PulseDot';
 import { ConfigurableButtonAndModal } from '../Components/Buttons';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAppAuth } from '../auth/AppAuth';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { reduxResetMessages } from '../redux/MessageSlice';
 import Constants from '../utilities/Constants';
@@ -35,7 +35,7 @@ function MessageBoard(): JSX.Element {
   );
   const messageSocketStatus = useSelector((state: RootState) => state.websocket.message);
 
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAppAuth();
   const dispatch = useDispatch();
   const toast = useToast();
 

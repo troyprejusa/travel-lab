@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { reduxSetTrip } from '../redux/TripSlice';
 import { useNavigate } from 'react-router-dom';
 import { TripModel } from '../utilities/Interfaces';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAppAuth } from '../auth/AppAuth';
 import {
   itinerarySocket,
   msgSocket,
@@ -37,7 +37,7 @@ function NewTripModal() {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const tripForm = useRef<HTMLFormElement>(null);
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAppAuth();
   const toast = useToast();
 
   return (

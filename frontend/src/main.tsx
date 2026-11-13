@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { ChakraProvider } from '@chakra-ui/react';
 import { Provider as ReduxProvider } from 'react-redux';
 import reduxStore from './redux/Store';
-import { Auth0Provider } from '@auth0/auth0-react';
-import Constants from './utilities/Constants';
+import { AppAuthProvider } from './auth/AppAuth';
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -76,17 +75,9 @@ root.render(
   <StrictMode>
     <ChakraProvider>
       <ReduxProvider store={reduxStore}>
-        <Auth0Provider
-          domain={Constants.AUTH0_DOMAIN}
-          clientId={Constants.AUTH0_CLIENT}
-          useRefreshTokens={true}
-          authorizationParams={{
-            redirect_uri: window.location.origin,
-            audience: Constants.AUTH0_AUDIENCE,
-          }}
-        >
+        <AppAuthProvider>
           <RouterProvider router={router} />
-        </Auth0Provider>
+        </AppAuthProvider>
       </ReduxProvider>
     </ChakraProvider>
   </StrictMode>

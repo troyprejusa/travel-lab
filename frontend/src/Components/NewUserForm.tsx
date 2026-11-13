@@ -35,7 +35,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import fetchHelpers from '../utilities/fetchHelpers';
 import { UserModel } from '../utilities/Interfaces';
 import { AppDispatch, RootState } from '../redux/Store';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAppAuth } from '../auth/AppAuth';
 import { useNavigate } from 'react-router-dom';
 
 interface UserFormData {
@@ -237,7 +237,7 @@ const Form2 = (props: UserFormProps) => {
   const navigate = useNavigate();
   const user: UserModel = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAppAuth();
   const toast = useToast();
 
   const listItems: Array<ReactNode> = [] as Array<ReactNode>;

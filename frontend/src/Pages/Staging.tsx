@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { User, useAuth0 } from '@auth0/auth0-react';
+import { AppUser, useAppAuth } from '../auth/AppAuth';
 import { useDispatch, useSelector } from 'react-redux';
 import { reduxFetchUser } from '../redux/UserSlice';
 import { useNavigate } from 'react-router-dom';
@@ -16,7 +16,7 @@ function Staging(): JSX.Element {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const userRedux: UserModel = useSelector((state: RootState) => state.user);
-  const { user, getAccessTokenSilently } = useAuth0();
+  const { user, getAccessTokenSilently } = useAppAuth();
   const toast = useToast();
 
   // NOTE: Remember that useEffect is always run once on first render,
@@ -44,7 +44,7 @@ function Staging(): JSX.Element {
     <LoadingPage />
   );
 
-  async function setUser(user: User | undefined) {
+  async function setUser(user: AppUser | undefined) {
     if (user && user.email) {
       try {
         const token: string = await fetchHelpers.getAuth0Token(

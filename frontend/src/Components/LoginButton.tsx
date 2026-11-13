@@ -1,4 +1,5 @@
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAppAuth } from '../auth/AppAuth';
+import DevAuthChoices from './DevAuthChoices';
 import {
   Button,
   Spinner,
@@ -9,7 +10,9 @@ import {
 } from '@chakra-ui/react';
 
 function LoginButton() {
-  const { isLoading, error, loginWithRedirect } = useAuth0();
+  const { isLoading, error, loginWithRedirect, isDevAuth } = useAppAuth();
+
+  if (isDevAuth) return <DevAuthChoices />;
 
   if (isLoading) {
     return (

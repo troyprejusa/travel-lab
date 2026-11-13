@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux';
 import { RootState } from '../redux/Store';
 import { TripModel, UserModel } from '../utilities/Interfaces';
 import { AvatarWrapper } from './AvatarWrapper';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAppAuth } from '../auth/AppAuth';
 import { RefreshButton } from './Buttons';
 import Constants from '../utilities/Constants';
 import {
@@ -201,7 +201,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   const user: UserModel = useSelector((state: RootState) => state.user);
   const trip: TripModel = useSelector((state: RootState) => state.trip);
   const dispatch = useDispatch();
-  const { logout } = useAuth0();
+  const { logout } = useAppAuth();
 
   return (
     <Flex

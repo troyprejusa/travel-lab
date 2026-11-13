@@ -5,7 +5,7 @@ import TripCard from '../Components/TripCard';
 import fetchHelpers from '../utilities/fetchHelpers';
 import TripActionCard from '../Components/TripActionCard';
 import { signOutBeforeTripSelect } from '../utilities/stateHandlers';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAppAuth } from '../auth/AppAuth';
 import Constants from '../utilities/Constants';
 import { RootState } from '../redux/Store';
 import { useNavigate } from 'react-router-dom';
@@ -30,7 +30,7 @@ function Trips(): JSX.Element {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const { getAccessTokenSilently, logout } = useAuth0();
+  const { getAccessTokenSilently, logout } = useAppAuth();
 
   useEffect(getTrips, [getAccessTokenSilently]);
 

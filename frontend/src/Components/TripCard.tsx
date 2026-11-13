@@ -4,7 +4,7 @@ import { reduxSetTrip } from '../redux/TripSlice';
 import { TripModel } from '../utilities/Interfaces';
 import Constants from '../utilities/Constants';
 import fetchHelpers from '../utilities/fetchHelpers';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAppAuth } from '../auth/AppAuth';
 // import { AvatarWrapper } from './AvatarWrapper';
 import {
   itinerarySocket,
@@ -29,7 +29,7 @@ interface TripCardProps {
 function TripCard(props: TripCardProps) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAppAuth();
   const toast = useToast();
 
   return (

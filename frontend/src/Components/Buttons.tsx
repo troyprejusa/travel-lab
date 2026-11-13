@@ -1,6 +1,6 @@
 import fetchHelpers from '../utilities/fetchHelpers';
 import { fetchAllTripData } from '../utilities/stateHandlers';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAppAuth } from '../auth/AppAuth';
 import ConfirmModal from './ConfirmModal';
 import { AppDispatch } from '../redux/Store';
 import {
@@ -202,7 +202,7 @@ interface RefreshButtonProps extends IconButtonProps {
 
 export const RefreshButton = (props: RefreshButtonProps) => {
   const { trip_id, dispatch, ...rest } = props;
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAppAuth();
   return (
     <Tooltip label="Refresh trip data">
       <IconButton

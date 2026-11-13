@@ -1,6 +1,6 @@
 import { useRef, SyntheticEvent } from 'react';
 import fetchHelpers from '../utilities/fetchHelpers';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAppAuth } from '../auth/AppAuth';
 import {
   Button,
   Modal,
@@ -23,7 +23,7 @@ import Constants from '../utilities/Constants';
 function JoinTripModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const joinForm = useRef<HTMLFormElement>(null);
-  const { getAccessTokenSilently } = useAuth0();
+  const { getAccessTokenSilently } = useAppAuth();
   const toast = useToast();
 
   return (

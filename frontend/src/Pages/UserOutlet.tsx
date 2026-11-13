@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import { withAuthenticationRequired } from '@auth0/auth0-react';
+import { withAuthenticationRequired } from '../auth/AppAuth';
 import LoadingPage from '../Components/LoadingPage';
 import { Box, Heading, Flex } from '@chakra-ui/react';
 

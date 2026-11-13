@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Box } from '@chakra-ui/react';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAppAuth } from '../auth/AppAuth';
 import { useLocation, useNavigate } from 'react-router-dom';
 import LandingHero from '../Components/LandingHero';
 import FeaturesSection from '../Components/FeaturesSection';
@@ -10,7 +10,7 @@ import FeatureGallery from '../Components/FeatureGallery';
 function Landing(): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, isAuthenticated } = useAuth0();
+  const { user, isAuthenticated } = useAppAuth();
 
   // If authentication status changes, check if
   // we are logged in an navigate pages if so
