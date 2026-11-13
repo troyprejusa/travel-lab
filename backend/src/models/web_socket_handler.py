@@ -1,7 +1,8 @@
 from defaults import auth_service
 import socketio
 import jwt
-from utilities import constants, middleware
+from utilities import constants
+from utilities.rate_tracker import RateTracker
 from defaults import db_handler
 from .schemas import \
     NewItineraryWS, ItineraryDeleteWS, \
@@ -12,7 +13,7 @@ import datetime
 from .models_logger import models_logger
 
 
-ws_rate_tracker = middleware.rate_tracker(constants.WS_REQUEST_COUNT, constants.WS_REQUEST_WINDOW)
+ws_rate_tracker = RateTracker(constants.WS_REQUEST_COUNT, constants.WS_REQUEST_WINDOW)
 
 class WebSocketHandler(socketio.AsyncNamespace):
 
