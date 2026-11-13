@@ -1,4 +1,5 @@
-import { Avatar, AvatarProps, Box, Flex, keyframes } from '@chakra-ui/react';
+import { keyframes } from '@emotion/react';
+import { Avatar, AvatarProps, Box, Flex } from '@chakra-ui/react';
 import { UserModel } from '../utilities/Interfaces';
 
 interface AvatarWrapperProps extends AvatarProps {

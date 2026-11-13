@@ -1,4 +1,5 @@
-import { Box, keyframes, Tooltip } from '@chakra-ui/react';
+import { keyframes } from '@emotion/react';
+import { Box, Tooltip } from '@chakra-ui/react';
 
 export default function PulseDot() {
   const activeColor = 'green.500';
