@@ -1,13 +1,13 @@
 from fastapi import Request, HTTPException
 from fastapi.responses import FileResponse
-from . import Constants, auth_helpers
-from .RateTracker import RateTracker
-from .UtilitiesLogger import utilities_logger
+from . import constants, auth_helpers
+from .rate_tracker import RateTracker
+from .utilities_logger import utilities_logger
 import json
 import jwt
 
 # GLOBAL VARIABLES (BELOW)
-rest_rate_tracker = RateTracker(Constants.API_REQUEST_COUNT, Constants.API_REQUESTS_WINDOW)
+rest_rate_tracker = RateTracker(constants.API_REQUEST_COUNT, constants.API_REQUESTS_WINDOW)
 
 '''
  Require authentication for the following endpoint roots (/api, /test, etc.)
@@ -44,7 +44,7 @@ async def rate_limiter(request: Request, call_next):
     
     utilities_logger.debug(json.dumps({
         'client': user_ip, 
-        'usage_ratio': len(rest_rate_tracker.tracker[user_ip]) / Constants.API_REQUESTS_WINDOW
+        'usage_ratio': len(rest_rate_tracker.tracker[user_ip]) / constants.API_REQUESTS_WINDOW
     }))
     
     response = await call_next(request)
@@ -93,7 +93,7 @@ async def authenticate_user(request: Request, call_next):
             
             # Decode the JWT and add it to the request state - no exception on decode means we're good to proceed
             decoded_jwt = await auth_helpers.jwt_decode_w_retry(auth_header[1])
-            user_email = decoded_jwt[f'{Constants.AUTH0_CLAIM_NAMESPACE}/email']
+            user_email = decoded_jwt[f'{constants.AUTH0_CLAIM_NAMESPACE}/email']
             auth0_id = decoded_jwt['sub']
 
 

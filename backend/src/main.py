@@ -4,13 +4,13 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from routers.DevRouter import dev_router
-from routers.ApiRouterV1 import api_router
-from models.WebSocketHandler import socketio_ASGI
-from models.DatabaseHandler import db_handler
-from models.DatabaseSetup import DatabaseSetup
+from routers.dev_router import dev_router
+from routers.api_router_v1 import api_router
+from models.web_socket_handler import socketio_ASGI
+from models.database_handler import db_handler
+from models.database_setup import DatabaseSetup
 from utilities import middleware
-from utilities import Constants
+from utilities import constants
 
 
 # Setup Logger
@@ -28,7 +28,7 @@ app = FastAPI()
 async def startup():
     await db_handler.pool.open()
     
-    if Constants.MODE == 'development':
+    if constants.MODE == 'development':
         db_setup = DatabaseSetup(db_handler)
         await db_setup.drop_tables()
         await db_setup.setup_db()
@@ -44,7 +44,7 @@ app.middleware('http')(middleware.authenticate_user)    # (3) Authenticate user
 app.middleware('http')(middleware.serve_static_files)   # (2) Serve public content
 app.middleware('http')(middleware.rate_limiter)         # (1) Rate limit
 
-if Constants.MODE == 'development':
+if constants.MODE == 'development':
     app.include_router(dev_router, prefix='/dev')
 
 # REST API endpoints

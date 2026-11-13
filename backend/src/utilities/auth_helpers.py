@@ -1,11 +1,11 @@
 
-from . import Constants
-from models.DatabaseHandler import db_handler
+from . import constants
+from models.database_handler import db_handler
 import jwt
 from jwt import PyJWKClient
 from auth0.authentication import GetToken
 from auth0.management import Auth0
-from .UtilitiesLogger import utilities_logger
+from .utilities_logger import utilities_logger
 
 
 # Global variable
@@ -32,7 +32,7 @@ async def jwt_decode_w_retry(token: str) -> dict:
 
 
 async def get_rsa_keys(token: str) -> dict:
-    url = f"https://{Constants.AUTH0_DOMAIN}/.well-known/jwks.json"
+    url = f"https://{constants.AUTH0_DOMAIN}/.well-known/jwks.json"
     jwks_client = PyJWKClient(url)
     signing_key = jwks_client.get_signing_key_from_jwt(token)
     rsa_key = signing_key.key
@@ -49,9 +49,9 @@ def decode_jwt(token: str, rsa_key) -> dict:
     return jwt.decode(
     token,
     key=rsa_key,
-    algorithms=Constants.AUTH0_ALGORITHM,
-    audience=Constants.AUTH0_AUDIENCE,
-    issuer=f"https://{Constants.AUTH0_DOMAIN}/",
+    algorithms=constants.AUTH0_ALGORITHM,
+    audience=constants.AUTH0_AUDIENCE,
+    issuer=f"https://{constants.AUTH0_DOMAIN}/",
     )
    
 
@@ -91,9 +91,9 @@ def verify_admin(trip_id: str, trips: dict[str, dict[str, str]]) -> None:
 
 
 def get_auth0_manager():
-    get_token = GetToken(Constants.AUTH0_DOMAIN, Constants.AUTH0_CLIENT_ID, client_secret=Constants.AUTH0_CLIENT_SECRET)
-    token = get_token.client_credentials(f'https://{Constants.AUTH0_DOMAIN}/api/v2/')
+    get_token = GetToken(constants.AUTH0_DOMAIN, constants.AUTH0_CLIENT_ID, client_secret=constants.AUTH0_CLIENT_SECRET)
+    token = get_token.client_credentials(f'https://{constants.AUTH0_DOMAIN}/api/v2/')
     mgmt_api_token = token['access_token']
-    auth0 = Auth0(Constants.AUTH0_DOMAIN, mgmt_api_token)
+    auth0 = Auth0(constants.AUTH0_DOMAIN, mgmt_api_token)
 
     return auth0

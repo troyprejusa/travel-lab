@@ -1,4 +1,4 @@
-from models.Schemas import PollResponse, PollVoteResponse
+from models.schemas import PollResponse, PollVoteResponse
 
 
 def merge_polls(data: list[dict]) -> list[PollResponse]:

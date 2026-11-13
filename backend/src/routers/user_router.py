@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import JSONResponse
 from typing import Annotated
-from models.DatabaseHandler import db_handler
-from models.Schemas import UserModel, TripModel
+from models.database_handler import db_handler
+from models.schemas import UserModel, TripModel
 from utilities.auth_helpers import verify_attendance, verify_admin, get_auth0_manager
-from utilities import Constants
-from .RoutersLogger import router_logger
+from utilities import constants
+from .routers_logger import router_logger
 
 
 user_router = APIRouter()
@@ -22,7 +22,7 @@ async def upsert_user(email: str) -> UserModel | str:
     try:
         user = await db_handler.get_user(email)
         if not user:
-            if await db_handler.count_users() >= Constants.LIMIT_TOTAL_USERS:
+            if await db_handler.count_users() >= constants.LIMIT_TOTAL_USERS:
                 return JSONResponse(
                     status_code=422,
                     content={
@@ -135,7 +135,7 @@ async def leave_trip(request: Request, trip_id: str) -> str:
 @user_router.post('/trips/{trip_id}')
 async def request_join_trip(request: Request, trip_id: str) -> str:
     try:
-        if await db_handler.count_user_trips_attended(request.state.user['email']) >= Constants.LIMIT_TRIPS_ATTENDED_PER_USER:
+        if await db_handler.count_user_trips_attended(request.state.user['email']) >= constants.LIMIT_TRIPS_ATTENDED_PER_USER:
             return JSONResponse(
                 status_code=422,
                 content={
@@ -145,7 +145,7 @@ async def request_join_trip(request: Request, trip_id: str) -> str:
                 }
             )
         
-        if await db_handler.count_travellers_on_trip(trip_id) >= Constants.LIMIT_TRAVELLERS_PER_TRIP:
+        if await db_handler.count_travellers_on_trip(trip_id) >= constants.LIMIT_TRAVELLERS_PER_TRIP:
             return JSONResponse(
                 status_code=422,
                 content={

@@ -1,9 +1,9 @@
 import psycopg
 from psycopg_pool import AsyncConnectionPool
-from utilities import Constants
+from utilities import constants
 from utilities.merge_polls import merge_polls
 from datetime import date
-from .ModelsLogger import models_logger
+from .models_logger import models_logger
 from uuid import UUID
 
 
@@ -14,7 +14,7 @@ class PsycopgDatabaseHandler:
     """
     def __init__(self, host: str, port: str, user: str, password: str, database: str) -> None:
         connection_string = f"host={host} port={port} user={user} password={password} dbname={database}"
-        self.pool = AsyncConnectionPool(connection_string, max_size=Constants.DB_CONN_LIMIT)
+        self.pool = AsyncConnectionPool(connection_string, max_size=constants.DB_CONN_LIMIT)
 
 
     '''
@@ -432,11 +432,11 @@ class PsycopgDatabaseHandler:
     
 # CREATE DATABASE HANDLER
 settings = {
-    'host': Constants.DB_HOST,
-    'port': Constants.DB_PORT,
-    'user': Constants.DB_USER,
-    'password': Constants.DB_PWD,
-    'database': Constants.DB_DBNAME
+    'host': constants.DB_HOST,
+    'port': constants.DB_PORT,
+    'user': constants.DB_USER,
+    'password': constants.DB_PWD,
+    'database': constants.DB_DBNAME
 }
 
 db_handler = PsycopgDatabaseHandler(**settings)

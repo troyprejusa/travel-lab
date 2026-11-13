@@ -1,4 +1,4 @@
-from .DatabaseHandler import PsycopgDatabaseHandler
+from .database_handler import PsycopgDatabaseHandler
 
 
 class DatabaseSetup:
