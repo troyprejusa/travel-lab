@@ -1,11 +1,23 @@
- Count  License                                              
- 11     Apache Software License                              
- 1      Apache Software License; BSD License                 
- 3      Apache Software License; MIT License                 
- 13     BSD License                                          
- 1      CC0 1.0 Universal (CC0 1.0) Public Domain Dedication 
- 3      GNU Lesser General Public License v3 (LGPLv3)        
- 1      ISC                                                  
- 17     MIT License                                          
- 2      Mozilla Public License 2.0 (MPL 2.0)                 
- 1      Python Software Foundation License                   
+ License  Count                                
+ 1        Apache-2.0 AND MIT                   
+ 1        Apache-2.0 OR BSD-2-Clause           
+ 1        Apache-2.0 OR BSD-3-Clause           
+ 1        BSD-2-Clause                         
+ 1        BSD-2-Clause AND Unlicense AND MIT   
+ 1        BSD-3-Clause AND TCL                 
+ 1        ISC                                  
+ 1        MIT-0                                
+ 1        MPL-2.0                              
+ 1        MPL-2.0 AND (Apache-2.0 OR MIT)      
+ 1        Mozilla Public License 2.0 (MPL 2.0) 
+ 1        PSF-2.0                              
+ 1        Python Software Foundation License   
+ 1        The Unlicense (Unlicense)            
+ 2        Apache Software License; MIT License 
+ 3        BSD License                          
+ 3        LGPL-3.0-only                        
+ 6        Apache Software License              
+ 6        Apache-2.0                           
+ 8        MIT License                          
+ 9        BSD-3-Clause                         
+ 20       MIT                                  
