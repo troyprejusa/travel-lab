@@ -7,7 +7,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from routers.dev_router import dev_router
 from routers.api_router_v1 import api_router
 from models.web_socket_handler import socketio_ASGI
-from models.database_handler import db_handler
+from defaults import db_handler
 from models.database_setup import DatabaseSetup
 from utilities import middleware
 from utilities import constants

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import JSONResponse
-from models.database_handler import db_handler
+from defaults import db_handler
 from models.schemas import TripModel, TravellerResponse, ItineraryModel, MessageModel, NewPollWS, PollResponse, PackingModel
 from typing import Annotated
 from datetime import date, datetime

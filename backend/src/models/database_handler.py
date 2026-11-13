@@ -4,10 +4,11 @@ from utilities import constants
 from utilities.merge_polls import merge_polls
 from datetime import date
 from .models_logger import models_logger
+from .database_interface import DatabaseHandler
 from uuid import UUID
 
 
-class PsycopgDatabaseHandler:
+class PsycopgDatabaseHandler(DatabaseHandler):
     """
     Abstracting the database querying functionality into this class so that it
     can more easily be replaced with other means if desired
@@ -428,15 +429,3 @@ class PsycopgDatabaseHandler:
         """, (trip_id,))
 
         return result[0]['count']
-
-    
-# CREATE DATABASE HANDLER
-settings = {
-    'host': constants.DB_HOST,
-    'port': constants.DB_PORT,
-    'user': constants.DB_USER,
-    'password': constants.DB_PWD,
-    'database': constants.DB_DBNAME
-}
-
-db_handler = PsycopgDatabaseHandler(**settings)

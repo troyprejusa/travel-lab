@@ -1,8 +1,8 @@
-from .database_handler import PsycopgDatabaseHandler
+from .database_interface import DatabaseHandler
 
 
 class DatabaseSetup:
-    def __init__(self, database: PsycopgDatabaseHandler) -> None:
+    def __init__(self, database: DatabaseHandler) -> None:
         self.database = database
     
     # UUID Extension

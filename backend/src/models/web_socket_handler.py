@@ -2,7 +2,7 @@ from defaults import auth_service
 import socketio
 import jwt
 from utilities import constants, middleware
-from .database_handler import db_handler
+from defaults import db_handler
 from .schemas import \
     NewItineraryWS, ItineraryDeleteWS, \
     NewPollWS, PollVoteWS, PollDeleteWS, \

@@ -1,6 +1,6 @@
 
 from . import constants
-from models.database_handler import db_handler
+from defaults import db_handler
 from auth0.authentication import GetToken
 from auth0.management import Auth0
 from .utilities_logger import utilities_logger

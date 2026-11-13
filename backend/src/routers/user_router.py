@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import JSONResponse
 from typing import Annotated
-from models.database_handler import db_handler
+from defaults import db_handler
 from models.schemas import UserModel, TripModel
 from utilities.auth_helpers import verify_attendance, verify_admin, get_auth0_manager
 from utilities import constants
