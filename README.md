@@ -6,8 +6,6 @@
 
 ## Overview
 
-https://troys-travel-lab-19b56a64fe24.herokuapp.com
-
 > **Note**: The deployed application is in closed alpha release, so the general public will not be able to create an account at this time. Access to the site is invite-only by the author.
 
 Troy's Travel Lab is a collaborative travel planning app. It was created out of a frustration with the process
