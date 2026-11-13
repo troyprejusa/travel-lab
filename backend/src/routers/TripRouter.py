@@ -224,7 +224,7 @@ async def create_poll(request: Request, trip_id: str, poll_body: NewPollWS) -> d
         raise HTTPException(
             status_code=500,
             detail={
-                "message": f'Unable to post poll'
+                "message": 'Unable to post poll'
             }
         )
 
@@ -262,7 +262,7 @@ async def get_packing_items(request: Request, trip_id: str) -> list[PackingModel
 
         return items
 
-    except Exception as error:
+    except Exception:
         raise HTTPException(
             status_code=500,
             detail={

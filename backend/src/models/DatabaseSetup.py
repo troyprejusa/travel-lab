@@ -3,7 +3,7 @@ from .DatabaseHandler import PsycopgDatabaseHandler
 
 class DatabaseSetup:
     def __init__(self, database: PsycopgDatabaseHandler) -> None:
-        self.database = database;
+        self.database = database
     
     # UUID Extension
     async def initialize_extensions(self) -> None:

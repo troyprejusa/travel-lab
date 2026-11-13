@@ -61,3 +61,15 @@ dependencies = [
     "websockets",
     "yarl",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff",
+]
+
+[tool.ruff]
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+ignore = ["E712"]

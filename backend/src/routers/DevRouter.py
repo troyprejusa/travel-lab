@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Form
+from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from models.DatabaseHandler import db_handler
 
 
 dev_router = APIRouter()
