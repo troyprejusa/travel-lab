@@ -6,6 +6,14 @@ class DatabaseHandler(ABC):
     """Database operations used by the application."""
 
     @abstractmethod
+    async def open(self) -> None:
+        ...
+
+    @abstractmethod
+    async def close(self) -> None:
+        ...
+
+    @abstractmethod
     async def query(self, query: str, params: None | tuple | dict=None) -> None | list[dict]:
         ...
 

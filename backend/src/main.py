@@ -26,7 +26,7 @@ app = FastAPI()
 
 @app.on_event("startup")
 async def startup():
-    await db_handler.pool.open()
+    await db_handler.open()
     
     if constants.MODE == 'development':
         db_setup = DatabaseSetup(db_handler)
@@ -36,7 +36,7 @@ async def startup():
 
 @app.on_event("shutdown")
 async def shutdown():
-    await db_handler.pool.close()
+    await db_handler.close()
 
 # Add middleware - non-decorator syntax
 # NOTE: FastAPI executes middleware in the REVERSE order they are declared, like an onion
