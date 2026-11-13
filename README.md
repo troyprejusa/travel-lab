@@ -53,7 +53,7 @@ In development, .env files are used to set all necessary environment variables. 
 frontend/src/utilities/Constants.ts
 
 # Backend:
-backend/src/utilities/Constants.py
+backend/src/utilities/constants.py
 ```
 
 ### Network Hosts
@@ -81,7 +81,7 @@ Development mode can take either of 2 forms:
    Be sure to modify the `vite.config.ts`, `nginx.conf`, and `docker-compose.yaml` file as needed to use the right paths for volume mounts, certificates, etc. for your machine.
 
 ### Starting Development Mode
-Open one terminal and enter command `docker compose up` to start the API, dev database, and Nginx.
+From the repository root, run `docker compose -f backend/docker-compose.yaml up` to start the API, dev database, and Nginx.
 
 - If you are going to use the Vite dev server to serve the application, open another terminal and enter command `npm run dev`
 - If you are going to use the FastAPI app to serve the application, from the /frontend folder do an `npm build` with the **deployment** environment variable set to **"local"**. The built bundle is volume-mounted into the container so it will be available to be served immediately. 
