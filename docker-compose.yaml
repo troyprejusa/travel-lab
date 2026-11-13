@@ -14,7 +14,7 @@ services:
       - database_dev
 
   database_dev:
-    image: postgres
+    image: postgres:18
     container_name: sql_database
     environment:
       - POSTGRES_USER=docker
