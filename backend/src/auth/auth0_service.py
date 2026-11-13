@@ -1,16 +1,17 @@
 import jwt
 from jwt import PyJWKClient
+from pydantic import ValidationError
 
 from utilities import constants
 from .auth_service import AuthService
+from .models import JwtPayload
 
 
 class Auth0Service(AuthService):
     def __init__(self):
         self.key_cache = {}
 
-    async def jwt_decode_w_retry(self, token: str) -> dict:
-        payload = {}
+    async def jwt_decode_w_retry(self, token: str) -> JwtPayload:
         key_id = jwt.get_unverified_header(token)['kid']
         if key_id in self.key_cache:
             try:
@@ -43,11 +44,16 @@ class Auth0Service(AuthService):
         return rsa_key
 
 
-    def decode_jwt(self, token: str, rsa_key) -> dict:
-        return jwt.decode(
-        token,
-        key=rsa_key,
-        algorithms=constants.AUTH0_ALGORITHM,
-        audience=constants.AUTH0_AUDIENCE,
-        issuer=f"https://{constants.AUTH0_DOMAIN}/",
+    def decode_jwt(self, token: str, rsa_key) -> JwtPayload:
+        claims = jwt.decode(
+            token,
+            key=rsa_key,
+            algorithms=constants.AUTH0_ALGORITHM,
+            audience=constants.AUTH0_AUDIENCE,
+            issuer=f"https://{constants.AUTH0_DOMAIN}/",
         )
+        email_claim = f'{constants.AUTH0_CLAIM_NAMESPACE}/email'
+        try:
+            return JwtPayload.model_validate({**claims, 'email': claims.get(email_claim)})
+        except ValidationError as error:
+            raise jwt.InvalidTokenError('Token is missing valid identity claims') from error
