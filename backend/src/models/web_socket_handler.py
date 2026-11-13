@@ -1,6 +1,7 @@
+from defaults import auth_service
 import socketio
 import jwt
-from utilities import constants, auth_helpers, middleware
+from utilities import constants, middleware
 from .database_handler import db_handler
 from .schemas import \
     NewItineraryWS, ItineraryDeleteWS, \
@@ -32,7 +33,7 @@ class WebSocketHandler(socketio.AsyncNamespace):
 
     async def on_connect(self, sid, environ, auth):
         try:
-            await auth_helpers.jwt_decode_w_retry(auth.get('token'))
+            await auth_service.jwt_decode_w_retry(auth.get('token'))
 
             # Enter the correct room for this trip
             trip_id = WebSocketHandler.parse_trip_id(environ['QUERY_STRING'])

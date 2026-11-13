@@ -1,3 +1,4 @@
+from defaults import auth_service
 from fastapi import Request, HTTPException
 from fastapi.responses import FileResponse
 from . import constants, auth_helpers
@@ -92,7 +93,7 @@ async def authenticate_user(request: Request, call_next):
                 raise KeyError('No bearer header')
             
             # Decode the JWT and add it to the request state - no exception on decode means we're good to proceed
-            decoded_jwt = await auth_helpers.jwt_decode_w_retry(auth_header[1])
+            decoded_jwt = await auth_service.jwt_decode_w_retry(auth_header[1])
             user_email = decoded_jwt[f'{constants.AUTH0_CLAIM_NAMESPACE}/email']
             auth0_id = decoded_jwt['sub']
 
