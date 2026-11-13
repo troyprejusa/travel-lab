@@ -50,6 +50,7 @@ dependencies = [
     "PyYAML",
     "requests",
     "sniffio",
+    "sqlalchemy[asyncio]>=2.1.8",
     "starlette",
     "typing_extensions",
     "ujson",

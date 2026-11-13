@@ -1,6 +1,6 @@
 from auth.auth_service import AuthService
 from auth.auth_service_factory import create_auth_service
-from models.database_handler import PsycopgDatabaseHandler
+from models.sqlalchemy_database_handler import SQLAlchemyDatabaseHandler
 from utilities import constants
 
 
@@ -15,4 +15,4 @@ settings = {
     'database': constants.DB_DBNAME
 }
 
-db_handler = PsycopgDatabaseHandler(**settings)
+db_handler = SQLAlchemyDatabaseHandler(**settings)

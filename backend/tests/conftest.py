@@ -12,6 +12,7 @@ if sys.platform == 'darwin':
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 
 from models.database_handler import PsycopgDatabaseHandler  # noqa: E402
+from models.sqlalchemy_database_handler import SQLAlchemyDatabaseHandler  # noqa: E402
 from models.database_setup import DatabaseSetup  # noqa: E402
 
 
@@ -21,9 +22,9 @@ def postgres():
         yield container
 
 
-@pytest_asyncio.fixture
-async def db(postgres):
-    handler = PsycopgDatabaseHandler(
+@pytest_asyncio.fixture(params=[PsycopgDatabaseHandler, SQLAlchemyDatabaseHandler], ids=['psycopg', 'sqlalchemy'])
+async def db(postgres, request):
+    handler = request.param(
         host=postgres.get_container_host_ip(),
         port=postgres.get_exposed_port(5432),
         user='test', password='test', database='test',

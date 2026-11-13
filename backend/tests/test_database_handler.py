@@ -18,6 +18,7 @@ async def test_query_and_user_lifecycle(db):
     assert await db.get_user('alice@example.com') is None
     user = await db.create_user('alice@example.com')
     assert str(UUID(user['id'])) == user['id']
+    assert (await db.query('SELECT id FROM traveller WHERE email=%s', ('alice@example.com',)))[0]['id'] == user['id']
     assert await db.count_users() == 1
     updated = await db.patch_user_info('Alice', 'Smith', '5551234567', 'alice@example.com')
     assert (updated['first_name'], updated['last_name'], updated['phone']) == ('Alice', 'Smith', '5551234567')
@@ -32,6 +33,12 @@ async def test_duplicate_user_preserves_database_error_and_pool_recovers(db):
     with pytest.raises(psycopg.errors.UniqueViolation):
         await db.create_user('alice@example.com')
     assert await db.count_users() == 1
+
+
+async def test_failed_trip_creation_is_atomic(db):
+    with pytest.raises(psycopg.IntegrityError):
+        await db.create_trip('Kyoto', None, date(2026, 4, 1), date(2026, 4, 8), 'city', 'missing@example.com')
+    assert await db.query('SELECT * FROM trip') == []
 
 
 async def test_trips_and_membership(db):
