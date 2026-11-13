@@ -1,7 +1,10 @@
 .PHONY: lint licenses db-console
 
 lint:
-	uv run --locked --group dev ruff check src
+	uv run --locked --group dev ruff check --fix src tests
+
+test:
+	uv run --locked --group dev pytest tests
 
 licenses:
 	./scripts/license_info.sh
