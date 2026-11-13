@@ -3,7 +3,7 @@ services:
   api_dev:
     image: ghcr.io/astral-sh/uv:python3.14-bookworm
     container_name: fast_api_dev
-    command: /app/src/startup.sh
+    command: /app/startup.sh
     volumes:
       - /Users/troyprejusa/Dev/apps/travel-lab/backend:/app
       - /Users/troyprejusa/Dev/apps/travel-lab/frontend/dist:/app/src/dist
