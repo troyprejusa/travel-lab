@@ -10,11 +10,7 @@ async def establish_user_attendance(email: str) -> dict:
     try:
         trip_data = {}
 
-        user_trips = await db_handler.query("""
-            SELECT trip_id, admin FROM traveller_trip WHERE 
-            traveller_id=(SELECT id FROM traveller WHERE email=%s) AND 
-            confirmed=TRUE;
-        """, (email,))
+        user_trips = await db_handler.get_user_trip_attendance(email)
 
         # user_data.trips will be an object of objects, keyed by trip_id
         for trip in user_trips:
