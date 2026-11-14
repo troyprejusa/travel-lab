@@ -20,4 +20,4 @@ db-reset:
 	uv run --locked alembic upgrade head
 
 db-seed:
-	uv run --locked python scripts/db_seed.py
+	uv run --locked python src/db_seed.py

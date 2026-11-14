@@ -8,7 +8,6 @@ from routers.dev_router import dev_router
 from routers.api_router_v1 import api_router
 from models.web_socket_handler import socketio_ASGI
 from defaults import db_handler
-from models.database_setup import DatabaseSetup
 from utilities import middleware
 from utilities import constants
 
@@ -28,12 +27,6 @@ app = FastAPI()
 async def startup():
     await db_handler.open()
     
-    if constants.MODE == 'development':
-        db_setup = DatabaseSetup(db_handler)
-        await db_setup.drop_tables()
-        await db_setup.setup_db()
-        await db_setup.insert_data()
-
 @app.on_event("shutdown")
 async def shutdown():
     await db_handler.close()
