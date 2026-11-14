@@ -90,6 +90,13 @@ class SQLAlchemyDatabaseHandler(DatabaseHandler):
         ids = select(TravellerTrip.trip_id).where(TravellerTrip.confirmed.is_(True), TravellerTrip.traveller_id == self._traveller_id(email))
         return await self._select(Trip, Trip.id.in_(ids))
 
+    async def get_user_trip_attendance(self, email):
+        stmt = select(TravellerTrip.trip_id, TravellerTrip.admin).where(
+            TravellerTrip.traveller_id == self._traveller_id(email),
+            TravellerTrip.confirmed.is_(True),
+        )
+        return await self._run(stmt)
+
     async def leave_trip(self, email, trip_id):
         await self._run(delete(TravellerTrip).where(TravellerTrip.traveller_id == self._traveller_id(email), TravellerTrip.trip_id == trip_id))
 

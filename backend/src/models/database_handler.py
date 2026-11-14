@@ -120,6 +120,13 @@ class PsycopgDatabaseHandler(DatabaseHandler):
         """, (email,))
 
         return data
+
+    async def get_user_trip_attendance(self, email: str) -> list[dict]:
+        return await self.query("""
+            SELECT trip_id, admin FROM traveller_trip WHERE
+            traveller_id=(SELECT id FROM traveller WHERE email=%s) AND
+            confirmed=TRUE;
+        """, (email,))
     
     async def leave_trip(self, email: str, trip_id: str) -> None:
         await self.query("""

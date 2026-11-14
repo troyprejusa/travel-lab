@@ -63,6 +63,23 @@ async def test_trips_and_membership(db):
     assert await db.get_trips('owner@example.com') == []
 
 
+async def test_get_user_trip_attendance_returns_confirmed_trips_and_admin_flags(db):
+    trip = await make_trip(db)
+    await db.create_user('guest@example.com')
+    await db.request_trip('guest@example.com', trip)
+
+    assert await db.get_user_trip_attendance('owner@example.com') == [
+        {'trip_id': trip, 'admin': True},
+    ]
+    assert await db.get_user_trip_attendance('guest@example.com') == []
+
+    guest = await db.get_user('guest@example.com')
+    await db.accept_request(guest['id'], trip)
+    assert await db.get_user_trip_attendance('guest@example.com') == [
+        {'trip_id': trip, 'admin': False},
+    ]
+
+
 async def test_itinerary_messages_and_packing(db):
     trip = await make_trip(db)
     stop = await db.create_itinerary(trip, 'Temple', None, '2026-04-02 10:00', '2026-04-02 11:00', 'owner@example.com')

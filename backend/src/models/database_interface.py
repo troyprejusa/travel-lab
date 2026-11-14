@@ -38,6 +38,11 @@ class DatabaseHandler(ABC):
         ...
 
     @abstractmethod
+    async def get_user_trip_attendance(self, email: str) -> list[dict]:
+        """Return confirmed trip IDs and admin flags for a user."""
+        ...
+
+    @abstractmethod
     async def leave_trip(self, email: str, trip_id: str) -> None:
         ...
 
