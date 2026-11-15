@@ -46,14 +46,12 @@ async def db(postgres, request, pytestconfig):
 async def api(db, monkeypatch):
     """Run the ASGI application against the isolated PostgreSQL instance."""
     import httpx
-    from auth.dev_auth_service import DevAuthService
     from main import app
     from routers import trip_router, user_router
     from utilities import auth_helpers, middleware
 
     for module in (trip_router, user_router, auth_helpers):
         monkeypatch.setattr(module, 'db_handler', db)
-    monkeypatch.setattr(middleware, 'auth_service', DevAuthService())
     middleware.rest_rate_tracker.tracker.clear()
     await db.create_user('troy@test.com')
     await db.create_user('joe@test.com')
