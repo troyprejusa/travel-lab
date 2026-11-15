@@ -7,8 +7,8 @@ load_dotenv()
 
 
 def database_url():
-    prefix = 'PROD' if os.getenv('MODE', 'development') == 'production' else 'DEV'
-    return URL.create('postgresql+psycopg', username=os.getenv(f'{prefix}_DB_USER'),
-                      password=os.getenv(f'{prefix}_DB_PWD'), host=os.getenv(f'{prefix}_DB_HOST'),
-                      port=int(os.getenv(f'{prefix}_DB_PORT', '5432')),
-                      database=os.getenv(f'{prefix}_DB_DBNAME'))
+    prefix = 'PROD_' if os.getenv('MODE', 'development') == 'production' else ''
+    return URL.create('postgresql+psycopg', username=os.getenv(f'{prefix}DB_USER'),
+                      password=os.getenv(f'{prefix}DB_PWD'), host=os.getenv(f'{prefix}DB_HOST'),
+                      port=int(os.getenv(f'{prefix}DB_PORT', '5432')),
+                      database=os.getenv(f'{prefix}DB_DBNAME'))

@@ -39,12 +39,12 @@ else:
     AUTH0_CLIENT_SECRET = os.getenv('DEV_AUTH0_CLIENT_SECRET')
 
     # Database
-    DB_HOST =  os.getenv('DEV_DB_HOST')
-    DB_PORT = os.getenv('DEV_DB_PORT')
-    DB_USER = os.getenv('DEV_DB_USER')
-    DB_PWD = os.getenv('DEV_DB_PWD')
-    DB_DBNAME = os.getenv('DEV_DB_DBNAME')
-    DB_CONN_LIMIT = int(os.getenv('DEV_DB_CONN_LIMIT'))
+    DB_HOST =  os.getenv('DB_HOST')
+    DB_PORT = os.getenv('DB_PORT')
+    DB_USER = os.getenv('DB_USER')
+    DB_PWD = os.getenv('DB_PWD')
+    DB_DBNAME = os.getenv('DB_DBNAME')
+    DB_CONN_LIMIT = int(os.getenv('DB_CONN_LIMIT'))
 
 # Database limits
 LIMIT_TOTAL_USERS = int(os.getenv('LIMIT_TOTAL_USERS'))     # protects traveller table

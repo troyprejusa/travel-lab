@@ -21,12 +21,12 @@ def test_migrations_and_seed(postgres, pytestconfig):
         command.upgrade(config, 'head')
         command.upgrade(config, 'head')
     env = os.environ | {
-        'MODE': 'test', 'DEV_DB_HOST': postgres.get_container_host_ip(),
-        'DEV_DB_PORT': str(postgres.get_exposed_port(5432)),
-        'DEV_DB_USER': 'test', 'DEV_DB_PWD': 'test', 'DEV_DB_DBNAME': 'test',
+        'MODE': 'test', 'DB_HOST': postgres.get_container_host_ip(),
+        'DB_PORT': str(postgres.get_exposed_port(5432)),
+        'DB_USER': 'test', 'DB_PWD': 'test', 'DB_DBNAME': 'test',
     }
     subprocess.run([sys.executable, str(root / 'src/db_seed.py')], env=env, check=True)
-    with psycopg.connect(host=env['DEV_DB_HOST'], port=env['DEV_DB_PORT'], user='test', password='test', dbname='test') as connection:
+    with psycopg.connect(host=env['DB_HOST'], port=env['DB_PORT'], user='test', password='test', dbname='test') as connection:
         assert connection.execute('SELECT count(*) FROM traveller').fetchone()[0] == 2
         assert connection.execute("SELECT nextval(pg_get_serial_sequence('poll', 'id'))").fetchone()[0] > 102
         assert connection.execute("SELECT nextval(pg_get_serial_sequence('poll_option', 'id'))").fetchone()[0] > 205
