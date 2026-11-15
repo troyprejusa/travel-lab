@@ -1,0 +1,15 @@
+meta {
+  name: Leave trip
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{base_url}}/api/v1/user/trips/{{trip_id}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

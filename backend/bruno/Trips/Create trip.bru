@@ -1,0 +1,23 @@
+meta {
+  name: Create trip
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{base_url}}/api/v1/trip/
+  body: formUrlEncoded
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:form-urlencoded {
+  destination: Kyoto
+  start_date: 2026-04-01
+  end_date: 2026-04-08
+  vacation_type: city
+  description: Example trip
+}

@@ -136,7 +136,7 @@ class SQLAlchemyDatabaseHandler(DatabaseHandler):
         return await self._select(Itinerary, Itinerary.trip_id == trip_id, order_by=Itinerary.start_time)
 
     async def create_itinerary(self, trip_id, title, description, start_time, end_time, email):
-        return await self._create(Itinerary, trip_id=trip_id, title=title, description=description, start_time=datetime.fromisoformat(start_time), end_time=datetime.fromisoformat(end_time), created_by=email)
+        return await self._create(Itinerary, trip_id=trip_id, title=title, description=description, start_time=datetime.fromisoformat(start_time) if isinstance(start_time, str) else start_time, end_time=datetime.fromisoformat(end_time) if isinstance(end_time, str) else end_time, created_by=email)
 
     async def delete_itinerary(self, stop_id):
         await self._run(delete(Itinerary).where(Itinerary.id == stop_id))

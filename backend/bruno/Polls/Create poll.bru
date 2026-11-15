@@ -1,0 +1,28 @@
+meta {
+  name: Create poll
+  type: http
+  seq: 17
+}
+
+post {
+  url: {{base_url}}/api/v1/trip/{{trip_id}}/poll
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "trip_id": "{{trip_id}}",
+    "created_by": "{{email}}",
+    "title": "Dinner",
+    "description": "Choose dinner",
+    "options": [
+      "Ramen",
+      "Sushi"
+    ]
+  }
+}

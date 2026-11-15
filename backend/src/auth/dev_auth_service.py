@@ -11,7 +11,7 @@ class DevAuthService(AuthService):
     SEEDED_USERS = frozenset({'troy@test.com', 'joe@test.com'})
 
     def __init__(self):
-        if constants.MODE not in ('development', 'test'):
+        if constants.MODE == constants.Mode.PRODUCTION:
             raise RuntimeError('DevAuthService requires MODE=development or MODE=test')
 
     async def jwt_decode_w_retry(self, token: str) -> JwtPayload:

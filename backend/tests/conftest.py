@@ -40,3 +40,36 @@ async def db(postgres, request, pytestconfig):
     finally:
         engine.dispose()
         await handler.close()
+
+
+@pytest_asyncio.fixture
+async def api(db, monkeypatch):
+    """Run the ASGI application against the isolated PostgreSQL instance."""
+    import httpx
+    from main import app
+    from routers import trip_router, user_router
+    from utilities import auth_helpers, middleware
+
+    for module in (trip_router, user_router, auth_helpers):
+        monkeypatch.setattr(module, 'db_handler', db)
+    middleware.rest_rate_tracker.tracker.clear()
+    await db.create_user('troy@test.com')
+    await db.create_user('joe@test.com')
+    from itertools import count
+    request_ids = count()
+
+    async def distinct_client(request):
+        request.headers['x-forwarded-for'] = f'test-client-{next(request_ids)}'
+
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url='http://test', event_hooks={'request': [distinct_client]}) as client:
+        yield client
+
+
+@pytest.fixture
+def owner_headers():
+    return {'Authorization': 'Bearer troy@test.com'}
+
+
+@pytest.fixture
+def guest_headers():
+    return {'Authorization': 'Bearer joe@test.com'}

@@ -1,0 +1,15 @@
+meta {
+  name: Delete poll
+  type: http
+  seq: 18
+}
+
+delete {
+  url: {{base_url}}/api/v1/trip/{{trip_id}}/poll/{{poll_id}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

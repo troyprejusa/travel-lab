@@ -1,0 +1,15 @@
+meta {
+  name: Upsert user
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/api/v1/user/{{email}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

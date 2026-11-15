@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Travel Lab",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

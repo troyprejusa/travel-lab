@@ -1,0 +1,15 @@
+meta {
+  name: Get trip permissions
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{base_url}}/api/v1/trip/{{trip_id}}/permissions
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

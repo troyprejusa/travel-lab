@@ -1,6 +1,6 @@
 from defaults import auth_service
 from fastapi import Request, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from . import constants, auth_helpers
 from .rate_tracker import RateTracker
 from .utilities_logger import utilities_logger
@@ -22,11 +22,10 @@ auth_list = set([
 
 reserved_files = set([
     'docs',
-    'openapi.json'
+    'openapi.json',
+    'health'
 ])
 
-with open('/app/src/dist/third-party-licenses.json', 'r') as license_file:
-    license_data = json.load(license_file)
 # GLOBAL VARIABLES (ABOVE)
 
 async def rate_limiter(request: Request, call_next):
@@ -110,9 +109,9 @@ async def authenticate_user(request: Request, call_next):
         
         except (jwt.exceptions.InvalidTokenError, KeyError) as error:
             utilities_logger.warning(f'Authentication error:\n{request.url.path}\n{error}')
-            raise HTTPException(
+            return JSONResponse(
                 status_code=401,
-                detail={
+                content={'detail': {
                     "message": "Authentication required"
-                }
+                }}
             )

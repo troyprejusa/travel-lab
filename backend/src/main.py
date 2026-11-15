@@ -4,7 +4,6 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from routers.dev_router import dev_router
 from routers.api_router_v1 import api_router
 from models.web_socket_handler import socketio_ASGI
 from defaults import db_handler
@@ -23,6 +22,10 @@ app_logger.setLevel(logging.DEBUG)
 # Create app
 app = FastAPI()
 
+@app.get('/health')
+async def health_check():
+    return {'status': 'ok'}
+
 @app.on_event("startup")
 async def startup():
     await db_handler.open()
@@ -37,8 +40,6 @@ app.middleware('http')(middleware.authenticate_user)    # (3) Authenticate user
 app.middleware('http')(middleware.serve_static_files)   # (2) Serve public content
 app.middleware('http')(middleware.rate_limiter)         # (1) Rate limit
 
-if constants.MODE == 'development':
-    app.include_router(dev_router, prefix='/dev')
 
 # REST API endpoints
 app.include_router(api_router, prefix='/api/v1')
