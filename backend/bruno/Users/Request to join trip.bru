@@ -1,0 +1,15 @@
+meta {
+  name: Request to join trip
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{base_url}}/api/v1/user/trips/{{trip_id}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

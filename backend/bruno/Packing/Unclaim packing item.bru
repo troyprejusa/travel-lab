@@ -1,0 +1,15 @@
+meta {
+  name: Unclaim packing item
+  type: http
+  seq: 22
+}
+
+patch {
+  url: {{base_url}}/api/v1/trip/{{trip_id}}/packing/unclaim/{{item_id}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

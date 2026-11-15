@@ -1,0 +1,21 @@
+meta {
+  name: Create packing item
+  type: http
+  seq: 20
+}
+
+post {
+  url: {{base_url}}/api/v1/trip/{{trip_id}}/packing
+  body: formUrlEncoded
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:form-urlencoded {
+  item: Camera
+  quantity: 1
+  description: Example item
+}

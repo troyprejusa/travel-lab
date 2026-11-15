@@ -1,0 +1,15 @@
+meta {
+  name: List packing items
+  type: http
+  seq: 19
+}
+
+get {
+  url: {{base_url}}/api/v1/trip/{{trip_id}}/packing
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
