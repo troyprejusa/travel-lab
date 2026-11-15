@@ -1,5 +1,7 @@
 .PHONY: lint test licenses db-console db-setup db-reset db-seed
 
+DB_HOST ?= localhost
+
 lint:
 	uv run --locked --group dev ruff check --fix src tests
 
@@ -13,11 +15,11 @@ db-console:
 	docker compose exec database_dev psql -U docker -d travel_lab
 
 db-setup:
-	uv run --locked alembic upgrade head
+	DB_HOST="$(DB_HOST)" uv run --locked alembic upgrade head
 
 db-reset:
-	uv run --locked alembic downgrade base
-	uv run --locked alembic upgrade head
+	DB_HOST="$(DB_HOST)" uv run --locked alembic downgrade base
+	DB_HOST="$(DB_HOST)" uv run --locked alembic upgrade head
 
 db-seed:
-	uv run --locked python src/db_seed.py
+	DB_HOST="$(DB_HOST)" uv run --locked python src/db_seed.py
