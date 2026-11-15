@@ -1,19 +1,19 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import path from 'node:path'
+import tailwindcss from '@tailwindcss/vite'
+import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
 
-const backend_server: string = 'http://localhost:8000';
+const backendServer = 'http://localhost:8000'
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
+  resolve: { alias: { '@': path.resolve(import.meta.dirname, './src') } },
   server: {
+    port: 5173,
     proxy: {
-      '/dev': backend_server,
-      '/api/v1': backend_server,
-      '/sio': {
-        target: backend_server,
-        ws: true
-      },
-    }
-  }
+      '/dev': backendServer,
+      '/api/v1': backendServer,
+      '/sio': { target: backendServer, ws: true },
+    },
+  },
 })
