@@ -1,8 +1,0 @@
-$kind: http-request
-name: List my trips
-url: http://localhost:8000/api/v1/user/trips
-method: GET
-auth:
-  type: bearer
-  credentials:
-    token: troy@test.com

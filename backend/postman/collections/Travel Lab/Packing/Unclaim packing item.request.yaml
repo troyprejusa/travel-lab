@@ -1,8 +1,0 @@
-$kind: http-request
-name: Unclaim packing item
-url: http://localhost:8000/api/v1/trip/ac0a3381-8a5f-4abf-979a-e417bb5d6e65/packing/unclaim/1
-method: PATCH
-auth:
-  type: bearer
-  credentials:
-    token: troy@test.com
