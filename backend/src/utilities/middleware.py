@@ -25,8 +25,6 @@ reserved_files = set([
     'openapi.json'
 ])
 
-with open('/app/src/dist/third-party-licenses.json', 'r') as license_file:
-    license_data = json.load(license_file)
 # GLOBAL VARIABLES (ABOVE)
 
 async def rate_limiter(request: Request, call_next):
