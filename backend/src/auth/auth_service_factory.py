@@ -6,6 +6,6 @@ from .dev_auth_service import DevAuthService
 
 
 def create_auth_service() -> AuthService:
-    if constants.MODE in ('development', 'test'):
+    if constants.MODE != constants.Mode.PRODUCTION:
         return DevAuthService()
     return Auth0Service()

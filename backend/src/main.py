@@ -31,7 +31,7 @@ async def health_check():
 async def startup():
     await db_handler.open()
     
-    if constants.MODE == 'development':
+    if constants.MODE == constants.Mode.DEVELOPMENT:
         db_setup = DatabaseSetup(db_handler)
         await db_setup.drop_tables()
         await db_setup.setup_db()

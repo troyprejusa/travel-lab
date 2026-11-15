@@ -1,6 +1,5 @@
 import os
 import sys
-from pathlib import Path
 
 import pytest
 import pytest_asyncio
@@ -9,11 +8,9 @@ from testcontainers.community.postgres import PostgresContainer
 if sys.platform == 'darwin':
     os.environ.setdefault('TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE', '/var/run/docker.sock')
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
-
-from models.database_handler import PsycopgDatabaseHandler  # noqa: E402
-from models.sqlalchemy_database_handler import SQLAlchemyDatabaseHandler  # noqa: E402
-from models.database_setup import DatabaseSetup  # noqa: E402
+from models.database_handler import PsycopgDatabaseHandler
+from models.sqlalchemy_database_handler import SQLAlchemyDatabaseHandler
+from models.database_setup import DatabaseSetup
 
 
 @pytest.fixture(scope='session')

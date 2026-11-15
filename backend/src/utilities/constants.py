@@ -1,8 +1,9 @@
 import os
+from .enums import Mode
 from dotenv import load_dotenv
 load_dotenv()
 
-MODE = os.getenv('MODE', 'development')
+MODE = Mode(os.getenv('MODE', Mode.DEVELOPMENT.value))
 HOST = os.getenv('HOST', 'localhost')
 
 # API
@@ -11,7 +12,7 @@ API_REQUESTS_WINDOW = int(os.getenv('API_REQUESTS_WINDOW'))
 WS_REQUEST_COUNT = int(os.getenv('WS_REQUEST_COUNT'))
 WS_REQUEST_WINDOW = int(os.getenv('WS_REQUEST_WINDOW'))
 
-if MODE == 'production':
+if MODE == Mode.PRODUCTION:
     # JWT
     AUTH0_DOMAIN = os.getenv('PROD_AUTH0_DOMAIN')
     AUTH0_AUDIENCE = os.getenv('PROD_AUTH0_AUDIENCE')

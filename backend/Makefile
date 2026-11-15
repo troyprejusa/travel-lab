@@ -1,10 +1,10 @@
-.PHONY: lint licenses db-console
+.PHONY: lint test licenses db-console
 
 lint:
 	uv run --locked --group dev ruff check --fix src tests
 
 test:
-	uv run --env-file .env.test --locked --group dev pytest --cov=src --cov-report=term-missing tests
+	MODE=test uv run --env-file .env.test --locked --group dev pytest --cov=src --cov-report=term-missing tests
 
 licenses:
 	./scripts/license_info.sh
