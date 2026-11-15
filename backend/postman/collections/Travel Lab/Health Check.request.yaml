@@ -1,0 +1,8 @@
+$kind: http-request
+name: Health Check
+url: http://localhost:8000/api/v1/health
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: troy@test.com

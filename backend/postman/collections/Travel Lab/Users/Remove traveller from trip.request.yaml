@@ -1,0 +1,8 @@
+$kind: http-request
+name: Remove traveller from trip
+url: http://localhost:8000/api/v1/user/trips/ac0a3381-8a5f-4abf-979a-e417bb5d6e65/4d17d823-e31c-47c9-81ad-a53dff295e6b
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    token: troy@test.com
