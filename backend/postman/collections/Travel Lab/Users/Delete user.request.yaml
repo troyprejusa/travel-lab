@@ -1,8 +1,0 @@
-$kind: http-request
-name: Delete user
-url: http://localhost:8000/api/v1/user/troy@test.com
-method: DELETE
-auth:
-  type: bearer
-  credentials:
-    token: troy@test.com
