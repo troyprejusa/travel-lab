@@ -5,10 +5,6 @@ from .trip_router import trip_router
 
 api_router = APIRouter()
 
-@api_router.get('/health')
-async def health_check():
-    return {'status': 'ok'}
-
 # /user
 api_router.include_router(user_router, prefix='/user')
 

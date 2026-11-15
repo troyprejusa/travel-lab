@@ -22,6 +22,10 @@ app_logger.setLevel(logging.DEBUG)
 # Create app
 app = FastAPI()
 
+@app.get('/health')
+async def health_check():
+    return {'status': 'ok'}
+
 @app.on_event("startup")
 async def startup():
     await db_handler.open()
