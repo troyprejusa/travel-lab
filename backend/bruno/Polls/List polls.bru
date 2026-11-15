@@ -1,0 +1,15 @@
+meta {
+  name: List polls
+  type: http
+  seq: 16
+}
+
+get {
+  url: {{base_url}}/api/v1/trip/{{trip_id}}/poll
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

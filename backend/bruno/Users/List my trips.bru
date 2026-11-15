@@ -1,0 +1,15 @@
+meta {
+  name: List my trips
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{base_url}}/api/v1/user/trips
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

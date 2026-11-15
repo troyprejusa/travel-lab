@@ -1,0 +1,15 @@
+meta {
+  name: Remove traveller from trip
+  type: http
+  seq: 9
+}
+
+delete {
+  url: {{base_url}}/api/v1/user/trips/{{trip_id}}/{{traveller_id}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
