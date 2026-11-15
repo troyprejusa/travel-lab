@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="frontend/src/assets/src/Travel-Lab-DALL-E.png" height=250>
+    <img src="design/travel-lab-logo-gpt.PNG" height=250>
 </div>
 
 # Troys Travel Lab
