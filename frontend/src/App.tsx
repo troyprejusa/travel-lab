@@ -1,32 +1,56 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { ArrowLeft, ArrowRight, CalendarDays, Check, Compass, Mail, Map, MapPin, Menu, Plane, Sparkles, Users, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { auth } from '@/auth/auth'
+import { apiFetch } from '@/lib/api'
 
-type Page = 'home' | 'sign-in'
+type Page = 'home' | 'login' | 'trips'
+type Trip = { id: string; destination: string; start_date: string; end_date: string }
 
 function App() {
-  const [page, setPage] = useState<Page>(window.location.pathname === '/sign-in' ? 'sign-in' : 'home')
+  const location = useLocation()
+  const routerNavigate = useNavigate()
+  const page: Page = location.pathname === '/login' || location.pathname === '/sign-in' ? 'login' : location.pathname === '/trips' ? 'trips' : 'home'
   const [menuOpen, setMenuOpen] = useState(false)
   const [email, setEmail] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [trips, setTrips] = useState<Trip[]>([])
+  const [signedIn, setSignedIn] = useState(() => !!auth.getToken())
 
   useEffect(() => {
-    const syncPage = () => { setPage(window.location.pathname === '/sign-in' ? 'sign-in' : 'home'); setSubmitted(false) }
-    window.addEventListener('popstate', syncPage)
-    return () => window.removeEventListener('popstate', syncPage)
-  }, [])
+    if (page !== 'trips' || !signedIn) return
+    const controller = new AbortController()
+    apiFetch('/user/trips', { signal: controller.signal }).then(async response => {
+      if (!response.ok) throw new Error(`Unable to load trips (HTTP ${response.status}).`)
+      setTrips(await response.json())
+    }).catch(error => { if (error.name !== 'AbortError') setError(error.message) })
+    return () => controller.abort()
+  }, [page, signedIn])
 
   function navigate(next: Page) {
-    window.history.pushState({}, '', next === 'home' ? '/' : '/sign-in')
-    setPage(next)
+    routerNavigate(next === 'home' ? '/' : `/${next}`)
     setMenuOpen(false)
-    setSubmitted(false)
+    setError('')
     window.scrollTo(0, 0)
   }
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setSubmitted(true)
+    setError('')
+    setBusy(true)
+    try {
+      if (auth.kind === 'development') {
+        await auth.signInDevelopment()
+        setSignedIn(true)
+        navigate('trips')
+      } else {
+        await auth.requestMagicLink(email)
+      }
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Unable to sign in.')
+    } finally { setBusy(false) }
   }
 
   return (
@@ -39,10 +63,10 @@ function App() {
           <nav className={`navigation ${menuOpen ? 'navigation-open' : ''}`} aria-label="Main navigation">
             <a href="#how-it-works" onClick={() => setMenuOpen(false)}>How it works</a>
             <a href="#features" onClick={() => setMenuOpen(false)}>The essentials</a>
-            <Button className="nav-button" onClick={() => navigate('sign-in')}>Sign in <ArrowRight size={16} /></Button>
+            <Button className="nav-button" onClick={() => navigate('login')}>Sign in <ArrowRight size={16} /></Button>
           </nav>
           <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Close menu' : 'Open menu'} aria-expanded={menuOpen}>{menuOpen ? <X /> : <Menu />}</button>
-        </> : <button className="back-link" onClick={() => navigate('home')}><ArrowLeft size={16} /> Back to home</button>}
+        </> : page === 'trips' && signedIn ? <button className="back-link" onClick={() => { auth.signOut(); setSignedIn(false); navigate('home') }}>Sign out</button> : <button className="back-link" onClick={() => navigate('home')}><ArrowLeft size={16} /> Back to home</button>}
       </header>
 
       {page === 'home' ? <main>
@@ -51,7 +75,7 @@ function App() {
             <div className="eyebrow"><span className="eyebrow-dot" /> MADE FOR THE JOURNEY TOGETHER</div>
             <h1>Good trips start <em>together.</em></h1>
             <p>From the first “where to?” to the final itinerary, bring everyone and everything together in one happy place.</p>
-            <div className="hero-actions"><Button className="primary-button" onClick={() => navigate('sign-in')}>Start planning <ArrowRight size={18} /></Button><a className="text-link" href="#how-it-works">See how it works <span>↗</span></a></div>
+            <div className="hero-actions"><Button className="primary-button" onClick={() => navigate('login')}>Start planning <ArrowRight size={18} /></Button><a className="text-link" href="#how-it-works">See how it works <span>↗</span></a></div>
             <div className="hero-note"><span className="mini-icon"><Sparkles size={15} /></span> Less planning chaos. More “remember when?”</div>
           </div>
           <div className="hero-visual" aria-label="A preview of a trip to the coast">
@@ -69,15 +93,25 @@ function App() {
           <article><div className="feature-icon blush"><CalendarDays size={22} /></div><span>02 / THE DETAILS</span><h3>A plan that comes together</h3><p>Keep the itinerary and all those little details easy to find.</p></article>
           <article><div className="feature-icon peach"><Users size={22} /></div><span>03 / THE PEOPLE</span><h3>Better with your people</h3><p>Bring your fellow travelers along for every step of the planning.</p></article>
         </section>
-        <section className="closing"><div><span className="section-kicker">WHERE TO NEXT?</span><h2>Let’s make a little<br /><em>more happen.</em></h2></div><Button className="primary-button" onClick={() => navigate('sign-in')}>Start planning <ArrowRight size={18} /></Button></section>
-      </main> : <main className="auth-layout">
+        <section className="closing"><div><span className="section-kicker">WHERE TO NEXT?</span><h2>Let’s make a little<br /><em>more happen.</em></h2></div><Button className="primary-button" onClick={() => navigate('login')}>Start planning <ArrowRight size={18} /></Button></section>
+      </main> : page === 'trips' ? <main className="auth-panel"><div className="auth-content">
+        <span className="section-kicker">YOUR TRIPS</span><h1 style={{ fontSize: '3rem', margin: '20px 0' }}>Your next adventure.</h1>
+        {!signedIn ? <><p>Sign in to see your trips.</p><Button className="primary-button" onClick={() => navigate('login')}>Sign in</Button></> : <>
+          {error && <p role="alert">{error}</p>}
+          {!error && trips.length === 0 && <p>Your trips will appear here.</p>}
+          {trips.map(trip => <article key={trip.id}><h2>{trip.destination}</h2><p>{trip.start_date} – {trip.end_date}</p></article>)}
+        </>}
+      </div></main> : <main className="auth-layout">
         <div className="auth-panel"><div className="auth-content">
           <span className="section-kicker">YOUR NEXT ADVENTURE AWAITS</span>
-          {!submitted ? <><h1>Welcome <em>back.</em></h1><p>Sign in or get started with a little help from your inbox. No password to remember.</p>
-            <form onSubmit={submit}><label htmlFor="email">Email address</label><div className="input-wrap"><Mail size={19} /><input id="email" type="email" placeholder="you@example.com" value={email} onChange={(event) => setEmail(event.target.value)} required autoComplete="email" /></div><Button className="primary-button submit-button" type="submit">Send me a magic link <ArrowRight size={18} /></Button></form>
-            <div className="auth-footnote"><span className="small-lock">✳</span><span>One link, right to your inbox. Simple as that.</span></div>
-          </> : <div role="status"><div className="success-icon"><Mail size={25} /></div><h1>Check your <em>inbox.</em></h1><p>This is a preview: a magic link would be sent to <strong>{email}</strong> once authentication is connected.</p><button className="try-again" onClick={() => setSubmitted(false)}><ArrowLeft size={16} /> Use another email</button></div>}
-          <div className="demo-notice">Design preview · Email delivery is not connected yet</div>
+          {auth.kind === 'development' ? <><h1>Developer <em>sign in.</em></h1><p>Connect to the local backend as the seeded development user.</p>
+            <form onSubmit={submit}><p><strong>troy@test.com</strong></p><Button className="primary-button submit-button" type="submit" disabled={busy}>{busy ? 'Signing in…' : 'Continue as Troy'} <ArrowRight size={18} /></Button></form>
+            <div className="demo-notice">Development mode · Uses the local test identity</div>
+          </> : <><h1>Welcome <em>back.</em></h1><p>Sign in or get started with a little help from your inbox. No password to remember.</p>
+            <form onSubmit={submit}><label htmlFor="email">Email address</label><div className="input-wrap"><Mail size={19} /><input id="email" type="email" placeholder="you@example.com" value={email} onChange={(event) => setEmail(event.target.value)} required autoComplete="email" /></div><Button className="primary-button submit-button" type="submit" disabled={busy}>Send me a magic link <ArrowRight size={18} /></Button></form>
+            <div className="demo-notice">Magic link authentication is not connected yet.</div>
+          </>}
+          {error && <p role="alert">{error}</p>}
         </div></div>
         <div className="auth-art"><div className="auth-art-overlay" /><div className="auth-art-content"><span>THE WORLD IS WAITING</span><h2>There’s more out there<br /><em>to discover.</em></h2><p>Make a plan. Bring your people. Go somewhere wonderful.</p></div><div className="auth-art-bottom"><Plane size={17} /> THE JOURNEY STARTS HERE</div></div>
       </main>}
