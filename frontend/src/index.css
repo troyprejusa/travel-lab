@@ -137,3 +137,24 @@
 @media(max-width:800px) { .app-sidebar { width:100%; padding:12px 16px; }.sidebar-brand { padding:0 0 10px; }.sidebar-signout { border:0; padding:10px 13px; }.app-main .workspace { padding:35px 6% 65px; }.dashboard-hero { min-height:245px; margin:-35px -6.82% 36px; padding:38px 6%; }.dashboard-stamp { width:90px; height:90px; }.dashboard-stamp strong { font-size:14px; }.app-main .page-heading { align-items:flex-start; }.trip-hero { min-height:230px; padding:26px; } }
 @media(max-width:520px) { .dashboard-stamp { display:none; }.dashboard-hero { min-height:225px; }.dashboard-hero h1 { font-size:34px; }.app-main .page-heading .actions { width:100%; }.app-main .page-heading .actions button { flex:1; }.trip-grid { grid-template-columns:1fr; }.trip-card img { height:190px; }.overview-shortcuts { gap:10px; }.shortcut-card { padding:15px; min-height:140px; }.shortcut-arrow { right:15px; top:19px; } }
 @media(prefers-reduced-motion:reduce) { .trip-card img,.shortcut-card { transition:none; } }
+
+/* Adjustments from signed-in walkthrough */
+.trip-card > .trip-card-image { padding:0; }
+@media (min-width:801px) {
+  .app-sidebar { overflow-y:auto; }
+  .sidebar-nav { overflow:visible; flex:none; }
+  .sidebar-signout { flex:none; margin-top:auto; }
+}
+@media (min-width:801px) and (max-height:850px) {
+  .app-sidebar { padding-top:20px; }
+  .sidebar-brand { padding-bottom:18px; }
+  .sidebar-label { margin-top:12px; margin-bottom:4px; }
+  .sidebar-nav a { min-height:40px; padding-top:8px; padding-bottom:8px; }
+  .sidebar-signout { padding-top:12px; }
+}
+@media (min-width:801px) and (max-width:1150px) { .itinerary-layout { grid-template-columns:1fr; }.calendar-card { max-width:none; } }
+.settings-action + .settings-action { margin-top:14px; }
+.settings-action p { margin-bottom:16px; }
+.danger-card { border-color:#f0d9d9!important; }
+.danger-button { color:#a33142!important; border-color:#e7bec4!important; background:#fffafa!important; }
+.danger-button:hover { background:#fbecee!important; }
