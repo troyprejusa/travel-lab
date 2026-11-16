@@ -72,3 +72,27 @@
 .form-card select { width:100%; border:1px solid #ded9d5; border-radius:8px; padding:12px; font-size:16px; background:white; }
 .overview-links { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; margin-top:18px; }
 .overview-links a { color:#6040a4; text-decoration:none; font-weight:700; }
+
+/* Signed-in shell */
+.app-shell { display:flex; min-height:100vh; max-width:none; overflow:visible; background:#faf8f6; }
+.app-main { flex:1; min-width:0; }
+.app-sidebar { width:230px; flex:none; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; padding:28px 16px 20px; background:#fffdfb; border-right:1px solid #ebe5e1; }
+.sidebar-brand { padding:0 8px 30px; }
+.sidebar-nav { display:flex; flex-direction:column; gap:3px; overflow:auto; }
+.sidebar-nav a,.sidebar-signout { display:flex; align-items:center; gap:13px; min-height:44px; padding:10px 13px; border-radius:9px; color:#485161; text-decoration:none; font-size:14px; font-weight:600; }
+.sidebar-nav a:hover,.sidebar-nav a.active { color:#5635a0; background:#eee8f6; }
+.sidebar-label { color:#aaa2a6; font-size:10px; font-weight:700; letter-spacing:1.3px; margin:20px 13px 7px; }
+.sidebar-signout { margin-top:auto; background:none; border:0; text-align:left; }.sidebar-signout:hover { color:#5635a0; }
+.app-main .workspace { max-width:1220px; padding:48px clamp(24px,5vw,70px) 80px; }
+.app-main .page-heading h1 { font-family:'DM Sans',sans-serif; font-size:clamp(30px,3vw,42px); font-weight:700; letter-spacing:-1.3px; }
+.app-main .page-heading { margin-bottom:28px; }
+.dashboard-hero { margin:-48px calc(-1 * clamp(24px,5vw,70px)) 42px; padding:55px clamp(24px,5vw,70px); background:radial-gradient(ellipse at 88% 5%,#f7bdc7 0%,transparent 48%),radial-gradient(ellipse at 72% 100%,#b8a6d5 0%,transparent 42%),linear-gradient(100deg,#f8f0ec,#fbe4de); }
+.dashboard-hero h1 { font-size:clamp(30px,3vw,42px); font-weight:700; letter-spacing:-1.4px; margin:12px 0 5px; }.dashboard-hero p { color:#626574; }
+.trips-workspace .page-heading h1 { font-size:26px; margin:7px 0; }.trip-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:20px; }
+.trip-card { display:block; overflow:hidden; border:1px solid #ebe5e1; border-radius:14px; background:#fff; color:#192438; text-decoration:none; box-shadow:0 4px 15px #40302c0a; transition:transform .2s,box-shadow .2s; }.trip-card:hover { transform:translateY(-3px); box-shadow:0 12px 30px #40302c1a; }.trip-card img { width:100%; height:155px; object-fit:cover; }.trip-card>div { padding:18px; }.trip-card h2 { font-size:18px; font-weight:700; margin:6px 0; }.trip-card h2 span { float:right; color:#8c76b5; }.trip-card p { color:#777884; font-size:12px; margin:0; }.trip-card-type { text-transform:uppercase; font-size:9px; letter-spacing:1.3px; color:#9876ac; font-weight:700; }
+.trip-hero { min-height:245px; border-radius:16px; background-position:center; background-size:cover; padding:36px; color:white; display:flex; flex-direction:column; justify-content:end; margin-bottom:24px; }.trip-hero span { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; }.trip-hero h1 { font-size:clamp(34px,4vw,50px); font-weight:700; margin:8px 0; letter-spacing:-1px; }.trip-hero p { color:#ffffffe3; }
+.app-main .resource-card,.app-main .form-card { border-color:#ede6e2; box-shadow:0 4px 18px #2d1e1608; }.app-main .resource-card { border-radius:14px; }.app-main .overview-links a { min-height:110px; display:flex; align-items:end; background:linear-gradient(135deg,#f8f3fa,#fff); }.app-main .empty-state { border:1px dashed #d9ccdf; background:#f8f3fa; padding:48px 24px; }
+.app-main .message-feed { background:linear-gradient(#fffdfc,#faf7fc); }.app-main .poll-option { transition:background .15s,border-color .15s; }.app-main .poll-option:not(:disabled):hover { background:#eee8f6; border-color:#b09bcf; }
+@media(max-width:800px) { .app-shell { display:block; }.app-sidebar { position:relative; width:100%; height:auto; padding:12px 16px; border-right:0; border-bottom:1px solid #ebe5e1; }.sidebar-brand { padding:0 0 10px; }.sidebar-nav { flex-direction:row; overflow-x:auto; gap:4px; scrollbar-width:thin; }.sidebar-nav a { white-space:nowrap; min-height:44px; }.sidebar-label { display:none; }.sidebar-signout { position:absolute; right:16px; top:15px; font-size:12px; }.app-main .workspace { padding:35px 6% 65px; }.dashboard-hero { margin:-35px -6.82% 32px; padding:42px 6%; }.trip-hero { min-height:210px; padding:25px; }.trip-grid { grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); } }
+@media(max-width:440px) { .trip-grid { grid-template-columns:1fr; }.trip-card img { height:180px; }.dashboard-hero h1 { font-size:30px; } }
+@media(prefers-reduced-motion:reduce) { .trip-card { transition:none; } }

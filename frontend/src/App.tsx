@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { auth } from '@/auth/auth'
 import Header from '@/components/layout/Header'
+import Sidebar from '@/components/layout/Sidebar'
 import Footer from '@/components/layout/Footer'
 import TripLayout from '@/components/layout/TripLayout'
 import LandingPage from '@/pages/LandingPage'
@@ -25,9 +26,12 @@ function ProtectedLayout({ signedIn }: { signedIn: boolean }) {
 export default function App() {
   const [signedIn, setSignedIn] = useState(() => !!auth.getToken())
   const navigate = useNavigate()
+  const location = useLocation()
+  const appView = signedIn && location.pathname !== '/' && location.pathname !== '/login' && location.pathname !== '/sign-in'
   function signOut() { auth.signOut(); setSignedIn(false); navigate('/') }
-  return <div className="site-shell">
-    <Header signedIn={signedIn} onSignOut={signOut} />
+  return <div className={appView ? "site-shell app-shell" : "site-shell"}>
+    {appView ? <Sidebar onSignOut={signOut} /> : <Header signedIn={signedIn} onSignOut={signOut} />}
+    <div className={appView ? "app-main" : undefined}>
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage onSignIn={() => setSignedIn(true)} />} />
@@ -47,6 +51,7 @@ export default function App() {
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
-    <Footer />
+    {!appView && <Footer />}
+    </div>
   </div>
 }
