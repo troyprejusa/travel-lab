@@ -40,3 +40,9 @@ The plan remains **11 application pages**: two public and nine signed-in. The la
 - Socket handlers validate a token on connect but do not visibly enforce trip membership or admin permissions for events, and some payloads supply the acting user. Backend authorization must be addressed before relying on these actions. The packing unclaim handler emits the claim event name; confirm or fix that contract.
 - There is no dedicated trip-detail GET or trip-update endpoint in the current router. The overview can derive details from the user's trip list initially; editing those details requires backend work.
 - When FastAPI serves the built frontend, its static-file middleware treats single-segment paths as files. Fix and verify direct navigation and refresh for paths such as `/login`, `/trips`, and `/settings` when connecting the router.
+
+## Current trip workflow implementation
+
+Trip list, overview, itinerary, packing, polls, messages, travellers, trip settings, and account editing now have initial backend-connected interfaces. Poll voting and messages use Socket.IO; other mutations use REST and reload the current view. REST mutations do not broadcast to other clients yet. The itinerary is a chronological agenda, not a calendar grid. Account deletion and production authentication remain unimplemented.
+
+Socket authorization remains a backend gap: token validation alone does not establish trip membership or prevent impersonated event payloads. Address this before production use. The current frontend identity handling uses the development token as an email and must be replaced when production authentication is implemented.

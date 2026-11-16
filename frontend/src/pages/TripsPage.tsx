@@ -1,21 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { apiFetch } from '@/lib/api'
-
-type Trip = { id: string; destination: string; start_date: string; end_date: string }
+import { Button } from '@/components/ui/button'
+type Trip = { id:string; destination:string; start_date:string; end_date:string }
 export default function TripsPage() {
-  const [trips, setTrips] = useState<Trip[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  useEffect(() => {
-    const controller = new AbortController()
-    apiFetch('/user/trips', { signal: controller.signal }).then(async response => {
-      if (!response.ok) throw new Error(`Unable to load trips (HTTP ${response.status}).`)
-      setTrips(await response.json())
-    }).catch(err => { if (err.name !== 'AbortError') setError(err.message) }).finally(() => { if (!controller.signal.aborted) setLoading(false) })
-    return () => controller.abort()
-  }, [])
-  return <main className="page-content"><span className="section-kicker">YOUR TRIPS</span><h1>Your next adventure.</h1>
-    {loading ? <p>Loading trips…</p> : error ? <p role="alert">{error}</p> : trips.length === 0 ? <p>Your trips will appear here.</p> : trips.map(trip => <article key={trip.id}><h2><Link to={`/trips/${encodeURIComponent(trip.id)}`}>{trip.destination}</Link></h2><p>{trip.start_date} – {trip.end_date}</p></article>)}
-  </main>
+ const [trips,setTrips]=useState<Trip[]>([]); const [loading,setLoading]=useState(true); const [error,setError]=useState(''); const [form,setForm]=useState<'create'|'join'|null>(null)
+ const load=useCallback(async()=>{try {const r=await apiFetch('/user/trips'); if(!r.ok) throw new Error('Unable to load trips.'); setTrips(await r.json()); setError('')} catch(e){setError(e instanceof Error?e.message:'Unable to load trips.')} finally{setLoading(false)}},[])
+ useEffect(()=>{void load()},[load])
+ async function submit(e:FormEvent<HTMLFormElement>) { e.preventDefault(); const el=e.currentTarget; const data=new FormData(el); const joinId=String(data.get('trip_id')||'').trim(); if(form==='create' && String(data.get('end_date')) < String(data.get('start_date'))) {setError('End date must be on or after the start date.');return} try {const r=await apiFetch(form==='join'?`/user/trips/${encodeURIComponent(joinId)}`:'/trip/', {method:'POST',...(form==='create'?{body:data}:{})}); if(!r.ok) throw new Error(`Request failed (HTTP ${r.status}).`); setForm(null); await load()}catch(e){setError(e instanceof Error?e.message:'Request failed.')} }
+ return <main className="workspace"><div className="page-heading"><div><span className="section-kicker">YOUR ADVENTURES</span><h1>My trips</h1><p>All the places you’re planning to go.</p></div><div className="actions"><Button variant="outline" onClick={()=>setForm(form==='join'?null:'join')}>Join a trip</Button><Button className="primary-button" onClick={()=>setForm(form==='create'?null:'create')}>+ Create trip</Button></div></div>
+ {form && <form className="form-card" onSubmit={submit}>{form==='join'?<label>Trip ID<input name="trip_id" required /></label>:<><label>Destination<input name="destination" required /></label><label>Start date<input type="date" name="start_date" required /></label><label>End date<input type="date" name="end_date" required /></label><label>Trip type<select name="vacation_type">{['tropical','wilderness','city','historical','countryside','road_trip','winter'].map(x=><option key={x} value={x}>{x.replace('_',' ')}</option>)}</select></label><label>Description<input name="description" /></label></>}<div className="actions"><Button>{form==='join'?'Request to join':'Create trip'}</Button><Button type="button" variant="ghost" onClick={()=>setForm(null)}>Cancel</Button></div></form>}
+ {error && <p role="alert" className="form-error">{error}</p>}{loading?<p>Loading trips…</p>:!trips.length?<p className="empty-state">Your trips will appear here.</p>:<div className="card-list">{trips.map(trip=><article className="resource-card" key={trip.id}><h2><Link to={`/trips/${encodeURIComponent(trip.id)}`}>{trip.destination} →</Link></h2><p>{trip.start_date} – {trip.end_date}</p></article>)}</div>}</main>
 }

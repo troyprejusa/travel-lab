@@ -22,3 +22,53 @@
 .trip-nav { display: flex; gap: 24px; overflow-x: auto; padding: 20px 7%; border-bottom: 1px solid #eee8e4; }
 .trip-nav a { color: #65616e; font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap; }
 .trip-nav a.active, .navigation a.active { color: #6543a6; }
+
+/* Navigation stays usable with touch and keyboard at every width. */
+.site-header { position: relative; }
+:where(a, button):focus-visible { outline: 2px solid #8060bf; outline-offset: 3px; }
+@media (max-width: 800px) {
+  .navigation { top: 100%; gap: 0; }
+  .navigation > a:not(.nav-button), .navigation > button { display: flex; align-items: center; min-height: 48px; width: 100%; text-align: left; }
+  .menu-toggle { display: grid; place-items: center; width: 44px; height: 44px; }
+  .trip-nav { gap: 4px; flex-wrap: wrap; overflow: visible; padding: 10px 6%; }
+  .trip-nav a { display: flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 8px; }
+  .trip-nav a.active { background: #eee8f6; }
+  .page-content { padding: 44px 6%; }
+  .input-wrap input { font-size: 16px; }
+}
+@media (max-width: 420px) {
+  .hero h1 { font-size: clamp(42px, 12vw, 54px); }
+  .floating-card { right: 12px; max-width: calc(100% - 24px); }
+  .image-bottom { bottom: 115px; }
+  .auth-content h1 { font-size: clamp(42px, 12vw, 54px); }
+  .footer-brand { flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* Trip workspaces */
+.workspace { max-width: 1050px; margin: auto; padding: 56px 7% 80px; min-height: 60vh; }
+.page-heading { display:flex; justify-content:space-between; align-items:center; gap:24px; margin-bottom:30px; }
+.page-heading h1 { font:400 clamp(38px,5vw,56px)/1.1 'DM Serif Display',serif; margin:12px 0; }
+.page-heading p,.resource-card p { color:#6b6c76; line-height:1.6; margin:6px 0; }
+.card-list { display:grid; gap:14px; margin-top:20px; }
+.resource-card,.form-card { padding:22px; background:white; border:1px solid #eee8e4; border-radius:12px; }
+.resource-card h2 { font-size:17px; font-weight:700; margin:0 0 6px; }
+.item-row { display:flex; justify-content:space-between; align-items:center; gap:18px; }
+.actions { display:flex; flex-wrap:wrap; gap:6px; }
+.muted { color:#837d88; font-size:12px; }
+.form-card { display:grid; gap:15px; margin-bottom:20px; }
+.form-card label { display:grid; gap:7px; font-size:13px; font-weight:700; }
+.form-card input,.form-card textarea,.composer input { width:100%; border:1px solid #ded9d5; border-radius:8px; padding:12px; font-size:16px; background:white; }
+.form-card button { justify-self:start; }
+.empty-state { padding:35px; text-align:center; color:#77717a; background:#f3eeea; border-radius:12px; }
+.form-error { color:#a52940; }
+.poll-options { display:grid; gap:8px; margin:18px 0; }
+.poll-option { display:flex; justify-content:space-between; gap:12px; text-align:left; border:1px solid #e4ddef; border-radius:8px; padding:13px; color:#503388; background:#faf8fd; }
+.poll-option:disabled { opacity:.6; }
+.message-feed { display:flex; flex-direction:column; gap:14px; min-height:250px; max-height:55vh; overflow:auto; padding:20px; border:1px solid #eee8e4; border-radius:12px; background:#fff; }
+.message { align-self:flex-start; max-width:80%; }.message-own { align-self:flex-end; }.message-meta { font-size:11px; color:#8a8391; margin:0 4px 5px; overflow-wrap:anywhere; }.message p { background:#f1edf5; padding:12px 15px; border-radius:16px 16px 16px 4px; white-space:pre-wrap; overflow-wrap:anywhere; }.message-own p { color:#fff; background:#6543a6; border-radius:16px 16px 4px 16px; }
+.composer { display:flex; gap:10px; margin-top:14px; }.composer button { height:auto; }.trip-id { display:block; overflow-wrap:anywhere; color:#6543a6; margin-top:10px; }
+@media(max-width: 700px) { .workspace { padding:40px 6% 65px; }.page-heading { align-items:flex-start; flex-direction:column; }.item-row { align-items:flex-start; flex-direction:column; }.message { max-width:90%; } }
+.form-card select { width:100%; border:1px solid #ded9d5; border-radius:8px; padding:12px; font-size:16px; background:white; }
+.overview-links { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; margin-top:18px; }
+.overview-links a { color:#6040a4; text-decoration:none; font-weight:700; }

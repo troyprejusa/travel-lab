@@ -38,7 +38,7 @@ class WebSocketHandler(socketio.AsyncNamespace):
 
             # Enter the correct room for this trip
             trip_id = WebSocketHandler.parse_trip_id(environ['QUERY_STRING'])
-            self.enter_room(sid, trip_id)
+            await self.enter_room(sid, trip_id)
 
         except jwt.exceptions.InvalidTokenError as token_error:
             models_logger.warning(f'{self.__class__.__name__}.on_connect: Invalid token\n{token_error}')
@@ -218,11 +218,11 @@ class MsgSocket(WebSocketHandler):
 sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins=[
     # Set the hosts allowed to connect to this server (IMPORTANT!)
     'http://travel-lab.dev:5173',   # Vite dev server
-    constants.HOST                  # Web host                  
-])
+    constants.HOST                  # Web host
+] + (['http://localhost:5173', 'http://127.0.0.1:5173'] if constants.MODE != constants.Mode.PRODUCTION else []))
 sio.register_namespace(ItinerarySocket('/itinerary'))
 sio.register_namespace(PollSocket('/poll'))
 sio.register_namespace(PackingSocket('/packing'))
 sio.register_namespace(MsgSocket('/message'))
 
-socketio_ASGI = socketio.ASGIApp(sio)   # Create ASGI wrapped version
+socketio_ASGI = socketio.ASGIApp(sio, socketio_path='sio/socket.io')   # Mounted at /sio

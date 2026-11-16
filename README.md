@@ -19,12 +19,9 @@ together to plan a trip all in one place.
 
 #### Frontend
 
-- TypeScript
-- React | React Router
-- Redux Toolkit | Thunks
-- Socket.io Client
-- Auth0 React SPA SDK
-- Chakra-UI
+- React and TypeScript
+- Vite
+- Tailwind CSS and shadcn/ui
 
 #### Backend
 
@@ -43,15 +40,7 @@ together to plan a trip all in one place.
 
 ### Environment Variables
 
-In development, .env files are used to set all necessary environment variables. In both the React application and the FastAPI application, all loading of environment variables is done in a Constants module, which is then utilized across the application. Therefore, you can find the necessary environment variables necessary in the following files:
-
-```
-// Frontend:
-frontend/src/utilities/Constants.ts
-
-# Backend:
-backend/src/utilities/constants.py
-```
+Backend configuration is documented in `backend/src/utilities/constants.py`. The new frontend scaffold does not require environment variables.
 
 ### Network Hosts
 
@@ -73,5 +62,7 @@ Run Vite locally outside Docker to serve the frontend over HTTP with hot module 
 ### Starting Development Mode
 From the repository root, run `docker compose -f backend/docker-compose.yaml up` to start the API and dev database.
 
-- If you are going to use the Vite dev server to serve the application, open another terminal and enter command `npm run dev`
-- If you are going to use the FastAPI app to serve the application, from the `/frontend` folder run `npm run build` with the **deployment** environment variable set to **"local"**. The built bundle is volume-mounted into the container so it will be available to be served immediately.
+- If you are going to use the Vite dev server to serve the application, open another terminal, run `cd frontend`, then `npm install` and `npm run dev`
+- If you are going to use the FastAPI app to serve the application, from the `/frontend` folder run `npm run build`. The built bundle is volume-mounted into the container so it will be available to be served immediately.
+
+The Vite development server runs on HTTP at `http://localhost:5173` by default. It forwards `/dev` and `/api/v1` requests and `/sio` WebSocket traffic to `http://localhost:8000`. To add a shadcn/ui component, run `npx shadcn@latest add <component>` from `frontend`.
