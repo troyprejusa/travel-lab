@@ -13,7 +13,6 @@ import ItineraryPage from '@/pages/ItineraryPage'
 import PackingPage from '@/pages/PackingPage'
 import PollsPage from '@/pages/PollsPage'
 import MessagesPage from '@/pages/MessagesPage'
-import TravellersPage from '@/pages/TravellersPage'
 import TripSettingsPage from '@/pages/TripSettingsPage'
 import AccountSettingsPage from '@/pages/AccountSettingsPage'
 import NotFoundPage from '@/pages/NotFoundPage'
@@ -45,7 +44,7 @@ export default function App() {
           <Route path="packing" element={<PackingPage />} />
           <Route path="polls" element={<PollsPage />} />
           <Route path="messages" element={<MessagesPage />} />
-          <Route path="travellers" element={<TravellersPage />} />
+          <Route path="travellers" element={<Navigate to=".." replace />} />
           <Route path="settings" element={<TripSettingsPage />} />
         </Route>
       </Route>

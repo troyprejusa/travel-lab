@@ -4,7 +4,7 @@ This is the route plan for the current backend. Routes are browser URLs, separat
 
 ## Pages
 
-The plan remains **11 application pages**: two public and nine signed-in. The landing page is a mockup, login has a working development path, and My trips is a partial integration. The other eight pages now have navigable placeholders. A not-found page is in place; a production auth callback may require another route.
+The plan remains **10 application pages**: two public and eight signed-in. The landing page is a mockup, login has a working development path, and My trips is a partial integration. The other eight pages now have navigable placeholders. A not-found page is in place; a production auth callback may require another route.
 
 | Route | Page | Status and remaining work |
 | --- | --- | --- |
@@ -16,7 +16,6 @@ The plan remains **11 application pages**: two public and nine signed-in. The la
 | `/trips/:tripId/packing` | Packing | Placeholder: list and add items, claim or unclaim them, and delete items. |
 | `/trips/:tripId/polls` | Polls | Placeholder: list, create, vote on, and delete polls. |
 | `/trips/:tripId/messages` | Messages | Placeholder: read and send messages; clear the history. |
-| `/trips/:tripId/travellers` | Travellers | Placeholder: list travellers and requests; accept or remove travellers. |
 | `/trips/:tripId/settings` | Trip settings | Placeholder: show permissions, leave the trip, or delete it. |
 | `/settings` | Account settings | Placeholder: update name and phone, and delete the account. |
 
@@ -43,6 +42,6 @@ The plan remains **11 application pages**: two public and nine signed-in. The la
 
 ## Current trip workflow implementation
 
-Trip list, overview, itinerary, packing, polls, messages, travellers, trip settings, and account editing now have initial backend-connected interfaces. Poll voting and messages use Socket.IO; other mutations use REST and reload the current view. REST mutations do not broadcast to other clients yet. The itinerary is a chronological agenda, not a calendar grid. Account deletion and production authentication remain unimplemented.
+Trip list, overview, itinerary, packing, polls, messages, travellers, trip settings, and account editing now have initial backend-connected interfaces. Poll voting and messages use Socket.IO; other mutations use REST and reload the current view. REST mutations do not broadcast to other clients yet. The itinerary combines a month calendar with a chronological agenda. Traveller contacts and requests are on the trip overview. Account deletion and production authentication remain unimplemented.
 
 Socket authorization remains a backend gap: token validation alone does not establish trip membership or prevent impersonated event payloads. Address this before production use. The current frontend identity handling uses the development token as an email and must be replaced when production authentication is implemented.

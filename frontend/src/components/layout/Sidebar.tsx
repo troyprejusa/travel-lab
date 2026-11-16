@@ -1,7 +1,7 @@
-import { CalendarDays, Compass, LayoutDashboard, LogOut, Luggage, MessageCircle, Plane, Settings, Users, Vote } from 'lucide-react'
+import { CalendarDays, Compass, LayoutDashboard, LogOut, Luggage, MessageCircle, Plane, Settings, Vote } from 'lucide-react'
 import { Link, NavLink, useMatch } from 'react-router-dom'
 
-const sections = [ ['', 'Overview', LayoutDashboard], ['itinerary', 'Itinerary', CalendarDays], ['packing', 'Packing', Luggage], ['polls', 'Polls', Vote], ['messages', 'Messages', MessageCircle], ['travellers', 'Travellers', Users], ['settings', 'Trip settings', Settings] ] as const
+const sections = [ ['', 'Overview', LayoutDashboard], ['itinerary', 'Itinerary', CalendarDays], ['packing', 'Packing', Luggage], ['polls', 'Polls', Vote], ['messages', 'Messages', MessageCircle], ['settings', 'Trip settings', Settings] ] as const
 export default function Sidebar({ onSignOut }: { onSignOut: () => void }) {
   const match = useMatch('/trips/:tripId/*')
   const root = match?.params.tripId ? `/trips/${encodeURIComponent(match.params.tripId)}` : null
