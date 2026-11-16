@@ -1,3 +1,5 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet } from "react-router-dom";
 
-export default function TripLayout() { return <Outlet /> }
+export default function TripLayout() {
+  return <Outlet />;
+}

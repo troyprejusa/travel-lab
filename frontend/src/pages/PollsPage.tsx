@@ -1,19 +1,226 @@
-import { useTripAdmin } from '@/hooks/useTripAdmin'
-import { useState, type FormEvent } from 'react'
-import { Check, MessageCircleQuestion, Plus, Trash2, Users } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { ResourceState } from '@/components/layout/ResourceState'
-import { useTripResource } from '@/hooks/useTripResource'
-import { auth } from '@/auth/auth'
-type Poll = { poll_id: number; title: string; description: string | null; options: { option_id: number; option: string; votes: string[] }[] }
+import { useTripAdmin } from "@/hooks/useTripAdmin";
+import { useState, type FormEvent } from "react";
+import {
+  Check,
+  MessageCircleQuestion,
+  Plus,
+  Trash2,
+  Users,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ResourceState } from "@/components/layout/ResourceState";
+import { useTripResource } from "@/hooks/useTripResource";
+import { auth } from "@/auth/auth";
+type Poll = {
+  poll_id: number;
+  title: string;
+  description: string | null;
+  options: { option_id: number; option: string; votes: string[] }[];
+};
 export default function PollsPage() {
-  const admin = useTripAdmin()
-  const { data, loading, error, mutate, tripId, socket, connected } = useTripResource<Poll>('poll', 'poll')
-  const [adding, setAdding] = useState(false)
-  const [formError, setFormError] = useState('')
-  async function add(e: FormEvent<HTMLFormElement>) { e.preventDefault(); const form = e.currentTarget; const fields = new FormData(form); const options = String(fields.get('options')).split('\n').map(x => x.trim()).filter(Boolean); if (options.length < 2) { setFormError('Add at least two options.'); return } setFormError(''); if (await mutate('', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ trip_id: tripId, created_by: auth.getToken(), title: fields.get('title'), description: fields.get('description') || null, options }) })) { form.reset(); setAdding(false) } }
-  return <main className="workspace polls-page"><div className="page-heading"><div><span className="section-kicker">GOOD PLANS ARE A GROUP EFFORT</span><h1>Let’s decide</h1><p>Put the choices out there and see what everyone thinks.</p></div><Button className="primary-button" onClick={() => setAdding(!adding)}>{adding ? 'Cancel' : <><Plus size={17}/> New poll</>}</Button></div>
-  {adding && <form className="form-card" onSubmit={add}><label>Question<input name="title" required placeholder="What should we do first?" /></label><label>Details (optional)<input name="description" /></label><label>Options, one per line<textarea name="options" rows={4} required placeholder={'Beach day\nMountain hike'} /></label>{formError && <p role="alert" className="form-error">{formError}</p>}<Button>Post poll</Button></form>}
-  <ResourceState loading={loading} error={error} />{!loading && !error && <><div className="polls-intro"><div className="polls-intro-icon"><MessageCircleQuestion size={24}/></div><div><span className="summary-kicker">YOUR GROUP’S TAKE</span><h2>Big plans, little decisions.</h2><p>From dinner spots to day trips, make the call together.</p></div><span className="poll-count">{data.length} {data.length === 1 ? 'poll' : 'polls'}</span></div><div className="polls-section-heading"><div><span className="section-kicker">HAVE YOUR SAY</span><h2>Group polls</h2></div><span className={`live-indicator ${connected?'is-live':''}`}><i/>{connected?'Live voting':'Connecting to live voting…'}</span></div>
-  {!data.length ? <div className="packing-empty"><MessageCircleQuestion size={25}/><h3>No polls yet</h3><p>Ask your group a question to get started.</p></div> : <div className="poll-grid">{data.map(poll => { const total = poll.options.reduce((n,o) => n + o.votes.length,0); return <article className="poll-card" key={poll.poll_id}><div className="poll-card-top"><span className="poll-label">GROUP QUESTION</span>{admin && <Button variant="ghost" size="icon" aria-label={`Delete poll ${poll.title}`} onClick={() => { if (window.confirm('Delete this poll?')) void mutate(`/${poll.poll_id}`,{ method:'DELETE' }) }}><Trash2 size={16}/></Button>}</div><h3>{poll.title}</h3>{poll.description && <p className="poll-description">{poll.description}</p>}<div className="poll-options">{poll.options.map(option => { const percent = total ? Math.round(option.votes.length / total * 100) : 0; const selected = !!auth.getToken() && option.votes.includes(auth.getToken()!); return <button key={option.option_id} className={`poll-choice ${selected?'selected':''}`} disabled={!connected} aria-pressed={selected} onClick={() => socket?.emit('frontend_vote', { trip_id:tripId, poll_id:poll.poll_id, option_id:option.option_id, voted_by:auth.getToken() })}><span className="poll-choice-fill" style={{width:`${percent}%`}}/><span className="poll-choice-name"><span className="poll-choice-radio">{selected && <Check size={12}/>}</span>{option.option}</span><strong>{percent}%</strong></button> })}</div><div className="poll-footer"><span><Users size={15}/> {total} {total === 1 ? 'vote' : 'votes'}</span><span>{connected ? 'Select an option to vote' : 'Voting unavailable while connecting'}</span></div></article> })}</div>}</>}</main>
+  const admin = useTripAdmin();
+  const { data, loading, error, mutate, tripId, socket, connected } =
+    useTripResource<Poll>("poll", "poll");
+  const [adding, setAdding] = useState(false);
+  const [formError, setFormError] = useState("");
+  async function add(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const fields = new FormData(form);
+    const options = String(fields.get("options"))
+      .split("\n")
+      .map((x) => x.trim())
+      .filter(Boolean);
+    if (options.length < 2) {
+      setFormError("Add at least two options.");
+      return;
+    }
+    setFormError("");
+    if (
+      await mutate("", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          trip_id: tripId,
+          created_by: auth.getToken(),
+          title: fields.get("title"),
+          description: fields.get("description") || null,
+          options,
+        }),
+      })
+    ) {
+      form.reset();
+      setAdding(false);
+    }
+  }
+  return (
+    <main className="workspace polls-page">
+      <div className="page-heading">
+        <div>
+          <span className="section-kicker">GOOD PLANS ARE A GROUP EFFORT</span>
+          <h1>Let’s decide</h1>
+          <p>Put the choices out there and see what everyone thinks.</p>
+        </div>
+        <Button className="primary-button" onClick={() => setAdding(!adding)}>
+          {adding ? (
+            "Cancel"
+          ) : (
+            <>
+              <Plus size={17} /> New poll
+            </>
+          )}
+        </Button>
+      </div>
+      {adding && (
+        <form className="form-card" onSubmit={add}>
+          <label>
+            Question
+            <input
+              name="title"
+              required
+              placeholder="What should we do first?"
+            />
+          </label>
+          <label>
+            Details (optional)
+            <input name="description" />
+          </label>
+          <label>
+            Options, one per line
+            <textarea
+              name="options"
+              rows={4}
+              required
+              placeholder={"Beach day\nMountain hike"}
+            />
+          </label>
+          {formError && (
+            <p role="alert" className="form-error">
+              {formError}
+            </p>
+          )}
+          <Button>Post poll</Button>
+        </form>
+      )}
+      <ResourceState loading={loading} error={error} />
+      {!loading && !error && (
+        <>
+          <div className="polls-intro">
+            <div className="polls-intro-icon">
+              <MessageCircleQuestion size={24} />
+            </div>
+            <div>
+              <span className="summary-kicker">YOUR GROUP’S TAKE</span>
+              <h2>Big plans, little decisions.</h2>
+              <p>From dinner spots to day trips, make the call together.</p>
+            </div>
+            <span className="poll-count">
+              {data.length} {data.length === 1 ? "poll" : "polls"}
+            </span>
+          </div>
+          <div className="polls-section-heading">
+            <div>
+              <span className="section-kicker">HAVE YOUR SAY</span>
+              <h2>Group polls</h2>
+            </div>
+            <span className={`live-indicator ${connected ? "is-live" : ""}`}>
+              <i />
+              {connected ? "Live voting" : "Connecting to live voting…"}
+            </span>
+          </div>
+          {!data.length ? (
+            <div className="packing-empty">
+              <MessageCircleQuestion size={25} />
+              <h3>No polls yet</h3>
+              <p>Ask your group a question to get started.</p>
+            </div>
+          ) : (
+            <div className="poll-grid">
+              {data.map((poll) => {
+                const total = poll.options.reduce(
+                  (n, o) => n + o.votes.length,
+                  0,
+                );
+                return (
+                  <article className="poll-card" key={poll.poll_id}>
+                    <div className="poll-card-top">
+                      <span className="poll-label">GROUP QUESTION</span>
+                      {admin && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label={`Delete poll ${poll.title}`}
+                          onClick={() => {
+                            if (window.confirm("Delete this poll?"))
+                              void mutate(`/${poll.poll_id}`, {
+                                method: "DELETE",
+                              });
+                          }}
+                        >
+                          <Trash2 size={16} />
+                        </Button>
+                      )}
+                    </div>
+                    <h3>{poll.title}</h3>
+                    {poll.description && (
+                      <p className="poll-description">{poll.description}</p>
+                    )}
+                    <div className="poll-options">
+                      {poll.options.map((option) => {
+                        const percent = total
+                          ? Math.round((option.votes.length / total) * 100)
+                          : 0;
+                        const selected =
+                          !!auth.getToken() &&
+                          option.votes.includes(auth.getToken()!);
+                        return (
+                          <button
+                            key={option.option_id}
+                            className={`poll-choice ${selected ? "selected" : ""}`}
+                            disabled={!connected}
+                            aria-pressed={selected}
+                            onClick={() =>
+                              socket?.emit("frontend_vote", {
+                                trip_id: tripId,
+                                poll_id: poll.poll_id,
+                                option_id: option.option_id,
+                                voted_by: auth.getToken(),
+                              })
+                            }
+                          >
+                            <span
+                              className="poll-choice-fill"
+                              style={{ width: `${percent}%` }}
+                            />
+                            <span className="poll-choice-name">
+                              <span className="poll-choice-radio">
+                                {selected && <Check size={12} />}
+                              </span>
+                              {option.option}
+                            </span>
+                            <strong>{percent}%</strong>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <div className="poll-footer">
+                      <span>
+                        <Users size={15} /> {total}{" "}
+                        {total === 1 ? "vote" : "votes"}
+                      </span>
+                      <span>
+                        {connected
+                          ? "Select an option to vote"
+                          : "Voting unavailable while connecting"}
+                      </span>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
+    </main>
+  );
 }

@@ -1,16 +1,222 @@
-import { useCallback, useEffect, useState, type FormEvent } from 'react'
-import { Link } from 'react-router-dom'
-import { ArrowRight, CalendarDays, Compass, Plus, Users } from 'lucide-react'
-import { apiFetch } from '@/lib/api'
-import { Button } from '@/components/ui/button'
-function formatDate(value: string) { const date = new Date(`${value.slice(0, 10)}T12:00:00`); return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) }
-type Trip = { id:string; destination:string; start_date:string; end_date:string; vacation_type:string }
+import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight, CalendarDays, Compass, Plus, Users } from "lucide-react";
+import { apiFetch } from "@/lib/api";
+import { Button } from "@/components/ui/button";
+function formatDate(value: string) {
+  const date = new Date(`${value.slice(0, 10)}T12:00:00`);
+  return Number.isNaN(date.getTime())
+    ? value
+    : date.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+}
+type Trip = {
+  id: string;
+  destination: string;
+  start_date: string;
+  end_date: string;
+  vacation_type: string;
+};
 export default function TripsPage() {
- const [trips,setTrips]=useState<Trip[]>([]); const [loading,setLoading]=useState(true); const [error,setError]=useState(''); const [form,setForm]=useState<'create'|'join'|null>(null)
- const load=useCallback(async()=>{try {const r=await apiFetch('/user/trips'); if(!r.ok) throw new Error('Unable to load trips.'); setTrips(await r.json()); setError('')} catch(e){setError(e instanceof Error?e.message:'Unable to load trips.')} finally{setLoading(false)}},[])
- useEffect(()=>{void load()},[load])
- async function submit(e:FormEvent<HTMLFormElement>) { e.preventDefault(); const el=e.currentTarget; const data=new FormData(el); const joinId=String(data.get('trip_id')||'').trim(); if(form==='create' && String(data.get('end_date')) < String(data.get('start_date'))) {setError('End date must be on or after the start date.');return} try {const r=await apiFetch(form==='join'?`/user/trips/${encodeURIComponent(joinId)}`:'/trip/', {method:'POST',...(form==='create'?{body:data}:{})}); if(!r.ok) throw new Error(`Request failed (HTTP ${r.status}).`); setForm(null); await load()}catch(e){setError(e instanceof Error?e.message:'Request failed.')} }
- return <main className="workspace trips-workspace"><div className="dashboard-hero"><div className="dashboard-hero-copy"><span className="hero-label"><Compass size={15}/> YOUR TRAVEL LAB</span><h1>Good to see you.<br/><span>Where to next?</span></h1><p>All the plans, people, and possibilities for your next adventure, together in one place.</p></div></div><div className="page-heading"><div><span className="section-kicker">YOUR ADVENTURES</span><h1>My trips <span className="trip-count">{!loading && !error ? trips.length : "—"}</span></h1><p>All the places you’re planning to go.</p></div><div className="actions"><Button variant="outline" onClick={()=>setForm(form==='join'?null:'join')}><Users size={16}/> Join a trip</Button><Button className="primary-button" onClick={()=>setForm(form==='create'?null:'create')}><Plus size={17}/> Create trip</Button></div></div>
- {form && <form className="form-card" onSubmit={submit}>{form==='join'?<label>Trip ID<input name="trip_id" required /></label>:<><label>Destination<input name="destination" required /></label><label>Start date<input type="date" name="start_date" required /></label><label>End date<input type="date" name="end_date" required /></label><label>Trip type<select name="vacation_type">{['tropical','wilderness','city','historical','countryside','road_trip','winter'].map(x=><option key={x} value={x}>{x.replace('_',' ')}</option>)}</select></label><label>Description<input name="description" /></label></>}<div className="actions"><Button>{form==='join'?'Request to join':'Create trip'}</Button><Button type="button" variant="ghost" onClick={()=>setForm(null)}>Cancel</Button></div></form>}
- {error && <p role="alert" className="form-error">{error}</p>}{loading?<p>Loading trips…</p>:!error && !trips.length?<div className="empty-state trip-empty"><div className="empty-icon"><Compass size={25}/></div><h2>Your next adventure starts here</h2><p>Create a trip or join your travel companions to start planning together.</p><Button className="primary-button" onClick={()=>setForm("create")}><Plus size={17}/> Create your first trip</Button></div>:<div className="trip-grid">{trips.map(trip=><Link className="trip-card" to={`/trips/${encodeURIComponent(trip.id)}`} key={trip.id}><div className="trip-card-image"><img src={`/trip-${["tropical","wilderness","city","historical","countryside","road_trip","winter"].includes(trip.vacation_type) ? trip.vacation_type : "tropical"}.jpg`} alt="" /><span className="trip-card-arrow"><ArrowRight size={18}/></span></div><div className="trip-card-body"><span className="trip-card-type">{(trip.vacation_type || "trip").replace("_", " ")}</span><h2>{trip.destination}</h2><p><CalendarDays size={15}/> {formatDate(trip.start_date)} – {formatDate(trip.end_date)}</p></div></Link>)}</div>}</main>
+  const [trips, setTrips] = useState<Trip[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [form, setForm] = useState<"create" | "join" | null>(null);
+  const load = useCallback(async () => {
+    try {
+      const r = await apiFetch("/user/trips");
+      if (!r.ok) throw new Error("Unable to load trips.");
+      setTrips(await r.json());
+      setError("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Unable to load trips.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+  useEffect(() => {
+    void load();
+  }, [load]);
+  async function submit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const el = e.currentTarget;
+    const data = new FormData(el);
+    const joinId = String(data.get("trip_id") || "").trim();
+    if (
+      form === "create" &&
+      String(data.get("end_date")) < String(data.get("start_date"))
+    ) {
+      setError("End date must be on or after the start date.");
+      return;
+    }
+    try {
+      const r = await apiFetch(
+        form === "join"
+          ? `/user/trips/${encodeURIComponent(joinId)}`
+          : "/trip/",
+        { method: "POST", ...(form === "create" ? { body: data } : {}) },
+      );
+      if (!r.ok) throw new Error(`Request failed (HTTP ${r.status}).`);
+      setForm(null);
+      await load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Request failed.");
+    }
+  }
+  return (
+    <main className="workspace trips-workspace">
+      <div className="dashboard-hero">
+        <div className="dashboard-hero-copy">
+          <span className="hero-label">
+            <Compass size={15} /> YOUR TRAVEL LAB
+          </span>
+          <h1>
+            Good to see you.
+            <br />
+            <span>Where to next?</span>
+          </h1>
+          <p>
+            All the plans, people, and possibilities for your next adventure,
+            together in one place.
+          </p>
+        </div>
+      </div>
+      <div className="page-heading">
+        <div>
+          <span className="section-kicker">YOUR ADVENTURES</span>
+          <h1>
+            My trips{" "}
+            <span className="trip-count">
+              {!loading && !error ? trips.length : "—"}
+            </span>
+          </h1>
+          <p>All the places you’re planning to go.</p>
+        </div>
+        <div className="actions">
+          <Button
+            variant="outline"
+            onClick={() => setForm(form === "join" ? null : "join")}
+          >
+            <Users size={16} /> Join a trip
+          </Button>
+          <Button
+            className="primary-button"
+            onClick={() => setForm(form === "create" ? null : "create")}
+          >
+            <Plus size={17} /> Create trip
+          </Button>
+        </div>
+      </div>
+      {form && (
+        <form className="form-card" onSubmit={submit}>
+          {form === "join" ? (
+            <label>
+              Trip ID
+              <input name="trip_id" required />
+            </label>
+          ) : (
+            <>
+              <label>
+                Destination
+                <input name="destination" required />
+              </label>
+              <label>
+                Start date
+                <input type="date" name="start_date" required />
+              </label>
+              <label>
+                End date
+                <input type="date" name="end_date" required />
+              </label>
+              <label>
+                Trip type
+                <select name="vacation_type">
+                  {[
+                    "tropical",
+                    "wilderness",
+                    "city",
+                    "historical",
+                    "countryside",
+                    "road_trip",
+                    "winter",
+                  ].map((x) => (
+                    <option key={x} value={x}>
+                      {x.replace("_", " ")}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Description
+                <input name="description" />
+              </label>
+            </>
+          )}
+          <div className="actions">
+            <Button>
+              {form === "join" ? "Request to join" : "Create trip"}
+            </Button>
+            <Button type="button" variant="ghost" onClick={() => setForm(null)}>
+              Cancel
+            </Button>
+          </div>
+        </form>
+      )}
+      {error && (
+        <p role="alert" className="form-error">
+          {error}
+        </p>
+      )}
+      {loading ? (
+        <p>Loading trips…</p>
+      ) : !error && !trips.length ? (
+        <div className="empty-state trip-empty">
+          <div className="empty-icon">
+            <Compass size={25} />
+          </div>
+          <h2>Your next adventure starts here</h2>
+          <p>
+            Create a trip or join your travel companions to start planning
+            together.
+          </p>
+          <Button className="primary-button" onClick={() => setForm("create")}>
+            <Plus size={17} /> Create your first trip
+          </Button>
+        </div>
+      ) : (
+        <div className="trip-grid">
+          {trips.map((trip) => (
+            <Link
+              className="trip-card"
+              to={`/trips/${encodeURIComponent(trip.id)}`}
+              key={trip.id}
+            >
+              <div className="trip-card-image">
+                <img
+                  src={`/trip-${["tropical", "wilderness", "city", "historical", "countryside", "road_trip", "winter"].includes(trip.vacation_type) ? trip.vacation_type : "tropical"}.jpg`}
+                  alt=""
+                />
+                <span className="trip-card-arrow">
+                  <ArrowRight size={18} />
+                </span>
+              </div>
+              <div className="trip-card-body">
+                <span className="trip-card-type">
+                  {(trip.vacation_type || "trip").replace("_", " ")}
+                </span>
+                <h2>{trip.destination}</h2>
+                <p>
+                  <CalendarDays size={15} /> {formatDate(trip.start_date)} –{" "}
+                  {formatDate(trip.end_date)}
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+    </main>
+  );
 }
