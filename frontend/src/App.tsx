@@ -32,7 +32,7 @@ export default function App() {
     {appView ? <Sidebar onSignOut={signOut} /> : <Header signedIn={signedIn} onSignOut={signOut} />}
     <div className={appView ? "app-main" : undefined}>
     <Routes>
-      <Route path="/" element={<LandingPage />} />
+      <Route path="/" element={<LandingPage signedIn={signedIn} />} />
       <Route path="/login" element={<LoginPage onSignIn={() => setSignedIn(true)} />} />
       <Route path="/sign-in" element={<Navigate to="/login" replace />} />
       <Route element={<ProtectedLayout signedIn={signedIn} />}>
