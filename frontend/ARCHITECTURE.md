@@ -1,48 +1,42 @@
 # Frontend Architecture
 
-This is a proposed route map for the current backend. A route is a browser URL; it is separate from an API endpoint. Create, edit, and confirmation forms can live in dialogs on their parent page unless they need their own shareable URL.
+This is the route plan for the current backend. Routes are browser URLs, separate from API endpoints. Create forms and confirmations can be dialogs on their parent page.
 
-## Public
+## Pages
 
-| Route | Page | Purpose |
+The plan remains **11 application pages**: two public and nine signed-in. The landing page is a mockup, login has a working development path, and My trips is a partial integration. The other eight pages now have navigable placeholders. A not-found page is in place; a production auth callback may require another route.
+
+| Route | Page | Status and remaining work |
 | --- | --- | --- |
-| `/` | Landing | Introduce Travel Lab and link to login. |
-| `/login` | Login | Request a magic link and show the pending/error states. The current screen at `/sign-in` is a mockup and will move to `/login`. |
+| `/` | Landing | Mockup exists; connect its signed-in navigation to the eventual app layout. |
+| `/login` | Login | Development sign-in works; production magic-link UI is a stub. `/sign-in` redirects to `/login`. |
+| `/trips` | My trips | Partial: loads trips and supports sign-out. Add loading and empty states, navigation into a trip, and create/join dialogs. |
+| `/trips/:tripId` | Trip overview / travel info | Placeholder: show destination, dates, description, type, and planning summaries. |
+| `/trips/:tripId/itinerary` | Itinerary | Placeholder: list, add, and delete stops. |
+| `/trips/:tripId/packing` | Packing | Placeholder: list and add items, claim or unclaim them, and delete items. |
+| `/trips/:tripId/polls` | Polls | Placeholder: list, create, vote on, and delete polls. |
+| `/trips/:tripId/messages` | Messages | Placeholder: read and send messages; clear the history. |
+| `/trips/:tripId/travellers` | Travellers | Placeholder: list travellers and requests; accept or remove travellers. |
+| `/trips/:tripId/settings` | Trip settings | Placeholder: show permissions, leave the trip, or delete it. |
+| `/settings` | Account settings | Placeholder: update name and phone, and delete the account. |
 
-## Signed in
+## Authentication and configuration
 
-| Route | Page | Backend functionality |
-| --- | --- | --- |
-| `/trips` | My trips | List the user's trips; create a trip or request to join one by ID in a dialog. |
-| `/trips/:tripId` | Trip overview / travel info | Show the trip's destination, dates, description, type, and a summary of its planning sections. |
-| `/trips/:tripId/itinerary` | Itinerary | List, add, and delete itinerary stops. |
-| `/trips/:tripId/packing` | Packing | List and add items, claim or unclaim them, and delete items. |
-| `/trips/:tripId/polls` | Polls | List, create, vote on, and delete polls. |
-| `/trips/:tripId/messages` | Messages | Read and send trip messages; clear the message history. |
-| `/trips/:tripId/travellers` | Travellers | List travellers and pending requests; accept or remove travellers. |
-| `/trips/:tripId/settings` | Trip settings | Show trip permissions, leave the trip, or delete it. |
-| `/settings` | Account settings | Complete or update name and phone; delete the account. User creation/upsert happens after authentication. |
+- `src/constants.ts` holds browser configuration. The Vite development server selects the development auth service; production builds select the magic-link stub. The backend must also run in development mode to accept the test identity.
+- Development login sends `Bearer troy@test.com` to the user upsert endpoint. On success it stores a tab-scoped session marker; `src/lib/api.ts` attaches the token to subsequent API requests. Sign-out clears the marker. This flow has been tested against a mock backend, not yet end-to-end against the real one.
+- Production magic-link delivery, callback handling, token acquisition and renewal, session restoration, and sign-out are not implemented. The backend validates Auth0 tokens, but the provider and frontend integration need to be chosen and connected. Upsert the user after successful production authentication.
+- Vite loads `.env` and mode-specific files such as `.env.test`. Custom frontend variables must start with `VITE_` and are visible in the client bundle; never put secrets there. No custom frontend variables are required currently. `--mode` selects the env file but does not turn development auth on in a production build.
 
-That is **11 application routes**: two public and nine signed-in. Add a wildcard not-found page as a twelfth route. A separate authentication callback route may also be needed, depending on the magic-link provider; that choice is not implemented yet. Layouts, dialogs, loading states, and error states do not need their own routes.
+## Routing and shared UI gaps
 
-## Access and behavior
+- React Router defines the route tree in `App.tsx`; shared header and footer components wrap the pages, and a trip layout provides section navigation. Unknown routes show a not-found page.
+- Protected routes redirect signed-out visitors to `/login` and preserve the intended destination. Handle expired sessions and access errors when production authentication is connected.
+- Load trip permissions in the trip layout and show appropriate controls. Trip membership and admin permissions must be enforced by the backend, not only by the UI. Admin actions include deleting a trip, itinerary stop, poll, packing item, or all messages, and accepting or removing travellers.
+- Add consistent loading, empty, validation, and error states. The trip list distinguishes loading, empty, and error states.
 
-- Use React Router with a public layout and a signed-in layout. A trip layout can provide shared navigation and load trip permissions for the seven `/trips/:tripId` pages.
-- Redirect signed-out visitors from protected pages to `/login`, preserving their intended destination for after login. Handle unknown trips, denied access, expired sessions, loading, and errors explicitly.
-- Trip access depends on membership; admin-only controls include deleting a trip, itinerary stop, poll, packing item, or all messages, and accepting or removing travellers. Hiding controls is only a UI convenience: the backend must enforce authorization.
-- Initial lists come from REST. The backend also exposes Socket.IO namespaces for itinerary, polls, packing, and messages; poll voting and sending messages currently use socket events. Decide per action whether to use REST or sockets so an action is not submitted twice.
+## Backend integration gaps
 
-## Backend gaps to resolve before integration
-
-- Magic-link delivery and its callback are not provided by these API routers. The backend validates Auth0 tokens (or seeded development identities); the sign-in provider and callback flow still need to be chosen and connected.
-- There is no dedicated `GET /trip/:tripId` or trip update endpoint in the current router. The overview can derive trip details from the user's trip list initially; editing trip details requires backend work.
-- The Socket.IO handlers currently validate a token on connect but do not visibly enforce trip membership or admin permissions for events, and some event payloads supply the acting user. Backend authorization must be addressed before relying on these actions. The packing unclaim handler also emits the claim event name; confirm the event contract during integration.
-- When FastAPI serves the built frontend, its static-file middleware treats single-segment paths as files. Verify and fix direct navigation/refresh for routes such as `/login`, `/trips`, and `/settings` when connecting the router.
-
-## Frontend configuration and authentication
-
-`src/constants.ts` holds browser configuration. Vite's built-in mode determines the auth service: the Vite development server uses the seeded development identity, while production builds use the unconnected magic-link service. A development login sends `Bearer troy@test.com` to the backend's user upsert endpoint, then retains the development session in the browser tab and uses that token for API calls. Sign-out clears it. The backend must also run in development mode for this token to work.
-
-The magic-link service is a stub: it cannot send email or authenticate users yet. `src/lib/api.ts` adds the active token to API requests. The `/trips` screen is a minimal integration placeholder; the remaining routes above are still planned.
-
-Vite loads `.env` and mode-specific files such as `.env.test`. Custom variables exposed to frontend code must start with `VITE_` and are embedded in the client bundle, so they must not contain secrets. No custom environment variables are required by the current frontend. Mode-specific files are selected with Vite's `--mode` option; changing mode alone does not enable development auth in a production build.
+- Initial lists can come from REST. Socket.IO namespaces exist for itinerary, polls, packing, and messages; voting and sending messages currently use socket events. Choose one submission path per action to avoid duplicates, and handle reconnects and errors.
+- Socket handlers validate a token on connect but do not visibly enforce trip membership or admin permissions for events, and some payloads supply the acting user. Backend authorization must be addressed before relying on these actions. The packing unclaim handler emits the claim event name; confirm or fix that contract.
+- There is no dedicated trip-detail GET or trip-update endpoint in the current router. The overview can derive details from the user's trip list initially; editing those details requires backend work.
+- When FastAPI serves the built frontend, its static-file middleware treats single-segment paths as files. Fix and verify direct navigation and refresh for paths such as `/login`, `/trips`, and `/settings` when connecting the router.
