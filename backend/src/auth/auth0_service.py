@@ -13,12 +13,12 @@ from .models import JwtPayload
 class Auth0Service(AuthService):
     def __init__(self):
         self.key_cache = {}
-        self.domain = os.getenv('DEV_AUTH0_DOMAIN')
-        self.audience = os.getenv('DEV_AUTH0_AUDIENCE')
-        self.algorithms = [os.getenv('DEV_AUTH0_ALGORITHM')]
-        self.claim_namespace = os.getenv('DEV_AUTH0_CLAIM_NAMESPACE')
-        self.client_id = os.getenv('DEV_AUTH0_CLIENT_ID')
-        self.client_secret = os.getenv('DEV_AUTH0_CLIENT_SECRET')
+        self.domain = os.getenv('AUTH0_DOMAIN')
+        self.audience = os.getenv('AUTH0_AUDIENCE')
+        self.algorithms = [os.getenv('AUTH0_ALGORITHM')]
+        self.claim_namespace = os.getenv('AUTH0_CLAIM_NAMESPACE')
+        self.client_id = os.getenv('AUTH0_CLIENT_ID')
+        self.client_secret = os.getenv('AUTH0_CLIENT_SECRET')
 
     def get_manager(self):
         get_token = GetToken(self.domain, self.client_id, client_secret=self.client_secret)
