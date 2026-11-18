@@ -15,14 +15,6 @@ WS_REQUEST_WINDOW = int(os.getenv('WS_REQUEST_WINDOW'))
 # Auth
 AUTH_PROVIDER = AuthProvider(os.getenv('AUTH_PROVIDER'))
 
-if AUTH_PROVIDER == AuthProvider.Auth0:
-    AUTH0_DOMAIN = os.getenv('DEV_AUTH0_DOMAIN')
-    AUTH0_AUDIENCE = os.getenv('DEV_AUTH0_AUDIENCE')
-    AUTH0_ALGORITHM = [os.getenv('DEV_AUTH0_ALGORITHM')]
-    AUTH0_CLAIM_NAMESPACE = os.getenv('DEV_AUTH0_CLAIM_NAMESPACE')
-    AUTH0_CLIENT_ID = os.getenv('DEV_AUTH0_CLIENT_ID')
-    AUTH0_CLIENT_SECRET = os.getenv('DEV_AUTH0_CLIENT_SECRET')
-
 # Database
 DB_HOST =  os.getenv('DB_HOST')
 DB_PORT = os.getenv('DB_PORT')

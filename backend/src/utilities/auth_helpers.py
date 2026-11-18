@@ -1,8 +1,5 @@
 
-from . import constants
 from defaults import db_handler
-from auth0.authentication import GetToken
-from auth0.management import Auth0
 from .utilities_logger import utilities_logger
 
 
@@ -35,12 +32,3 @@ def verify_admin(trip_id: str, trips: dict[str, dict[str, str]]) -> None:
         return
         
     raise Exception('verify_admin: User is not an admin on this trip')
-
-
-def get_auth0_manager():
-    get_token = GetToken(constants.AUTH0_DOMAIN, constants.AUTH0_CLIENT_ID, client_secret=constants.AUTH0_CLIENT_SECRET)
-    token = get_token.client_credentials(f'https://{constants.AUTH0_DOMAIN}/api/v2/')
-    mgmt_api_token = token['access_token']
-    auth0 = Auth0(constants.AUTH0_DOMAIN, mgmt_api_token)
-
-    return auth0
