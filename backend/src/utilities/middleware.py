@@ -88,19 +88,19 @@ async def authenticate_user(request: Request, call_next):
         try:
             # Expecting AUTHORIZATION: BEARER <token>
             auth_header = request.headers['authorization'].split()
-            if (auth_header[0].lower() != 'bearer'):
+            if len(auth_header) != 2 or auth_header[0].lower() != 'bearer':
                 raise KeyError('No bearer header')
             
             # Decode the JWT and add it to the request state - no exception on decode means we're good to proceed
             decoded_jwt = await auth_service.jwt_decode_w_retry(auth_header[1])
             user_email = decoded_jwt.email
-            auth0_id = decoded_jwt.sub
+            auth_id = decoded_jwt.sub
 
 
             # Get the user's real-time trip attendance and permissions
             request.state.user = {}
             request.state.user['email'] = user_email
-            request.state.user['auth0_id'] = auth0_id
+            request.state.user['auth_id'] = auth_id
             request.state.user['trips'] = await auth_helpers.establish_user_attendance(user_email)
 
             response = await call_next(request)

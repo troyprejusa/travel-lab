@@ -8,7 +8,6 @@ from routers.api_router_v1 import api_router
 from models.web_socket_handler import socketio_ASGI
 from defaults import db_handler
 from utilities import middleware
-from utilities import constants
 
 
 # Setup Logger
