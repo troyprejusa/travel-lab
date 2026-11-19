@@ -4,6 +4,11 @@ from .models import JwtPayload
 
 class AuthService(ABC):
     @abstractmethod
+    async def delete_user(self, provider_user_id: str) -> None:
+        """Delete the authenticated user from the identity provider."""
+        ...
+
+    @abstractmethod
     async def jwt_decode_w_retry(self, token: str) -> JwtPayload:
         ...
 

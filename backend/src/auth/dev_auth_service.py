@@ -14,6 +14,10 @@ class DevAuthService(AuthService):
         if constants.MODE == constants.Mode.PRODUCTION:
             raise RuntimeError('DevAuthService requires MODE=development or MODE=test')
 
+    async def delete_user(self, provider_user_id: str) -> None:
+        # Seeded development identities have no external account to delete.
+        return None
+
     async def jwt_decode_w_retry(self, token: str) -> JwtPayload:
         return self.decode_jwt(token, None)
 

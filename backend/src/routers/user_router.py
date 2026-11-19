@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import JSONResponse
 from typing import Annotated
-from defaults import db_handler
+from defaults import auth_service, db_handler
 from models.schemas import UserModel, TripModel
-from utilities.auth_helpers import verify_attendance, verify_admin, get_auth0_manager
+from utilities.auth_helpers import verify_attendance, verify_admin
 from utilities import constants
 from .routers_logger import router_logger
 
@@ -13,12 +13,14 @@ user_router = APIRouter()
 '''
 # Upsert a user in database
 
-Because Auth0 can have data for a user that we may or may 
+Because the authentication provider can have a user that we may or may 
 not have added to our database yet, perform an upsert and 
 return whatever data is there for this user
 '''
 @user_router.post('/{email}')
-async def upsert_user(email: str) -> UserModel | str:
+async def upsert_user(request: Request, email: str) -> UserModel | str:
+    if email != request.state.user['email']:
+        raise HTTPException(status_code=403, detail='Cannot modify another user')
     try:
         user = await db_handler.get_user(email)
         if not user:
@@ -47,11 +49,14 @@ async def upsert_user(email: str) -> UserModel | str:
 # Update a user's first name, last name, and phone
 @user_router.patch('/{email}')
 async def patch_user_info(
+        request: Request,
         email: str,
         first_name: Annotated[str, Form()],
         last_name: Annotated[str, Form()],
         phone: Annotated[str, Form()],
     ) -> UserModel | str:
+    if email != request.state.user['email']:
+        raise HTTPException(status_code=403, detail='Cannot modify another user')
     try:
         updated_user = await db_handler.patch_user_info(first_name, last_name, phone, email)
 
@@ -69,9 +74,10 @@ async def patch_user_info(
 # Delete current user from database
 @user_router.delete('/{email}')
 async def delete_user(request: Request, email: str) -> str:
+    if email != request.state.user['email']:
+        raise HTTPException(status_code=403, detail='Cannot modify another user')
     try:
-        auth0 = get_auth0_manager()
-        auth0.users.delete(request.state.user['auth0_id'])
+        await auth_service.delete_user(request.state.user['auth_id'])
         await db_handler.delete_user(email)
 
         return JSONResponse(
