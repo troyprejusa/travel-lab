@@ -1,3 +1,4 @@
+import asyncio
 import os
 
 import jwt
@@ -24,6 +25,12 @@ class Auth0Service(AuthService):
         get_token = GetToken(self.domain, self.client_id, client_secret=self.client_secret)
         token = get_token.client_credentials(f'https://{self.domain}/api/v2/')
         return Auth0(self.domain, token['access_token'])
+
+    async def delete_user(self, provider_user_id: str) -> None:
+        def delete():
+            self.get_manager().users.delete(provider_user_id)
+
+        await asyncio.to_thread(delete)
 
     async def jwt_decode_w_retry(self, token: str) -> JwtPayload:
         key_id = jwt.get_unverified_header(token)['kid']
