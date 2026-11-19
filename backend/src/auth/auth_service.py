@@ -2,6 +2,10 @@ from abc import ABC, abstractmethod
 from .models import JwtPayload
 
 
+class AuthServiceUnavailableError(Exception):
+    """The authentication provider is temporarily unavailable."""
+
+
 class AuthService(ABC):
     @abstractmethod
     async def delete_user(self, provider_user_id: str) -> None:

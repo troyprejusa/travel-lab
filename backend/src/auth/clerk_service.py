@@ -6,11 +6,11 @@ from urllib.parse import quote
 import httpx
 import jwt
 
-from .auth_service import AuthService
+from .auth_service import AuthService, AuthServiceUnavailableError
 from .models import JwtPayload
 
 
-class ClerkUnavailableError(Exception):
+class ClerkUnavailableError(AuthServiceUnavailableError):
     """Clerk could not be reached to authenticate a request."""
 
 

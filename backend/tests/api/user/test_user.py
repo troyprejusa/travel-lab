@@ -6,12 +6,15 @@ pytestmark = pytest.mark.asyncio
 
 async def test_user_upsert_and_patch(api, db, owner_headers):
     url = '/api/v1/user/troy@test.com'
+    await db.delete_user('troy@test.com')
     first = await api.post(url, headers=owner_headers)
     assert first.status_code == 200
     assert first.json()['id'] == (await db.get_user('troy@test.com'))['id']
-    created = await api.post('/api/v1/user/new@example.com', headers=owner_headers)
-    assert created.status_code == 200
-    assert (await db.get_user('new@example.com'))['id'] == created.json()['id']
+    repeated = await api.post(url, headers=owner_headers)
+    assert repeated.status_code == 200
+    assert repeated.json()['id'] == first.json()['id']
+    assert (await api.post('/api/v1/user/new@example.com', headers=owner_headers)).status_code == 403
+    assert await db.get_user('new@example.com') is None
     response = await api.patch(url, headers=owner_headers, data={'first_name': 'Troy', 'last_name': 'Tester', 'phone': '5551234567'})
     assert response.status_code == 200
     assert (await db.get_user('troy@test.com'))['first_name'] == 'Troy'

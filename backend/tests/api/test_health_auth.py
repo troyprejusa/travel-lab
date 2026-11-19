@@ -35,3 +35,22 @@ def test_api_accepts_a_valid_token(monkeypatch):
     assert response.status_code == 200
     assert response.json() == []
     decode.assert_awaited_once_with('test-token')
+
+
+def test_account_endpoint_rejects_another_users_email(monkeypatch):
+    decode = AsyncMock(return_value=JwtPayload(sub='user_1', email='owner@example.com'))
+    monkeypatch.setattr(middleware, 'auth_service', SimpleNamespace(jwt_decode_w_retry=decode))
+    monkeypatch.setattr(middleware.auth_helpers, 'establish_user_attendance', AsyncMock(return_value={}))
+    middleware.rest_rate_tracker.tracker.clear()
+    response = TestClient(app).post('/api/v1/user/other@example.com', headers={'Authorization': 'Bearer token'})
+    assert response.status_code == 403
+
+
+def test_api_returns_503_when_authentication_service_is_unavailable(monkeypatch):
+    from auth.clerk_service import ClerkUnavailableError
+
+    decode = AsyncMock(side_effect=ClerkUnavailableError('offline'))
+    monkeypatch.setattr(middleware, 'auth_service', SimpleNamespace(jwt_decode_w_retry=decode))
+    middleware.rest_rate_tracker.tracker.clear()
+    response = TestClient(app).get('/api/v1/user/trips', headers={'Authorization': 'Bearer token'})
+    assert response.status_code == 503

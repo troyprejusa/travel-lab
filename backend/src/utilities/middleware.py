@@ -1,4 +1,5 @@
 from defaults import auth_service
+from auth.auth_service import AuthServiceUnavailableError
 from fastapi import Request, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
 from . import constants, auth_helpers
@@ -107,6 +108,13 @@ async def authenticate_user(request: Request, call_next):
             
             return response
         
+        except AuthServiceUnavailableError as error:
+            utilities_logger.error(f'Authentication service unavailable: {error}')
+            return JSONResponse(
+                status_code=503,
+                content={'detail': {'message': 'Authentication service unavailable'}},
+            )
+
         except (jwt.exceptions.InvalidTokenError, KeyError) as error:
             utilities_logger.warning(f'Authentication error:\n{request.url.path}\n{error}')
             return JSONResponse(
