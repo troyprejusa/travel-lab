@@ -1,6 +1,7 @@
 import jwt
 
 from utilities import constants
+from models.database_seed import JOE_EMAIL, TROY_EMAIL
 from .auth_service import AuthService
 from .models import JwtPayload
 
@@ -8,7 +9,7 @@ from .models import JwtPayload
 class DevAuthService(AuthService):
     """Accept a seeded user's email as a token in development or tests."""
 
-    SEEDED_USERS = frozenset({'troy@test.com', 'joe@test.com'})
+    SEEDED_USERS = frozenset({TROY_EMAIL, JOE_EMAIL})
 
     def __init__(self):
         if constants.MODE == constants.Mode.PRODUCTION:

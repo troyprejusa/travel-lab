@@ -1,5 +1,8 @@
 """Sample data used by local development and tests."""
 
+TROY_EMAIL = 'troy+clerk_test@test.com'
+JOE_EMAIL = 'joe+clerk_test@test.com'
+
 
 class DatabaseSeed:
     def __init__(self, database):
@@ -16,32 +19,32 @@ class DatabaseSeed:
 
     async def insert_users(self):
         # Insert a fake user troy
-        await self.database.query("""
+        await self.database.query(f"""
             INSERT INTO traveller 
             VALUES (
                 'ce475240-1b9f-4c52-900b-a83af218896a',
                 'troy',
                 'prejusa',
-                'troy@test.com',
+                '{TROY_EMAIL}',
                 '1234567890'
             );
         """)
 
         # Insert a fake user "joe"
-        await self.database.query("""
+        await self.database.query(f"""
             INSERT INTO traveller 
             VALUES (
                 '4d17d823-e31c-47c9-81ad-a53dff295e6b',
                 'joe',
                 'schmo',
-                'joe@test.com',
+                '{JOE_EMAIL}',
                 '1234567890'
             );
         """)
 
     async def insert_trips(self):
          # Insert two trips
-        await self.database.query("""
+        await self.database.query(f"""
             INSERT INTO trip 
             (
                 id,
@@ -58,7 +61,7 @@ class DatabaseSeed:
                 'Getaway trip',
                 '2023-11-10',
                 '2023-11-19',
-                'troy@test.com',
+                '{TROY_EMAIL}',
                 'tropical'
             );
 
@@ -78,7 +81,7 @@ class DatabaseSeed:
                 'Visit friends and eat halal',
                 '2024-04-19',
                 '2024-04-21',
-                'troy@test.com',
+                '{TROY_EMAIL}',
                 'city'
             );
                             
@@ -98,7 +101,7 @@ class DatabaseSeed:
                 'Boys trip',
                 '2023-08-30',
                 '2023-08-31',
-                'joe@test.com',
+                '{JOE_EMAIL}',
                 'historical'
             );
             
@@ -153,7 +156,7 @@ class DatabaseSeed:
         """)
 
     async def insert_itinerary(self):
-        await self.database.query("""
+        await self.database.query(f"""
             INSERT INTO itinerary (trip_id, title, description, start_time, end_time, created_by)
             VALUES (
                 'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
@@ -161,7 +164,7 @@ class DatabaseSeed:
                 'First stop on the trip!',
                 '2023-11-13 13:00:00',
                 '2023-11-13 16:00:00',
-                'troy@test.com'
+                '{TROY_EMAIL}'
             );
                             
             INSERT INTO itinerary (trip_id, title, start_time, end_time, created_by)
@@ -170,22 +173,22 @@ class DatabaseSeed:
                 'Dinner Reservation',
                 '2023-11-16 18:00:00',
                 '2023-11-16 20:00:00',
-                'joe@test.com'
+                '{JOE_EMAIL}'
             );
         """)
 
     async def insert_messages(self):
-        await self.database.query("""
+        await self.database.query(f"""
             INSERT INTO message (trip_id, content, created_by)
-            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'Hey its joe. Are you guys are stoked or what?', 'joe@test.com');
+            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'Hey its joe. Are you guys are stoked or what?', '{JOE_EMAIL}');
                             
             INSERT INTO message (trip_id, content, created_by)
-            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'Cant wait for the trip! - troy', 'troy@test.com');
+            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'Cant wait for the trip! - troy', '{TROY_EMAIL}');
         """)
 
     async def insert_polls(self):
         # Insert some fake polls
-        await self.database.query("""
+        await self.database.query(f"""
             INSERT INTO poll (
                 id,
                 trip_id,
@@ -196,7 +199,7 @@ class DatabaseSeed:
                 101,
                 'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
                 'More time in Phuket or Bangkok?',
-                'troy@test.com'
+                '{TROY_EMAIL}'
             );
                             
             INSERT INTO poll_option (id, poll_id, option) VALUES (201, 101, 'Phuket');
@@ -214,26 +217,26 @@ class DatabaseSeed:
                 'ac0a3381-8a5f-4abf-979a-e417bb5d6e65',
                 'First Night Dinner',
                 'What should we eat for dinner after the flight into town?',
-                'joe@test.com'
+                '{JOE_EMAIL}'
             );
                             
             INSERT INTO poll_option (id, poll_id, option) VALUES (203, 102, 'appetizers');
             INSERT INTO poll_option (id, poll_id, option) VALUES (204, 102, 'seafood');
             INSERT INTO poll_option (id, poll_id, option) VALUES (205, 102, 'barbecue');
                             
-            INSERT INTO poll_vote (id, poll_id, vote, voted_by) VALUES (301, 102, 204, 'joe@test.com');
+            INSERT INTO poll_vote (id, poll_id, vote, voted_by) VALUES (301, 102, 204, '{JOE_EMAIL}');
         """)
 
     async def insert_packing(self):
-        await self.database.query("""
+        await self.database.query(f"""
             INSERT INTO packing (trip_id, item, quantity, description, created_by, packed_by)
-            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'sunscreen', 2, 'spray-on preferred', 'joe@test.com', 'troy@test.com');
+            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'sunscreen', 2, 'spray-on preferred', '{JOE_EMAIL}', '{TROY_EMAIL}');
                             
             INSERT INTO packing (trip_id, item, quantity, created_by)
-            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'bug spray', 2, 'troy@test.com');
+            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'bug spray', 2, '{TROY_EMAIL}');
                             
             INSERT INTO packing (trip_id, item, quantity, description, created_by, packed_by)
-            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'underwater camera', 1, 'maybe a selfie-stick too?', 'troy@test.com', 'joe@test.com');
+            VALUES ('ac0a3381-8a5f-4abf-979a-e417bb5d6e65', 'underwater camera', 1, 'maybe a selfie-stick too?', '{TROY_EMAIL}', '{JOE_EMAIL}');
         """)
 
         

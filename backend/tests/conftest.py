@@ -1,3 +1,4 @@
+from models.database_seed import JOE_EMAIL, TROY_EMAIL
 import os
 import sys
 
@@ -53,8 +54,8 @@ async def api(db, monkeypatch):
     for module in (trip_router, user_router, auth_helpers):
         monkeypatch.setattr(module, 'db_handler', db)
     middleware.rest_rate_tracker.tracker.clear()
-    await db.create_user('troy@test.com')
-    await db.create_user('joe@test.com')
+    await db.create_user(TROY_EMAIL)
+    await db.create_user(JOE_EMAIL)
     from itertools import count
     request_ids = count()
 
@@ -67,9 +68,9 @@ async def api(db, monkeypatch):
 
 @pytest.fixture
 def owner_headers():
-    return {'Authorization': 'Bearer troy@test.com'}
+    return {'Authorization': f'Bearer {TROY_EMAIL}'}
 
 
 @pytest.fixture
 def guest_headers():
-    return {'Authorization': 'Bearer joe@test.com'}
+    return {'Authorization': f'Bearer {JOE_EMAIL}'}
