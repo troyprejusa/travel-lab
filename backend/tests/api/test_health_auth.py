@@ -1,3 +1,4 @@
+from models.database_seed import TROY_EMAIL
 from types import SimpleNamespace
 from unittest.mock import AsyncMock
 
@@ -26,7 +27,7 @@ def test_api_rejects_requests_without_a_token():
 
 
 def test_api_accepts_a_valid_token(monkeypatch):
-    decode = AsyncMock(return_value=JwtPayload(sub='dev|troy', email='troy@test.com'))
+    decode = AsyncMock(return_value=JwtPayload(sub='dev|troy', email=TROY_EMAIL))
     monkeypatch.setattr(middleware, 'auth_service', SimpleNamespace(jwt_decode_w_retry=decode))
     monkeypatch.setattr(middleware.auth_helpers, 'establish_user_attendance', AsyncMock(return_value={}))
     monkeypatch.setattr(user_router.db_handler, 'get_trips', AsyncMock(return_value=[]))

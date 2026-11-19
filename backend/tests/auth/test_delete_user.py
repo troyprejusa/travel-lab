@@ -1,3 +1,4 @@
+from models.database_seed import TROY_EMAIL
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, Mock
 
@@ -25,7 +26,7 @@ async def test_auth0_deletes_provider_user(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_development_delete_has_no_external_account():
-    await DevAuthService().delete_user('dev|troy@test.com')
+    await DevAuthService().delete_user(f'dev|{TROY_EMAIL}')
 
 
 @pytest.mark.asyncio
