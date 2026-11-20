@@ -2,8 +2,13 @@ import jwt
 
 from utilities import constants
 from models.database_seed import JOE_EMAIL, TROY_EMAIL
-from .auth_service import AuthService
+from .auth_service import AuthSettings, AuthService
 from .models import JwtPayload
+
+
+class DevelopmentAuthConfig(AuthSettings):
+    """Development authentication requires no provider credentials."""
+
 
 
 class DevAuthService(AuthService):

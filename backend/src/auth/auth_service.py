@@ -1,5 +1,10 @@
 from abc import ABC, abstractmethod
 from .models import JwtPayload
+from pydantic_settings import BaseSettings
+
+
+class AuthSettings(BaseSettings):
+    """Common base for the configuration of an authentication provider."""
 
 
 class AuthServiceUnavailableError(Exception):

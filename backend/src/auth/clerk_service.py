@@ -1,13 +1,13 @@
 """Verify Clerk sessions and resolve their verified primary email address."""
 import asyncio
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit
 
 import httpx
 import jwt
-from pydantic import SecretStr
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import SecretStr, model_validator
+from pydantic_settings import SettingsConfigDict
 
-from .auth_service import AuthService, AuthServiceUnavailableError
+from .auth_service import AuthSettings, AuthService, AuthServiceUnavailableError
 from .models import JwtPayload
 
 
@@ -15,12 +15,21 @@ class ClerkUnavailableError(AuthServiceUnavailableError):
     """Clerk could not be reached to authenticate a request."""
 
 
-class ClerkSettings(BaseSettings):
+class ClerkSettings(AuthSettings):
     model_config = SettingsConfigDict(env_prefix='CLERK_')
 
     issuer: str
     secret_key: SecretStr
     authorized_parties: str
+
+    @model_validator(mode='after')
+    def validate_credentials(self):
+        issuer = urlsplit(self.issuer)
+        if (issuer.scheme != 'https' or not issuer.hostname
+                or not self.secret_key.get_secret_value().strip()
+                or not any(value.strip() for value in self.authorized_parties.split(','))):
+            raise ValueError('Clerk requires an HTTPS issuer, secret key, and authorized parties')
+        return self
 
 
 class ClerkService(AuthService):
@@ -31,8 +40,7 @@ class ClerkService(AuthService):
             value.strip() for value in config.authorized_parties.split(',')
             if value.strip()
         ]
-        if not self.issuer.startswith('https://'):
-            raise RuntimeError('Set CLERK_ISSUER to a valid HTTPS URL')
+ 
         # PyJWKClient caches the JWKS for five minutes and refreshes on an unknown key ID.
         self.jwks = jwt.PyJWKClient(f'{self.issuer}/.well-known/jwks.json')
 

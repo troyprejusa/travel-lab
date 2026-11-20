@@ -2,15 +2,15 @@ import asyncio
 
 import jwt
 from jwt import PyJWKClient
-from pydantic import SecretStr, ValidationError
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import SecretStr, ValidationError, model_validator
+from pydantic_settings import SettingsConfigDict
 from auth0.authentication import GetToken
 from auth0.management import Auth0
 
-from .auth_service import AuthService
+from .auth_service import AuthSettings, AuthService
 from .models import JwtPayload
 
-class Auth0Settings(BaseSettings):
+class Auth0Settings(AuthSettings):
     model_config = SettingsConfigDict(env_prefix='AUTH0_')
 
     domain: str
@@ -20,6 +20,7 @@ class Auth0Settings(BaseSettings):
     client_id: str
     client_secret: SecretStr
 
+
 class Auth0Service(AuthService):
     def __init__(self, config: Auth0Settings):
         self.key_cache = {}
@@ -28,7 +29,7 @@ class Auth0Service(AuthService):
         self.algorithms = [config.algorithm]
         self.claim_namespace = config.claim_namespace
         self.client_id = config.client_id
-        self.client_secret = config.client_secret
+        self.client_secret = config.client_secret.get_secret_value()
 
     def get_manager(self):
         get_token = GetToken(self.domain, self.client_id, client_secret=self.client_secret)
