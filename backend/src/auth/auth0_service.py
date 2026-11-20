@@ -2,7 +2,7 @@ import asyncio
 
 import jwt
 from jwt import PyJWKClient
-from pydantic import BaseSettings, SecretStr,ValidationError
+from pydantic import BaseSettings, SecretStr,SettingsConfigDict, ValidationError
 from auth0.authentication import GetToken
 from auth0.management import Auth0
 
@@ -10,6 +10,8 @@ from .auth_service import AuthService
 from .models import JwtPayload
 
 class Auth0Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_prefix='AUTH0_')
+
     domain: str
     audience: str
     algorithm: str

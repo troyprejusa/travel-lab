@@ -1,10 +1,11 @@
 """Verify Clerk sessions and resolve their verified primary email address."""
 import asyncio
-import os
 from urllib.parse import quote
 
 import httpx
 import jwt
+from pydantic import SecretStr
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from .auth_service import AuthService, AuthServiceUnavailableError
 from .models import JwtPayload
@@ -14,12 +15,20 @@ class ClerkUnavailableError(AuthServiceUnavailableError):
     """Clerk could not be reached to authenticate a request."""
 
 
+class ClerkSettings(BaseSettings):
+    model_config = SettingsConfigDict(env_prefix='CLERK_')
+
+    issuer: str
+    secret_key: SecretStr
+    authorized_parties: str
+
+
 class ClerkService(AuthService):
-    def __init__(self):
-        self.issuer = os.getenv('CLERK_ISSUER', '').rstrip('/')
-        self.secret = os.getenv('CLERK_SECRET_KEY', '')
+    def __init__(self, config: ClerkSettings):
+        self.issuer = config.issuer.rstrip('/')
+        self.secret = config.secret_key.get_secret_value()
         self.authorized_parties = [
-            value.strip() for value in os.getenv('CLERK_AUTHORIZED_PARTIES', '').split(',')
+            value.strip() for value in config.authorized_parties.split(',')
             if value.strip()
         ]
         if not self.issuer.startswith('https://') or not self.secret or not self.authorized_parties:
