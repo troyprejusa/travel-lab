@@ -31,8 +31,8 @@ class ClerkService(AuthService):
             value.strip() for value in config.authorized_parties.split(',')
             if value.strip()
         ]
-        if not self.issuer.startswith('https://') or not self.secret or not self.authorized_parties:
-            raise RuntimeError('Set CLERK_ISSUER, CLERK_SECRET_KEY, and CLERK_AUTHORIZED_PARTIES')
+        if not self.issuer.startswith('https://'):
+            raise RuntimeError('Set CLERK_ISSUER to a valid HTTPS URL')
         # PyJWKClient caches the JWKS for five minutes and refreshes on an unknown key ID.
         self.jwks = jwt.PyJWKClient(f'{self.issuer}/.well-known/jwks.json')
 
