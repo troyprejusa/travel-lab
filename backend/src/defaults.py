@@ -1,5 +1,5 @@
-from auth.auth_service import AuthService, AuthSettings
-from auth.auth_service_factory import create_auth_service
+from auth.auth_service import AuthService
+from auth.auth_service_factory import build_auth_config, create_auth_service
 from models.sqlalchemy_database_handler import SQLAlchemyDatabaseHandler
 from settings import Settings
 from utilities import environment
@@ -27,11 +27,11 @@ config = Settings(
     limit_packing_per_trip=environment.LIMIT_PACKING_PER_TRIP,
     limit_messages_per_trip=environment.LIMIT_MESSAGES_PER_TRIP,
     auth_provider=environment.AUTH_PROVIDER,
-    auth_config=AuthSettings(),
+    auth_config=build_auth_config(environment.AUTH_PROVIDER),
 )
 
 
-auth_service: AuthService = create_auth_service()
+auth_service: AuthService = create_auth_service(config)
 
 
 settings = {
@@ -39,7 +39,8 @@ settings = {
     'port': config.db_port,
     'user': config.db_user,
     'password': config.db_pwd.get_secret_value(),
-    'database': config.db_dbname
+    'database': config.db_dbname,
+    'conn_limit': config.db_conn_limit,
 }
 
 db_handler = SQLAlchemyDatabaseHandler(**settings)

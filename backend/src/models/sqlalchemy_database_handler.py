@@ -12,11 +12,9 @@ from .orm_models import Itinerary, Message, Packing, Poll, PollOption, PollVote,
 
 
 class SQLAlchemyDatabaseHandler(DatabaseHandler):
-    def __init__(self, host: str, port: str, user: str, password: str, database: str) -> None:
-        from defaults import config
-
+    def __init__(self, host: str, port: str, user: str, password: str, database: str, conn_limit: int) -> None:
         url = URL.create('postgresql+psycopg', username=user, password=password, host=host, port=int(port), database=database)
-        self.engine = create_async_engine(url, pool_size=config.db_conn_limit, max_overflow=0)
+        self.engine = create_async_engine(url, pool_size=conn_limit, max_overflow=0)
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
 
     async def open(self):

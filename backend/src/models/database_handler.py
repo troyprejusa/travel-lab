@@ -12,11 +12,9 @@ class PsycopgDatabaseHandler(DatabaseHandler):
     Abstracting the database querying functionality into this class so that it
     can more easily be replaced with other means if desired
     """
-    def __init__(self, host: str, port: str, user: str, password: str, database: str) -> None:
-        from defaults import config
-
+    def __init__(self, host: str, port: str, user: str, password: str, database: str, conn_limit: int) -> None:
         connection_string = f"host={host} port={port} user={user} password={password} dbname={database}"
-        self.pool = AsyncConnectionPool(connection_string, max_size=config.db_conn_limit, open=False)
+        self.pool = AsyncConnectionPool(connection_string, min_size=min(4, conn_limit), max_size=conn_limit, open=False)
 
     async def open(self) -> None:
         await self.pool.open()

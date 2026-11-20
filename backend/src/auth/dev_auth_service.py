@@ -16,10 +16,8 @@ class DevAuthService(AuthService):
 
     SEEDED_USERS = frozenset({TROY_EMAIL, JOE_EMAIL})
 
-    def __init__(self):
-        from defaults import config
-
-        if config.mode == Mode.PRODUCTION:
+    def __init__(self, mode: Mode):
+        if mode == Mode.PRODUCTION:
             raise RuntimeError('DevAuthService requires MODE=development or MODE=test')
 
     async def delete_user(self, provider_user_id: str) -> None:

@@ -27,7 +27,7 @@ async def db(postgres, request, pytestconfig):
     handler = request.param(
         host=postgres.get_container_host_ip(),
         port=postgres.get_exposed_port(5432),
-        user='test', password='test', database='test',
+        user='test', password='test', database='test', conn_limit=2,
     )
     await handler.open()
     config = Config(str(pytestconfig.rootpath / 'alembic.ini'))

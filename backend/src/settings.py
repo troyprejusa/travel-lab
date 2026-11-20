@@ -1,7 +1,5 @@
 """Typed, validated backend environment settings."""
-from typing import Self
-
-from pydantic import Field, SecretStr, model_validator
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from auth.auth_service import AuthSettings
