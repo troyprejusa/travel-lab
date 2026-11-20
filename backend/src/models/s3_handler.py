@@ -1,13 +1,13 @@
 # from minio import Minio
 # from minio.error import S3Error
-# from utilities import constants
+# from utilities import environment
 
 # try:
 #     print('S3Handler.py: Attempting to connect to file storage...')
 #     minio_client = Minio(
-#         f'{constants.S3_HOST}:{constants.S3_PORT}',
-#         access_key=constants.S3_ACCESS_KEY,
-#         secret_key=constants.S3_SECRET_KEY
+#         f'{environment.S3_HOST}:{environment.S3_PORT}',
+#         access_key=environment.S3_ACCESS_KEY,
+#         secret_key=environment.S3_SECRET_KEY
 #     )
 #     print('S3Handler.py: Connected to file storage')
 # except S3Error as e:

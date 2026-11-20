@@ -5,7 +5,7 @@ from models.schemas import TripModel, TravellerResponse, ItineraryModel, Message
 from typing import Annotated
 from datetime import date, datetime
 from utilities.auth_helpers import verify_attendance, verify_admin
-from utilities import constants
+from utilities import environment
 from .routers_logger import router_logger
 # from models.S3Handler import minio_client
 
@@ -24,7 +24,7 @@ async def create_trip(
     description: Annotated[str | None, Form()] = None
     ) -> TripModel | str:
     try:
-        if await db_handler.count_user_created_trips(request.state.user['email']) >= constants.LIMIT_TRIPS_CREATED_PER_USER:
+        if await db_handler.count_user_created_trips(request.state.user['email']) >= environment.LIMIT_TRIPS_CREATED_PER_USER:
             return JSONResponse(
                 status_code=422,
                 content={
@@ -122,7 +122,7 @@ async def add_itinerary_stop(
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
-        if await db_handler.count_itinerary(trip_id) >= constants.LIMIT_ITINERARY_PER_TRIP:
+        if await db_handler.count_itinerary(trip_id) >= environment.LIMIT_ITINERARY_PER_TRIP:
             return JSONResponse(
                 status_code=422,
                 content={
@@ -199,7 +199,7 @@ async def create_poll(request: Request, trip_id: str, poll_body: NewPollWS) -> d
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
-        if await db_handler.count_polls(trip_id) >= constants.LIMIT_POLLS_PER_TRIP:
+        if await db_handler.count_polls(trip_id) >= environment.LIMIT_POLLS_PER_TRIP:
             return JSONResponse(
                 status_code=422,
                 content={
@@ -282,7 +282,7 @@ async def add_packing_item(
     try:
         verify_attendance(trip_id, request.state.user['trips'])
 
-        if await db_handler.count_packing(trip_id) >= constants.LIMIT_PACKING_PER_TRIP:
+        if await db_handler.count_packing(trip_id) >= environment.LIMIT_PACKING_PER_TRIP:
             return JSONResponse(
                 status_code=422,
                 content={

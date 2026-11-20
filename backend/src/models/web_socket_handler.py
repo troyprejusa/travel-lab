@@ -1,7 +1,7 @@
 from defaults import auth_service
 import socketio
 import jwt
-from utilities import constants
+from utilities import environment
 from utilities.rate_tracker import RateTracker
 from defaults import db_handler
 from .schemas import \
@@ -13,7 +13,7 @@ import datetime
 from .models_logger import models_logger
 
 
-ws_rate_tracker = RateTracker(constants.WS_REQUEST_COUNT, constants.WS_REQUEST_WINDOW)
+ws_rate_tracker = RateTracker(environment.WS_REQUEST_COUNT, environment.WS_REQUEST_WINDOW)
 
 class WebSocketHandler(socketio.AsyncNamespace):
 
@@ -78,7 +78,7 @@ class ItinerarySocket(WebSocketHandler):
         try:
             itinerary_data = NewItineraryWS.parse_obj(data)     # Verify data
 
-            if await db_handler.count_itinerary(itinerary_data.trip_id) >= constants.LIMIT_ITINERARY_PER_TRIP:
+            if await db_handler.count_itinerary(itinerary_data.trip_id) >= environment.LIMIT_ITINERARY_PER_TRIP:
                 await self.reply_error(sid, 'backend_itinerary_create_error', "Reached limit for number of itinerary stops for trip. Delete other itinerary stops on this trip to create more.")
                 return
 
@@ -107,7 +107,7 @@ class PollSocket(WebSocketHandler):
         try:
             new_poll = NewPollWS.parse_obj(data)    # Verify data
 
-            if await db_handler.count_polls(new_poll.trip_id) >= constants.LIMIT_POLLS_PER_TRIP:
+            if await db_handler.count_polls(new_poll.trip_id) >= environment.LIMIT_POLLS_PER_TRIP:
                 await self.reply_error(sid, 'backend_poll_create_error', "Reached limit for number of polls on this trip. Delete an existing poll before creating another.")
                 return
             
@@ -151,7 +151,7 @@ class PackingSocket(WebSocketHandler):
         try:
             new_item = NewPackingWS.parse_obj(data)     # Verify data
 
-            if await db_handler.count_packing(new_item.trip_id) >= constants.LIMIT_PACKING_PER_TRIP:
+            if await db_handler.count_packing(new_item.trip_id) >= environment.LIMIT_PACKING_PER_TRIP:
                 await self.reply_error(sid, 'backend_packing_create_error', "Reached limit for number of packing items on this trip. Delete an existing item before creating another.")
                 return
             
@@ -200,7 +200,7 @@ class MsgSocket(WebSocketHandler):
         try:
             msg = MessageWS.parse_obj(data)     # Verify data
 
-            if await db_handler.count_messages(msg.trip_id) >= constants.LIMIT_MESSAGES_PER_TRIP:
+            if await db_handler.count_messages(msg.trip_id) >= environment.LIMIT_MESSAGES_PER_TRIP:
                 await self.reply_error(sid, 'backend_msg_error', "Reached limit for messages for this trip. Delete existing messages before submitting another.")
                 return
 
@@ -218,7 +218,7 @@ class MsgSocket(WebSocketHandler):
 sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins=[
     # Set the hosts allowed to connect to this server (IMPORTANT!)
     'http://localhost:5173',   # Vite dev server
-    constants.HOST                  # Web host
+    environment.HOST                  # Web host
 ])
 sio.register_namespace(ItinerarySocket('/itinerary'))
 sio.register_namespace(PollSocket('/poll'))

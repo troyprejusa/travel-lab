@@ -2,14 +2,14 @@ from defaults import auth_service
 from auth.auth_service import AuthServiceUnavailableError
 from fastapi import Request, HTTPException
 from fastapi.responses import FileResponse, JSONResponse
-from . import constants, auth_helpers
+from . import environment, auth_helpers
 from .rate_tracker import RateTracker
 from .utilities_logger import utilities_logger
 import json
 import jwt
 
 # GLOBAL VARIABLES (BELOW)
-rest_rate_tracker = RateTracker(constants.API_REQUEST_COUNT, constants.API_REQUESTS_WINDOW)
+rest_rate_tracker = RateTracker(environment.API_REQUEST_COUNT, environment.API_REQUESTS_WINDOW)
 
 '''
  Require authentication for the following endpoint roots (/api, /test, etc.)
@@ -45,7 +45,7 @@ async def rate_limiter(request: Request, call_next):
     
     utilities_logger.debug(json.dumps({
         'client': user_ip, 
-        'usage_ratio': len(rest_rate_tracker.tracker[user_ip]) / constants.API_REQUESTS_WINDOW
+        'usage_ratio': len(rest_rate_tracker.tracker[user_ip]) / environment.API_REQUESTS_WINDOW
     }))
     
     response = await call_next(request)

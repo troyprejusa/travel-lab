@@ -1,6 +1,6 @@
 import psycopg
 from psycopg_pool import AsyncConnectionPool
-from utilities import constants
+from utilities import environment
 from utilities.merge_polls import merge_polls
 from datetime import date
 from .models_logger import models_logger
@@ -15,7 +15,7 @@ class PsycopgDatabaseHandler(DatabaseHandler):
     """
     def __init__(self, host: str, port: str, user: str, password: str, database: str) -> None:
         connection_string = f"host={host} port={port} user={user} password={password} dbname={database}"
-        self.pool = AsyncConnectionPool(connection_string, max_size=constants.DB_CONN_LIMIT, open=False)
+        self.pool = AsyncConnectionPool(connection_string, max_size=environment.DB_CONN_LIMIT, open=False)
 
     async def open(self) -> None:
         await self.pool.open()

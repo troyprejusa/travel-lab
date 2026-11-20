@@ -1,4 +1,4 @@
-from utilities import constants
+from utilities import environment
 
 from .auth0_service import Auth0Service
 from .clerk_service import ClerkService
@@ -7,10 +7,10 @@ from .dev_auth_service import DevAuthService
 
 
 def create_auth_service() -> AuthService:
-    if constants.AUTH_PROVIDER == constants.AuthProvider.DEVELOPMENT:
+    if environment.AUTH_PROVIDER == environment.AuthProvider.DEVELOPMENT:
         return DevAuthService()
-    if constants.AUTH_PROVIDER == constants.AuthProvider.CLERK:
+    if environment.AUTH_PROVIDER == environment.AuthProvider.CLERK:
         return ClerkService()
-    if constants.AUTH_PROVIDER == constants.AuthProvider.AUTH0:
+    if environment.AUTH_PROVIDER == environment.AuthProvider.AUTH0:
         return Auth0Service()
     raise RuntimeError('Invalid AUTH_PROVIDER for this environment')
