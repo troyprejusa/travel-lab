@@ -1,6 +1,6 @@
 import jwt
 
-from utilities import environment
+from utilities.enums import Mode
 from models.database_seed import JOE_EMAIL, TROY_EMAIL
 from .auth_service import AuthSettings, AuthService
 from .models import JwtPayload
@@ -17,7 +17,9 @@ class DevAuthService(AuthService):
     SEEDED_USERS = frozenset({TROY_EMAIL, JOE_EMAIL})
 
     def __init__(self):
-        if environment.MODE == environment.Mode.PRODUCTION:
+        from defaults import config
+
+        if config.mode == Mode.PRODUCTION:
             raise RuntimeError('DevAuthService requires MODE=development or MODE=test')
 
     async def delete_user(self, provider_user_id: str) -> None:

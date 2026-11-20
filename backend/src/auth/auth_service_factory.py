@@ -1,4 +1,4 @@
-from utilities import environment
+from utilities.enums import AuthProvider
 
 from .auth0_service import Auth0Service
 from .clerk_service import ClerkService
@@ -7,10 +7,12 @@ from .dev_auth_service import DevAuthService
 
 
 def create_auth_service() -> AuthService:
-    if environment.AUTH_PROVIDER == environment.AuthProvider.DEVELOPMENT:
+    from defaults import config
+
+    if config.auth_provider == AuthProvider.DEVELOPMENT:
         return DevAuthService()
-    if environment.AUTH_PROVIDER == environment.AuthProvider.CLERK:
+    if config.auth_provider == AuthProvider.CLERK:
         return ClerkService()
-    if environment.AUTH_PROVIDER == environment.AuthProvider.AUTH0:
+    if config.auth_provider == AuthProvider.AUTH0:
         return Auth0Service()
     raise RuntimeError('Invalid AUTH_PROVIDER for this environment')

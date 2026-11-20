@@ -6,7 +6,6 @@ from sqlalchemy import URL, delete, func, insert, select, update
 from sqlalchemy.exc import DBAPIError, ResourceClosedError
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-from utilities import environment
 from utilities.merge_polls import merge_polls
 from .database_interface import DatabaseHandler
 from .orm_models import Itinerary, Message, Packing, Poll, PollOption, PollVote, Traveller, TravellerTrip, Trip
@@ -14,8 +13,10 @@ from .orm_models import Itinerary, Message, Packing, Poll, PollOption, PollVote,
 
 class SQLAlchemyDatabaseHandler(DatabaseHandler):
     def __init__(self, host: str, port: str, user: str, password: str, database: str) -> None:
+        from defaults import config
+
         url = URL.create('postgresql+psycopg', username=user, password=password, host=host, port=int(port), database=database)
-        self.engine = create_async_engine(url, pool_size=environment.DB_CONN_LIMIT, max_overflow=0)
+        self.engine = create_async_engine(url, pool_size=config.db_conn_limit, max_overflow=0)
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
 
     async def open(self):

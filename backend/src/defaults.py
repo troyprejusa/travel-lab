@@ -35,11 +35,11 @@ auth_service: AuthService = create_auth_service()
 
 
 settings = {
-    'host': environment.DB_HOST,
-    'port': environment.DB_PORT,
-    'user': environment.DB_USER,
-    'password': environment.DB_PWD,
-    'database': environment.DB_DBNAME
+    'host': config.db_host,
+    'port': config.db_port,
+    'user': config.db_user,
+    'password': config.db_pwd.get_secret_value(),
+    'database': config.db_dbname
 }
 
 db_handler = SQLAlchemyDatabaseHandler(**settings)
