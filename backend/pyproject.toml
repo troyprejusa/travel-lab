@@ -62,6 +62,7 @@ dependencies = [
     "wcwidth",
     "websockets",
     "yarl",
+    "pydantic-settings>=2.16.3",
 ]
 
 [dependency-groups]
