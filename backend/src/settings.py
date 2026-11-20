@@ -9,7 +9,7 @@ from utilities.enums import AuthProvider, Mode
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file='.env', extra='ignore', case_sensitive=False)
+    model_config = SettingsConfigDict(case_sensitive=False)
 
     mode: Mode
     host: str = Field(min_length=1)
