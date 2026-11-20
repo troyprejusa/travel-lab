@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from auth.auth0_service import Auth0Service
+from auth.auth0_service import Auth0Service, Auth0Settings
 
 
 def test_auth0_service_loads_its_configuration(monkeypatch):
@@ -14,7 +14,7 @@ def test_auth0_service_loads_its_configuration(monkeypatch):
     }
     for name, value in values.items():
         monkeypatch.setenv(f'AUTH0_{name}', value)
-    service = Auth0Service()
+    service = Auth0Service(Auth0Settings())
     assert (service.domain, service.audience, service.algorithms, service.claim_namespace) == (
         values['DOMAIN'], values['AUDIENCE'], [values['ALGORITHM']], values['CLAIM_NAMESPACE'],
     )

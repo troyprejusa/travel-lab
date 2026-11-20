@@ -4,7 +4,7 @@ import jwt
 import pytest
 from cryptography.hazmat.primitives.asymmetric import rsa
 
-from auth.clerk_service import ClerkService
+from auth.clerk_service import ClerkService, ClerkSettings
 
 
 @pytest.fixture
@@ -12,7 +12,7 @@ def clerk(monkeypatch):
     monkeypatch.setenv('CLERK_ISSUER', 'https://clerk.example.com')
     monkeypatch.setenv('CLERK_SECRET_KEY', 'test-secret')
     monkeypatch.setenv('CLERK_AUTHORIZED_PARTIES', 'http://localhost:5173')
-    return ClerkService()
+    return ClerkService(ClerkSettings())
 
 
 def test_clerk_verifies_signature_issuer_and_authorized_party(clerk):

@@ -6,9 +6,10 @@ import httpx
 import pytest
 from fastapi.testclient import TestClient
 
-from auth.auth0_service import Auth0Service
-from auth.clerk_service import ClerkService
+from auth.auth0_service import Auth0Service, Auth0Settings
+from auth.clerk_service import ClerkService, ClerkSettings
 from auth.dev_auth_service import DevAuthService
+from utilities.enums import Mode
 from auth.models import JwtPayload
 from main import app
 from routers import user_router
@@ -18,7 +19,7 @@ from utilities import middleware
 @pytest.mark.asyncio
 async def test_auth0_deletes_provider_user(monkeypatch):
     manager = Mock()
-    service = Auth0Service()
+    service = Auth0Service(Auth0Settings())
     monkeypatch.setattr(service, 'get_manager', lambda: manager)
     await service.delete_user('auth0|123')
     manager.users.delete.assert_called_once_with('auth0|123')
@@ -26,7 +27,7 @@ async def test_auth0_deletes_provider_user(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_development_delete_has_no_external_account():
-    await DevAuthService().delete_user(f'dev|{TROY_EMAIL}')
+    await DevAuthService(Mode.TEST).delete_user(f'dev|{TROY_EMAIL}')
 
 
 @pytest.mark.asyncio
@@ -41,7 +42,7 @@ async def test_clerk_deletes_provider_user(monkeypatch):
     context.__aenter__ = AsyncMock(return_value=client)
     context.__aexit__ = AsyncMock(return_value=None)
     monkeypatch.setattr('auth.clerk_service.httpx.AsyncClient', Mock(return_value=context))
-    await ClerkService().delete_user('user_123')
+    await ClerkService(ClerkSettings()).delete_user('user_123')
     client.delete.assert_awaited_once_with(
         'https://api.clerk.com/v1/users/user_123', headers={'Authorization': 'Bearer test-secret'},
     )
