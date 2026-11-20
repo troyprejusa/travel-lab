@@ -2,7 +2,7 @@ import asyncio
 
 import jwt
 from jwt import PyJWKClient
-from pydantic import SecretStr, ValidationError, model_validator
+from pydantic import SecretStr, ValidationError
 from pydantic_settings import SettingsConfigDict
 from auth0.authentication import GetToken
 from auth0.management import Auth0
